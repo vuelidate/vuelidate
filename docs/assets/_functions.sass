@@ -1,0 +1,53 @@
+@function no-unit($value)
+  @return $value / ($value * 0 + 1)
+
+@function to-rem($rem, $base-size: 16px)
+  $rem: no-unit($rem) / no-unit($base-size) * 1rem
+  @if ($rem == 0rem)
+    $rem: 0
+  @return $rem
+
+@function rem($values)
+  $values-list: length($values)
+
+  @if $values-list == 1
+    @return to-rem($values)
+
+  $rem-list: ()
+
+  @for $i from 1 through $values-list
+    $rem-list: append($rem-list, to-rem(nth($values, $i)))
+
+  @return $rem-list
+
+@mixin spinner($size: 16px, $color: #333, $border-width: 2px)
+  width: rem($size)
+
+  &:before,
+  &:after
+    position: absolute
+    content: ''
+    top: 50%
+    left: 50%
+    margin: rem($size / -2 0 0 $size / -2)
+    width: rem($size)
+    height: rem($size)
+    border-radius: 100%
+    border-color: $color transparent transparent
+    border-style: solid
+    border-width: $border-width
+    box-shadow: 0 0 0 1px transparent
+
+  &:before
+    animation: spinning 1.8s cubic-bezier(0.41, 0.26, 0.2, 0.62)
+    animation-iteration-count: infinite
+
+  &:after
+    animation: spinning 1.8s cubic-bezier(0.51, 0.09, 0.21, 0.8)
+    animation-iteration-count: infinite
+
+@keyframes spinning
+  0%
+    transform: rotate3d(0, 0, 1, 0)
+  100%
+    transform: rotate3d(0, 0, 1, 720deg)

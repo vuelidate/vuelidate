@@ -1,0 +1,17 @@
+$z-index-list:
+  modal,
+  modal-bg,
+  mobile-trigger,
+  panel,
+  topbar,
+  mobile,
+  notify,
+  sidebar,
+  dropdown,
+  content,
+  offcanvas;
+
+@function z-index($element, $stack: $z-index-list, $step: 100) {
+  $z-index-value: (length($stack) - index($stack, $element)) * $step + $step;
+  @return $z-index-value;
+}

@@ -1,0 +1,193 @@
+@import url(https://fonts.googleapis.com/css?family=Lato:700,300)
+@import url('https://fonts.googleapis.com/css?family=Dosis:400')
+
+// config
+$header-line-height: 1.2
+$header-color: $secondary-color
+
+$header-h1-family: $global-font-secondary
+$header-h1-size-ratio-lg: 2.5 // 48px
+$header-h1-size-ratio-md: 2.5 // 40px
+$header-h1-size-ratio-sm: 2 // 32px
+$header-h1-weight: $global-font-weight-bold
+
+$header-h2-family: $global-font-secondary
+$header-h2-size-ratio-lg: 1.8 // 36px
+$header-h2-size-ratio-md: 1.8 // 32px
+$header-h2-size-ratio-sm: 1.625 // 26px
+$header-h2-weight: $global-font-weight-bold
+
+$header-h3-family: $global-font-secondary
+$header-h3-size-ratio-lg: 1.5 // 28px
+$header-h3-size-ratio-md: 1.5 // 24px
+$header-h3-size-ratio-sm: 1.375 // 22px
+$header-h3-weight: $global-font-weight-bold
+
+$header-h4-family: $global-font
+$header-h4-size-ratio-sm: 1.375
+$header-h4-size-ratio-md: 1.375
+$header-h4-size-ratio-lg: 1.125
+$header-h4-weight: $global-font-weight-light
+
+$paragraph-family: $global-font
+$paragraph-font-size-ratio-lg: 1.125 // 18px
+$paragraph-font-size-ratio-md: 1.125 // 18px
+$paragraph-font-size-ratio-sm: 1 // 16px
+$paragraph-font-weight: $global-font-weight
+$paragraph-line-height: 1.8
+$paragraph-color: $secondary-color
+
+$hr-margin: 30px
+$hr-border: 1px solid $bright-grey-color
+
+$blockquote-family: $global-font-secondary
+$blockqoute-cite-family: $global-font
+$blockquote-font-size: 16px
+$blockquote-line-height: 1.8
+$blockquote-color: $secondary-lighten-color
+$blockquote-padding: 5px 20px
+$blockquote-border: 1px solid $bright-grey-color
+
+$label-font-size: 14px
+
+body
+  color: $global-font-color
+  font-size: $global-font-size
+
+*::selection,
+  background: $primary-color
+  color: #fff
+
+.typo__h1,
+.typo__h2,
+.typo__h3,
+.typo__h4,
+.typo__h5
+  margin-top: 0
+  margin-bottom: rem($global-font-size)
+  color: $header-color
+  line-height: $header-line-height
+
+.typo__h1
+  font:
+    family: $header-h1-family
+    weight: $header-h1-weight
+    size: rem($header-h1-size-ratio-sm * $global-font-size)
+  margin-bottom: rem(40px)
+
+  @media #{$medium-up}
+    font-size: rem($header-h1-size-ratio-md * $global-font-size)
+
+  @media #{$large-up}
+    font-size: rem($header-h1-size-ratio-lg * $global-font-size)
+
+.typo__h2
+  font:
+    family: $header-h2-family
+    weight: $header-h2-weight
+    size: rem($header-h2-size-ratio-sm * $global-font-size)
+  padding-top: rem(60px)
+
+  @media #{$medium-up}
+    font-size: rem($header-h2-size-ratio-md * $global-font-size)
+
+  @media #{$large-up}
+    font-size: rem($header-h2-size-ratio-lg * $global-font-size)
+
+.typo__h3
+  font:
+    family: $header-h3-family
+    weight: $header-h3-weight
+    size: rem($header-h3-size-ratio-sm * $global-font-size)
+
+  @media #{$medium-up}
+    font-size: rem($header-h3-size-ratio-md * $global-font-size)
+
+  @media #{$large-up}
+    font-size: rem($header-h3-size-ratio-lg * $global-font-size)
+
+.typo__h4
+  font:
+    family: $header-h4-family
+    weight: $header-h4-weight
+    size: rem($header-h4-size-ratio-sm * $global-font-size)
+
+  @media #{$medium-up}
+    font-size: rem($header-h4-size-ratio-md * $global-font-size)
+
+  @media #{$large-up}
+    font-size: rem($header-h4-size-ratio-lg * $global-font-size)
+
+.typo__p
+  margin-top: 0
+  margin-bottom: rem($paragraph-font-size-ratio-sm * $global-font-size)
+  line-height: $paragraph-line-height
+  font:
+    family: $paragraph-family
+    weight: $paragraph-font-weight
+    size: rem($paragraph-font-size-ratio-sm * $global-font-size)
+
+  @media #{$medium-up}
+    font-size: rem($paragraph-font-size-ratio-md * $global-font-size)
+
+  @media #{$large-up}
+    font-size: rem($paragraph-font-size-ratio-lg * $global-font-size)
+
+.typo__blockquote
+  font:
+    family: $blockquote-family
+    size: rem($blockquote-font-size)
+  color: $blockquote-color
+  margin: 0px
+  border-left: $blockquote-border
+  padding: rem($blockquote-padding)
+  line-height: $blockquote-line-height
+  text-align: left
+
+  cite
+    font:
+      size: rem($blockquote-font-size - 2px)
+      weight: $global-font-weight-bold
+      family: $blockqoute-cite-family
+      style: normal
+    margin-top: 6px
+    display: block
+    color: $secondary-color
+
+    &:before
+      content: "\2014 \0020"
+
+.typo__hr
+  border: none
+  border-bottom: $hr-border
+  margin: rem($hr-margin) 0
+  outline: none
+
+.typo__link
+  color: $primary-color
+  text-decoration: none
+  font-weight: 700
+
+.typo__label
+  font-family: $global-font
+  font-weight: $global-font-weight
+  font-size: rem($label-font-size)
+  color: $quaternary-color
+  margin: rem(20px) 0 rem(10px)
+  display: block
+
+.typo__text
+  font-family: $global-font
+  font-size: rem($label-font-size + 2px)
+  display: block
+  margin: 0
+  line-height: 1.4
+
+.typo--bold, strong
+  font-weight: $global-font-weight-bold
+
+kbd
+  color: $primary-color
+  padding: 3px 5px
+  border-radius: 4px
+  background: $tertiary-color

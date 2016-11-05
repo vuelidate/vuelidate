@@ -1,0 +1,272 @@
+// config
+$input-font: $global-font
+$input-font-color: $secondary-color
+$input-font-weight: $global-font-weight
+$input-font-size: 14px
+$input-height: 40px
+$input-border-width: 1px
+$input-border-color: $bright-grey-color
+$input-border: $input-border-width solid $input-border-color
+$input-label-left-margin: 14px
+$input-padding: 0 13px
+$input-margin-bottom: $global-font-size * 2
+$input-label-color: lighten($input-font-color, 10%)
+$input-label-size: 13px
+$input-background: $global-background
+$input-radius: $global-radius
+$input-select-font-size: 14px
+$input-select-background: $global-background
+$input-message-font-size: 12px
+$input-message-margin: 5px
+
+$input-addon-weight: 700
+
+.form
+  position: relative
+
+.form__input,
+.form__textarea
+  position: relative
+  margin:
+    bottom: rem($input-margin-bottom)
+
+.form__input,
+.form__textarea
+  font:
+    family: $input-font
+    size: rem($input-font-size)
+    weight: $input-font-weight
+  color: $global-font-color
+  line-height: rem($input-height - 2*$input-border-width)
+  min-height: rem($input-height - 2*$input-border-width)
+  position: relative
+  border: $input-border
+  border-radius: $input-radius
+  background: $input-background
+  padding: rem($input-padding)
+  width: 100%
+  transition: border .1s ease
+  box-sizing: border-box
+
+  &:hover
+    border-color: darken($input-border-color, 10%)
+
+  &:focus
+    border-color: darken($input-border-color, 25%)
+    outline: none
+
+  &--with-left-icon
+    padding-left: rem(45px)
+
+  &--with-right-icon
+    padding-right: rem(45px)
+
+.form__icon
+  position: absolute
+  pointer-events: none
+  top: -1px
+  height: rem($input-height)
+  line-height: rem($input-height)
+
+  &--right
+    right: rem(15px)
+
+  &--left
+    left: rem(13px)
+
+.form__textarea
+  max-width: 100%
+  min-height: rem(82px)
+  resize: none
+  line-height: 1.4
+  padding-top: $input-height / 4
+
+.form__label
+  font-size: rem($input-label-size)
+  color: $input-label-color
+  margin:
+    bottom: rem(5px)
+    left: rem($input-label-left-margin)
+  display: block
+  font-family: $global-font
+
+.form__label--inline
+  @extend .form__label
+
+  display: inline-block
+  margin-right: rem($grid-gutter-width / 2)
+  margin-left: rem($grid-gutter-width / 5)
+
+.form-group
+  margin-bottom: rem($input-margin-bottom)
+
+  .form__input,
+  .form__textarea
+    margin-bottom: 0
+
+.form-group--merged
+  font-size: 0
+  display: table
+  width: 100%
+  border-collapse: separate
+
+  .form__label
+    display: table-caption
+
+.form-group__input,
+.form-group__addon,
+.form-group__button
+  display: table-cell
+  vertical-align: middle
+  margin: 0
+  white-space: nowrap
+
+.form-group__addon:first-child,
+.form-group__input:first-child,
+.form-group__button:first-child .button
+  border-top-right-radius: 0
+  border-bottom-right-radius: 0
+  margin-right: -1px
+
+.form-group__addon:last-child,
+.form-group__input:last-child,
+.form-group__button:last-child .button
+  border-top-left-radius: 0
+  border-bottom-left-radius: 0
+  margin-left: -1px
+
+.form-group__input:not(:first-child):not(:last-child),
+.form-group__addon:not(:first-child):not(:last-child),
+.form-group__button:not(:first-child):not(:last-child) .button
+  border-radius: 0
+
+.form-group__button:not(:first-child):not(:last-child) .button
+  margin-left: -1px
+  margin-right: -1px
+
+.form-group__addon:first-child
+  border-right: none
+
+.form-group__addon:last-child
+  border-left: none
+
+.form-group__addon
+  background: $tertiary-color
+  border: $input-border
+  border-radius: $input-radius
+  height: rem($input-height - 2*$input-border-width)
+  line-height: rem($input-height - 2*$input-border-width)
+  width: 1%
+  padding: $input-padding
+  font:
+    size: $input-font-size
+  text-align: center
+
+.form-group__button
+  width: 1%
+
+  .button
+    margin: 0
+    padding-right: rem(20px)
+    padding-left: rem(20px)
+
+.form-group__message
+  font-size: rem($input-message-font-size)
+  line-height: 1
+  display: none
+  margin:
+    left: $input-label-left-margin
+    top: rem(($input-margin-bottom * -1) + $input-message-margin)
+    // Magic now :)
+    bottom: rem(($input-margin-bottom) - ($input-message-font-size + $input-message-margin))
+
+.form-group--alert,
+.form-group--error
+  animation:
+    name: shakeError
+    fill-mode: forward
+    duration: .6s
+    timing-function: ease-in-out
+
+.form-group--success
+  .form__label
+    color: $success-color
+
+  .form-group__addon
+    color: white
+    border-color: lighten($success-color, 20%)
+    background: lighten($success-color, 20%)
+
+  input,
+  textarea,
+  input:focus,
+  input:hover
+    border-color: lighten($success-color, 20%)
+
+  & + .form-group__message
+    display: block
+    color: lighten($success-color, 15%)
+
+.form-group--error
+  .form__label
+    color: $error-color
+
+  .form-group__addon
+    color: white
+    border-color: lighten($error-color, 20%)
+    background: lighten($error-color, 20%)
+
+  input,
+  textarea,
+  input:focus,
+  input:hover
+    border-color: lighten($error-color, 20%)
+
+  & + .form-group__message
+    display: block
+    color: lighten($error-color, 15%)
+
+.form-group--alert
+  .form__label
+    color: $alert-color
+
+  .form-group__addon
+    color: white
+    border-color: lighten($alert-color, 20%)
+    background: lighten($alert-color, 20%)
+
+  input,
+  textarea,
+  input:focus,
+  input:hover
+    border-color: lighten($alert-color, 20%)
+
+  & + .form-group__message
+    display: block
+    color: lighten($alert-color, 15%)
+
+@keyframes shakeError
+  $shake-distance: rem(6px)
+  0%
+    transform: translateX(0)
+
+  15%
+    transform: translateX($shake-distance)
+
+  30%
+    transform: translateX(-$shake-distance)
+
+  45%
+    transform: translateX($shake-distance)
+
+  60%
+    transform: translateX(-$shake-distance)
+
+  75%
+    transform: translateX($shake-distance)
+
+  90%
+    transform: translateX(-$shake-distance)
+
+  100%
+    transform: translateX(0)

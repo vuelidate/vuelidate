@@ -1,0 +1,134 @@
+// config
+$button-height-xlarge: 60px
+$button-height-large: 50px
+$button-height: 40px
+$button-height-small: 30px
+$button-padding-xlarge: 14px 50px 15px
+$button-padding-large: 11px 40px 13px
+$button-padding: 8px 30px 10px
+$button-padding-small: 6px 20px 6px
+$button-size-xlarge: 18px
+$button-size-large: 16px
+$button-size: 14px
+$button-size-small: 12px
+$button-hollow-border: 1px
+$button-background: $primary-color
+$button-color: $global-font-inverted
+$button-font-weight: $global-font-weight-bold
+$button-border-radius: $global-radius
+$button-border: 3px
+
+@mixin button-variant($name, $color)
+  .button--#{$name}
+    background: $color
+    border-bottom: $button-border solid darken($color, 20%)
+
+    &:hover,
+    &:focus
+      background: darken($color, 10%)
+      cursor: pointer
+
+.button
+  font:
+    family: $global-font
+    size: rem($button-size)
+    weight: $global-font-weight
+  color: $button-color
+  min-height: rem($button-height)
+  line-height: 1.4
+  padding: rem($button-padding)
+  box-sizing: border-box
+  position: relative
+  display: inline-block
+  background: $button-background
+  border: none
+  border-radius: $button-border-radius
+  z-index: 1
+  overflow: hidden
+  outline: none
+  vertical-align: middle
+  transition: 0.1s background ease, 0.1s border-color ease, 0.1s color ease
+  border-bottom: $button-border solid darken($primary-color, 20%)
+  text-decoration: none
+
+  &:hover,
+  &:focus
+    background: darken($button-background, 10%)
+    cursor: pointer
+
+  &:active
+    background: darken($button-background, 20%)
+
+  &:focus
+    outline: none
+
+  &--small
+    padding: rem($button-padding-small)
+    font-size: rem($button-size-small)
+    min-height: rem($button-height-small)
+
+  &--xlarge
+    padding: rem($button-padding-xlarge)
+    font-size: rem($button-size-xlarge)
+    min-height: rem($button-height-xlarge)
+
+  &--large
+    padding: rem($button-padding-large)
+    font-size: rem($button-size-large)
+    min-height: rem($button-height-large)
+
+  &--fake
+    background: none
+    color: $secondary-color
+    border-color: transparent
+
+    &:hover, &:focus
+      background: rgba(#000, 0.05)
+
+  &--hollow
+    background: none
+    color: $secondary-color
+    border: $button-hollow-border solid darken($bright-grey-color, 25%)
+
+    &:hover,
+    &:focus
+      background: rgba(#000, 0.05)
+      color: darken($secondary-color, 80%)
+      border: $button-hollow-border solid darken($bright-grey-color, 80%)
+      cursor: pointer
+
+  &--expanded
+    width: 100%
+
++button-variant('secondary', $secondary-color)
++button-variant('success', $success-color)
++button-variant('error', $alert-color)
++button-variant('info', $info-color)
+
+.button__group
+  margin-bottom: $grid-gutter-width / 2
+  width: 100%
+
+  .button
+    display: inline-block
+    margin:
+      right: 0
+      bottom: 0
+    border-radius: 0
+
+    &:first-child
+      border-top-left-radius: $button-border-radius
+      border-bottom-left-radius: $button-border-radius
+
+    &:last-child
+      border-top-right-radius: $button-border-radius
+      border-bottom-right-radius: $button-border-radius
+
+$button-group-count: 3
+
+@for $i from 1 through $button-group-count
+
+  .button__group--#{$i}
+
+    .button
+      width: 100% / $i

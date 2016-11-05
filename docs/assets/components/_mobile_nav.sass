@@ -1,0 +1,187 @@
+@import ../base/global
+
+// config
+$mobile-trigger-width: 55px
+$mobile-trigger-height: 50px
+$mobile-tab-height: 70px
+$mobile-tab-bg: $primary-color
+$mobile-tab-font-size: 20px
+$mobile-nav-bg: rgba(darken($secondary-color, 10%), .95)
+$mobile-link-height: 70px
+$mobile-link-font-size: 16px
+$mobile-link-color: $global-font-inverted
+$mobile-link-border: $global-font-color
+$mobile-link-bg: $primary-color
+
+=mobile-tabs-count($i: 3)
+  .mobile__tabs--#{$i}
+    .mobile__tab
+      width: percentage(1 / $i)
+
+
+@media #{$small-only}
+  .mobile__block-overflow
+    overflow: hidden
+
+.mobile
+  z-index: z-index(mobile)
+  position: fixed
+  height: 100%
+  width: 100%
+  top: 0
+  left: 0
+  background: $mobile-nav-bg
+  transform: translateY(-100%)
+  transition: transform .3s ease
+
+  @media #{$large-up}
+    display: none
+
+.mobile__trigger
+  z-index: z-index(mobile-trigger)
+  display: inline-block
+  border: none
+  width: rem(55px)
+  height: rem(50px)
+  margin-left: rem(-15px)
+  cursor: pointer
+  position: relative
+  line-height: 100%
+  background: none
+  vertical-align: middle
+
+  span
+    position: absolute
+    top: rem(23px)
+    left: rem(15px)
+    right: rem(15px)
+    display: block
+    height: rem(3px)
+    background: $secondary-color
+    transition: transform .3s ease, top .1s ease
+
+    &:before,
+    &:after
+      content: ""
+      position: absolute
+      display: block
+      left: 0
+      width: 100%
+      background: $secondary-color
+      height: 100%
+      transition: transform .3s ease, top .2s ease
+      transform-origin: 50% 50%
+
+    &:before
+      top: rem(-7px)
+
+    &:after
+      top: rem(7px)
+
+  &:hover
+
+    span:before
+      top: rem(-9px)
+
+    span:after
+      top: rem(9px)
+
+.mobile--show,
+.offcanvas--right
+
+  .mobile__trigger
+
+    span
+      background: transparent
+
+    span:before, span:after
+
+      top: 0
+
+    span:before
+      transform: rotate3d(0,0,1,45deg)
+
+    span:after
+      transform: rotate3d(0,0,1,-45deg)
+
+  .mobile
+    transform: translateY(0)
+
+    li
+      opacity: 1
+      transform: translateX(0)
+
+.mobile__panel
+  position: relative
+  display: block
+  height: 100%
+
+.mobile__tabs
+  position: absolute
+  bottom: 0
+  left: 0
+  width: 100%
+  height: rem($mobile-tab-height)
+  border-top: 1px solid darken($mobile-tab-bg, 10%)
+  font-size: 0
+  vertical-align: middle
+
++mobile-tabs-count(3)
+
+.mobile__tab
+  box-sizing: border-box
+  font-size: rem($mobile-tab-font-size)
+  text-align: center
+  display: inline-block
+  color: #fff
+  background: $mobile-tab-bg
+  height: 100%
+  vertical-align: middle
+  padding: rem(16px)
+  border-right: 1px solid darken($mobile-tab-bg, 10%)
+
+  &:last-child
+    border-right: none
+
+  &:hover
+    color: #fff
+    background: darken($mobile-tab-bg, 10%)
+
+  small
+    display: block
+    font-size: 60%
+    margin-top: rem(5px)
+
+  i
+    top: rem(-10px)
+
+.mobile__nav
+  position: absolute
+  height: calc(100% - #{rem($mobile-tab-height)} - #{rem(20px)} - #{rem($global-topbar-height)})
+  width: 100%
+  top: rem($global-topbar-height)
+  overflow-y: scroll
+  left: 0
+  padding: 0
+  margin: 0
+  font-weight: $global-font-weight
+  text-transform: uppercase
+
+.mobile__option
+  box-sizing: border-box
+  display: inline-block
+  width: 100%
+  position: relative
+  text-align: center
+  vertical-align: middle
+
+.mobile__link
+  display: block
+  width: 100%
+  line-height: rem($mobile-link-height)
+  font-size: rem($mobile-link-font-size)
+  letter-spacing: 1px
+  cursor: pointer
+  color: $mobile-link-color
+  // background: $mobile-link-bg
+  border-bottom: 1px solid $mobile-link-border

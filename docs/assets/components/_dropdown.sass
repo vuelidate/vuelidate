@@ -1,0 +1,144 @@
+// config
+$dropdown-height: 40px
+$dropdown-font: $global-font
+$dropdown-font-size: 14px
+$dropdown-line-height: 16px
+$dropdown-font-weight: $global-font-weight
+$dropdown-background: $global-background
+$dropdown-hover-bg: $global-support-background
+$dropdown-border: $bright-grey-color
+$dropdown-border-radius: $global-radius
+$dropdown-padding: ($dropdown-height - $dropdown-line-height) / 2
+
+.dropdown
+  box-sizing: content-box
+
+  *
+    box-sizing: border-box
+
+  display: block
+  position: relative
+  background: $dropdown-background
+  width: 100%
+  height: rem($dropdown-height)
+  text-align: left
+  font:
+    family: $dropdown-font
+    size: rem($dropdown-font-size)
+    weight: $dropdown-font-weight
+
+  &:hover,
+  &--active
+    z-index: z-index(dropdown)
+
+    .dropdown__current,
+    .dropdown__input
+      border-bottom-left-radius: 0
+      border-bottom-right-radius: 0
+
+    .dropdown__list
+      display: block
+
+.dropdown__input
+  margin-bottom: 0
+
+.dropdown--disabled
+  background: darken($dropdown-background, 7%)
+  pointer-events: none
+
+  .dropdown__current,
+  .dropdown__select
+    background: darken($dropdown-background, 7%)
+    color: darken($dropdown-background, 35%)
+
+.dropdown__list
+  display: none
+  position: relative
+  list-style: none
+  padding: 0
+  margin: 0
+  background: $dropdown-background
+  border: 1px solid $dropdown-border
+  border-top: none
+
+.dropdown__option
+  display: block
+  padding: rem($dropdown-padding)
+  min-height: rem($dropdown-height)
+  line-height: rem(16px)
+  color: $global-font-color
+  font-weight: 300
+  text-decoration: none
+  text-transform: none
+  vertical-align: middle
+
+  &:hover, &:focus
+    background: $dropdown-hover-bg
+
+.dropdown__icon
+  margin-right: rem(8px)
+
+.dropdown__img
+  display: inline-block
+  margin-right: rem(6px)
+  vertical-align: middle
+  max-height: rem(18px)
+  max-width: rem($dropdown-height)
+
+.dropdown__option--disabled
+  background: darken($dropdown-background, 7%)
+  color: darken($dropdown-background, 35%)
+  cursor: text
+  pointer-events: none
+
+  &:visited
+    color: darken($dropdown-background, 35%)
+
+  &:hover,
+  &:focus
+    background: darken($dropdown-hover-bg, 3%)
+
+.dropdown__current
+  line-height: rem($dropdown-line-height)
+  min-height: rem($dropdown-height)
+  box-sizing: border-box
+  display: block
+  overflow: hidden
+  padding: rem($dropdown-padding)
+  padding-right: 30px
+  white-space: nowrap
+  margin: 0
+  color: $global-font-color
+  text-decoration: none
+  border-radius: $dropdown-border-radius
+  border: 1px solid $dropdown-border
+  cursor: pointer
+
+.dropdown__select
+  line-height: rem(16px)
+  display: block
+  position: absolute
+  box-sizing: border-box
+  width: rem($dropdown-height)
+  height: 100%
+  right: rem(1px)
+  top: rem(1px)
+  padding: rem(4px 8px)
+  margin: 0
+  color: $global-font-color
+  text-decoration: none
+  border-left: 1px solid $dropdown-border
+  text-align: center
+  background: $dropdown-background
+  cursor: pointer
+
+  &:before
+    position: absolute
+    right: 15px
+    top: $dropdown-height / 2 - 8
+    color: #999
+    margin-top: rem(4px)
+    border-style: solid
+    border-width: 5px 5px 0 5px
+    border-color: #999999 transparent transparent transparent
+    content: ""

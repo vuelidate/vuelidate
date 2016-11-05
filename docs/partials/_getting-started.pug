@@ -1,0 +1,28 @@
+.grid__row
+  .grid__column
+    section.docs#getting-started
+      h1.typo__h1 Getting started
+      hr.typo__hr
+
+      .grid__row
+        .grid__column
+          h2.typo__h2 Installation
+          pre.language-bash
+            code.
+              npm install vue-validation --save
+
+        .grid__column
+          h2.typo__h2 Basic usage
+          pre.language-javascript
+            code.
+              import Vue from 'vue'
+              import Validation from 'vue-validation'
+              Vue.use(Validation)
+
+      .grid__row
+        .grid__column
+          h2.typo__h2 Package content
+
+        .grid__column.grid__unit--md-5
+          p.typo__p
+            | Simple, lightweight model-based validation for Vue.js

@@ -1,0 +1,55 @@
+$offcanvas-position: absolute
+$offcanvas-background: $tertiary-color
+$offcanvas-width: 250px
+
+.topbar
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1)
+
+.offcanvas
+  position: relative
+  min-height: 100%
+
+.offcanvas__content
+  z-index: z-index(offcanvas)
+  position: $offcanvas-position
+  background: $offcanvas-background
+  width: calc(100% - 60px)
+  height: 100%
+  overflow: auto
+
+  @media #{$medium-up}
+    width: rem($offcanvas-width)
+
+.offcanvas__wrapper
+  background: $global-background
+  position: relative
+  z-index: z-index(content)
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1)
+  box-shadow: -2px 0 15px rgba(0, 0, 0, 0.1)
+
+.offcanvas--right,
+.offcanvas--left
+
+  .offcanvas
+    overflow: hidden
+
+.offcanvas--right
+
+  .offcanvas__wrapper,
+  .topbar
+    transform: translate3d(calc(100% - 60px), 0, 0)
+
+    @media #{$medium-up}
+      transform: translate3d(rem($offcanvas-width), 0, 0)
+
+.offcanvas--left
+
+  .offcanvas
+    overflow: hidden
+
+  .topbar,
+  .offcanvas__wrapper
+    transform: translate3d(calc(-100% + 60px), 0, 0)
+
+    @media #{$medium-up}
+      transform: translate3d(rem(-$offcanvas-width), 0, 0)

@@ -1,0 +1,35 @@
+h2.typo__h2#tagging Basic usage
+p.typo__p
+  | For each value you want to validate, you have to create a key inside <kbd>validations</kbd> options.
+.grid__row
+  .grid__column.grid__unit--md-5
+    .form-group(v-bind:class="{ 'form-group--error': !$validation.name.required }")
+      label.form__label Name (required)
+      input.form__input(v-model="name")
+      span.form-group__message Field is required
+    pre
+      | {{ $validation.name | json }}
+
+  .grid__column.grid__unit--md-7
+    label.typo__label Code sample
+    pre.language-jade
+      code.
+        .form-group(v-bind:class="{ 'form-group--error': !$validation.name.required }")
+          label.form__label Name (required)
+          input.form__input(v-model="name")
+          span.form-group__message Field is required
+
+    pre.language-javascript
+      code.
+        data () {
+          return {
+            name: ''
+          }
+        },
+        validations: {
+          name () {
+            return {
+              required
+            }
+          }
+        }

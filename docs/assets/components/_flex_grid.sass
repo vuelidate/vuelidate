@@ -1,0 +1,70 @@
+=calc-flex-columns($class, $i: 1)
+  @for $i from 1 through $flex-columns
+    .flex__unit--#{$class}-#{$i}
+      width: percentage($i / $flex-columns)
+      flex: 0 0 percentage($i / $flex-columns)
+
+// config
+$flex-columns: $global-grid-columns
+$flex-gutter-width: $global-gutter
+$flex-max-width: $global-page-width
+$flex-equal-height-columns: true
+
+.flex__column,
+.flex__columns
+  flex: 0 0 auto
+  width: 100%
+  padding: 0 ($flex-gutter-width/2)
+
+.flex__column--top
+  align-self: flex-start
+
+.flex__column--middle
+  align-self: center
+
+.flex__column--bottom
+  align-self: flex-end
+
+.flex__row
+  display: flex
+  flex-wrap: wrap
+  margin: 0 auto
+  max-width: $flex-max-width
+
+  @if $flex-equal-height-columns
+    align-items: stretch
+  @else
+    align-items: flex-start
+
+  .flex__row
+    margin: 0 ($flex-gutter-width/-2)
+    max-width: none
+
+  &.flex__row--collapse
+
+    & > .flex__column
+      padding-left: 0
+      padding-right: 0
+
+.flex__row--centered
+  justify-content: center
+
+.flex__row--top
+  align-items: flex-start
+
+.flex__row--middle
+  align-items: center
+
+.flex__row--bottom
+  align-items: flex-end
+
+.flex__row--stretch
+  align-items: stretch
+
++calc-flex-columns(sm)
+
+@media #{$medium-up}
+  +calc-flex-columns(md)
+
+@media #{$large-up}
+  +calc-flex-columns(lg)

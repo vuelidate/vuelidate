@@ -1,0 +1,71 @@
+@import ../base/global
+
+// config
+$tabs-bg: $global-background
+$tabs-bg-active: $global-background
+$tabs-font-size: 16px
+$tabs-height: 40px
+$tabs-link-weight: $global-font-weight
+$tabs-border: $tertiary-color
+$tabs-padding: 0 20px
+$tabs-width: 3px
+
+%tabs
+  display: flex
+  align-items: stretch
+  min-height: rem($tabs-height)
+
+%tabs__link
+  display: block
+  padding: rem($tabs-padding)
+  font:
+    family: $global-font
+    size: rem($tabs-font-size)
+    weight: $tabs-link-weight
+  text-decoration: none
+  cursor: pointer
+  line-height: rem($tabs-height)
+  color: $secondary-lighten-color
+  transition: color .2s ease
+
+%tabs__link--active
+  font-weight: $global-font-weight-bold
+  color: $secondary-color
+
+=tabs($name: tabs, $style: row, $inverted-content-side: false, $line-side: bottom)
+  @if $style == column
+    @if $inverted-content-side
+      $line-side: left
+    @else
+      $line-side: right
+  @else
+    @if $inverted-content-side
+      $line-side: top
+    @else
+      $line-side: bottom
+
+  .#{$name}
+    @extend %tabs
+
+    flex-direction: $style
+    border-#{$line-side}: $tabs-width solid $bright-grey-color
+    margin-#{$line-side}: -$tabs-width
+
+  .#{$name}__link
+    @extend %tabs__link
+
+    border-#{$line-side}: $tabs-width solid $bright-grey-color
+    margin-#{$line-side}: -$tabs-width
+
+    &:hover,
+    &:focus
+      color: $global-font-color
+
+  .#{$name}__link--active
+    @extend %tabs__link--active
+
+    border-color: $primary-color
+
++tabs(tabs, row)
+
++tabs(vertical-tabs, column, false)

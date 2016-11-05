@@ -1,0 +1,106 @@
+@import './assets/main';
+@import './assets/prism';
+
+.invalid {
+  .typo__label {
+    color: $error-color;
+  }
+  .multiselect__tags {
+    border-color: $error-color !important;
+  }
+}
+
+body {
+  background: #fff;
+  color: #35495E;
+  font-family: 'Lato', Helvetica, sans-serif;
+  text-decoration: none;
+}
+
+.start {
+  text-align: center;
+  display: block;
+  background: linear-gradient(to left bottom, #8cc1f7 0%, #9cffd3 100%);
+
+  .typo__h1 {
+    padding-top: rem(40px);
+    position: relative;
+  }
+
+  .typo__h3 {
+    padding: rem(20px 0)
+  }
+
+  @media #{$medium-up} {
+    min-height: 100vh;
+  }
+
+  .button {
+    margin-bottom: rem(24px);
+  }
+}
+
+.start__list {
+  padding-top: rem(30px)
+}
+
+.docs {
+  text-align: left;
+  padding-top: rem(60px)
+}
+
+.center-vertically {
+  position: relative;
+
+  @media #{$medium-up} {
+    position: absolute;
+    height: 600px;
+    left: 0;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+  }
+}
+
+.multiselect-example__container {
+  margin: 0 auto 60px;
+}
+
+.button {
+  margin: rem(0 10px)
+}
+
+.logo {
+  height: rem(70px);
+  margin-right: rem(20px);
+  vertical-align: middle;
+  display: inline-block;
+}
+
+.monterail-logo {
+  width: 100px;
+  height: 100px;
+  margin-bottom: rem(30px)
+}
+
+.monterail-link {
+  color: #D20C03
+}
+
+.button--github {
+  padding-left: rem(60px);
+
+  &:before {
+    content: url('./assets/github.svg');
+    left: rem(25px);
+    position: absolute;
+  }
+}
+
+.version {
+  position: absolute;
+  bottom: rem(-7px);
+  font-size: rem(20px);
+  color: $secondary-color;
+  transform: translateX(-100%);
+}

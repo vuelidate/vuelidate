@@ -1,0 +1,30 @@
+section.start(v-bind:style="gradient")
+  .center-vertically
+    h1.typo__h1
+      img.logo(src="./static/vue-logo.png")
+      | vue-validation
+      small.version (0.1.0)
+    h3.typo__h3
+      | Simple, lightweight model-based validation for
+      = ' '
+      a.typo__link(href="http://vuejs.org" target="_BLANK") Vue.js
+
+    .grid__row.grid__row--centered
+      .grid__column.grid__unit--md-6
+        .multiselect-example__container
+          .grid__row.start__list
+            .grid__column.grid__unit--md-6.list
+              ul.list__ul
+                li.typo__li Perks here
+                li.typo__li And here
+                li.typo__li: a.typo__link(href="#search") And here with a link
+            .grid__column.grid__unit--md-6.list
+              ul.list__ul
+                li.typo__li Perks here
+                li.typo__li And here
+                li.typo__li: a.typo__link(href="#search") And here with a link
+
+    .grid__row.grid__row--centered
+      .grid__column.utils--center
+        a.button.button--large.button--secondary.button--github(href="https://github.com/monterail" target="_BLANK") View on GitHub
+        a.button.button--large(href="#getting-started") Getting started & examples

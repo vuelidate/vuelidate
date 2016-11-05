@@ -1,0 +1,22 @@
+.breadcrumbs
+  font:
+    size: rem(12px)
+    weight: $global-font-weight
+  line-height: rem(20px)
+  text-transform: uppercase
+  color: $secondary-color
+  margin: rem($global-v-gutter) 0
+
+a.breadcrumbs__element
+  color: $primary-color
+  text-decoration: none
+
+  &:after
+    content: "/"
+    margin: rem(0 5px)
+
+.breadcrumbs__element
+  display: inline-block
+
+  &:last-child
+    font-weight: $global-font-weight-black

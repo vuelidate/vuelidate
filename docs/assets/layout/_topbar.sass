@@ -1,0 +1,166 @@
+$topbar-bg: $global-support-background
+$topbar-bg-hover: $global-background
+$topbar-color: $secondary-color
+$topbar-border: $tertiary-color
+$topbar-link-underline: $primary-color
+
+$topbar-font-weight: $global-font-weight
+$topbar-font: $global-font
+$topbar-font-size: 14px
+$topbar-height: $global-topbar-height
+$topbar-dropdown-font-size: 14px
+
+.topbar--sticky
+
+  .offcanvas__wrapper,
+  .content
+    padding-top: rem($topbar-height)
+
+  .topbar
+    position: fixed
+    top: 0
+    left: 0
+    right: 0
+    z-index: z-index(topbar)
+
+
+.topbar
+  background: $topbar-bg
+  width: 100%
+  display: block
+  box-sizing: content-box
+  height: rem($topbar-height)
+  color: $topbar-color
+  line-height: rem($topbar-height)
+  font-family: $topbar-font
+  padding: 0
+  border-bottom: 1px solid $topbar-border
+  box-shadow: 0 1px 3px rgba(#000, 0.1)
+
+.topbar__logo,
+.topbar__link
+  position: relative
+
+
+.topbar__logo
+  font-weight: 700
+  font-size: rem(16px)
+  height: rem($topbar-height)
+  vertical-align: middle
+  text-decoration: none
+  color: $topbar-color
+
+  &:visited
+    color: $topbar-color
+
+  small
+    font-weight: $global-font-weight
+    margin-left: 5px
+
+  img, svg
+    max-height: rem($topbar-height - 15px)
+    padding: 0 5px 5px 0
+    display: inline-block
+    vertical-align: middle
+
+.topbar__nav
+  list-style: none
+  float: left
+  font-size: rem($topbar-font-size)
+  font-weight: $topbar-font-weight
+  margin: 0
+  padding: 0
+  height: rem($topbar-height)
+  font-size: rem(0)
+
+.topbar__option
+  display: inline-block
+  font-size: rem($topbar-font-size)
+  height: 100%
+  vertical-align: top
+  text-transform: uppercase
+
+
+.topbar__option--has-dropdown
+
+  .topbar__link:before
+    content: ""
+    width: 0
+    height: 0
+    border-style: solid
+    border-width: rem(5px 5px 0 5px)
+    border-color: $topbar-color transparent transparent transparent
+    display: inline-block
+    margin-right: rem($grid-gutter-width / 5)
+    padding-bottom: rem(2px)
+
+
+.topbar__separator
+  display: inline-block
+  border-left: 1px solid $topbar-border
+  height: 100%
+  vertical-align: top
+
+.topbar__link
+  display: block
+  font-size: rem($topbar-font-size)
+  padding: 0 rem($topbar-font-size * 1.5)
+  color: $topbar-color
+  text-decoration: none
+  transition: background .1s ease
+
+  &:hover,
+  &:visited
+    color: $topbar-color
+
+  &:hover, &:focus
+    outline: none
+    background: $topbar-bg-hover
+
+.topbar__right
+  float: right
+
+.topbar__left
+  float: left
+
+
+// dropdown extension
+.topbar__option
+  .dropdown
+    height: 100%
+    width: auto
+    background: none
+
+    .topbar__link:after,
+    .user:after
+      content: ""
+      position: absolute
+      bottom:  rem(-1px)
+      left: 0
+      width: 0
+      height: rem(2px)
+      background: $primary-color
+      transition: width .15s ease
+
+    &:hover
+      .topbar__link:after,
+      .user:after
+        width: 100%
+
+
+  .dropdown__current
+    height: 100%
+
+  .dropdown__list
+    position: absolute
+    margin-left: rem(-1px)
+    margin-top: rem(1px)
+    min-width: 100%
+    white-space: nowrap
+
+  .dropdown__option
+    line-height: rem($topbar-height / 2)
+    border-bottom: 1px solid $tertiary-color
+    font-size: rem($topbar-dropdown-font-size)
+    padding-left: rem($topbar-font-size * 1.5)
+    padding-right: rem($topbar-font-size * 1.5)

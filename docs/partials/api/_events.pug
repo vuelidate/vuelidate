@@ -1,0 +1,20 @@
+h2.typo__h2#events Events
+.grid__row
+  .table__container
+    table.table.table--full-size
+      thead
+        tr.table__tr
+          th.table__th(width="150") Name
+          th.table__th(width="100") Attributes
+          th.table__th(width="150") Listen to
+          th.table__th(width="250") Description
+      tbody
+        tr.table__tr
+          td.table__td: strong Input
+          td.table__td: kbd (value, id)
+          td.table__td: kbd @input
+          td.table__td
+            | Emitted after
+            = " "
+            kbd this.value
+            |  changes
