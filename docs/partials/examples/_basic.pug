@@ -3,18 +3,27 @@ p.typo__p
   | For each value you want to validate, you have to create a key inside <kbd>validations</kbd> options.
 .grid__row
   .grid__column.grid__unit--md-5
-    .form-group(v-bind:class="{ 'form-group--error': !$validation.name.required }")
-      label.form__label Name (required)
+    .form-group(v-bind:class="{ 'form-group--error': $validations.name.$invalid }")
+      label.form__label Name
       input.form__input(v-model="name")
-      span.form-group__message Field is required
+    span.form-group__message(v-if="!$validations.name.required") Field is required
+    span.form-group__message(v-if="!$validations.name.minLength") Name must be longer than 6 letters.
     pre
-      | {{ $validation.name }}
+      | name: {{ $validations.name }}
+
+    .form-group(v-bind:class="{ 'form-group--error': $validations.age.$invalid }")
+      label.form__label Age
+      input.form__input(v-model="age")
+    span.form-group__message(v-if="!$validations.age.between") Must be between 20 and 30
+    pre
+      | age:
+      | {{ $validations.age }}
 
   .grid__column.grid__unit--md-7
     label.typo__label Code sample
     pre.language-jade
       code.
-        .form-group(v-bind:class="{ 'form-group--error': !$validation.name.required }")
+        .form-group(v-bind:class="{ 'form-group--error': !$validations.name.required }")
           label.form__label Name (required)
           input.form__input(v-model="name")
           span.form-group__message Field is required
@@ -23,13 +32,18 @@ p.typo__p
       code.
         data () {
           return {
-            name: ''
+            name: '',
+            age: null
           }
         },
         validations: {
           name () {
             return {
-              required
+              required,
+              minLength: minLength(4)
             }
+          },
+          age: {
+            between: between(20, 30)
           }
         }

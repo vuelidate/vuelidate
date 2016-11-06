@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import Validation from '../src/index'
-import { required } from '../src/validators'
+import { required, minLength, between } from '../src/validators'
 
 Vue.use(Validation)
 
@@ -38,11 +38,11 @@ new Vue({
     name () {
       return {
         required,
-        minLength: this.minLength
+        minLength: minLength(4)
       }
     },
     age: {
-      required
+      between: between(20, 30)
     }
   },
   computed: {
