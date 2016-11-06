@@ -12,7 +12,7 @@ function Validation (Vue) {
 
       this.$options.computed.$validation = () => {
         return Object.keys(validations).reduce(($validations, key) => {
-          const rules = validations[key].call(this)
+          const rules = getRules(validations[key], this)
           $validations[key] = Object.keys(rules).reduce((results, rule) => {
             results[rule] = rules[rule](this[key])
             return results
@@ -27,3 +27,13 @@ function Validation (Vue) {
 export default Validation
 
 export { Validation }
+
+function isFunction (f) {
+  return typeof f === 'function'
+}
+
+function getRules (rules, context) {
+  return isFunction(rules)
+    ? rules.call(context)
+    : rules
+}

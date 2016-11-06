@@ -37,8 +37,12 @@ new Vue({
   validations: {
     name () {
       return {
-        required
+        required,
+        minLength: this.minLength
       }
+    },
+    age: {
+      required
     }
   },
   computed: {
@@ -49,6 +53,9 @@ new Vue({
     }
   },
   methods: {
+    minLength (v) {
+      return v.length >= 4
+    },
     adjustNav () {
       this.isNavSticky = window.scrollY > window.innerHeight
     }
