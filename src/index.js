@@ -10,19 +10,14 @@ function Validation (Vue) {
         this.$options.computed = {}
       }
 
-      let _dirty = false
-
       this.$options.computed.$validations = () => {
         const $validations = Object.keys(validations).reduce((_validations, model) => {
           const rules = getRules(validations[model], this)
 
-          // TODO: Improve how $dirty works
-          _validations.$dirty = _dirty
           _validations[model] = validateModel(rules, this[model])
           _validations.$invalid = Object.keys(_validations).some(rule => _validations[rule].$invalid)
           return _validations
-        }, { $dirty: false, $invalid: false })
-        _dirty = true
+        }, { $invalid: false })
 
         return $validations
       }
@@ -40,7 +35,6 @@ function validateModel (rules, value) {
 
     results[rule] = isValid
     results.$invalid = !isValid || results.$invalid
-    // TODO: Add $dirty support to model key validations
     return results
   }, { $invalid: false })
 }
