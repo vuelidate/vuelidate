@@ -1,3 +1,12 @@
+class ValidationState {
+  $invalid = false
+  $dirty = false
+
+  setDirty (state = true) {
+    this.$dirty = !!state
+  }
+}
+
 function Validation (Vue) {
   if (Validation.installed) return
 
@@ -14,10 +23,11 @@ function Validation (Vue) {
         const $validations = Object.keys(validations).reduce((_validations, model) => {
           const rules = getRules(validations[model], this)
 
-          _validations[model] = validateModel(rules, this[model])
+          _validations[model] = validateRuleset(rules, this[model])
           _validations.$invalid = Object.keys(_validations).some(rule => _validations[rule].$invalid)
+          _validations.setDirty(Object.keys(_validations).some(rule => _validations[rule].$dirty))
           return _validations
-        }, { $invalid: false })
+        }, new ValidationState())
 
         return $validations
       }
@@ -29,14 +39,14 @@ export default Validation
 
 export { Validation }
 
-function validateModel (rules, value) {
+function validateRuleset (rules, value) {
   return Object.keys(rules).reduce((results, rule) => {
     const isValid = rules[rule](value)
 
     results[rule] = isValid
     results.$invalid = !isValid || results.$invalid
     return results
-  }, { $invalid: false })
+  }, new ValidationState())
 }
 
 function isFunction (f) {
@@ -48,7 +58,9 @@ function getRules (rules, context) {
     // TODO: Handle rules in array
   }
 
-  return isFunction(rules)
+  rules = isFunction(rules)
     ? rules.call(context)
     : rules
+
+  return rules
 }

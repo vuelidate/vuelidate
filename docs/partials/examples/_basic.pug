@@ -5,7 +5,7 @@ p.typo__p
   .grid__column.grid__unit--md-5
     .form-group(v-bind:class="{ 'form-group--error': $validations.name.$invalid }")
       label.form__label Name
-      input.form__input(v-model="name")
+      input.form__input(v-model="name" @input="$validations.name.setDirty()")
     span.form-group__message(v-if="!$validations.name.required") Field is required
     span.form-group__message(v-if="!$validations.name.minLength") Name must be longer than 6 letters.
     pre
@@ -13,7 +13,7 @@ p.typo__p
 
     .form-group(v-bind:class="{ 'form-group--error': $validations.age.$invalid }")
       label.form__label Age
-      input.form__input(v-model="age")
+      input.form__input(v-model="age" @input="$validations.age.setDirty()")
     span.form-group__message(v-if="!$validations.age.between") Must be between 20 and 30
     pre
       | age:
