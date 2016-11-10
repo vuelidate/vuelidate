@@ -37,6 +37,11 @@ new Vue({
       form: {
         nestedA: '',
         nestedB: ''
+      },
+      flatA: '',
+      flatB: '',
+      forGroup: {
+        nested: ''
       }
     }
   },
@@ -63,7 +68,14 @@ new Vue({
       nestedB: {
         required
       }
-    }
+    },
+
+    flatA: { required },
+    flatB: { required },
+    forGroup: {
+      nested: { required }
+    },
+    validationGroup: ['flatA', 'flatB', 'forGroup.nested']
   },
   computed: {
     gradient () {

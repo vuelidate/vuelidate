@@ -105,7 +105,7 @@ p.typo__p
         }
 
 p.typo__p
-  | You can nest validators as deep as you want.
+  | You can nest validators to match your data as deep as you want.
   | Parent validator errors out when any of its children reports an error.
   | This might be very useful for overall form validation.
 .grid__row
@@ -113,7 +113,7 @@ p.typo__p
     .form-group(v-bind:class="{ 'form-group--error': $validations.form.nestedA.$error }")
       label.form__label Nested A
       input.form__input(v-model="form.nestedA" @input="$validations.form.nestedA.setDirty()")
-    span.form-group__message(v-if="!$validations.password.required") Field is required.
+    span.form-group__message(v-if="!$validations.form.nestedA.required") Field is required.
     .form-group(v-bind:class="{ 'form-group--error': $validations.form.nestedB.$error }")
       label.form__label Nested B
       input.form__input(v-model="form.nestedB" @input="$validations.form.nestedB.setDirty()")
@@ -132,7 +132,7 @@ p.typo__p
         .form-group(v-bind:class="{ 'form-group--error': $validations.form.nestedA.$error }")
           label.form__label Nested A
           input.form__input(v-model="form.nestedA" @input="$validations.form.nestedA.setDirty()")
-        span.form-group__message(v-if="!$validations.password.required") Field is required.
+        span.form-group__message(v-if="!$validations.form.nestedA.required") Field is required.
 
         .form-group(v-bind:class="{ 'form-group--error': $validations.form.nestedB.$error }")
           label.form__label Nested B
@@ -162,3 +162,67 @@ p.typo__p
             }
           }
         }
+
+p.typo__p
+  | If you don't want to create a validator that groups many otherise unrelated
+  | fields together, you can create a validationGroup.
+.grid__column.grid__unit--md-5
+  .form-group(v-bind:class="{ 'form-group--error': $validations.flatA.$error }")
+    label.form__label Flat A
+    input.form__input(v-model="flatA" @input="$validations.flatA.setDirty()")
+  span.form-group__message(v-if="!$validations.flatA.required") Field is required.
+  .form-group(v-bind:class="{ 'form-group--error': $validations.flatB.$error }")
+    label.form__label Flat B
+    input.form__input(v-model="flatB" @input="$validations.flatB.setDirty()")
+  span.form-group__message(v-if="!$validations.flatB.required") Field is required.
+  .form-group(v-bind:class="{ 'form-group--error': $validations.forGroup.nested.$error }")
+    label.form__label Nested field
+    input.form__input(v-model="forGroup.nested" @input="$validations.forGroup.nested.setDirty()")
+  span.form-group__message(v-if="!$validations.forGroup.nested.required") Field is required.
+
+  .form-group(v-bind:class="{ 'form-group--error': $validations.validationGroup.$error }")
+  span.form-group__message(v-if="$validations.validationGroup.$error") Group is invalid.
+
+  pre
+    | validationGroup: {{ $validations.validationGroup }}
+
+.grid__column.grid__unit--md-7
+  label.typo__label Code sample
+  pre.language-jade
+    code.
+      .form-group(v-bind:class="{ 'form-group--error': $validations.flatA.$error }")
+        label.form__label Flat A
+        input.form__input(v-model="flatA" @input="$validations.flatA.setDirty()")
+      span.form-group__message(v-if="!$validations.flatA.required") Field is required.
+      .form-group(v-bind:class="{ 'form-group--error': $validations.flatB.$error }")
+        label.form__label Flat B
+        input.form__input(v-model="flatB" @input="$validations.flatB.setDirty()")
+      span.form-group__message(v-if="!$validations.flatB.required") Field is required.
+      .form-group(v-bind:class="{ 'form-group--error': $validations.forGroup.nested.$error }")
+        label.form__label Nested field
+        input.form__input(v-model="forGroup.nested" @input="$validations.forGroup.nested.setDirty()")
+      span.form-group__message(v-if="!$validations.forGroup.nested.required") Field is required.
+
+      .form-group(v-bind:class="{ 'form-group--error': $validations.validationGroup.$error }")
+      span.form-group__message(v-if="$validations.validationGroup.$error") Group is invalid.
+
+
+  pre.language-javascript
+    code.
+      data () {
+        return {
+          flatA: '',
+          flatB: '',
+          forGroup: {
+            nested: ''
+          }
+        }
+      },
+      validations: {
+        flatA: { required },
+        flatB: { required },
+        forGroup: {
+          nested: { required }
+        },
+        validationGroup: ['flatA', 'flatB', 'forGroup.nested']
+      }
