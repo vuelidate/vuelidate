@@ -1,14 +1,70 @@
-class ValidationState {
-  $invalid = false
-  $dirty = false
-
-  setDirty (state = true) {
-    this.$dirty = !!state
-  }
-}
+const someKeys = (obj, fn) => Object.keys(obj).some(fn)
+const reduceKeys = (obj, fn, init) => Object.keys(obj).reduce(fn, init)
+const reduceObj = (obj, fn, init) => reduceKeys(obj, (o, key) => fn(o, obj[key], key), init)
+const mapObj = (obj, fn) => reduceObj(obj, (build, val, key) => {
+  build[key] = fn(val, key)
+  return build
+}, {})
+const buildFromKeys = (keys, fn) => keys.reduce((build, key) => {
+  build[key] = fn(key)
+  return build
+}, {})
 
 function Validation (Vue) {
   if (Validation.installed) return
+
+  function makeValidationVm (validations, parentVm, masterProp) {
+    function validationMapper (rules, localProp) {
+      const prop = masterProp || localProp
+
+      if (typeof rules === 'function') {
+        return function () {
+          return rules(this.parentVm[prop], this.parentVm)
+        }
+      }
+      const vm = makeValidationVm(rules, masterProp ? parentVm[masterProp] : parentVm, localProp)
+      return function () {
+        return vm
+      }
+    }
+
+    const vm = new Vue({
+      data: { parentVm, _dirty: false },
+      methods: {
+        setDirty (newState = true) {
+          this._dirty = !!newState
+        }
+      },
+      computed: {
+        ...mapObj(validations, validationMapper),
+        $invalid () {
+          return someKeys(validations, rule => {
+            const val = this[rule]
+            return typeof val === 'object' ? val.$invalid : !val
+          })
+        },
+        $dirty () {
+          return this._dirty || someKeys(validations, rule => {
+            const val = this[rule]
+            return typeof val === 'object' ? val.$dirty : false
+          })
+        },
+        $error () {
+          return !!(this.$dirty && this.$invalid)
+        }
+      }
+    })
+
+    const redirectKeys = [...Object.keys(validations), '$invalid', '$error', '$dirty', 'setDirty']
+    const redirectDef = buildFromKeys(redirectKeys, key => ({
+      enumerable: key !== 'setDirty',
+      get () {
+        return vm[key]
+      }
+    }))
+
+    return Object.defineProperties({}, redirectDef)
+  }
 
   Vue.mixin({
     beforeCreate () {
@@ -19,18 +75,7 @@ function Validation (Vue) {
         this.$options.computed = {}
       }
 
-      this.$options.computed.$validations = () => {
-        const $validations = Object.keys(validations).reduce((_validations, model) => {
-          const rules = getRules(validations[model], this)
-
-          _validations[model] = validateRuleset(rules, this[model])
-          _validations.$invalid = Object.keys(_validations).some(rule => _validations[rule].$invalid)
-          _validations.setDirty(Object.keys(_validations).some(rule => _validations[rule].$dirty))
-          return _validations
-        }, new ValidationState())
-
-        return $validations
-      }
+      this.$options.computed.$validations = () => makeValidationVm(validations, this)
     }
   })
 }
@@ -38,29 +83,3 @@ function Validation (Vue) {
 export default Validation
 
 export { Validation }
-
-function validateRuleset (rules, value) {
-  return Object.keys(rules).reduce((results, rule) => {
-    const isValid = rules[rule](value)
-
-    results[rule] = isValid
-    results.$invalid = !isValid || results.$invalid
-    return results
-  }, new ValidationState())
-}
-
-function isFunction (f) {
-  return typeof f === 'function'
-}
-
-function getRules (rules, context) {
-  if (Array.isArray(rules)) {
-    // TODO: Handle rules in array
-  }
-
-  rules = isFunction(rules)
-    ? rules.call(context)
-    : rules
-
-  return rules
-}

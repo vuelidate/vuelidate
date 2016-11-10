@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import Validation from '../src/index'
-import { required, minLength, between } from '../src/validators'
+import { required, minLength, sameAs, between } from '../src/validators'
 
 Vue.use(Validation)
 
@@ -31,18 +31,38 @@ new Vue({
       secondColor: Math.floor(Math.random() * 255),
       name: '',
       age: 0,
-      email: ''
+      email: '',
+      password: '',
+      repeatPassword: '',
+      form: {
+        nestedA: '',
+        nestedB: ''
+      }
     }
   },
   validations: {
-    name () {
-      return {
-        required,
-        minLength: minLength(4)
-      }
+    name: {
+      required,
+      minLength: minLength(4)
     },
     age: {
       between: between(20, 30)
+    },
+    password: {
+      required,
+      minLength: minLength(6)
+    },
+    repeatPassword: {
+      sameAsPassword: sameAs('password')
+    },
+
+    form: {
+      nestedA: {
+        required
+      },
+      nestedB: {
+        required
+      }
     }
   },
   computed: {
@@ -53,9 +73,6 @@ new Vue({
     }
   },
   methods: {
-    minLength (v) {
-      return v.length >= 4
-    },
     adjustNav () {
       this.isNavSticky = window.scrollY > window.innerHeight
     }
