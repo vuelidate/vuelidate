@@ -229,8 +229,7 @@ p.typo__p
 
 
 p.typo__p
-  | If you don't want to create a validator that groups many otherise unrelated
-  | fields together, you can create a validationGroup.
+  | Array support with $each keyword
 .grid__column.grid__unit--md-5
   div(v-for="(person, index) in people")
     .form-group(v-bind:class="{ 'form-group--error': $validations.people.$each[index].$error }")
