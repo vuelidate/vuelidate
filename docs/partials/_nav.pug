@@ -1,6 +1,6 @@
 mixin nav-element(componentName, href)
   li.list__element
-    a.link.list__link(href="##{href}")= componentName
+    a.link.list__link(href="#" + href)= componentName
 
 ul.list(
   :class="{ 'list--sticky': isNavSticky }"
