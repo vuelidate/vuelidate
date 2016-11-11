@@ -42,7 +42,13 @@ new Vue({
       flatB: '',
       forGroup: {
         nested: ''
-      }
+      },
+
+      people: [{
+        name: 'john'
+      }, {
+        name: ''
+      }]
     }
   },
   validations: {
@@ -75,7 +81,16 @@ new Vue({
     forGroup: {
       nested: { required }
     },
-    validationGroup: ['flatA', 'flatB', 'forGroup.nested']
+    validationGroup: ['flatA', 'flatB', 'forGroup.nested'],
+
+    people: {
+      minLength: minLength(1),
+      $each: {
+        name: {
+          required
+        }
+      }
+    }
   },
   computed: {
     gradient () {

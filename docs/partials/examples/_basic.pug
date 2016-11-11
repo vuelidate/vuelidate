@@ -226,3 +226,33 @@ p.typo__p
         },
         validationGroup: ['flatA', 'flatB', 'forGroup.nested']
       }
+
+
+p.typo__p
+  | If you don't want to create a validator that groups many otherise unrelated
+  | fields together, you can create a validationGroup.
+.grid__column.grid__unit--md-5
+  div(v-for="(person, index) in people")
+    .form-group(v-bind:class="{ 'form-group--error': $validations.people.$each[index].$error }")
+      label.form__label Name for {{ index }}
+      input.form__input(v-model="person.name" @input="$validations.people.$each[index].name.setDirty()")
+    span.form-group__message(v-if="!$validations.people.$each[index].name.required") Name is required.
+
+  div
+    button(@click="people.push({name: ''})") Add
+    button(@click="people.pop()") Remove
+  .form-group(v-bind:class="{ 'form-group--error': $validations.people.$error }")
+  span.form-group__message(v-if="$validations.people.$error") List is invalid.
+
+  pre
+    | people: {{ $validations.people }}
+
+.grid__column.grid__unit--md-7
+  label.typo__label Code sample
+  pre.language-jade
+    code.
+      TODO
+
+  pre.language-javascript
+    code.
+      TODO

@@ -34,11 +34,21 @@ const defaultComputed = {
     })
   },
   $dirty () {
-    return this.dirty ||
-      this.dynamicKeys.some(ruleOrNested => {
-        const val = this[ruleOrNested]
-        return typeof val === 'object' ? val.$dirty : false
-      })
+    if (this.dirty) {
+      return true
+    }
+    // iteration to trigger as little as possible getters
+    let foundNested = false
+    for (let i = 0; i < this.dynamicKeys.length; i++) {
+      const ruleOrNested = this.dynamicKeys[i]
+      const val = this[ruleOrNested]
+      const isNested = typeof val === 'object'
+      foundNested = foundNested || isNested
+      if (isNested && !val.$dirty) {
+        return false
+      }
+    }
+    return foundNested
   },
   $error () {
     return !!(this.$dirty && this.$invalid)
@@ -49,8 +59,8 @@ const defaultMethodKeys = Object.keys(defaultMethods)
 const defaultComputedKeys = Object.keys(defaultComputed)
 const mapDynamicKeyName = k => 'v$$' + k
 
-const buildDynamics = (obj, fn) => reduceObj(obj, (build, val, key) => {
-  build[mapDynamicKeyName(key)] = fn(val, key)
+const buildDynamics = (obj, fn, cache) => reduceObj(obj, (build, val, key) => {
+  build[mapDynamicKeyName(key)] = (cache && cache[key]) || fn(val, key)
   return build
 }, {})
 
@@ -74,37 +84,18 @@ function Validation (Vue) {
     }
   })
 
-  function makeValidationVm (validations, parentVm, rootVm = parentVm, masterProp = null) {
+  function makeValidationVm (validations, parentVm, rootVm = parentVm, masterProp = null, computedCache = null) {
     const validationKeys = Object.keys(validations)
-    const transformedKeys = validationKeys.map(mapDynamicKeyName)
-
-    const rules = {}
-    const nested = {}
-    const groups = {}
-    validationKeys.forEach(key => {
-      const v = validations[key]
-      let baseObj
-
-      if (isSingleRule(v)) {
-        baseObj = rules
-      } else if (Array.isArray(v)) {
-        baseObj = groups
-      } else {
-        baseObj = nested
-      }
-      baseObj[key] = v
-    })
+    const dynamicKeys = validationKeys.map(mapDynamicKeyName)
 
     const validationVm = new Vue({
       data: {
         dirty: false,
-        dynamicKeys: transformedKeys
+        dynamicKeys
       },
       methods: defaultMethods,
       computed: {
-        ...buildDynamics(rules, mapRule),
-        ...buildDynamics(nested, mapChild),
-        ...buildDynamics(groups, mapGroup),
+        ...buildDynamics(validations, mapValidator, computedCache),
         ...defaultComputed
       }
     })
@@ -113,19 +104,45 @@ function Validation (Vue) {
 
     return proxyValidationVm
 
-    function mapRule (rule, localProp) {
+    function mapValidator (rule, localProp, vm = parentVm, master = masterProp) {
+      if (isSingleRule(rule)) {
+        return mapRule(rule, localProp, vm, master)
+      } else if (Array.isArray(rule)) {
+        return mapGroup(rule, localProp, vm, master)
+      } else {
+        return mapChild(rule, localProp, vm, master)
+      }
+    }
+
+    function mapRule (rule, localProp, parentVm, masterProp) {
       return function () {
         return rule.call(rootVm, parentVm[masterProp], parentVm)
       }
     }
 
-    function mapChild (rules, localProp) {
+    function mapChild (rules, localProp, parentVm, masterProp) {
+      if (localProp === '$each') {
+        return trackArray(rules, masterProp)
+      }
       const childVm = masterProp ? parentVm[masterProp] : parentVm
+
       const vm = makeValidationVm(rules, childVm, rootVm, localProp)
       return () => vm
     }
 
-    function mapGroup (group, localProp) {
+    function trackArray (eachRule, masterProp) {
+      let vmList = {}
+      return () => {
+        const childVm = masterProp ? parentVm[masterProp] : parentVm
+        const newKeys = Object.keys(childVm)
+        vmList = buildFromKeys(newKeys, key => {
+          return vmList[key] || mapValidator(eachRule, key, childVm, null)
+        })
+        return makeValidationVm(vmList, childVm, rootVm, null, vmList)
+      }
+    }
+
+    function mapGroup (group, localProp, parentVm) {
       const rules = buildFromKeys(
         group,
         path => function () { return getPath(this.$validations, path) }
