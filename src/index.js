@@ -1,9 +1,13 @@
 // utilities
 const constant = c => () => c
-const buildFromKeys = (keys, fn, keyFn = x => x) => keys.reduce((build, key) => {
-  build[keyFn(key)] = fn(key)
+const buildFromKeys = (keys, fn, keyFn) => keys.reduce((build, key) => {
+  build[keyFn ? keyFn(key) : key] = fn(key)
   return build
 }, {})
+
+function isObject (ruleset) {
+  return ruleset !== null && typeof ruleset === 'object'
+}
 
 const getPath = (obj, path, fallback) => {
   if (typeof path === 'function') {
@@ -12,7 +16,7 @@ const getPath = (obj, path, fallback) => {
 
   path = Array.isArray(path) ? path : path.split('.')
   for (var i = 0; i < path.length; i++) {
-    if (typeof obj === 'object' && obj !== null) {
+    if (isObject(obj)) {
       obj = obj[path[i]]
     } else {
       return fallback
@@ -29,7 +33,7 @@ function setDirtyRecursive (newState) {
   for (let i = 0; i < keys.length; i++) {
     const ruleOrNested = keys[i]
     const val = this[ruleOrNested]
-    if (typeof val === 'object') {
+    if (isObject(val)) {
       val[method]()
     }
   }
@@ -49,7 +53,7 @@ const defaultComputed = {
   $invalid () {
     return this.dynamicKeys.some(ruleOrNested => {
       const val = this[ruleOrNested]
-      return typeof val === 'object' ? val.$invalid : !val
+      return isObject(val) ? val.$invalid : !val
     })
   },
   $dirty () {
@@ -62,7 +66,7 @@ const defaultComputed = {
     for (let i = 0; i < keys.length; i++) {
       const ruleOrNested = keys[i]
       const val = this[ruleOrNested]
-      const isNested = typeof val === 'object'
+      const isNested = isObject(val)
       foundNested = foundNested || isNested
       if (isNested && !val.$dirty) {
         return false
@@ -78,13 +82,14 @@ const defaultComputed = {
 const defaultMethodKeys = Object.keys(defaultMethods)
 const defaultComputedKeys = Object.keys(defaultComputed)
 const mapDynamicKeyName = k => 'v$$' + k
+const proxyValidationGuard = '__isProxyValidation'
 
 function isSingleRule (ruleset) {
   return typeof ruleset === 'function'
 }
 
 function isProxyVm (rule) {
-  return rule.__isProxyValidation === true
+  return rule[proxyValidationGuard] === true
 }
 
 function makeValidationVm (validations, parentVm, rootVm = parentVm, parentProp = null) {
@@ -112,7 +117,7 @@ function makeValidationVm (validations, parentVm, rootVm = parentVm, parentProp 
   return proxyVm(validationVm, validationKeys)
 }
 
-function mapValidator (rootVm, rule, ruleKey, vm, vmProp = null) {
+function mapValidator (rootVm, rule, ruleKey, vm, vmProp) {
   if (isProxyVm(rule)) {
     return rule
   } else if (isSingleRule(rule)) {
@@ -194,7 +199,7 @@ function proxyVm (vm, originalKeys) {
     ...buildFromKeys(defaultMethodKeys, key => ({
       value: vm[key].bind(vm)
     })),
-    '__isProxyValidation': {
+    [proxyValidationGuard]: {
       value: true
     }
   }
@@ -204,14 +209,15 @@ function proxyVm (vm, originalKeys) {
 
 const validationMixin = {
   beforeCreate () {
-    if (!this.$options.validations) return
-    const validations = this.$options.validations
+    const options = this.$options
+    if (!options.validations) return
+    const validations = options.validations
 
-    if (typeof this.$options.computed === 'undefined') {
-      this.$options.computed = {}
+    if (typeof options.computed === 'undefined') {
+      options.computed = {}
     }
 
-    this.$options.computed.$v = () => validateModel(this, validations)
+    options.computed.$v = () => validateModel(this, validations)
   }
 }
 
