@@ -1,5 +1,5 @@
 import Vue from 'vue'
-import Validation from 'src/index'
+import Validation from '../../../src/index'
 
 function isEven (v) {
   return v % 2 === 0
@@ -10,7 +10,6 @@ function isOdd (v) {
 }
 
 const base = {
-  el: document.createElement('div'),
   data () {
     return {
       value: 4
@@ -21,48 +20,44 @@ const base = {
 Vue.use(Validation)
 
 describe('Validation plugin', () => {
-  it('should not have a $validations key if not used', () => {
+  it('should not have a $v key if not used', () => {
     const vm = new Vue(base)
-    expect(vm.$validations).to.not.exist
+    expect(vm.$v).to.not.exist
   })
 
-  it('should have a $validations key defined if used', () => {
-    Vue.use(Validation)
+  it('should have a $v key defined if used', () => {
     const vm = new Vue({
       ...base,
       validations: {
         value: { isEven }
       }
     })
-    expect(vm.$validations).to.exist
+    expect(vm.$v).to.exist
   })
 
-  describe('$validation.value', () => {
+  describe('$v.value', () => {
     describe('when validations pass', () => {
       it('should have $invalid value set to false', () => {
-        Vue.use(Validation)
         const vm = new Vue({
           ...base,
           validations: {
             value: { isEven }
           }
         })
-        expect(vm.$validations.value.$invalid).to.be.false
+        expect(vm.$v.value.$invalid).to.be.false
       })
       it('should have validator name value set to true', () => {
-        Vue.use(Validation)
         const vm = new Vue({
           ...base,
           validations: {
             value: { isEven }
           }
         })
-        expect(vm.$validations.value.isEven).to.be.true
+        expect(vm.$v.value.isEven).to.be.true
       })
     })
     describe('when validations did not pass', () => {
       it('should have $invalid value set to true', () => {
-        Vue.use(Validation)
         const vm = new Vue({
           ...base,
           data () {
@@ -74,10 +69,9 @@ describe('Validation plugin', () => {
             value: { isEven }
           }
         })
-        expect(vm.$validations.value.$invalid).to.be.true
+        expect(vm.$v.value.$invalid).to.be.true
       })
       it('should have validator name value set to false', () => {
-        Vue.use(Validation)
         const vm = new Vue({
           ...base,
           data () {
@@ -89,21 +83,20 @@ describe('Validation plugin', () => {
             value: { isEven }
           }
         })
-        expect(vm.$validations.value.isEven).to.be.false
+        expect(vm.$v.value.isEven).to.be.false
       })
     })
     describe('when multiple validations exist', () => {
       it('should have the $invalid key set to true', () => {
-        Vue.use(Validation)
         const vm = new Vue({
           ...base,
           validations: {
             value: { isEven, isOdd }
           }
         })
-        expect(vm.$validations.value.$invalid).to.be.true
-        expect(vm.$validations.value.isEven).to.be.true
-        expect(vm.$validations.value.isOdd).to.be.false
+        expect(vm.$v.value.$invalid).to.be.true
+        expect(vm.$v.value.isEven).to.be.true
+        expect(vm.$v.value.isOdd).to.be.false
       })
     })
   })
