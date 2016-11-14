@@ -23,10 +23,26 @@ const getPath = (obj, path, fallback) => {
   return typeof obj === 'undefined' ? fallback : obj
 }
 
+function setDirtyRecursive (newState) {
+  this.dirty = newState
+  const method = newState ? '$touch' : '$reset'
+  const keys = this.dynamicKeys
+  for (let i = 0; i < keys.length; i++) {
+    const ruleOrNested = keys[i]
+    const val = this[ruleOrNested]
+    if (typeof val === 'object') {
+      val[method]()
+    }
+  }
+}
+
 // vm static definition
 const defaultMethods = {
-  setDirty (newState = true) {
-    this.dirty = !!newState
+  $touch () {
+    setDirtyRecursive.call(this, true)
+  },
+  $reset () {
+    setDirtyRecursive.call(this, false)
   }
 }
 
@@ -41,10 +57,11 @@ const defaultComputed = {
     if (this.dirty) {
       return true
     }
-    // iteration to trigger as little as possible getters
+    const keys = this.dynamicKeys
+    // iteration to trigger as little getters as possible
     let foundNested = false
-    for (let i = 0; i < this.dynamicKeys.length; i++) {
-      const ruleOrNested = this.dynamicKeys[i]
+    for (let i = 0; i < keys.length; i++) {
+      const ruleOrNested = keys[i]
       const val = this[ruleOrNested]
       const isNested = typeof val === 'object'
       foundNested = foundNested || isNested
@@ -88,7 +105,7 @@ export const validationMixin = {
     }
 
     const LocalVue = this.constructor
-    this.$options.computed.$validations = () => makeValidationVm(LocalVue, validations, this)
+    this.$options.computed.$v = () => makeValidationVm(LocalVue, validations, this)
   }
 }
 
@@ -170,7 +187,7 @@ function makeValidationVm (Vue, validations, parentVm, rootVm = parentVm, parent
   function mapGroup (group, prop, parentVm) {
     const rules = buildFromKeys(
       group,
-      path => function () { return getPath(this.$validations, path) }
+      path => function () { return getPath(this.$v, path) }
     )
 
     const vm = makeValidationVm(Vue, rules, parentVm, rootVm, prop)

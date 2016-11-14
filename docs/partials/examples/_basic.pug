@@ -4,35 +4,35 @@ p.typo__p
   | You can specify when input becomes dirty by using appropriate event on your input box.
 .grid__row
   .grid__column.grid__unit--md-5
-    .form-group(v-bind:class="{ 'form-group--error': $validations.name.$error }")
+    .form-group(v-bind:class="{ 'form-group--error': $v.name.$error }")
       label.form__label Name
-      input.form__input(v-model="name" @input="$validations.name.setDirty()")
-    span.form-group__message(v-if="!$validations.name.required") Field is required
-    span.form-group__message(v-if="!$validations.name.minLength") Name must be longer than 6 letters.
+      input.form__input(v-model="name" @input="$v.name.$touch()")
+    span.form-group__message(v-if="!$v.name.required") Field is required
+    span.form-group__message(v-if="!$v.name.minLength") Name must be longer than 6 letters.
     pre
-      | name: {{ $validations.name }}
+      | name: {{ $v.name }}
 
-    .form-group(v-bind:class="{ 'form-group--error': $validations.age.$error }")
+    .form-group(v-bind:class="{ 'form-group--error': $v.age.$error }")
       label.form__label Age
-      input.form__input(v-model="age" @blur="$validations.age.setDirty()")
-    span.form-group__message(v-if="!$validations.age.between") Must be between 20 and 30
+      input.form__input(v-model="age" @blur="$v.age.$touch()")
+    span.form-group__message(v-if="!$v.age.between") Must be between 20 and 30
     pre
-      | age: {{ $validations.age }}
+      | age: {{ $v.age }}
 
   .grid__column.grid__unit--md-7
     label.typo__label Code sample
     pre.language-jade
       code.
-        .form-group(v-bind:class="{ 'form-group--error': $validations.name.$error }")
+        .form-group(v-bind:class="{ 'form-group--error': $v.name.$error }")
           label.form__label Name
-          input.form__input(v-model="name" @input="$validations.name.setDirty()")
-        span.form-group__message(v-if="!$validations.name.required") Field is required
-        span.form-group__message(v-if="!$validations.name.minLength") Name must be longer than 6 letters.
+          input.form__input(v-model="name" @input="$v.name.$touch()")
+        span.form-group__message(v-if="!$v.name.required") Field is required
+        span.form-group__message(v-if="!$v.name.minLength") Name must be longer than 6 letters.
 
-        .form-group(v-bind:class="{ 'form-group--error': $validations.age.$error }")
+        .form-group(v-bind:class="{ 'form-group--error': $v.age.$error }")
           label.form__label Age
-          input.form__input(v-model="age" @blur="$validations.age.setDirty()")
-        span.form-group__message(v-if="!$validations.age.between") Must be between 20 and 30
+          input.form__input(v-model="age" @blur="$v.age.$touch()")
+        span.form-group__message(v-if="!$v.age.between") Must be between 20 and 30
 
 
     pre.language-javascript
@@ -57,34 +57,34 @@ p.typo__p
   | You can link related fields by contextified validators. An example of this being `sameAs` builtin validator.
 .grid__row
   .grid__column.grid__unit--md-5
-    .form-group(v-bind:class="{ 'form-group--error': $validations.password.$error }")
+    .form-group(v-bind:class="{ 'form-group--error': $v.password.$error }")
       label.form__label Password
-      input.form__input(v-model="password" @input="$validations.password.setDirty()")
-    span.form-group__message(v-if="!$validations.password.required") Password is required.
-    span.form-group__message(v-if="!$validations.password.minLength") Password must be longer than 6 letters.
+      input.form__input(v-model="password" @input="$v.password.$touch()")
+    span.form-group__message(v-if="!$v.password.required") Password is required.
+    span.form-group__message(v-if="!$v.password.minLength") Password must be longer than 6 letters.
 
-    .form-group(v-bind:class="{ 'form-group--error': $validations.repeatPassword.$error }")
+    .form-group(v-bind:class="{ 'form-group--error': $v.repeatPassword.$error }")
       label.form__label Repeat password
-      input.form__input(v-model="repeatPassword" @input="$validations.repeatPassword.setDirty()")
-    span.form-group__message(v-if="!$validations.repeatPassword.sameAsPassword") Passwords must be identical.
+      input.form__input(v-model="repeatPassword" @input="$v.repeatPassword.$touch()")
+    span.form-group__message(v-if="!$v.repeatPassword.sameAsPassword") Passwords must be identical.
     pre
-      | password: {{ $validations.password }}
-      | repeatPassword: {{ $validations.repeatPassword }}
+      | password: {{ $v.password }}
+      | repeatPassword: {{ $v.repeatPassword }}
 
   .grid__column.grid__unit--md-7
     label.typo__label Code sample
     pre.language-jade
       code.
-        .form-group(v-bind:class="{ 'form-group--error': $validations.password.$error }")
+        .form-group(v-bind:class="{ 'form-group--error': $v.password.$error }")
           label.form__label Password
-          input.form__input(v-model="password" @input="$validations.password.setDirty()")
-        span.form-group__message(v-if="!$validations.password.required") Password is required.
-        span.form-group__message(v-if="!$validations.password.minLength") Password must be longer than 6 letters.
+          input.form__input(v-model="password" @input="$v.password.$touch()")
+        span.form-group__message(v-if="!$v.password.required") Password is required.
+        span.form-group__message(v-if="!$v.password.minLength") Password must be longer than 6 letters.
 
-        .form-group(v-bind:class="{ 'form-group--error': $validations.repeatPassword.$error }")
+        .form-group(v-bind:class="{ 'form-group--error': $v.repeatPassword.$error }")
           label.form__label Repeat password
-          input.form__input(v-model="repeatPassword" @input="$validations.repeatPassword.setDirty()")
-        span.form-group__message(v-if="!$validations.repeatPassword.sameAsPassword") Passwords must be identical.
+          input.form__input(v-model="repeatPassword" @input="$v.repeatPassword.$touch()")
+        span.form-group__message(v-if="!$v.repeatPassword.sameAsPassword") Passwords must be identical.
 
     pre.language-javascript
       code.
@@ -110,37 +110,39 @@ p.typo__p
   | This might be very useful for overall form validation.
 .grid__row
   .grid__column.grid__unit--md-5
-    .form-group(v-bind:class="{ 'form-group--error': $validations.form.nestedA.$error }")
+    .form-group(v-bind:class="{ 'form-group--error': $v.form.nestedA.$error }")
       label.form__label Nested A
-      input.form__input(v-model="form.nestedA" @input="$validations.form.nestedA.setDirty()")
-    span.form-group__message(v-if="!$validations.form.nestedA.required") Field is required.
-    .form-group(v-bind:class="{ 'form-group--error': $validations.form.nestedB.$error }")
+      input.form__input(v-model="form.nestedA" @input="$v.form.nestedA.$touch()")
+    span.form-group__message(v-if="!$v.form.nestedA.required") Field is required.
+    .form-group(v-bind:class="{ 'form-group--error': $v.form.nestedB.$error }")
       label.form__label Nested B
-      input.form__input(v-model="form.nestedB" @input="$validations.form.nestedB.setDirty()")
-    span.form-group__message(v-if="!$validations.form.nestedB.required") Field is required.
+      input.form__input(v-model="form.nestedB" @input="$v.form.nestedB.$touch()")
+    span.form-group__message(v-if="!$v.form.nestedB.required") Field is required.
 
-    .form-group(v-bind:class="{ 'form-group--error': $validations.form.$error }")
-    span.form-group__message(v-if="$validations.form.$error") Form is invalid.
+    .form-group(v-bind:class="{ 'form-group--error': $v.form.$error }")
+    span.form-group__message(v-if="$v.form.$error") Form is invalid.
 
     pre
-      | form: {{ $validations.form }}
+      | form: {{ $v.form }}
+
+    button(@click="$v.form.$touch()") touch
 
   .grid__column.grid__unit--md-7
     label.typo__label Code sample
     pre.language-jade
       code.
-        .form-group(v-bind:class="{ 'form-group--error': $validations.form.nestedA.$error }")
+        .form-group(v-bind:class="{ 'form-group--error': $v.form.nestedA.$error }")
           label.form__label Nested A
-          input.form__input(v-model="form.nestedA" @input="$validations.form.nestedA.setDirty()")
-        span.form-group__message(v-if="!$validations.form.nestedA.required") Field is required.
+          input.form__input(v-model="form.nestedA" @input="$v.form.nestedA.$touch()")
+        span.form-group__message(v-if="!$v.form.nestedA.required") Field is required.
 
-        .form-group(v-bind:class="{ 'form-group--error': $validations.form.nestedB.$error }")
+        .form-group(v-bind:class="{ 'form-group--error': $v.form.nestedB.$error }")
           label.form__label Nested B
-          input.form__input(v-model="form.nestedB" @input="$validations.form.nestedB.setDirty()")
-        span.form-group__message(v-if="!$validations.form.nestedB.required") Field is required.
+          input.form__input(v-model="form.nestedB" @input="$v.form.nestedB.$touch()")
+        span.form-group__message(v-if="!$v.form.nestedB.required") Field is required.
 
-        .form-group(v-bind:class="{ 'form-group--error': $validations.form.$error }")
-        span.form-group__message(v-if="$validations.form.$error") Form is invalid.
+        .form-group(v-bind:class="{ 'form-group--error': $v.form.$error }")
+        span.form-group__message(v-if="$v.form.$error") Form is invalid.
 
     pre.language-javascript
       code.
@@ -167,44 +169,44 @@ p.typo__p
   | If you don't want to create a validator that groups many otherise unrelated
   | fields together, you can create a validationGroup.
 .grid__column.grid__unit--md-5
-  .form-group(v-bind:class="{ 'form-group--error': $validations.flatA.$error }")
+  .form-group(v-bind:class="{ 'form-group--error': $v.flatA.$error }")
     label.form__label Flat A
-    input.form__input(v-model="flatA" @input="$validations.flatA.setDirty()")
-  span.form-group__message(v-if="!$validations.flatA.required") Field is required.
-  .form-group(v-bind:class="{ 'form-group--error': $validations.flatB.$error }")
+    input.form__input(v-model="flatA" @input="$v.flatA.$touch()")
+  span.form-group__message(v-if="!$v.flatA.required") Field is required.
+  .form-group(v-bind:class="{ 'form-group--error': $v.flatB.$error }")
     label.form__label Flat B
-    input.form__input(v-model="flatB" @input="$validations.flatB.setDirty()")
-  span.form-group__message(v-if="!$validations.flatB.required") Field is required.
-  .form-group(v-bind:class="{ 'form-group--error': $validations.forGroup.nested.$error }")
+    input.form__input(v-model="flatB" @input="$v.flatB.$touch()")
+  span.form-group__message(v-if="!$v.flatB.required") Field is required.
+  .form-group(v-bind:class="{ 'form-group--error': $v.forGroup.nested.$error }")
     label.form__label Nested field
-    input.form__input(v-model="forGroup.nested" @input="$validations.forGroup.nested.setDirty()")
-  span.form-group__message(v-if="!$validations.forGroup.nested.required") Field is required.
+    input.form__input(v-model="forGroup.nested" @input="$v.forGroup.nested.$touch()")
+  span.form-group__message(v-if="!$v.forGroup.nested.required") Field is required.
 
-  .form-group(v-bind:class="{ 'form-group--error': $validations.validationGroup.$error }")
-  span.form-group__message(v-if="$validations.validationGroup.$error") Group is invalid.
+  .form-group(v-bind:class="{ 'form-group--error': $v.validationGroup.$error }")
+  span.form-group__message(v-if="$v.validationGroup.$error") Group is invalid.
 
   pre
-    | validationGroup: {{ $validations.validationGroup }}
+    | validationGroup: {{ $v.validationGroup }}
 
 .grid__column.grid__unit--md-7
   label.typo__label Code sample
   pre.language-jade
     code.
-      .form-group(v-bind:class="{ 'form-group--error': $validations.flatA.$error }")
+      .form-group(v-bind:class="{ 'form-group--error': $v.flatA.$error }")
         label.form__label Flat A
-        input.form__input(v-model="flatA" @input="$validations.flatA.setDirty()")
-      span.form-group__message(v-if="!$validations.flatA.required") Field is required.
-      .form-group(v-bind:class="{ 'form-group--error': $validations.flatB.$error }")
+        input.form__input(v-model="flatA" @input="$v.flatA.$touch()")
+      span.form-group__message(v-if="!$v.flatA.required") Field is required.
+      .form-group(v-bind:class="{ 'form-group--error': $v.flatB.$error }")
         label.form__label Flat B
-        input.form__input(v-model="flatB" @input="$validations.flatB.setDirty()")
-      span.form-group__message(v-if="!$validations.flatB.required") Field is required.
-      .form-group(v-bind:class="{ 'form-group--error': $validations.forGroup.nested.$error }")
+        input.form__input(v-model="flatB" @input="$v.flatB.$touch()")
+      span.form-group__message(v-if="!$v.flatB.required") Field is required.
+      .form-group(v-bind:class="{ 'form-group--error': $v.forGroup.nested.$error }")
         label.form__label Nested field
-        input.form__input(v-model="forGroup.nested" @input="$validations.forGroup.nested.setDirty()")
-      span.form-group__message(v-if="!$validations.forGroup.nested.required") Field is required.
+        input.form__input(v-model="forGroup.nested" @input="$v.forGroup.nested.$touch()")
+      span.form-group__message(v-if="!$v.forGroup.nested.required") Field is required.
 
-      .form-group(v-bind:class="{ 'form-group--error': $validations.validationGroup.$error }")
-      span.form-group__message(v-if="$validations.validationGroup.$error") Group is invalid.
+      .form-group(v-bind:class="{ 'form-group--error': $v.validationGroup.$error }")
+      span.form-group__message(v-if="$v.validationGroup.$error") Group is invalid.
 
 
   pre.language-javascript
@@ -232,19 +234,19 @@ p.typo__p
   | Array support with $each keyword
 .grid__column.grid__unit--md-5
   div(v-for="(person, index) in people")
-    .form-group(v-bind:class="{ 'form-group--error': $validations.people.$each[index].$error }")
+    .form-group(v-bind:class="{ 'form-group--error': $v.people.$each[index].$error }")
       label.form__label Name for {{ index }}
-      input.form__input(v-model="person.name" @input="$validations.people.$each[index].name.setDirty()")
-    span.form-group__message(v-if="!$validations.people.$each[index].name.required") Name is required.
+      input.form__input(v-model="person.name" @input="$v.people.$each[index].name.$touch()")
+    span.form-group__message(v-if="!$v.people.$each[index].name.required") Name is required.
 
   div
     button(@click="people.push({name: ''})") Add
     button(@click="people.pop()") Remove
-  .form-group(v-bind:class="{ 'form-group--error': $validations.people.$error }")
-  span.form-group__message(v-if="$validations.people.$error") List is invalid.
+  .form-group(v-bind:class="{ 'form-group--error': $v.people.$error }")
+  span.form-group__message(v-if="$v.people.$error") List is invalid.
 
   pre
-    | people: {{ $validations.people }}
+    | people: {{ $v.people }}
 
 .grid__column.grid__unit--md-7
   label.typo__label Code sample
