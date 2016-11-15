@@ -5,6 +5,8 @@ import maxLength from './maxLength'
 import minLength from './minLength'
 import required from './required'
 import sameAs from './sameAs'
+import or from './or'
+import and from './and'
 
 export {
   alpha,
@@ -13,5 +15,7 @@ export {
   maxLength,
   minLength,
   required,
-  sameAs
+  sameAs,
+  or,
+  and
 }
