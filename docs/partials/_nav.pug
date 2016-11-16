@@ -1,17 +1,19 @@
-mixin nav-element(componentName, href)
-  li.list__element
-    a.link.list__link(href="#" + href)= componentName
-
 ul.list(
   :class="{ 'list--sticky': isNavSticky }"
 )
-  li.list__heading Setup
-  +nav-element('Getting Started', 'getting-started')
+  +nav-section('Getting Started')
+  +nav-subsection('Installation')
+  +nav-subsection('Basic usage')
+  +nav-subsection('Package content')
 
-  li.list__heading Examples
-  +nav-element('Basic', 'basic')
+  +nav-section('Examples')
+  +nav-subsection('Basic form')
+  +nav-subsection('Contextified validators')
+  +nav-subsection('Data nesting')
+  +nav-subsection('Validation Groups')
+  +nav-subsection('Collections validation')
 
-  li.list__heading API
-  +nav-element('Props', 'props')
-  +nav-element('Events', 'events')
-  +nav-element('Slots', 'slots')
+  +nav-section('API')
+  +nav-subsection('Props')
+  +nav-subsection('Events')
+  +nav-subsection('Slots')

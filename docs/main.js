@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import Validation from '../src/index'
-import { required, minLength, sameAs, between } from '../src/validators'
+
+import * as examples from './partials/examples'
 
 Vue.use(Validation)
 
@@ -24,72 +25,14 @@ const SL = ', 100%, 85%'
 /* eslint-disable no-new */
 new Vue({
   el: '#app',
+  components: {
+    ...examples
+  },
   data () {
     return {
       isNavSticky: false,
       firstColor: Math.floor(Math.random() * 255),
-      secondColor: Math.floor(Math.random() * 255),
-      name: '',
-      age: 0,
-      email: '',
-      password: '',
-      repeatPassword: '',
-      form: {
-        nestedA: '',
-        nestedB: ''
-      },
-      flatA: '',
-      flatB: '',
-      forGroup: {
-        nested: ''
-      },
-
-      people: [{
-        name: 'john'
-      }, {
-        name: ''
-      }]
-    }
-  },
-  validations: {
-    name: {
-      required,
-      minLength: minLength(4)
-    },
-    age: {
-      between: between(20, 30)
-    },
-    password: {
-      required,
-      minLength: minLength(6)
-    },
-    repeatPassword: {
-      sameAsPassword: sameAs('password')
-    },
-
-    form: {
-      nestedA: {
-        required
-      },
-      nestedB: {
-        required
-      }
-    },
-
-    flatA: { required },
-    flatB: { required },
-    forGroup: {
-      nested: { required }
-    },
-    validationGroup: ['flatA', 'flatB', 'forGroup.nested'],
-
-    people: {
-      minLength: minLength(1),
-      $each: {
-        name: {
-          required
-        }
-      }
+      secondColor: Math.floor(Math.random() * 255)
     }
   },
   computed: {

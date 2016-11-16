@@ -24,7 +24,6 @@ module.exports = {
     env: require('./prod.env'),
     index: path.resolve(__dirname, '../gh-pages/index.html'),
     assetsRoot: path.resolve(__dirname, '../gh-pages'),
-    assetsSubDirectory: 'static',
     assetsPublicPath: '',
     productionSourceMap: true
   },
