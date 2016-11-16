@@ -4,7 +4,7 @@ html(lang="en")
     meta(charset='utf-8')
     meta(name='viewport', content='width=device-width,initial-scale=1,maximum-scale=1')
     title vue-validation | A Vue.js library
-    link(rel='icon', href='static/vue-logo.png', type='image/x-icon')
+    link(rel='icon', href=require('assets/vue-logo.png'), type='image/x-icon')
     meta(name='description', content='Simple, lightweight model-based validation for Vue.js')
     meta(property='og:title', content='vue-validation | A Vue.js library.')
     meta(property='og:site_name', content='vue-validation | A Vue.js library.')
@@ -16,6 +16,7 @@ html(lang="en")
     meta(property='twitter:description', content='Simple, lightweight model-based validation for Vue.js')
   body
     #app
+      include ./_mixins
       include ./partials/_start
 
       .grid__row.docs
@@ -24,16 +25,9 @@ html(lang="en")
         .grid__columns.grid__unit--sm-12.grid__unit--md-9
           include ./partials/_getting-started
 
-          hr.typo__hr
-          h1.typo__h1 Examples
+          include ./partials/examples/_examples
 
-          hr.typo__hr
-          include ./partials/examples/_basic
-
-          include ./partials/api/_props
-          include ./partials/api/_events
-          include ./partials/api/_slots
+          include ./partials/api/_api
 
       include ./partials/_footer
-
-    script(src='static/prism.js')
+    script(src=require('url?limit=1!assets/prism.js'))

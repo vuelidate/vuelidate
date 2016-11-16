@@ -24,8 +24,10 @@ module.exports = {
     fallback: [path.join(__dirname, '../node_modules')],
     alias: {
       'vue$': 'vue/dist/vue',
+      'vue-validations/lib/validators': path.resolve(__dirname, '../src/validators'), // for consistent docs
       'src': path.resolve(__dirname, '../src'),
-      'assets': path.resolve(__dirname, '../src/assets'),
+      'assets': path.resolve(__dirname, '../docs/assets'),
+      'examples': path.resolve(__dirname, '../docs/partials/examples'),
       'components': path.resolve(__dirname, '../src/components')
     }
   },
@@ -44,7 +46,7 @@ module.exports = {
         test: /\.js$/,
         loader: 'eslint',
         include: projectRoot,
-        exclude: /node_modules/
+        exclude: [/node_modules/, /docs\/assets/]
       }
     ],
     loaders: [

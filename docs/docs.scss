@@ -97,6 +97,11 @@ body {
   }
 }
 
+.blank__link {
+  color: inherit;
+  text-decoration: none;
+}
+
 .version {
   position: absolute;
   bottom: rem(-7px);
