@@ -1,0 +1,45 @@
++subsection('$v values')
+  p.typo__p
+    | <kbd>$v</kbd> model represents the current state of validation.
+    | It does so by defining a set of properties which hold the output
+    | of user defined validation functions, following the <kbd>validations</kbd>
+    | option structure.
+    | The presense of those special reserved keywords means that you cannot specify
+    | your own validators with that name.
+  .table__container
+    table.table.table--full-size.table--fixed
+      thead
+        tr.table__tr
+          th.table__th(width="130") Name
+          th.table__th(width="80") Type
+          th.table__th Description
+      tbody
+        tr.table__tr
+          td.table__td: kbd $invalid
+          td.table__td: strong boolean
+          td.table__td
+            | Indicates the state of validation for given model. becomes <kbd>true</kbd>
+            | when any of it's child validators specified in options returns a <strong>falsy</strong> value.
+            | In case of validation groups, all grouped validators are considered.
+        tr.table__tr
+          td.table__td: kbd $dirty
+          td.table__td: strong boolean
+          td.table__td
+            | A flag representing if the field under validation was touched by the user at least once.
+            | Usually it is used to decide if the message is supposed to be displayed to the end user.
+            | Flag is managed manually. You have to use <kbd>$touch</kbd> and <kbd>$reset</kbd> methods
+            | to manipulate it. The <kbd>$dirty</kbd> flag is considered <kbd>true</kbd> if given model was
+            | <kbd>$touch</kbd>ed or <strong>all of it's children</strong> are <kbd>$dirty</kbd>.
+        tr.table__tr
+          td.table__td: kbd $error
+          td.table__td: strong boolean
+          td.table__td
+            | Convinience flag to easily decide if a message should be displayed.
+            | It is a shorthand to <kbd>$invalid && $dirty</kbd>.
+        tr.table__tr
+          td.table__td: kbd $each
+          td.table__td: strong object
+          td.table__td
+            | Holds all validation models of collection validator. Always preserves
+            | the keys of original model, so it can be safely referenced in the <kdb>v-for</kdb>
+            | loop iterating over your data using the same index.

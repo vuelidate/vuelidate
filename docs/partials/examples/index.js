@@ -1,5 +1,5 @@
 export ExampleBasic from './ExampleBasic'
 export ExampleEachArray from './ExampleEachArray'
-export ExapleNested from './ExampleNested'
+export ExampleNested from './ExampleNested'
 export ExampleRepeatPassword from './ExampleRepeatPassword'
 export ExampleValidationGroups from './ExampleValidationGroups'
