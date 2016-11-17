@@ -1,0 +1,97 @@
+mixin validatorRow(validator, params)
+  tbody
+    tr.table__tr
+      td.table__td: kbd=validator
+      if params
+        td.table__td=(Array.isArray(params) ? params.join(', ') : params)
+      else
+        td.table__td: em none
+      td.table__td
+        block
+
++section('Validators')
+  p.typo__p
+    | <em>vue-validations</em> comes with a set of builtin validators that you
+    | can just require and use, but it doesn't end there. All of those are just
+    | simple predicates - functions of data into <kbd>boolean</kbd>, which denotes
+    | if data is valid. You can easily write your own
+    | or use any function in this shape from any library you already have, like
+    | <kbd>_.conforomsTo</kbd> from <em>lodash</em> or higher order functions
+    | and chains like <kbd>R.cond</kbd> from <em>ramda</em>.
+    | Think of the possibilities.
+  p.typo__p
+    | This documentation presents every builtin validator with short description
+    | and presents an example custom validator implementation
+    | to help understanding them and writing your own as easy as possible.
+  +subsection('Builtin validators')
+    p.typo__p
+      | To use any of builtin validators, you have to import it from your sources.
+    pre(v-pre).language-javascript
+      code.
+        import { required, maxLength } from 'vue-validations/lib/validators'
+    p.typo__p
+      | You can also import specific validators directly, to avoid loading
+      | unused ones in case your bundler doesn't support tree shaking.
+    pre(v-pre).language-javascript
+      code.
+        import required from 'vue-validations/lib/validators/required'
+        import maxLength from 'vue-validations/lib/validators/maxLength'
+    p.typo__p
+      | It is possible to use validators directly in browser by using a browser-ready bundle.
+    pre(v-pre).language-html
+      code='<script src="vue-validations/dist/validators.min.js"></script>'
+    pre(v-pre).language-javascript
+      code.
+        var required = validators.required
+        var maxLength = validators.maxLength
+    p.typo__p
+      | Here is a full list of provided validators.
+      .table__container
+        table.table.table--full-size.table--fixed
+          thead
+            tr.table__tr
+              th.table__th(width="140") Name
+              th.table__th(width="120") Meta parameters
+              th.table__th Description
+          tbody
+            +validatorRow('required')
+              | Requires non-empty data.
+              | Checks for empty arrays and strings containing only whitespaces.
+            +validatorRow('minLength', ['min length'])
+              | Requires the input to have a minimum specified length, inclusive. Works with arrays.
+            +validatorRow('maxLength', ['max length'])
+              | Requires the input to have a maximum specified length, inclusive. Works with arrays.
+            +validatorRow('between', ['min, max'])
+              | Checks if a number is in specified bounds. Min and max are both inclusive.
+            +validatorRow('alpha')
+              | Accepts only alphabet characters.
+            +validatorRow('alphaNum')
+              | Accepts only alphanumerics.
+            +validatorRow('sameAs', ['locator'])
+              | Checks for equality with a given property.
+              | Locator might be either a sibling property name
+              | or a function, that will get your component as <kbd>this</kbd> and
+              | nested model which sibling properties under second parameter.
+            +validatorRow('or', ['validators...'])
+              | Passes when at least one of provided validators passes.
+            +validatorRow('and', ['validators...'])
+              | Passes when all of provided validators passes.
+  +subsection('Custom validators')
+    p.typo__p
+      | You can easily write custom validators and combine them with builtin ones,
+      | as those are just a simple predicate functions.
+    p.typo__p
+      | Let's take a simple <kbd>required</kbd> as an example.
+      | It's simply just a function that, given it's input value, returns
+      | if the data is valid or not.
+    +validatorCode('required')
+    p.typo__p
+      | If your validator needs extra parameters, you can simply create a
+      | higher order function that returns the actual predicate, like in <kbd>between</kbd>.
+    +validatorCode('between')
+
+    p.typo__p
+      | In more complex cases when access to the whole model is necessary, like <kbd>sameAs</kbd>,
+      | make use of the function context (<kbd>this</kbd>) to access any value on your component
+      | or use provided <kbd>parentVm</kbd> to access sibling properties.
+    +validatorCode('sameAs')

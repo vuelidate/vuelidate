@@ -7,7 +7,7 @@ const config = require('../config')
 // refer to .babelrc for lib configuration
 
 base.entry = {
-  'vue-validation': './src/index.js',
+  'vue-validations': './src/index.js',
   'validators': './src/validators/index.js'
 }
 

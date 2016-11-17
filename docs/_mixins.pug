@@ -1,12 +1,3 @@
-- function grabTemplate (path) {
--   return require('!!raw!vue-loader/lib/selector?type=template!examples/' + path + '.vue')
-- }
-- function grabScript (path) {
--   return require('!!raw!vue-loader/lib/selector?type=script!examples/' + path + '.vue').replace(/^[\/\n]*/m,'')
-- }
-- function grabTemplateHtml (path, ctx) {
--   return require('!!pug?pretty!vue-loader/lib/selector?type=template!examples/' + path + '.vue')()
-- }
 - function hyphenate (path) {
 -  return path
 -   .replace(/^[A-Z]/, x => x.toLowerCase())
@@ -15,8 +6,28 @@
 -   .replace(/(^-+|-+$)/g, '')
 -   .replace(/-{2,}/g, '-')
 - }
+- const toc = [];
+
+mixin renderToc()
+  - const tocSwapBuffer = pug_html;
+  - pug_html = '';
+  for s in toc
+    +tocSection(s.name)
+    for sub in s.subs
+      +tocSubsection(sub)
+  - pug_html = tocSwapBuffer.replace('%%_TOC_%%', pug_html);
+
+mixin tocSection(name)
+  li.list__heading
+    a.link.blank__link(href="#" + hyphenate(name))=name
+
+mixin tocSubsection(name)
+  li.list__element
+    a.link.list__link(href="#sub-" + hyphenate(name))=name
+
 
 mixin section(name)
+  - toc.push({name: name, subs: []})
   .grid__row
     .grid__column
       section.docs(id=hyphenate(name))
@@ -26,19 +37,12 @@ mixin section(name)
           block
 
 mixin subsection(name)
+  - toc[toc.length - 1].subs.push(name)
   .grid__row
     .grid__column
       h2.typo__h2(id='sub-' + hyphenate(name))=name
       if block
         block
-
-mixin nav-section(name)
-  li.list__heading
-    a.link.blank__link(href="#" + hyphenate(name))=name
-
-mixin nav-subsection(name)
-  li.list__element
-    a.link.list__link(href="#sub-" + hyphenate(name))=name
 
 mixin example(path)
   .example
@@ -50,11 +54,15 @@ mixin example(path)
       label.typo__label Code sample
       div
         pre(v-pre).language-javascript
-          code=grabScript(path)
+          code=require('!!raw!vue-loader/lib/selector?type=script!examples/' + path + '.vue').replace(/^[\/\n]*/m,'')
       lang-switcher(v-bind:langs="markupLangs" v-bind:current="markupLanguage" v-on:select="selectLanguage")
       div(v-show="markupLanguage === 'pug'")
         pre(v-pre).language-pug
-          code=grabTemplate(path)
+          code=require('!!raw!vue-loader/lib/selector?type=template!examples/' + path + '.vue')
       div(v-show="markupLanguage === 'html'")
         pre(v-pre).language-html
-          code=grabTemplateHtml(path, this)
+          code=require('!!pug?pretty!vue-loader/lib/selector?type=template!examples/' + path + '.vue')()
+
+mixin validatorCode(path)
+  pre(v-pre).language-javascript
+    code=require('!!raw!src/validators/' + path + '.js')

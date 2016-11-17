@@ -3,16 +3,16 @@ html(lang="en")
   head
     meta(charset='utf-8')
     meta(name='viewport', content='width=device-width,initial-scale=1,maximum-scale=1')
-    title vue-validation | A Vue.js library
+    title vue-validations | A Vue.js library
     link(rel='icon', href=require('assets/vue-logo.png'), type='image/x-icon')
     meta(name='description', content='Simple, lightweight model-based validation for Vue.js')
-    meta(property='og:title', content='vue-validation | A Vue.js library.')
-    meta(property='og:site_name', content='vue-validation | A Vue.js library.')
+    meta(property='og:title', content='vue-validations | A Vue.js library.')
+    meta(property='og:site_name', content='vue-validations | A Vue.js library.')
     meta(property='og:url', content='http://monterail.github.io/vue-multiselect')
     meta(property='og:description', content='Simple, lightweight model-based validation for Vue.js')
     meta(property='og:image', content='http://monterail.github.io/vue-multiselect/static/vue-logo.png')
     meta(property='twitter:image', content='http://monterail.github.io/vue-multiselect/static/vue-logo.png')
-    meta(property='twitter:title', content='vue-validation | A Vue.js library.')
+    meta(property='twitter:title', content='vue-validations | A Vue.js library.')
     meta(property='twitter:description', content='Simple, lightweight model-based validation for Vue.js')
   body
     #app
@@ -24,12 +24,12 @@ html(lang="en")
           include ./partials/_nav
         .grid__columns.grid__unit--sm-12.grid__unit--md-9
           include ./partials/_getting-started
-
           include ./partials/examples/_examples
-
           include ./partials/api/_api
+          include ./partials/validators/_validators
 
       include ./partials/_footer
     script(src=require('url?limit=1!assets/prism.js'))
     script.
       Prism.languages.pug = Prism.languages.jade
++renderToc()
