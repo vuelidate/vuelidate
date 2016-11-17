@@ -1,1 +1,2 @@
-export default (min, max) => value => Number(min) <= value && Number(max) >= value
+export default (min, max) =>
+  value => Number(min) <= value && Number(max) >= value

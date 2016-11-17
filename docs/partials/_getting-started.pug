@@ -1,14 +1,37 @@
 +section('Getting started')
+  +subsection('Package content')
+    p.typo__p
+      | Simple, lightweight model-based validation for Vue.js
   +subsection('Installation')
+    p.typo__p
+      | Package is installable via npm
     pre.language-bash
       code.
-        npm install vue-validation --save
+        npm install vue-validations --save
   +subsection('Basic usage')
+    p.typo__p
+      | You can import the library and <kbd>use</kbd> as a Vue plugin to enable
+      | the functionality globally on all components containing validation configuration.
     pre.language-javascript
       code.
         import Vue from 'vue'
         import Validation from 'vue-validation'
         Vue.use(Validation)
-  +subsection('Package content')
     p.typo__p
-      | Simple, lightweight model-based validation for Vue.js
+      | Alternatively it is possible to import a mixin directly to components
+      | in which it will be used.
+    pre.language-javascript
+      code.
+        import { validationMixin } from 'vue-validation'
+
+        var Component = Vue.extend({
+          mixins: [validationMixin],
+          validation: { ... }
+        })
+    p.typo__p
+      | The browser-ready bundle is also provided in the package.
+    pre(v-pre).language-html
+      code='<script src="vue-validations/dist/vue-validation.min.js"></script>'
+    pre.language-javascript
+      code.
+        Vue.use(window.Validation)

@@ -1,19 +1,5 @@
 ul.list(
   :class="{ 'list--sticky': isNavSticky }"
 )
-  +nav-section('Getting Started')
-  +nav-subsection('Installation')
-  +nav-subsection('Basic usage')
-  +nav-subsection('Package content')
-
-  +nav-section('Examples')
-  +nav-subsection('Basic form')
-  +nav-subsection('Contextified validators')
-  +nav-subsection('Data nesting')
-  +nav-subsection('Validation Groups')
-  +nav-subsection('Collections validation')
-
-  +nav-section('API')
-  +nav-subsection('$v values')
-  +nav-subsection('$v methods')
-  +nav-subsection('Config keywords')
+  //- replaced later in _mixins.pug:renderToc()
+  ='%%_TOC_%%'
