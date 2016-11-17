@@ -1,0 +1,23 @@
++subsection('Config keywords')
+  .table__container
+    table.table.table--full-size
+      thead
+        tr.table__tr
+          th.table__th(width="130") Name
+          th.table__th(width="80") Type
+          th.table__th Description
+      tbody
+        tr.table__tr
+          td.table__td: kbd $each
+          td.table__td: strong object
+          td.table__td
+            | A definition of nested validation applied to each prop of given model separately.
+            | Perfect for validation arrays, but can be used with any object or collection.
+        tr.table__tr
+          td.table__td: kbd $trackBy
+          td.table__td: strong string || func
+          td.table__td
+            | Must be a direct children of <kbd>$each</kbd>, but is optional.
+            | Defines the accessor to object's property by which <kbd>$each</kbd> tracks
+            | it's child models. Necessary to correctly preserve <kbd>$dirty</kbd> flag
+            | on random insertions. If this property not preset, the key is used for tracking.
