@@ -1,6 +1,7 @@
 export default (...validators) => {
   return function (...args) {
-    validators.reduce((valid, fn) =>
-      valid || fn.apply(this, args), true)
+    return validators.length > 0 &&
+      validators.reduce((valid, fn) =>
+        valid || fn.apply(this, args), false)
   }
 }

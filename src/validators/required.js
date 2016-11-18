@@ -3,5 +3,5 @@ export default value => {
 
   return value === undefined || value === null
     ? false
-    : !!String(value).trim().length
+    : !!String(value).length
 }

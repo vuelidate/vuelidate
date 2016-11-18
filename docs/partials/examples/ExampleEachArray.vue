@@ -3,7 +3,7 @@
     div(v-for="(person, index) in people")
       .form-group(v-bind:class="{ 'form-group--error': $v.people.$each[index].$error }")
         label.form__label Name for {{ index }}
-        input.form__input(v-model="person.name" @input="$v.people.$each[index].name.$touch()")
+        input.form__input(v-model.trim="person.name" @input="$v.people.$each[index].name.$touch()")
       span.form-group__message(v-if="!$v.people.$each[index].name.required") Name is required.
 
     div
