@@ -10,7 +10,11 @@
       button.button(@click="people.push({name: ''})") Add
       button.button(@click="people.pop()") Remove
     .form-group(v-bind:class="{ 'form-group--error': $v.people.$error }")
-    span.form-group__message(v-if="$v.people.$error") List is invalid.
+    span.form-group__message(v-if="!$v.people.minLength") List must have at least 2 elements.
+    span.form-group__message(v-else-if="!$v.people.required") List must not be empty.
+    span.form-group__message(v-else-if="$v.people.$error") List is invalid.
+    button.button(@click="$v.people.$touch") $touch
+    button.button(@click="$v.people.$reset") $reset
 
     pre
       | people: {{ $v.people }}
@@ -32,7 +36,8 @@ export default {
   validations: {
 
     people: {
-      minLength: minLength(1),
+      required,
+      minLength: minLength(2),
       $each: {
         name: {
           required

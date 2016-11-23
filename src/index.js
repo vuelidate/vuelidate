@@ -9,9 +9,9 @@ function isObject (ruleset) {
   return ruleset !== null && typeof ruleset === 'object'
 }
 
-const getPath = (obj, path, fallback) => {
+const getPath = (ctx, obj, path, fallback) => {
   if (typeof path === 'function') {
-    return path.call(obj, fallback)
+    return path.call(ctx, obj, fallback)
   }
 
   path = Array.isArray(path) ? path : path.split('.')
@@ -82,14 +82,9 @@ const defaultComputed = {
 const defaultMethodKeys = Object.keys(defaultMethods)
 const defaultComputedKeys = Object.keys(defaultComputed)
 const mapDynamicKeyName = k => 'v$$' + k
-const proxyValidationGuard = '__isProxyValidation'
 
 function isSingleRule (ruleset) {
   return typeof ruleset === 'function'
-}
-
-function isProxyVm (rule) {
-  return rule[proxyValidationGuard] === true
 }
 
 function makeValidationVm (validations, parentVm, rootVm = parentVm, parentProp = null) {
@@ -118,9 +113,7 @@ function makeValidationVm (validations, parentVm, rootVm = parentVm, parentProp 
 }
 
 function mapValidator (rootVm, rule, ruleKey, vm, vmProp) {
-  if (isProxyVm(rule)) {
-    return rule
-  } else if (isSingleRule(rule)) {
+  if (isSingleRule(rule)) {
     return mapRule(rootVm, rule, ruleKey, vm, vmProp)
   } else if (Array.isArray(rule)) {
     return mapGroup(rootVm, rule, ruleKey, vm, vmProp)
@@ -137,14 +130,14 @@ function mapRule (rootVm, rule, ruleKey, parentVm, prop) {
 
 function mapChild (rootVm, rules, ruleKey, parentVm, prop) {
   if (ruleKey === '$each') {
-    return trackArray(rootVm, rules, parentVm, prop)
+    return trackCollection(rootVm, rules, parentVm, prop)
   }
   const childVm = typeof prop === 'string' ? parentVm[prop] : parentVm
   const vm = makeValidationVm(rules, childVm, rootVm, ruleKey)
   return constant(vm)
 }
 
-function trackArray (rootVm, eachRule, parentVm, prop) {
+function trackCollection (rootVm, eachRule, parentVm, prop) {
   let vmList = {}
   const strippedRule = {
     ...eachRule,
@@ -155,13 +148,13 @@ function trackArray (rootVm, eachRule, parentVm, prop) {
     const childVm = typeof prop === 'string' ? parentVm[prop] : parentVm
     const newKeys = Object.keys(childVm)
     const keyToTrack = typeof eachRule.$trackBy !== 'undefined'
-      ? buildFromKeys(newKeys, key => getPath(childVm[key], eachRule.$trackBy))
+      ? buildFromKeys(newKeys, key => getPath(rootVm, childVm[key], eachRule.$trackBy))
       : null
 
     const vmByKey = {}
     vmList = newKeys.reduce((newList, key) => {
       const track = keyToTrack ? keyToTrack[key] : key
-      vmByKey[key] = newList[track] = vmList[track] || mapValidator(rootVm, strippedRule, key, childVm)
+      vmByKey[key] = newList[track] = newList[track] || vmList[track] || mapValidator(rootVm, strippedRule, key, childVm)
       return newList
     }, {})
 
@@ -172,7 +165,7 @@ function trackArray (rootVm, eachRule, parentVm, prop) {
 function mapGroup (rootVm, group, prop, parentVm) {
   const rules = buildFromKeys(
     group,
-    path => function () { return getPath(this.$v, path) }
+    path => function () { return getPath(this, this.$v, path) }
   )
 
   const vm = makeValidationVm(rules, parentVm, rootVm, prop)
@@ -198,10 +191,7 @@ function proxyVm (vm, originalKeys) {
     })),
     ...buildFromKeys(defaultMethodKeys, key => ({
       value: vm[key].bind(vm)
-    })),
-    [proxyValidationGuard]: {
-      value: true
-    }
+    }))
   }
 
   return Object.defineProperties({}, redirectDef)
@@ -213,6 +203,7 @@ const validationMixin = {
     if (!options.validations) return
     const validations = options.validations
 
+    /* istanbul ignore if */
     if (typeof options.computed === 'undefined') {
       options.computed = {}
     }
@@ -224,7 +215,10 @@ const validationMixin = {
 const validateModel = (model, validations) => makeValidationVm(validations, model)
 
 function Validation (Vue) {
-  if (Validation.installed) return
+  /* istanbul ignore if */
+  if (Validation.installed) {
+    return
+  }
   Vue.mixin(validationMixin)
 }
 
