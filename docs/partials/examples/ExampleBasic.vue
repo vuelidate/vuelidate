@@ -2,7 +2,7 @@
   div
     .form-group(v-bind:class="{ 'form-group--error': $v.name.$error }")
       label.form__label Name
-      input.form__input(v-model="name" @input="$v.name.$touch()")
+      input.form__input(v-model.trim="name" @input="$v.name.$touch()")
     span.form-group__message(v-if="!$v.name.required") Field is required
     span.form-group__message(v-if="!$v.name.minLength") Name must be longer than 6 letters.
     pre
@@ -10,7 +10,7 @@
 
     .form-group(v-bind:class="{ 'form-group--error': $v.age.$error }")
       label.form__label Age
-      input.form__input(v-model="age" @blur="$v.age.$touch()")
+      input.form__input(v-model.trim="age" @blur="$v.age.$touch()")
     span.form-group__message(v-if="!$v.age.between") Must be between 20 and 30
     pre
       | age: {{ $v.age }}
