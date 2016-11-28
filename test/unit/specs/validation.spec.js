@@ -38,7 +38,7 @@ describe('Validation plugin', () => {
     expect(vm.$v).to.not.exist
   })
 
-  it.only('should have a $v key defined if used', () => {
+  it('should have a $v key defined if used', () => {
     const vm = new Vue({
       ...base,
       validations: {
@@ -46,6 +46,18 @@ describe('Validation plugin', () => {
       }
     })
     expect(vm.$v).to.exist
+  })
+
+  it('should not interfere with lifecycle hooks', () => {
+    const createSpy = sinon.spy()
+    const Ctor = Vue.extend({
+      created: createSpy,
+      ...base,
+      validations: {}
+    })
+    const vm = new Ctor()
+    expect(vm.$v).to.exist
+    expect(createSpy).to.have.been.calledOnce
   })
 
   describe('$v.value.$dirty', () => {
