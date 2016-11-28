@@ -96,7 +96,9 @@ function makeValidationVm (validations, parentVm, rootVm = parentVm, parentProp 
     return mapValidator(rootVm, rule, key, parentVm, parentProp)
   }, mapDynamicKeyName)
 
-  const Vue = rootVm.constructor
+  let Vue = rootVm.constructor
+  while (Vue.super) Vue = Vue.super
+
   const validationVm = new Vue({
     data: {
       dirty: false,
