@@ -3,7 +3,7 @@ section.start(v-bind:style="gradient")
     h1.typo__h1
       img.logo(src=require('assets/vue-logo.png'))
       | Vuelidate
-      small.version (0.1.0)
+      small.version=`(${require('../../package.json').version})`
     h3.typo__h3
       | Simple, lightweight model-based validation for
       = ' '
@@ -25,7 +25,7 @@ section.start(v-bind:style="gradient")
                 li.typo__li: a.typo__link(href="#sub-contextified-validators") Contextified valdiators
                 li.typo__li Easy to use with custom validators (e.g. Moment.js)
                 li.typo__li Support for function composition
-                li.typo__li Validates different data sources: Vuex getters, coumputed values, etc.
+                li.typo__li Validates different data sources: Vuex getters, computed values, etc.
                 li.typo__li High test coverage
 
     .grid__row.grid__row--centered

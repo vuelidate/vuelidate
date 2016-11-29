@@ -2,7 +2,7 @@
 
 > Simple, lightweight model-based validation for Vue.js
 
-#### Current version: 0.1.0
+#### Current version: 0.1.1
 
 ### Features & characteristics:
 * Model based
@@ -13,7 +13,7 @@
 * Contextified valdiators
 * Easy to use with custom validators (e.g. Moment.js)
 * Support for function composition
-* Validates different data sources: Vuex getters, coumputed values, etc.
+* Validates different data sources: Vuex getters, computed values, etc.
 
 ## Demo & docs
 
