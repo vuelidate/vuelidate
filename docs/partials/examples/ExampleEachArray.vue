@@ -21,7 +21,7 @@
 </template>
 
 <script>
-import { required, minLength } from 'vue-validations/lib/validators'
+import { required, minLength } from 'vuelidate/lib/validators'
 
 export default {
   data () {

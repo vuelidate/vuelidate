@@ -2,12 +2,12 @@ section.start(v-bind:style="gradient")
   .center-vertically
     h1.typo__h1
       img.logo(src=require('assets/vue-logo.png'))
-      | vue-validations
+      | Vuelidate
       small.version (0.1.0)
     h3.typo__h3
       | Simple, lightweight model-based validation for
       = ' '
-      a.typo__link(href="http://vuejs.org" target="_BLANK") Vue.js
+      a.typo__link(href="http://vuejs.org" target="_BLANK") Vue.js 2.0
 
     .grid__row.grid__row--centered
       .grid__column.grid__unit--md-6
@@ -15,16 +15,19 @@ section.start(v-bind:style="gradient")
           .grid__row.start__list
             .grid__column.grid__unit--md-6.list
               ul.list__ul
-                li.typo__li Perks here
-                li.typo__li And here
-                li.typo__li: a.typo__link(href="#search") And here with a link
+                li.typo__li Model based
+                li.typo__li Decoupled from templates
+                li.typo__li Dependency free, minimalistic library
+                li.typo__li: a.typo__link(href="#sub-collections-validation") Support for collection validations
+                li.typo__li: a.typo__link(href="#sub-data-nesting") Support for nested models
             .grid__column.grid__unit--md-6.list
               ul.list__ul
-                li.typo__li Perks here
-                li.typo__li And here
-                li.typo__li: a.typo__link(href="#search") And here with a link
+                li.typo__li: a.typo__link(href="#sub-contextified-validators") Contextified valdiators
+                li.typo__li Easy to use with custom validators (e.g. Moment.js)
+                li.typo__li Support for function composition
+                li.typo__li Validates different data sources: Vuex getters, coumputed values, etc.
 
     .grid__row.grid__row--centered
       .grid__column.utils--center
-        a.button.button--large.button--secondary.button--github(href="https://github.com/monterail" target="_BLANK") View on GitHub
+        a.button.button--large.button--secondary.button--github(href="https://github.com/monterail/vuelidate" target="_BLANK") View on GitHub
         a.button.button--large(href="#getting-started") Getting started & examples

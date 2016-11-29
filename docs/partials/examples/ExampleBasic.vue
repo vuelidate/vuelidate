@@ -17,7 +17,7 @@
 </template>
 
 <script>
-import { required, minLength, between } from 'vue-validations/lib/validators'
+import { required, minLength, between } from 'vuelidate/lib/validators'
 
 export default {
   data () {

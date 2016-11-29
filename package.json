@@ -1,5 +1,5 @@
 {
-  "name": "vue-validation",
+  "name": "vuelidate",
   "version": "0.1.0",
   "description": "Simple, lightweight model-based validation for Vue.js",
   "contributors": [

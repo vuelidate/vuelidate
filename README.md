@@ -1,4 +1,4 @@
-# vue-validation
+# vuelidate
 
 > Simple, lightweight model-based validation for Vue.js
 

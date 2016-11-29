@@ -11,7 +11,7 @@ mixin validatorRow(validator, params)
 
 +section('Validators')
   p.typo__p
-    | <em>vue-validations</em> comes with a set of builtin validators that you
+    | <em>vuelidate</em> comes with a set of builtin validators that you
     | can just require and use, but it doesn't end there. All of those are just
     | simple predicates - functions of data into <kbd>boolean</kbd>, which denotes
     | if data is valid. You can easily write your own
@@ -28,18 +28,18 @@ mixin validatorRow(validator, params)
       | To use any of builtin validators, you have to import it from your sources.
     pre(v-pre).language-javascript
       code.
-        import { required, maxLength } from 'vue-validations/lib/validators'
+        import { required, maxLength } from 'vuelidate/lib/validators'
     p.typo__p
       | You can also import specific validators directly, to avoid loading
       | unused ones in case your bundler doesn't support tree shaking.
     pre(v-pre).language-javascript
       code.
-        import required from 'vue-validations/lib/validators/required'
-        import maxLength from 'vue-validations/lib/validators/maxLength'
+        import required from 'vuelidate/lib/validators/required'
+        import maxLength from 'vuelidate/lib/validators/maxLength'
     p.typo__p
       | It is possible to use validators directly in browser by using a browser-ready bundle.
     pre(v-pre).language-html
-      code='<script src="vue-validations/dist/validators.min.js"></script>'
+      code='<script src="vuelidate/dist/validators.min.js"></script>'
     pre(v-pre).language-javascript
       code.
         var required = validators.required

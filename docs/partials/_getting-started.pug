@@ -2,12 +2,14 @@
   +subsection('Package content')
     p.typo__p
       | Simple, lightweight model-based validation for Vue.js
+    p.typo__p
+      | You can read the <a class="typo__link" href="http://monterail.com/blog/2016/rethinking-validations-for-vue-js/" alt="Rethinking validations for vue.js" target="_BLANK">introduction post</a> for more insight on how this solution differs from other validation libraries.
   +subsection('Installation')
     p.typo__p
       | Package is installable via npm
     pre.language-bash
       code.
-        npm install vue-validations --save
+        npm install vuelidate --save
   +subsection('Basic usage')
     p.typo__p
       | You can import the library and <kbd>use</kbd> as a Vue plugin to enable
@@ -15,14 +17,14 @@
     pre.language-javascript
       code.
         import Vue from 'vue'
-        import Validation from 'vue-validation'
+        import Validation from 'vuelidate'
         Vue.use(Validation)
     p.typo__p
       | Alternatively it is possible to import a mixin directly to components
       | in which it will be used.
     pre.language-javascript
       code.
-        import { validationMixin } from 'vue-validation'
+        import { validationMixin } from 'vuelidate'
 
         var Component = Vue.extend({
           mixins: [validationMixin],
@@ -31,7 +33,7 @@
     p.typo__p
       | The browser-ready bundle is also provided in the package.
     pre(v-pre).language-html
-      code='<script src="vue-validations/dist/vue-validation.min.js"></script>'
+      code='<script src="vuelidate/dist/vuelidate.min.js"></script>'
     pre.language-javascript
       code.
         Vue.use(window.Validation)
