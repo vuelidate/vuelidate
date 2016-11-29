@@ -6,10 +6,6 @@
     "Damian Dulisz <damian.dulisz@monterail.com>",
     "Paweł Grabarz <pawel.grabarz@monterail.com>"
   ],
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/monterail/vuelidate.git"
-  },
   "license": "MIT",
   "main": "lib/index.js",
   "repository": "monterail/vuelidate",
