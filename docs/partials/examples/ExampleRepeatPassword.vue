@@ -4,7 +4,7 @@
       label.form__label Password
       input.form__input(v-model.trim="password" @input="$v.password.$touch()")
     span.form-group__message(v-if="!$v.password.required") Password is required.
-    span.form-group__message(v-if="!$v.password.minLength") Password must be longer than 6 letters.
+    span.form-group__message(v-if="!$v.password.minLength") Password must be longer than 5 letters.
 
     .form-group(v-bind:class="{ 'form-group--error': $v.repeatPassword.$error }")
       label.form__label Repeat password
