@@ -1,0 +1,296 @@
+<!DOCTYPE html><html lang=en><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1,maximum-scale=1"><title>Vuelidate | A Vue.js model validation library</title><link rel=icon href=static/img/vue-logo.e1ea82c.png type=image/x-icon><meta name=description content="Simple, lightweight model-based validation for Vue.js"><meta property=og:title content="Vuelidate | A Vue.js library."><meta property=og:site_name content="Vuelidate | A Vue.js library."><meta property=og:url content=http://monterail.github.io/vuelidate><meta property=og:description content="Simple, lightweight model-based validation for Vue.js"><meta property=og:image content=http://monterail.github.io/vue-multiselect/static/vue-logo.png><meta property=twitter:image content=http://monterail.github.io/vue-multiselect/static/vue-logo.png><meta property=twitter:title content="Vuelidate | A Vue.js library."><meta property=twitter:description content="Simple, lightweight model-based validation for Vue.js"><link href=static/css/app.92d67f5943525a6785f0f39f1781ca09.css rel=stylesheet></head><body><div id=app><section class=start v-bind:style=gradient><div class=center-vertically><h1 class=typo__h1><img class=logo src=static/img/vue-logo.e1ea82c.png>Vuelidate<small class=version>(0.1.1)</small></h1><h3 class=typo__h3>Simple, lightweight model-based validation for <a class=typo__link href=http://vuejs.org target=_BLANK>Vue.js 2.0</a></h3><div class="grid__row grid__row--centered"><div class="grid__column grid__unit--md-6"><div class=multiselect-example__container><div class="grid__row start__list"><div class="grid__column grid__unit--md-6 list"><ul class=list__ul><li class=typo__li>Model based</li><li class=typo__li>Decoupled from templates</li><li class=typo__li>Dependency free, minimalistic library</li><li class=typo__li><a class=typo__link href=#sub-collections-validation>Support for collection validations</a></li><li class=typo__li><a class=typo__link href=#sub-data-nesting>Support for nested models</a></li></ul></div><div class="grid__column grid__unit--md-6 list"><ul class=list__ul><li class=typo__li><a class=typo__link href=#sub-contextified-validators>Contextified valdiators</a></li><li class=typo__li>Easy to use with custom validators (e.g. Moment.js)</li><li class=typo__li>Support for function composition</li><li class=typo__li>Validates different data sources: Vuex getters, computed values, etc.</li><li class=typo__li>High test coverage</li></ul></div></div></div></div></div><div class="grid__row grid__row--centered"><div class="grid__column utils--center"><a class="button button--large button--secondary button--github" href=https://github.com/monterail/vuelidate target=_BLANK>View on GitHub</a><a class="button button--large" href=#getting-started>Getting started & examples</a></div></div></div></section><div class="grid__row docs"><div class="grid__columns grid__unit--sm-3 small--hidden"><ul class=list :class="{ 'list--sticky': isNavSticky }"><li class=list__heading><a class="link blank__link" href=#getting-started>Getting started</a></li><li class=list__element><a class="link list__link" href=#sub-package-content>Package content</a></li><li class=list__element><a class="link list__link" href=#sub-installation>Installation</a></li><li class=list__element><a class="link list__link" href=#sub-basic-usage>Basic usage</a></li><li class=list__heading><a class="link blank__link" href=#examples>Examples</a></li><li class=list__element><a class="link list__link" href=#sub-basic-form>Basic form</a></li><li class=list__element><a class="link list__link" href=#sub-contextified-validators>Contextified validators</a></li><li class=list__element><a class="link list__link" href=#sub-data-nesting>Data nesting</a></li><li class=list__element><a class="link list__link" href=#sub-validation-groups>Validation Groups</a></li><li class=list__element><a class="link list__link" href=#sub-collections-validation>Collections validation</a></li><li class=list__heading><a class="link blank__link" href=#a-p-i>API</a></li><li class=list__element><a class="link list__link" href=#sub-v-values>$v values</a></li><li class=list__element><a class="link list__link" href=#sub-v-methods>$v methods</a></li><li class=list__element><a class="link list__link" href=#sub-config-keywords>Config keywords</a></li><li class=list__heading><a class="link blank__link" href=#validators>Validators</a></li><li class=list__element><a class="link list__link" href=#sub-builtin-validators>Builtin validators</a></li><li class=list__element><a class="link list__link" href=#sub-custom-validators>Custom validators</a></li></ul></div><div class="grid__columns grid__unit--sm-12 grid__unit--md-9"><div class=grid__row><div class=grid__column><section class=docs id=getting-started><h1 class=typo__h1>Getting started</h1><hr class=typo__hr><div class=grid__row><div class=grid__column><h2 class=typo__h2 id=sub-package-content>Package content</h2><p class=typo__p>Simple, lightweight model-based validation for Vue.js</p><p class=typo__p>You can read the <a class=typo__link href=http://monterail.com/blog/2016/rethinking-validations-for-vue-js/ alt="Rethinking validations for vue.js" target=_BLANK>introduction post</a> for more insight on how this solution differs from other validation libraries.</p></div></div><div class=grid__row><div class=grid__column><h2 class=typo__h2 id=sub-installation>Installation</h2><p class=typo__p>Package is installable via npm</p><pre class=language-bash><code>npm install vuelidate --save</code></pre></div></div><div class=grid__row><div class=grid__column><h2 class=typo__h2 id=sub-basic-usage>Basic usage</h2><p class=typo__p>You can import the library and <kbd>use</kbd> as a Vue plugin to enable the functionality globally on all components containing validation configuration.</p><pre class=language-javascript><code>import Vue from 'vue'
+import Validation from 'vuelidate'
+Vue.use(Validation)</code></pre><p class=typo__p>Alternatively it is possible to import a mixin directly to components in which it will be used.</p><pre class=language-javascript><code>import { validationMixin } from 'vuelidate'
+
+var Component = Vue.extend({
+  mixins: [validationMixin],
+  validation: { ... }
+})</code></pre><p class=typo__p>The browser-ready bundle is also provided in the package.</p><pre class=language-html v-pre><code>&lt;script src=&quot;vuelidate/dist/vuelidate.min.js&quot;&gt;&lt;/script&gt;</code></pre><pre class=language-javascript><code>Vue.use(window.Validation)</code></pre></div></div></section></div></div><div class=grid__row><div class=grid__column><section class=docs id=examples><h1 class=typo__h1>Examples</h1><hr class=typo__hr><div class=grid__row><div class=grid__column><h2 class=typo__h2 id=sub-basic-form>Basic form</h2><p class=typo__p>For each value you want to validate, you have to create a key inside <kbd>validations</kbd> options. You can specify when input becomes dirty by using appropriate event on your input box.</p><div class=example><div class="grid__column grid__unit--md-5"><example-basic></example-basic></div><div class="grid__column grid__unit--md-7"><label class=typo__label>Code sample</label><div><pre class=language-javascript v-pre><code>import { required, minLength, between } from 'vuelidate/lib/validators'
+
+export default {
+  data () {
+    return {
+      name: '',
+      age: 0
+    }
+  },
+  validations: {
+    name: {
+      required,
+      minLength: minLength(4)
+    },
+    age: {
+      between: between(20, 30)
+    }
+  }
+}
+</code></pre></div><lang-switcher v-bind:langs=markupLangs v-bind:current=markupLanguage v-on:select=selectLanguage></lang-switcher><div v-show="markupLanguage === 'pug'"><pre class=language-pug v-pre><code>
+div
+  .form-group(v-bind:class=&quot;{ 'form-group--error': $v.name.$error }&quot;)
+    label.form__label Name
+    input.form__input(v-model.trim=&quot;name&quot; @input=&quot;$v.name.$touch()&quot;)
+  span.form-group__message(v-if=&quot;!$v.name.required&quot;) Field is required
+  span.form-group__message(v-if=&quot;!$v.name.minLength&quot;) Name must be longer than 6 letters.
+  pre
+    | name: {{ $v.name }}
+
+  .form-group(v-bind:class=&quot;{ 'form-group--error': $v.age.$error }&quot;)
+    label.form__label Age
+    input.form__input(v-model.trim=&quot;age&quot; @blur=&quot;$v.age.$touch()&quot;)
+  span.form-group__message(v-if=&quot;!$v.age.between&quot;) Must be between 20 and 30
+  pre
+    | age: {{ $v.age }}
+</code></pre></div><div v-show="markupLanguage === 'html'"><pre class=language-html v-pre><code>
+&lt;div&gt;
+  &lt;div class=&quot;form-group&quot; v-bind:class=&quot;{ 'form-group--error': $v.name.$error }&quot;&gt;
+    &lt;label class=&quot;form__label&quot;&gt;Name&lt;/label&gt;
+    &lt;input class=&quot;form__input&quot; v-model.trim=&quot;name&quot; @input=&quot;$v.name.$touch()&quot;&gt;
+  &lt;/div&gt;&lt;span class=&quot;form-group__message&quot; v-if=&quot;!$v.name.required&quot;&gt;Field is required&lt;/span&gt;&lt;span class=&quot;form-group__message&quot; v-if=&quot;!$v.name.minLength&quot;&gt;Name must be longer than 6 letters.&lt;/span&gt;
+  &lt;pre&gt;name: {{ $v.name }}&lt;/pre&gt;
+  &lt;div class=&quot;form-group&quot; v-bind:class=&quot;{ 'form-group--error': $v.age.$error }&quot;&gt;
+    &lt;label class=&quot;form__label&quot;&gt;Age&lt;/label&gt;
+    &lt;input class=&quot;form__input&quot; v-model.trim=&quot;age&quot; @blur=&quot;$v.age.$touch()&quot;&gt;
+  &lt;/div&gt;&lt;span class=&quot;form-group__message&quot; v-if=&quot;!$v.age.between&quot;&gt;Must be between 20 and 30&lt;/span&gt;
+  &lt;pre&gt;age: {{ $v.age }}&lt;/pre&gt;
+&lt;/div&gt;</code></pre></div></div></div></div></div><div class=grid__row><div class=grid__column><h2 class=typo__h2 id=sub-contextified-validators>Contextified validators</h2><p class=typo__p>You can link related fields by contextified validators. An example of this being <kbd>sameAs</kbd> builtin validator.</p><div class=example><div class="grid__column grid__unit--md-5"><example-repeat-password></example-repeat-password></div><div class="grid__column grid__unit--md-7"><label class=typo__label>Code sample</label><div><pre class=language-javascript v-pre><code>import { required, sameAs, minLength } from 'vuelidate/lib/validators'
+
+export default {
+  data () {
+    return {
+      password: '',
+      repeatPassword: ''
+    }
+  },
+  validations: {
+    password: {
+      required,
+      minLength: minLength(6)
+    },
+    repeatPassword: {
+      sameAsPassword: sameAs('password')
+    }
+  }
+}
+</code></pre></div><lang-switcher v-bind:langs=markupLangs v-bind:current=markupLanguage v-on:select=selectLanguage></lang-switcher><div v-show="markupLanguage === 'pug'"><pre class=language-pug v-pre><code>
+div
+  .form-group(v-bind:class=&quot;{ 'form-group--error': $v.password.$error }&quot;)
+    label.form__label Password
+    input.form__input(v-model.trim=&quot;password&quot; @input=&quot;$v.password.$touch()&quot;)
+  span.form-group__message(v-if=&quot;!$v.password.required&quot;) Password is required.
+  span.form-group__message(v-if=&quot;!$v.password.minLength&quot;) Password must be longer than 6 letters.
+
+  .form-group(v-bind:class=&quot;{ 'form-group--error': $v.repeatPassword.$error }&quot;)
+    label.form__label Repeat password
+    input.form__input(v-model.trim=&quot;repeatPassword&quot; @input=&quot;$v.repeatPassword.$touch()&quot;)
+  span.form-group__message(v-if=&quot;!$v.repeatPassword.sameAsPassword&quot;) Passwords must be identical.
+  pre
+    | password: {{ $v.password }}
+    | repeatPassword: {{ $v.repeatPassword }}
+</code></pre></div><div v-show="markupLanguage === 'html'"><pre class=language-html v-pre><code>
+&lt;div&gt;
+  &lt;div class=&quot;form-group&quot; v-bind:class=&quot;{ 'form-group--error': $v.password.$error }&quot;&gt;
+    &lt;label class=&quot;form__label&quot;&gt;Password&lt;/label&gt;
+    &lt;input class=&quot;form__input&quot; v-model.trim=&quot;password&quot; @input=&quot;$v.password.$touch()&quot;&gt;
+  &lt;/div&gt;&lt;span class=&quot;form-group__message&quot; v-if=&quot;!$v.password.required&quot;&gt;Password is required.&lt;/span&gt;&lt;span class=&quot;form-group__message&quot; v-if=&quot;!$v.password.minLength&quot;&gt;Password must be longer than 6 letters.&lt;/span&gt;
+  &lt;div class=&quot;form-group&quot; v-bind:class=&quot;{ 'form-group--error': $v.repeatPassword.$error }&quot;&gt;
+    &lt;label class=&quot;form__label&quot;&gt;Repeat password&lt;/label&gt;
+    &lt;input class=&quot;form__input&quot; v-model.trim=&quot;repeatPassword&quot; @input=&quot;$v.repeatPassword.$touch()&quot;&gt;
+  &lt;/div&gt;&lt;span class=&quot;form-group__message&quot; v-if=&quot;!$v.repeatPassword.sameAsPassword&quot;&gt;Passwords must be identical.&lt;/span&gt;
+  &lt;pre&gt;password: {{ $v.password }}
+repeatPassword: {{ $v.repeatPassword }}&lt;/pre&gt;
+&lt;/div&gt;</code></pre></div></div></div></div></div><div class=grid__row><div class=grid__column><h2 class=typo__h2 id=sub-data-nesting>Data nesting</h2><p class=typo__p>You can nest validators to match your data as deep as you want. Parent validator errors out when any of its children reports an error. This might be very useful for overall form validation.</p><div class=example><div class="grid__column grid__unit--md-5"><example-nested></example-nested></div><div class="grid__column grid__unit--md-7"><label class=typo__label>Code sample</label><div><pre class=language-javascript v-pre><code>import { required } from 'vuelidate/lib/validators'
+
+export default {
+  data () {
+    return {
+      form: {
+        nestedA: '',
+        nestedB: ''
+      }
+    }
+  },
+  validations: {
+    form: {
+      nestedA: {
+        required
+      },
+      nestedB: {
+        required
+      }
+    }
+  }
+}
+</code></pre></div><lang-switcher v-bind:langs=markupLangs v-bind:current=markupLanguage v-on:select=selectLanguage></lang-switcher><div v-show="markupLanguage === 'pug'"><pre class=language-pug v-pre><code>
+div
+  .form-group(v-bind:class=&quot;{ 'form-group--error': $v.form.nestedA.$error }&quot;)
+    label.form__label Nested A
+    input.form__input(v-model.trim=&quot;form.nestedA&quot; @input=&quot;$v.form.nestedA.$touch()&quot;)
+  span.form-group__message(v-if=&quot;!$v.form.nestedA.required&quot;) Field is required.
+  .form-group(v-bind:class=&quot;{ 'form-group--error': $v.form.nestedB.$error }&quot;)
+    label.form__label Nested B
+    input.form__input(v-model.trim=&quot;form.nestedB&quot; @input=&quot;$v.form.nestedB.$touch()&quot;)
+  span.form-group__message(v-if=&quot;!$v.form.nestedB.required&quot;) Field is required.
+
+  .form-group(v-bind:class=&quot;{ 'form-group--error': $v.form.$error }&quot;)
+  span.form-group__message(v-if=&quot;$v.form.$error&quot;) Form is invalid.
+
+  pre form: {{ $v.form }}
+</code></pre></div><div v-show="markupLanguage === 'html'"><pre class=language-html v-pre><code>
+&lt;div&gt;
+  &lt;div class=&quot;form-group&quot; v-bind:class=&quot;{ 'form-group--error': $v.form.nestedA.$error }&quot;&gt;
+    &lt;label class=&quot;form__label&quot;&gt;Nested A&lt;/label&gt;
+    &lt;input class=&quot;form__input&quot; v-model.trim=&quot;form.nestedA&quot; @input=&quot;$v.form.nestedA.$touch()&quot;&gt;
+  &lt;/div&gt;&lt;span class=&quot;form-group__message&quot; v-if=&quot;!$v.form.nestedA.required&quot;&gt;Field is required.&lt;/span&gt;
+  &lt;div class=&quot;form-group&quot; v-bind:class=&quot;{ 'form-group--error': $v.form.nestedB.$error }&quot;&gt;
+    &lt;label class=&quot;form__label&quot;&gt;Nested B&lt;/label&gt;
+    &lt;input class=&quot;form__input&quot; v-model.trim=&quot;form.nestedB&quot; @input=&quot;$v.form.nestedB.$touch()&quot;&gt;
+  &lt;/div&gt;&lt;span class=&quot;form-group__message&quot; v-if=&quot;!$v.form.nestedB.required&quot;&gt;Field is required.&lt;/span&gt;
+  &lt;div class=&quot;form-group&quot; v-bind:class=&quot;{ 'form-group--error': $v.form.$error }&quot;&gt;&lt;/div&gt;&lt;span class=&quot;form-group__message&quot; v-if=&quot;$v.form.$error&quot;&gt;Form is invalid.&lt;/span&gt;
+  &lt;pre&gt;form: {{ $v.form }}&lt;/pre&gt;
+&lt;/div&gt;</code></pre></div></div></div></div></div><div class=grid__row><div class=grid__column><h2 class=typo__h2 id=sub-validation-groups>Validation Groups</h2><p class=typo__p>If you want to create a validator that groups many otherise unrelated fields together, you can create a validation group.</p><div class=example><div class="grid__column grid__unit--md-5"><example-validation-groups></example-validation-groups></div><div class="grid__column grid__unit--md-7"><label class=typo__label>Code sample</label><div><pre class=language-javascript v-pre><code>import { required } from 'vuelidate/lib/validators'
+
+export default {
+  data () {
+    return {
+      flatA: '',
+      flatB: '',
+      forGroup: {
+        nested: ''
+      }
+    }
+  },
+  validations: {
+    flatA: { required },
+    flatB: { required },
+    forGroup: {
+      nested: { required }
+    },
+    validationGroup: ['flatA', 'flatB', 'forGroup.nested']
+  }
+}
+</code></pre></div><lang-switcher v-bind:langs=markupLangs v-bind:current=markupLanguage v-on:select=selectLanguage></lang-switcher><div v-show="markupLanguage === 'pug'"><pre class=language-pug v-pre><code>
+div
+  .form-group(v-bind:class=&quot;{ 'form-group--error': $v.flatA.$error }&quot;)
+    label.form__label Flat A
+    input.form__input(v-model.trim=&quot;flatA&quot; @input=&quot;$v.flatA.$touch()&quot;)
+  span.form-group__message(v-if=&quot;!$v.flatA.required&quot;) Field is required.
+  .form-group(v-bind:class=&quot;{ 'form-group--error': $v.flatB.$error }&quot;)
+    label.form__label Flat B
+    input.form__input(v-model.trim=&quot;flatB&quot; @input=&quot;$v.flatB.$touch()&quot;)
+  span.form-group__message(v-if=&quot;!$v.flatB.required&quot;) Field is required.
+  .form-group(v-bind:class=&quot;{ 'form-group--error': $v.forGroup.nested.$error }&quot;)
+    label.form__label Nested field
+    input.form__input(v-model.trim=&quot;forGroup.nested&quot; @input=&quot;$v.forGroup.nested.$touch()&quot;)
+  span.form-group__message(v-if=&quot;!$v.forGroup.nested.required&quot;) Field is required.
+
+  .form-group(v-bind:class=&quot;{ 'form-group--error': $v.validationGroup.$error }&quot;)
+  span.form-group__message(v-if=&quot;$v.validationGroup.$error&quot;) Group is invalid.
+
+  pre
+    | validationGroup: {{ $v.validationGroup }}
+</code></pre></div><div v-show="markupLanguage === 'html'"><pre class=language-html v-pre><code>
+&lt;div&gt;
+  &lt;div class=&quot;form-group&quot; v-bind:class=&quot;{ 'form-group--error': $v.flatA.$error }&quot;&gt;
+    &lt;label class=&quot;form__label&quot;&gt;Flat A&lt;/label&gt;
+    &lt;input class=&quot;form__input&quot; v-model.trim=&quot;flatA&quot; @input=&quot;$v.flatA.$touch()&quot;&gt;
+  &lt;/div&gt;&lt;span class=&quot;form-group__message&quot; v-if=&quot;!$v.flatA.required&quot;&gt;Field is required.&lt;/span&gt;
+  &lt;div class=&quot;form-group&quot; v-bind:class=&quot;{ 'form-group--error': $v.flatB.$error }&quot;&gt;
+    &lt;label class=&quot;form__label&quot;&gt;Flat B&lt;/label&gt;
+    &lt;input class=&quot;form__input&quot; v-model.trim=&quot;flatB&quot; @input=&quot;$v.flatB.$touch()&quot;&gt;
+  &lt;/div&gt;&lt;span class=&quot;form-group__message&quot; v-if=&quot;!$v.flatB.required&quot;&gt;Field is required.&lt;/span&gt;
+  &lt;div class=&quot;form-group&quot; v-bind:class=&quot;{ 'form-group--error': $v.forGroup.nested.$error }&quot;&gt;
+    &lt;label class=&quot;form__label&quot;&gt;Nested field&lt;/label&gt;
+    &lt;input class=&quot;form__input&quot; v-model.trim=&quot;forGroup.nested&quot; @input=&quot;$v.forGroup.nested.$touch()&quot;&gt;
+  &lt;/div&gt;&lt;span class=&quot;form-group__message&quot; v-if=&quot;!$v.forGroup.nested.required&quot;&gt;Field is required.&lt;/span&gt;
+  &lt;div class=&quot;form-group&quot; v-bind:class=&quot;{ 'form-group--error': $v.validationGroup.$error }&quot;&gt;&lt;/div&gt;&lt;span class=&quot;form-group__message&quot; v-if=&quot;$v.validationGroup.$error&quot;&gt;Group is invalid.&lt;/span&gt;
+  &lt;pre&gt;validationGroup: {{ $v.validationGroup }}&lt;/pre&gt;
+&lt;/div&gt;</code></pre></div></div></div></div></div><div class=grid__row><div class=grid__column><h2 class=typo__h2 id=sub-collections-validation>Collections validation</h2><p class=typo__p>Array support with <kbd>$each</kbd> keyword</p><div class=example><div class="grid__column grid__unit--md-5"><example-each-array></example-each-array></div><div class="grid__column grid__unit--md-7"><label class=typo__label>Code sample</label><div><pre class=language-javascript v-pre><code>import { required, minLength } from 'vuelidate/lib/validators'
+
+export default {
+  data () {
+    return {
+      people: [{
+        name: 'John'
+      }, {
+        name: ''
+      }]
+    }
+  },
+  validations: {
+
+    people: {
+      required,
+      minLength: minLength(2),
+      $each: {
+        name: {
+          required
+        }
+      }
+    }
+
+  }
+}
+</code></pre></div><lang-switcher v-bind:langs=markupLangs v-bind:current=markupLanguage v-on:select=selectLanguage></lang-switcher><div v-show="markupLanguage === 'pug'"><pre class=language-pug v-pre><code>
+div
+  div(v-for=&quot;(person, index) in people&quot;)
+    .form-group(v-bind:class=&quot;{ 'form-group--error': $v.people.$each[index].$error }&quot;)
+      label.form__label Name for {{ index }}
+      input.form__input(v-model.trim=&quot;person.name&quot; @input=&quot;$v.people.$each[index].name.$touch()&quot;)
+    span.form-group__message(v-if=&quot;!$v.people.$each[index].name.required&quot;) Name is required.
+
+  div
+    button.button(@click=&quot;people.push({name: ''})&quot;) Add
+    button.button(@click=&quot;people.pop()&quot;) Remove
+  .form-group(v-bind:class=&quot;{ 'form-group--error': $v.people.$error }&quot;)
+  span.form-group__message(v-if=&quot;!$v.people.minLength&quot;) List must have at least 2 elements.
+  span.form-group__message(v-else-if=&quot;!$v.people.required&quot;) List must not be empty.
+  span.form-group__message(v-else-if=&quot;$v.people.$error&quot;) List is invalid.
+  button.button(@click=&quot;$v.people.$touch&quot;) $touch
+  button.button(@click=&quot;$v.people.$reset&quot;) $reset
+
+  pre
+    | people: {{ $v.people }}
+</code></pre></div><div v-show="markupLanguage === 'html'"><pre class=language-html v-pre><code>
+&lt;div&gt;
+  &lt;div v-for=&quot;(person, index) in people&quot;&gt;
+    &lt;div class=&quot;form-group&quot; v-bind:class=&quot;{ 'form-group--error': $v.people.$each[index].$error }&quot;&gt;
+      &lt;label class=&quot;form__label&quot;&gt;Name for {{ index }}&lt;/label&gt;
+      &lt;input class=&quot;form__input&quot; v-model.trim=&quot;person.name&quot; @input=&quot;$v.people.$each[index].name.$touch()&quot;&gt;
+    &lt;/div&gt;&lt;span class=&quot;form-group__message&quot; v-if=&quot;!$v.people.$each[index].name.required&quot;&gt;Name is required.&lt;/span&gt;
+  &lt;/div&gt;
+  &lt;div&gt;
+    &lt;button class=&quot;button&quot; @click=&quot;people.push({name: ''})&quot;&gt;Add&lt;/button&gt;
+    &lt;button class=&quot;button&quot; @click=&quot;people.pop()&quot;&gt;Remove&lt;/button&gt;
+  &lt;/div&gt;
+  &lt;div class=&quot;form-group&quot; v-bind:class=&quot;{ 'form-group--error': $v.people.$error }&quot;&gt;&lt;/div&gt;&lt;span class=&quot;form-group__message&quot; v-if=&quot;!$v.people.minLength&quot;&gt;List must have at least 2 elements.&lt;/span&gt;&lt;span class=&quot;form-group__message&quot; v-else-if=&quot;!$v.people.required&quot;&gt;List must not be empty.&lt;/span&gt;&lt;span class=&quot;form-group__message&quot; v-else-if=&quot;$v.people.$error&quot;&gt;List is invalid.&lt;/span&gt;
+  &lt;button class=&quot;button&quot; @click=&quot;$v.people.$touch&quot;&gt;$touch&lt;/button&gt;
+  &lt;button class=&quot;button&quot; @click=&quot;$v.people.$reset&quot;&gt;$reset&lt;/button&gt;
+  &lt;pre&gt;people: {{ $v.people }}&lt;/pre&gt;
+&lt;/div&gt;</code></pre></div></div></div></div></div></section></div></div><div class=grid__row><div class=grid__column><section class=docs id=a-p-i><h1 class=typo__h1>API</h1><hr class=typo__hr><p class=typo__p>There are two distinct structures present in <em>vuelidate</em>:<ul><li><kbd>validations</kbd> component option - the definition of your validation</li><li><kbd>$v</kbd> structure - an object in your viewmodel that holds the validation state</li></ul></p><div class=grid__row><div class=grid__column><h2 class=typo__h2 id=sub-v-values>$v values</h2><p class=typo__p><kbd>$v</kbd> model represents the current state of validation. It does so by defining a set of properties which hold the output of user defined validation functions, following the <kbd>validations</kbd> option structure. The presense of those special reserved keywords means that you cannot specify your own validators with that name.</p><div class=table__container><table class="table table--full-size table--fixed"><thead><tr class=table__tr><th class=table__th width=130>Name</th><th class=table__th width=80>Type</th><th class=table__th>Description</th></tr></thead><tbody><tr class=table__tr><td class=table__td><kbd>$invalid</kbd></td><td class=table__td><strong>boolean</strong></td><td class=table__td>Indicates the state of validation for given model. becomes <kbd>true</kbd> when any of it's child validators specified in options returns a <strong>falsy</strong> value. In case of validation groups, all grouped validators are considered.</td></tr><tr class=table__tr><td class=table__td><kbd>$dirty</kbd></td><td class=table__td><strong>boolean</strong></td><td class=table__td>A flag representing if the field under validation was touched by the user at least once. Usually it is used to decide if the message is supposed to be displayed to the end user. Flag is managed manually. You have to use <kbd>$touch</kbd> and <kbd>$reset</kbd> methods to manipulate it. The <kbd>$dirty</kbd> flag is considered <kbd>true</kbd> if given model was <kbd>$touch</kbd>ed or <strong>all of it's children</strong> are <kbd>$dirty</kbd>.</td></tr><tr class=table__tr><td class=table__td><kbd>$error</kbd></td><td class=table__td><strong>boolean</strong></td><td class=table__td>Convinience flag to easily decide if a message should be displayed. It is a shorthand to <kbd>$invalid && $dirty</kbd>.</td></tr><tr class=table__tr><td class=table__td><kbd>$each</kbd></td><td class=table__td><strong>object</strong></td><td class=table__td>Holds all validation models of collection validator. Always preserves the keys of original model, so it can be safely referenced in the <kbd>v-for</kbd> loop iterating over your data using the same index.</td></tr></tbody></table></div></div></div><div class=grid__row><div class=grid__column><h2 class=typo__h2 id=sub-v-methods>$v methods</h2><p class=typo__p>A set of methods to control the validation model. Accessible on every level of nesting. All methods are ment to be used on any event handler you wish. There is no extra syntax to decide when the dirty flag should be set. Just use standard <kbd>@input</kbd> or <kbd>@blur</kbd> bindings.</p><div class=table__container><table class="table table--full-size table--fixed"><thead><tr class=table__tr><th class=table__th width=130>Name</th><th class=table__th>Description</th></tr></thead><tbody><tr class=table__tr><td class=table__td><kbd>$touch</kbd></td><td class=table__td>Sets the <kbd>$dirty</kbd> flag of the model and all its children to <kbd>true</kbd> recursively.</td></tr><tr class=table__tr><td class=table__td><kbd>$reset</kbd></td><td class=table__td>Sets the <kbd>$dirty</kbd> flag of the model and all its children to <kbd>false</kbd> recursively.</td></tr></tbody></table></div></div></div><div class=grid__row><div class=grid__column><h2 class=typo__h2 id=sub-config-keywords>Config keywords</h2><div class=table__container><table class="table table--full-size"><thead><tr class=table__tr><th class=table__th width=130>Name</th><th class=table__th width=80>Type</th><th class=table__th>Description</th></tr></thead><tbody><tr class=table__tr><td class=table__td><kbd>$each</kbd></td><td class=table__td><strong>object</strong></td><td class=table__td>A definition of nested validation applied to each prop of given model separately. Perfect for validation arrays, but can be used with any object or collection.</td></tr><tr class=table__tr><td class=table__td><kbd>$trackBy</kbd></td><td class=table__td><strong>string || func</strong></td><td class=table__td>Must be a direct children of <kbd>$each</kbd>, but is optional. Defines the accessor to object's property by which <kbd>$each</kbd> tracks it's child models. Necessary to correctly preserve <kbd>$dirty</kbd> flag on random insertions. If this property not preset, the key is used for tracking.</td></tr></tbody></table></div></div></div></section></div></div><div class=grid__row><div class=grid__column><section class=docs id=validators><h1 class=typo__h1>Validators</h1><hr class=typo__hr><p class=typo__p><em>vuelidate</em> comes with a set of builtin validators that you can just require and use, but it doesn't end there. All of those are just simple predicates - functions of data into <kbd>boolean</kbd>, which denotes if data is valid. You can easily write your own or use any function in this shape from any library you already have, like <kbd>_.conforomsTo</kbd> from <em>lodash</em> or higher order functions and chains like <kbd>R.cond</kbd> from <em>ramda</em>. Think of the possibilities.</p><p class=typo__p>This documentation presents every builtin validator with short description and presents an example custom validator implementation to help understanding them and writing your own as easy as possible.</p><div class=grid__row><div class=grid__column><h2 class=typo__h2 id=sub-builtin-validators>Builtin validators</h2><p class=typo__p>To use any of builtin validators, you have to import it from your sources.</p><pre class=language-javascript v-pre><code>import { required, maxLength } from 'vuelidate/lib/validators'</code></pre><p class=typo__p>You can also import specific validators directly, to avoid loading unused ones in case your bundler doesn't support tree shaking.</p><pre class=language-javascript v-pre><code>import required from 'vuelidate/lib/validators/required'
+import maxLength from 'vuelidate/lib/validators/maxLength'</code></pre><p class=typo__p>It is possible to use validators directly in browser by using a browser-ready bundle.</p><pre class=language-html v-pre><code>&lt;script src=&quot;vuelidate/dist/validators.min.js&quot;&gt;&lt;/script&gt;</code></pre><pre class=language-javascript v-pre><code>var required = validators.required
+var maxLength = validators.maxLength</code></pre><p class=typo__p>Here is a full list of provided validators.</p><div class=table__container><table class="table table--full-size table--fixed"><thead><tr class=table__tr><th class=table__th width=140>Name</th><th class=table__th width=120>Meta parameters</th><th class=table__th>Description</th></tr></thead><tbody><tbody><tr class=table__tr><td class=table__td><kbd>required</kbd></td><td class=table__td><em>none</em></td><td class=table__td>Requires non-empty data. Checks for empty arrays and strings containing only whitespaces.</td></tr></tbody><tbody><tr class=table__tr><td class=table__td><kbd>minLength</kbd></td><td class=table__td>min length</td><td class=table__td>Requires the input to have a minimum specified length, inclusive. Works with arrays.</td></tr></tbody><tbody><tr class=table__tr><td class=table__td><kbd>maxLength</kbd></td><td class=table__td>max length</td><td class=table__td>Requires the input to have a maximum specified length, inclusive. Works with arrays.</td></tr></tbody><tbody><tr class=table__tr><td class=table__td><kbd>between</kbd></td><td class=table__td>min, max</td><td class=table__td>Checks if a number is in specified bounds. Min and max are both inclusive.</td></tr></tbody><tbody><tr class=table__tr><td class=table__td><kbd>alpha</kbd></td><td class=table__td><em>none</em></td><td class=table__td>Accepts only alphabet characters.</td></tr></tbody><tbody><tr class=table__tr><td class=table__td><kbd>alphaNum</kbd></td><td class=table__td><em>none</em></td><td class=table__td>Accepts only alphanumerics.</td></tr></tbody><tbody><tr class=table__tr><td class=table__td><kbd>sameAs</kbd></td><td class=table__td>locator</td><td class=table__td>Checks for equality with a given property. Locator might be either a sibling property name or a function, that will get your component as <kbd>this</kbd> and nested model which sibling properties under second parameter.</td></tr></tbody><tbody><tr class=table__tr><td class=table__td><kbd>or</kbd></td><td class=table__td>validators...</td><td class=table__td>Passes when at least one of provided validators passes.</td></tr></tbody><tbody><tr class=table__tr><td class=table__td><kbd>and</kbd></td><td class=table__td>validators...</td><td class=table__td>Passes when all of provided validators passes.</td></tr></tbody></tbody></table></div><p></p></div></div><div class=grid__row><div class=grid__column><h2 class=typo__h2 id=sub-custom-validators>Custom validators</h2><p class=typo__p>You can easily write custom validators and combine them with builtin ones, as those are just a simple predicate functions.</p><p class=typo__p>Let's take a simple <kbd>required</kbd> as an example. It's simply just a function that, given it's input value, returns if the data is valid or not.</p><pre class=language-javascript v-pre><code>export default value =&gt; {
+  if (Array.isArray(value)) return !!value.length
+
+  return value === undefined || value === null
+    ? false
+    : !!String(value).length
+}
+</code></pre><p class=typo__p>If your validator needs extra parameters, you can simply create a higher order function that returns the actual predicate, like in <kbd>between</kbd>.</p><pre class=language-javascript v-pre><code>export default (min, max) =&gt;
+  value =&gt; value === '' || (!/\s/.test(value) &amp;&amp; Number(min) &lt;= value &amp;&amp; Number(max) &gt;= value)
+</code></pre><p class=typo__p>In more complex cases when access to the whole model is necessary, like <kbd>sameAs</kbd>, make use of the function context (<kbd>this</kbd>) to access any value on your component or use provided <kbd>parentVm</kbd> to access sibling properties.</p><pre class=language-javascript v-pre><code>export default equalTo =&gt; function (value, parentVm) {
+  if (value === null || value === undefined || value === '') {
+    return true
+  }
+
+  const compareTo = typeof equalTo === 'function'
+    ? equalTo.call(this, parentVm)
+    : parentVm[equalTo]
+  return value === compareTo
+}
+</code></pre></div></div></section></div></div></div></div><section class=utils--center><h4 class=typo__h4>Created by<strong><a class=typo__link href=https://twitter.com/DamianDulisz target=_BLANK> Damian Dulisz</a> &amp;<a class=typo__link href=https://twitter.com/frizi09 target=_BLANK> Paweł Grabarz</a></strong></h4><h4 class=typo__h4>With love from<strong><a class="typo__link monterail-link" href=http://monterail.com target=_BLANK> Monterail</a></strong></h4><a href=http://monterail.com target=_BLANK><img class=monterail-logo src=static/img/monterail-logo.da236ce.png></a></section></div><script src=1cddcce43ea5add1db8b59df834a68f1.js></script><script>(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-78373326-3', 'auto');
+ga('send', 'pageview');</script><script>Prism.languages.pug = Prism.languages.jade</script><script type=text/javascript src=static/js/manifest.2c39bdbeec8ab2287c0a.js></script><script type=text/javascript src=static/js/vendor.01ba7b6dae782c60f592.js></script><script type=text/javascript src=static/js/app.d40908d860b15ba9b538.js></script></body></html>
