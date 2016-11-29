@@ -7,7 +7,7 @@
     "Paweł Grabarz <pawel.grabarz@monterail.com>"
   ],
   "license": "MIT",
-  "main": "lib/index.js",
+  "main": "dist/index.js",
   "scripts": {
     "dev": "node build/dev-server.js",
     "bundle:web": "rm -rf dist && webpack --config build/webpack.bundle.conf.js",
