@@ -80,8 +80,27 @@ export default {
 }
 ```
 
+This will result in a validation object:
 
-## Development Setup
+```javascript
+$v: {
+  name: {
+    "required": false,
+    "minLength": false,
+    "$invalid": true,
+    "$dirty": false,
+    "$error": false
+  },
+  age: {
+    "between": false
+    "$invalid": true,
+    "$dirty": false,
+    "$error": false
+  }
+}
+```
+
+## Contributing
 
 ``` bash
 # install dependencies
@@ -104,3 +123,9 @@ npm test
 ```
 
 For detailed explanation on how things work, checkout the [guide](http://vuejs-templates.github.io/webpack/) and [docs for vue-loader](http://vuejs.github.io/vue-loader).
+
+## License
+
+[MIT](http://opensource.org/licenses/MIT)
+
+Copyright (c) 2016 Paweł Grabarz & Damian Dulisz
