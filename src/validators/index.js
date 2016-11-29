@@ -1,6 +1,7 @@
 import alpha from './alpha'
 import alphaNum from './alphaNum'
 import between from './between'
+import email from './email'
 import maxLength from './maxLength'
 import minLength from './minLength'
 import required from './required'
@@ -12,6 +13,7 @@ export {
   alpha,
   alphaNum,
   between,
+  email,
   maxLength,
   minLength,
   required,
