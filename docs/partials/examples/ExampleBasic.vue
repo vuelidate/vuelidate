@@ -4,7 +4,7 @@
       label.form__label Name
       input.form__input(v-model.trim="name" @input="$v.name.$touch()")
     span.form-group__message(v-if="!$v.name.required") Field is required
-    span.form-group__message(v-if="!$v.name.minLength") Name must be longer than 6 letters.
+    span.form-group__message(v-if="!$v.name.minLength") Name must be longer than 3 letters.
     pre
       | name: {{ $v.name }}
 
