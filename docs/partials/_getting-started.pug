@@ -17,8 +17,8 @@
     pre.language-javascript
       code.
         import Vue from 'vue'
-        import Validation from 'vuelidate'
-        Vue.use(Validation)
+        import Vuelidate from 'vuelidate'
+        Vue.use(Vuelidate)
     p.typo__p
       | Alternatively it is possible to import a mixin directly to components
       | in which it will be used.
@@ -31,9 +31,20 @@
           validation: { ... }
         })
     p.typo__p
+      | If you prefer using <kbd>require</kbd>, it can be used instead of <kbd>import</kbd> statements.
+      | This works especially great with destructuring syntax.
+    pre.language-javascript
+      code.
+        const { validationMixin, default: Vuelidate } = require('vuelidate')
+        const { required, minLength } = require('vuelidate/lib/validators')
+    p.typo__p
       | The browser-ready bundle is also provided in the package.
     pre(v-pre).language-html
       code='<script src="vuelidate/dist/vuelidate.min.js"></script>'
     pre.language-javascript
       code.
-        Vue.use(window.Validation)
+        // global
+        Vue.use(window.vuelidate.default)
+
+        // local mixin
+        var validationMixin = window.vuelidate.validationMixin
