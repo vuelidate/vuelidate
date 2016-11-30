@@ -35,7 +35,7 @@ div
     label.form__label Name
     input.form__input(v-model.trim=&quot;name&quot; @input=&quot;$v.name.$touch()&quot;)
   span.form-group__message(v-if=&quot;!$v.name.required&quot;) Field is required
-  span.form-group__message(v-if=&quot;!$v.name.minLength&quot;) Name must be longer than 6 letters.
+  span.form-group__message(v-if=&quot;!$v.name.minLength&quot;) Name must be longer than 3 letters.
   pre
     | name: {{ $v.name }}
 
@@ -50,7 +50,7 @@ div
   &lt;div class=&quot;form-group&quot; v-bind:class=&quot;{ 'form-group--error': $v.name.$error }&quot;&gt;
     &lt;label class=&quot;form__label&quot;&gt;Name&lt;/label&gt;
     &lt;input class=&quot;form__input&quot; v-model.trim=&quot;name&quot; @input=&quot;$v.name.$touch()&quot;&gt;
-  &lt;/div&gt;&lt;span class=&quot;form-group__message&quot; v-if=&quot;!$v.name.required&quot;&gt;Field is required&lt;/span&gt;&lt;span class=&quot;form-group__message&quot; v-if=&quot;!$v.name.minLength&quot;&gt;Name must be longer than 6 letters.&lt;/span&gt;
+  &lt;/div&gt;&lt;span class=&quot;form-group__message&quot; v-if=&quot;!$v.name.required&quot;&gt;Field is required&lt;/span&gt;&lt;span class=&quot;form-group__message&quot; v-if=&quot;!$v.name.minLength&quot;&gt;Name must be longer than 3 letters.&lt;/span&gt;
   &lt;pre&gt;name: {{ $v.name }}&lt;/pre&gt;
   &lt;div class=&quot;form-group&quot; v-bind:class=&quot;{ 'form-group--error': $v.age.$error }&quot;&gt;
     &lt;label class=&quot;form__label&quot;&gt;Age&lt;/label&gt;
@@ -82,7 +82,7 @@ div
     label.form__label Password
     input.form__input(v-model.trim=&quot;password&quot; @input=&quot;$v.password.$touch()&quot;)
   span.form-group__message(v-if=&quot;!$v.password.required&quot;) Password is required.
-  span.form-group__message(v-if=&quot;!$v.password.minLength&quot;) Password must be longer than 6 letters.
+  span.form-group__message(v-if=&quot;!$v.password.minLength&quot;) Password must be longer than 5 letters.
 
   .form-group(v-bind:class=&quot;{ 'form-group--error': $v.repeatPassword.$error }&quot;)
     label.form__label Repeat password
@@ -96,7 +96,7 @@ div
   &lt;div class=&quot;form-group&quot; v-bind:class=&quot;{ 'form-group--error': $v.password.$error }&quot;&gt;
     &lt;label class=&quot;form__label&quot;&gt;Password&lt;/label&gt;
     &lt;input class=&quot;form__input&quot; v-model.trim=&quot;password&quot; @input=&quot;$v.password.$touch()&quot;&gt;
-  &lt;/div&gt;&lt;span class=&quot;form-group__message&quot; v-if=&quot;!$v.password.required&quot;&gt;Password is required.&lt;/span&gt;&lt;span class=&quot;form-group__message&quot; v-if=&quot;!$v.password.minLength&quot;&gt;Password must be longer than 6 letters.&lt;/span&gt;
+  &lt;/div&gt;&lt;span class=&quot;form-group__message&quot; v-if=&quot;!$v.password.required&quot;&gt;Password is required.&lt;/span&gt;&lt;span class=&quot;form-group__message&quot; v-if=&quot;!$v.password.minLength&quot;&gt;Password must be longer than 5 letters.&lt;/span&gt;
   &lt;div class=&quot;form-group&quot; v-bind:class=&quot;{ 'form-group--error': $v.repeatPassword.$error }&quot;&gt;
     &lt;label class=&quot;form__label&quot;&gt;Repeat password&lt;/label&gt;
     &lt;input class=&quot;form__input&quot; v-model.trim=&quot;repeatPassword&quot; @input=&quot;$v.repeatPassword.$touch()&quot;&gt;
@@ -298,4 +298,4 @@ m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
 })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
 
 ga('create', 'UA-78373326-3', 'auto');
-ga('send', 'pageview');</script><script>Prism.languages.pug = Prism.languages.jade</script><script type=text/javascript src=static/js/manifest.2c39bdbeec8ab2287c0a.js></script><script type=text/javascript src=static/js/vendor.01ba7b6dae782c60f592.js></script><script type=text/javascript src=static/js/app.d40908d860b15ba9b538.js></script></body></html>
+ga('send', 'pageview');</script><script>Prism.languages.pug = Prism.languages.jade</script><script type=text/javascript src=static/js/manifest.4f9e6f75e9e3daae2d95.js></script><script type=text/javascript src=static/js/vendor.01ba7b6dae782c60f592.js></script><script type=text/javascript src=static/js/app.1224f6775302c3b4d9cf.js></script></body></html>
