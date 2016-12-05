@@ -188,6 +188,19 @@ $input-addon-weight: 700
     duration: .6s
     timing-function: ease-in-out
 
+.form-group--loading
+  .form__input
+    border-image-slice: 1
+    animation: loading-frame 1s infinite
+
+@keyframes loading-frame
+  0%
+    border-color: #3acfd5
+  50%
+    border-color: #3a4ed5
+  100%
+    border-color: #3acfd5
+
 .form-group--success
   .form__label
     color: $success-color

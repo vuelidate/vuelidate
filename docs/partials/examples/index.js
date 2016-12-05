@@ -1,3 +1,4 @@
+export ExampleAsync from './ExampleAsync'
 export ExampleBasic from './ExampleBasic'
 export ExampleEachArray from './ExampleEachArray'
 export ExampleNested from './ExampleNested'
