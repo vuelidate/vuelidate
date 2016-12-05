@@ -6,7 +6,7 @@ import LangSwitcher from './LangSwitcher'
 
 Vue.use(Validation)
 
-require('./docs.scss')
+import './docs.scss'
 
 function throttle (callback, limit) {
   var wait = false
