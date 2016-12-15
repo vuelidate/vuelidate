@@ -19,7 +19,7 @@ body {
 
 .start {
   text-align: center;
-  display: block;
+  display: flex;
   background: linear-gradient(to left bottom, #8cc1f7 0%, #9cffd3 100%);
 
   .typo__h1 {
@@ -51,15 +51,9 @@ body {
 
 .center-vertically {
   position: relative;
-
-  @media #{$medium-up} {
-    position: absolute;
-    height: 600px;
-    left: 0;
-    right: 0;
-    top: 50%;
-    transform: translateY(-50%);
-  }
+  align-self: center;
+  width: 100%;
+  min-height: 600px;
 }
 
 .multiselect-example__container {
