@@ -67,6 +67,9 @@ mixin validatorRow(validator, params)
               | Accepts only alphabet characters.
             +validatorRow('alphaNum')
               | Accepts only alphanumerics.
+            +validatorRow('email')
+              | Accepts valid email addresses. Keep in mind you still have to carefully verify it on your server,
+              | as it is impossible to tell if the address is real without sending verification email.
             +validatorRow('sameAs', ['locator'])
               | Checks for equality with a given property.
               | Locator might be either a sibling property name

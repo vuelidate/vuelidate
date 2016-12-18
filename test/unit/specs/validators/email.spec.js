@@ -29,6 +29,7 @@ describe('email validator', () => {
   it('should not validate addresses that contain unsupported characters', () => {
     expect(email('someone@g~mail.com')).to.be.false
     expect(email('someone@g=ail.com')).to.be.false
+    expect(email('"someone@gmail.com')).to.be.false
   })
 
   it('should not validate addresses that contain spaces', () => {
@@ -45,5 +46,7 @@ describe('email validator', () => {
     expect(email('someone@gmail.co')).to.be.true
     expect(email('someone@g.cn')).to.be.true
     expect(email('someone@g.accountants')).to.be.true
+    expect(email('"some@one"@gmail.com')).to.be.true
+    expect(email('"some one"@gmail.com')).to.be.true
   })
 })
