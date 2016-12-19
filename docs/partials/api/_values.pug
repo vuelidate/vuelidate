@@ -37,6 +37,11 @@
             | Convinience flag to easily decide if a message should be displayed.
             | It is a shorthand to <kbd>$invalid && $dirty</kbd>.
         tr.table__tr
+          td.table__td: kbd $pending
+          td.table__td: strong boolean
+          td.table__td
+            | Indicates if any child async validator is currently pending. Always <kbd>false</kbd> if all validators are synchronous.
+        tr.table__tr
           td.table__td: kbd $each
           td.table__td: strong object
           td.table__td

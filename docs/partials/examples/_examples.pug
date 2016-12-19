@@ -23,8 +23,35 @@
       | fields together, you can create a validation group.
     +example('ExampleValidationGroups')
 
-
   +subsection('Collections validation')
     p.typo__p
       | Array support with <kbd>$each</kbd> keyword
     +example('ExampleEachArray')
+
+  +subsection('Asynchronous validation')
+    p.typo__p
+      | Async support is provided out of the box. Just use a validator that returns a promise.
+      | Promise's success value is used for validation directly,
+      | failed promise just fails the validation and throws the error.
+    p.typo__p
+      | Any component's data has to be accessed synchronously for correct reactive
+      | behaviour. Store it as a variable in validator's scope
+      | if you need to use it in any asynchronous callback, for example in <kbd>.then</kbd>.
+    p.typo__p
+      | Validator is evaluated on every data change, as it is essentially a computed value.
+      | If you need to throttle an async call, do it on your data change event,
+      | not on the validator itself. You may end up with broken Vue observables otherwise.
+
+    +example('ExampleAsync')
+    p.typo__p
+      | The <kbd>async</kbd>/<kbd>await</kbd> syntax is fully supported. It works especially great in combination with Fetch API.
+    div
+      pre(v-pre).language-javascript
+        code.
+          validations: {
+            async isUnique (value) {
+              if (value === '') return true
+              const response = await fetch(`/api/unique/${value}`)
+              return Boolean(await response.json())
+            }
+          }

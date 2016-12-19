@@ -60,6 +60,83 @@ describe('Validation plugin', () => {
     expect(createSpy).to.have.been.calledOnce
   })
 
+  describe('Async', () => {
+    function setupAsync () {
+      let resolvePromise = {resolve: null, reject: null}
+      const asyncVal = (val) => {
+        if (val === '') return true
+        return new Promise((resolve, reject) => {
+          resolvePromise.resolve = resolve
+          resolvePromise.reject = reject
+        })
+      }
+
+      const vm = new Vue({
+        data: { value: '' },
+        validations: {
+          value: { asyncVal }
+        }
+      })
+      return { resolvePromise, vm }
+    }
+
+    it('$pending should be false on initialization for empty value', () => {
+      const { vm } = setupAsync()
+      expect(vm.$v.value.$pending).to.be.false
+    })
+
+    it('$pending should be true immediately after value change', () => {
+      const { vm } = setupAsync()
+      vm.value = 'x1'
+      expect(vm.$v.value.$pending).to.be.true
+    })
+
+    it('should not be computed without getter evaluation', () => {
+      const { resolvePromise, vm } = setupAsync()
+      vm.value = 'x1'
+      expect(resolvePromise.resolve).to.equal(null)
+    })
+
+    it('$pending should be false tick after promise resolve', (done) => {
+      const { resolvePromise, vm } = setupAsync()
+      vm.value = 'x1'
+      vm.$v.value.asyncVal // execute getter
+      resolvePromise.resolve(true)
+      Promise.resolve().then(() => {
+        expect(vm.$v.value.$pending).to.be.false
+        done()
+      })
+    })
+
+    it('asyncVal value should be false just after value change', () => {
+      const { vm } = setupAsync()
+      vm.value = 'x1'
+      expect(vm.$v.value.asyncVal).to.be.false
+    })
+
+    it('asyncVal value should be true after promise resolve', (done) => {
+      const { resolvePromise, vm } = setupAsync()
+      vm.value = 'x1'
+      vm.$v.value.asyncVal // execute getter
+      resolvePromise.resolve(true)
+      Promise.resolve().then(() => {
+        expect(vm.$v.value.asyncVal).to.be.true
+        done()
+      })
+    })
+
+    it('asyncVal value should be false after promise reject', (done) => {
+      const { resolvePromise, vm } = setupAsync()
+      vm.value = 'x1'
+      vm.$v.value.asyncVal // execute getter
+      resolvePromise.reject(new Error('test reject'))
+      Promise.resolve().then(() => {
+        expect(vm.$v.value.asyncVal).to.be.false
+        done()
+      })
+    })
+  })
+
   describe('$v.value.$dirty', () => {
     it('should have a $dirty set to false on initialization', () => {
       const vm = new Vue({
@@ -364,7 +441,7 @@ describe('Validation plugin', () => {
           }
         }
       })
-      expect(vm.$v.group['abc.def.ghi']).to.be.undefined
+      expect(vm.$v.group['abc.def.ghi']).to.be.false
       expect(vm.$v.group.$invalid).to.be.true
     })
   })

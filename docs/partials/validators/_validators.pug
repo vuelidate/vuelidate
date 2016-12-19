@@ -25,19 +25,21 @@ mixin validatorRow(validator, params)
     | to help understanding them and writing your own as easy as possible.
   +subsection('Builtin validators')
     p.typo__p
-      | To use any of builtin validators, you have to import it from your sources.
+      | To use any of builtin validators, you have to import it from vuelidate library.
     pre(v-pre).language-javascript
       code.
         import { required, maxLength } from 'vuelidate/lib/validators'
     p.typo__p
       | You can also import specific validators directly, to avoid loading
       | unused ones in case your bundler doesn't support tree shaking.
+      | This is not required for Rollup or Webpack 2 among others.
     pre(v-pre).language-javascript
       code.
         import required from 'vuelidate/lib/validators/required'
         import maxLength from 'vuelidate/lib/validators/maxLength'
     p.typo__p
       | It is possible to use validators directly in browser by using a browser-ready bundle.
+      | Keep in mind this will always load all builtin validators at once.
     pre(v-pre).language-html
       code='<script src="vuelidate/dist/validators.min.js"></script>'
     pre(v-pre).language-javascript
