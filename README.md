@@ -1,4 +1,5 @@
 # vuelidate
+[![codecov](https://codecov.io/gh/monterail/vuelidate/branch/master/graph/badge.svg)](https://codecov.io/gh/monterail/vuelidate)
 
 > Simple, lightweight model-based validation for Vue.js
 
