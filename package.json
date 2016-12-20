@@ -1,6 +1,6 @@
 {
   "name": "vuelidate",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "description": "Simple, lightweight model-based validation for Vue.js",
   "contributors": [
     "Damian Dulisz <damian.dulisz@monterail.com>",

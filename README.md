@@ -4,7 +4,7 @@
 
 > Simple, lightweight model-based validation for Vue.js
 
-#### Current version: 0.1.1
+#### Current version: 0.2.0
 
 ### Features & characteristics:
 * Model based
