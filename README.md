@@ -31,8 +31,8 @@ You can import the library and use as a Vue plugin to enable the functionality g
 
 ```javascript
 import Vue from 'vue'
-import Validation from 'vuelidate'
-Vue.use(Validation)
+import Vuelidate from 'vuelidate'
+Vue.use(Vuelidate)
 ```
 
 Alternatively it is possible to import a mixin directly to components in which it will be used.
@@ -53,7 +53,7 @@ The browser-ready bundle is also provided in the package.
 ```
 
 ```javascript
-Vue.use(window.Validation)
+Vue.use(window.vuelidate.default)
 ```
 
 ## Basic usage
@@ -91,16 +91,20 @@ $v: {
     "minLength": false,
     "$invalid": true,
     "$dirty": false,
-    "$error": false
+    "$error": false,
+    "$pending": false
   },
   age: {
     "between": false
     "$invalid": true,
     "$dirty": false,
-    "$error": false
+    "$error": false,
+    "$pending": false
   }
 }
 ```
+
+Checkout the docs for more examples: [https://monterail.github.io/vuelidate/](https://monterail.github.io/vuelidate/)
 
 ## Contributing
 
