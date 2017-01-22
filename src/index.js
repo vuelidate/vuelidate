@@ -137,13 +137,21 @@ function makePendingAsyncVm (Vue, promise) {
 }
 
 function makeValidationVm (validations, parentVm, rootVm = parentVm, parentProp = null) {
-  const validationKeys = Object.keys(validations).filter(key => !!validations[key])
+  const validationKeys = Object.keys(validations).filter(key => key !== '$params' && !!validations[key])
   const dynamicKeys = validationKeys.map(mapDynamicKeyName)
 
   const computedRules = buildFromKeys(validationKeys, (key) => {
     const rule = validations[key]
     return mapValidator(rootVm, rule, key, parentVm, parentProp)
   }, mapDynamicKeyName)
+
+  const $params = buildFromKeys(validationKeys, k => {
+    const v = validations[k]
+    if (v.hasOwnProperty('$params')) {
+      return v.$params
+    }
+    return null
+  })
 
   const Vue = getVue(rootVm)
 
@@ -159,7 +167,7 @@ function makeValidationVm (validations, parentVm, rootVm = parentVm, parentProp 
     }
   })
 
-  return proxyVm(validationVm, validationKeys)
+  return proxyVm(validationVm, validationKeys, {$params: {enumerable: true, value: $params}})
 }
 
 function mapValidator (rootVm, rule, ruleKey, vm, vmProp) {
@@ -276,7 +284,7 @@ function mapGroup (rootVm, group, prop, parentVm) {
   return constant(vm)
 }
 
-function proxyVm (vm, originalKeys) {
+function proxyVm (vm, originalKeys, extras) {
   const redirectDef = {
     ...buildFromKeys(originalKeys, key => {
       let dynKey = mapDynamicKeyName(key)
@@ -300,7 +308,8 @@ function proxyVm (vm, originalKeys) {
       configurable: false,
       enumerable: false,
       value: true
-    }
+    },
+    ...extras
   }
 
   return Object.defineProperties({}, redirectDef)

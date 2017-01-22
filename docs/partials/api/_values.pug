@@ -42,6 +42,12 @@
           td.table__td
             | Indicates if any child async validator is currently pending. Always <kbd>false</kbd> if all validators are synchronous.
         tr.table__tr
+          td.table__td: kbd $params
+          td.table__td: strong object
+          td.table__td
+            | Represents all options and types of provided validators at given level.
+            | Very useful as an input to your error rendering system. Safe to use in translations.
+        tr.table__tr
           td.table__td: kbd $each
           td.table__td: strong object
           td.table__td

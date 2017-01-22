@@ -613,4 +613,61 @@ describe('Validation plugin', () => {
       expect(spy).to.have.been.calledTwice
     })
   })
+
+  describe('validator $params', () => {
+    it('should have default null $params object', () => {
+      const vm = new Vue({
+        ...base,
+        validations: {
+          value: { isOdd }
+        }
+      })
+      expect(vm.$v.value.$params.isOdd).to.be.equal(null)
+    })
+
+    it('should pass $params from validation function', () => {
+      const fn = () => true
+      fn.$params = {type: 'alwaysTrue'}
+
+      const vm = new Vue({
+        ...base,
+        validations: {
+          value: { fn }
+        }
+      })
+      expect(vm.$v.value.$params.fn.type).to.be.equal('alwaysTrue')
+    })
+
+    it('should default $params for nested validation object to set of nulls', () => {
+      const fn = () => true
+      fn.$params = {type: 'alwaysTrue'}
+      const vm = new Vue({
+        ...baseGroup,
+        validations: {
+          nested: {
+            value3: { isOdd },
+            value4: { isOdd }
+          }
+        }
+      })
+      expect(vm.$v.nested.$params).to.be.eql({value3: null, value4: null})
+    })
+
+    it('should pass $params from nested validation object', () => {
+      const fn = () => true
+      fn.$params = {type: 'alwaysTrue'}
+      const vm = new Vue({
+        ...baseGroup,
+        validations: {
+          nested: {
+            value3: { isOdd },
+            value4: { isOdd },
+            $params: { hello: 'world' }
+          }
+        }
+      })
+
+      expect(vm.$v.$params.nested.hello).to.be.equal('world')
+    })
+  })
 })

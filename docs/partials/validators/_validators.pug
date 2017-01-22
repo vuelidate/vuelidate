@@ -83,6 +83,8 @@ mixin validatorRow(validator, params)
               | Passes when at least one of provided validators passes.
             +validatorRow('and', ['validators...'])
               | Passes when all of provided validators passes.
+            +validatorRow('withParams', ['$params', 'validator'])
+              | Not really a validator, but a validator modifier. Adds $params object to the provided validator. Can be used on validation functions or even whole nested field validation objects. Useful for creating your own custom validators.
   +subsection('Custom validators')
     p.typo__p
       | You can easily write custom validators and combine them with builtin ones,
