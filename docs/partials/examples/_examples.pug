@@ -55,3 +55,11 @@
               return Boolean(await response.json())
             }
           }
+
+  +subsection('Delayed validation errors')
+    p.typo__p
+      | You can do anything you need with the $touch state, no matter how fancy your requirements are.
+      | It all boils down to calling $touch and $reset in the right moment. As an example of that,
+      | here is an easy to follow implementation of delayed error based on custom <kbd>setTimeout</kbd> logic.
+      | It triggers one second after last input.
+    +example('ExampleDelayedTouch')
