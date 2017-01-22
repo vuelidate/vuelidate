@@ -1,5 +1,6 @@
 // utilities
 const constant = c => () => c
+const noop = () => {}
 const buildFromKeys = (keys, fn, keyFn) => keys.reduce((build, key) => {
   build[keyFn ? keyFn(key) : key] = fn(key)
   return build
@@ -180,21 +181,52 @@ function unwrapMaybeAsync (vm, dynamicKey) {
 }
 
 function mapRule (rootVm, rule, ruleKey, parentVm, prop) {
+  let indirectWatcher = null
+
+  const runRule = () => rule.call(rootVm, parentVm[prop], parentVm)
+  let lastInputVal = {}
   return function () {
-    const validatorOutput = rule.call(rootVm, parentVm[prop], parentVm)
+    const isArrayDependant =
+      prop !== null &&
+      Array.isArray(parentVm) &&
+      parentVm.__ob__
 
-    // handle async validators that return a Promise
+    if (isArrayDependant) {
+      // force depend on the array
+      const arrayDep = parentVm.__ob__.dep
+      arrayDep.depend()
+
+      const target = arrayDep.constructor.target
+
+      if (!indirectWatcher) {
+        const Watcher = target.constructor
+        indirectWatcher = new Watcher(rootVm, runRule, noop, { lazy: true })
+      }
+
+      // if the update cause is only the array update
+      // and value stays the same, don't recalculate
+      if (!indirectWatcher.dirty && lastInputVal === parentVm[prop]) {
+        indirectWatcher.depend()
+        return target.value
+      }
+
+      lastInputVal = parentVm[prop]
+      indirectWatcher.evaluate()
+      indirectWatcher.depend()
+    }
+
+    const validatorOutput = indirectWatcher ? indirectWatcher.value : runRule()
+
     if (isPromise(validatorOutput)) {
+      // handle async validators that return a Promise
       return makePendingAsyncVm(getVue(rootVm), validatorOutput)
-    }
-
-    // support cross referencing validators, especially validation groups
-    if (isObject(validatorOutput) && validatorOutput.__isVuelidateVm) {
+    } else if (isObject(validatorOutput) && !!validatorOutput.__isVuelidateVm) {
+      // support cross referencing validators, especially validation groups
       return validatorOutput
+    } else {
+      // only standard sync validators left
+      return !!validatorOutput
     }
-
-    // only standard sync validators left
-    return !!validatorOutput
   }
 }
 
@@ -224,7 +256,9 @@ function trackCollection (rootVm, eachRule, parentVm, prop) {
     const vmByKey = {}
     vmList = newKeys.reduce((newList, key) => {
       const track = keyToTrack ? keyToTrack[key] : key
-      vmByKey[key] = newList[track] = newList[track] || vmList[track] || mapValidator(rootVm, strippedRule, key, childVm)
+      vmByKey[key] = newList[track] =
+        newList[track] || vmList[track] ||
+        mapValidator(rootVm, strippedRule, key, childVm)
       return newList
     }, {})
 

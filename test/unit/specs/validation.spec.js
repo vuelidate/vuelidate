@@ -535,4 +535,82 @@ describe('Validation plugin', () => {
       expect(vm.$v.list.$each[0].$dirty).to.be.true
     })
   })
+
+  describe('validating direct values with $each', () => {
+    const vmDef = (validator, tracker) => ({
+      data () {
+        return {
+          external: true,
+          list: [1, 2, 3]
+        }
+      },
+      validations: {
+        list: {
+          $each: {
+            $trackBy: tracker,
+            validator
+          }
+        }
+      }
+    })
+
+    it('should validate all items in list', () => {
+      const vm = new Vue(vmDef(isEven))
+      expect(vm.$v.list.$each[0].$invalid).to.be.true
+      expect(vm.$v.list.$each[1].$invalid).to.be.false
+      expect(vm.$v.list.$each[2].$invalid).to.be.true
+    })
+
+    it('should not loose $dirty after insertion based by index', () => {
+      const vm = new Vue(vmDef(isEven))
+      vm.$v.list.$each[0].$touch()
+      vm.list.unshift(5)
+      expect(vm.$v.list.$each[0].$dirty).to.be.true
+      expect(vm.$v.list.$each[1].$dirty).to.be.false
+      expect(vm.$v.list.$each[2].$dirty).to.be.false
+    })
+
+    it('should revalidate only changed items', () => {
+      const spy = sinon.spy(isEven)
+      const vm = new Vue(vmDef(spy))
+
+      expect(vm.$v.list.$each[0].$invalid).to.be.true
+      expect(vm.$v.list.$each[1].$invalid).to.be.false
+      expect(vm.$v.list.$each[2].$invalid).to.be.true
+
+      expect(spy).to.have.been.calledWith(1)
+      expect(spy).to.have.been.calledWith(2)
+      expect(spy).to.have.been.calledWith(3)
+      expect(spy).to.have.been.calledThrice
+      spy.reset()
+
+      vm.$set(vm.list, 1, 15)
+      expect(vm.$v.list.$each[0].$invalid).to.be.true
+      expect(vm.$v.list.$each[1].$invalid).to.be.true
+      expect(vm.$v.list.$each[2].$invalid).to.be.true
+      expect(spy).to.have.been.calledOnce
+      expect(spy).to.have.been.calledWith(15)
+    })
+
+    it('should revalidate all items with updated dependency', () => {
+      const spy = sinon.spy(function (val, arr, rootVm) {
+        return val > 2 ? !isEven(val) : this.external
+      })
+      const vm = new Vue(vmDef(spy))
+
+      expect(vm.$v.list.$each[0].$invalid).to.be.false
+      expect(vm.$v.list.$each[1].$invalid).to.be.false
+      expect(vm.$v.list.$each[2].$invalid).to.be.false
+      expect(spy).to.have.been.calledThrice
+      spy.reset()
+
+      vm.external = false
+      expect(vm.$v.list.$each[0].$invalid).to.be.true
+      expect(vm.$v.list.$each[1].$invalid).to.be.true
+      expect(vm.$v.list.$each[2].$invalid).to.be.false
+      expect(spy).to.have.been.calledWith(1)
+      expect(spy).to.have.been.calledWith(2)
+      expect(spy).to.have.been.calledTwice
+    })
+  })
 })
