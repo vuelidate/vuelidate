@@ -185,7 +185,7 @@ function makeValidationVm (validations, parentVm, rootVm = parentVm, parentProp 
     }
   })
 
-  return proxyVm(validationVm, validationKeys, {$params: {enumerable: true, value: $params}})
+  return proxyVm(validationVm, validationKeys, {$childParams: {enumerable: true, value: $params}})
 }
 
 function mapValidator (rootVm, rule, ruleKey, vm, vmProp) {

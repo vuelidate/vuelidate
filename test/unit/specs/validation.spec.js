@@ -615,8 +615,8 @@ describe('Validation plugin', () => {
     })
   })
 
-  describe('validator $params', () => {
-    it('should have default null $params object', () => {
+  describe('validator $childParams', () => {
+    it('should have default null $childParams object', () => {
       const vm = new Vue({
         ...base,
         validations: {
@@ -627,7 +627,7 @@ describe('Validation plugin', () => {
           }
         }
       })
-      expect(vm.$v.value.$params.isOdd).to.be.equal(null)
+      expect(vm.$v.value.$childParams.isOdd).to.be.equal(null)
     })
 
     it('should pass $params from validation function', () => {
@@ -640,7 +640,7 @@ describe('Validation plugin', () => {
           value: { fn }
         }
       })
-      expect(vm.$v.value.$params.fn.type).to.be.equal('alwaysTrue')
+      expect(vm.$v.value.$childParams.fn.type).to.be.equal('alwaysTrue')
     })
 
     it('should default $params for nested validation object to set of nulls', () => {
@@ -655,7 +655,7 @@ describe('Validation plugin', () => {
           }
         }
       })
-      expect(vm.$v.nested.$params).to.be.eql({value3: null, value4: null})
+      expect(vm.$v.nested.$childParams).to.be.eql({value3: null, value4: null})
     })
 
     it('should pass $params from nested validation object', () => {
@@ -672,7 +672,7 @@ describe('Validation plugin', () => {
         }
       })
 
-      expect(vm.$v.$params.nested.hello).to.be.equal('world')
+      expect(vm.$v.$childParams.nested.hello).to.be.equal('world')
     })
   })
 
