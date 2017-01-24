@@ -63,3 +63,9 @@
       | here is an easy to follow implementation of delayed error based on custom <kbd>setTimeout</kbd> logic.
       | It triggers one second after last input.
     +example('ExampleDelayedTouch')
+
+  +subsection('Accessing validator parameters')
+    p.typo__p
+      | You can access information about your validations through `$childParams` of a parent validator.
+      | This is be useful for reporting errors to users.
+    +example('ExampleParams')

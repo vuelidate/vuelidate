@@ -45,8 +45,8 @@
           td.table__td: kbd $childParams
           td.table__td: strong object
           td.table__td
-            | Represents all options and types of provided validators at given level.
-            | Very useful as an input to your error rendering system. Safe to use in translations.
+            | Contains types and parameters of all provided validators at the current level, as well as types and parameters of children, which are declared inside their `$params`.
+            | Useful as an input to your error rendering system. Safe to use in translated text.
         tr.table__tr
           td.table__td: kbd $each
           td.table__td: strong object
