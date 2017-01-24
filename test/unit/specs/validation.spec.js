@@ -1,12 +1,13 @@
 import Vue from 'vue'
+import withParams from 'src/validators/withParams'
 
-function isEven (v) {
+const isEven = withParams({ type: 'isEven' }, (v) => {
   return v % 2 === 0
-}
+})
 
-function isOdd (v) {
+const isOdd = withParams({ type: 'isOdd' }, (v) => {
   return v % 2 === 1
-}
+})
 
 const T = () => true
 const F = () => false
@@ -619,7 +620,11 @@ describe('Validation plugin', () => {
       const vm = new Vue({
         ...base,
         validations: {
-          value: { isOdd }
+          value: {
+            isOdd (v) {
+              return v % 2 === 1
+            }
+          }
         }
       })
       expect(vm.$v.value.$params.isOdd).to.be.equal(null)
@@ -668,6 +673,98 @@ describe('Validation plugin', () => {
       })
 
       expect(vm.$v.$params.nested.hello).to.be.equal('world')
+    })
+  })
+
+  describe('$v.$flattenParams', () => {
+    const vm = new Vue({
+      ...base,
+      data () {
+        return {
+          value: 5
+        }
+      },
+      validations: {
+        value: { isEven }
+      }
+    })
+
+    it('should return a list', () => {
+      expect(vm.$v.$flattenParams().length).to.be.equal(1)
+    })
+
+    it('should return validator params', () => {
+      expect(vm.$v.$flattenParams()).to.be.deep.equal([
+        { field: ['value'], name: 'isEven', params: { type: 'isEven' } }
+      ])
+    })
+
+    describe('for no validators', () => {
+      const vm = new Vue({
+        ...base,
+        data () {
+          return {
+            value: 5
+          }
+        },
+        validations: {
+          value: { isEven }
+        }
+      })
+
+      it('should return an empty', () => {
+        expect(vm.$v.$flattenParams()).to.be.empty
+      })
+    })
+
+    describe('for nested validators', () => {
+      const vm = new Vue({
+        ...base,
+        data () {
+          return {
+            first: {
+              foo: 5,
+              bar: 6
+            },
+            second: {
+              foo: 7,
+              bar: 8
+            }
+          }
+        },
+        validations: {
+          first: {
+            foo: { isEven },
+            bar: { isEven }
+          },
+          second: {
+            foo: { isEven },
+            bar: { isEven }
+          }
+        }
+      })
+
+      it('should work at the deepest validation level', () => {
+        expect(vm.$v.first.foo.$flattenParams()).to.be.deep.equal([
+          { path: [], name: 'isEven', params: { type: 'isEven' } }
+        ])
+      })
+
+      it('should return params of all leaves', () => {
+        expect(vm.$v.first.$flattenParams()).to.be.deep.equal([
+          { path: ['foo'], name: 'isEven', params: { type: 'isEven' } },
+          { path: ['bar'], name: 'isEven', params: { type: 'isEven' } }
+        ])
+      })
+
+      it('should flatten results from all children', () => {
+        expect(vm.$v.$flattenParams()).to.be.deep.equal([
+          { path: ['first', 'foo'], name: 'isEven', params: { type: 'isEven' } },
+          { path: ['first', 'bar'], name: 'isEven', params: { type: 'isEven' } },
+          { path: ['second', 'foo'], name: 'isEven', params: { type: 'isEven' } },
+          { path: ['second', 'bar'], name: 'isEven', params: { type: 'isEven' } }
+        ])
+      })
     })
   })
 })

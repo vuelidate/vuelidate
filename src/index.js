@@ -64,6 +64,23 @@ const defaultMethods = {
   },
   $reset () {
     setDirtyRecursive.call(this, false)
+  },
+  $flattenParams () {
+    let params = []
+    for (const key in this.params) {
+      const val = this[mapDynamicKeyName(key)]
+      if (isNested(val)) {
+        const childParams = val.$flattenParams()
+        for (let j = 0; j < childParams.length; j++) {
+          childParams[j].path.unshift(key)
+        }
+        params = params.concat(childParams)
+      } else {
+        console.log(key, this.params, val)
+        params.push({ path: [], name: key, params: this.params[key] })
+      }
+    }
+    return params
   }
 }
 
@@ -158,6 +175,7 @@ function makeValidationVm (validations, parentVm, rootVm = parentVm, parentProp 
   const validationVm = new Vue({
     data: {
       dirty: false,
+      params: $params,
       dynamicKeys
     },
     methods: defaultMethods,
