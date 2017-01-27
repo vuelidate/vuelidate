@@ -45,7 +45,8 @@
           td.table__td: kbd $params
           td.table__td: strong object
           td.table__td
-            | Contains types and parameters of all provided validators at the current level, as well as types and parameters of children, which are declared inside their `$params`.
+            | Contains types and parameters of all provided validators at the current level,
+            | as well as types and parameters of child validation groups, which may be declared using `withParams`.
             | Useful as an input to your error rendering system. Safe to use in translated text.
         tr.table__tr
           td.table__td: kbd $each

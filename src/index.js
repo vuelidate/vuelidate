@@ -67,7 +67,7 @@ const defaultMethods = {
   },
   $flattenParams () {
     let params = []
-    for (const key in this.params) {
+    for (const key in this.$params) {
       const val = this[mapDynamicKeyName(key)]
       if (isNested(val)) {
         const childParams = val.$flattenParams()
@@ -76,8 +76,7 @@ const defaultMethods = {
         }
         params = params.concat(childParams)
       } else {
-        console.log(key, this.params, val)
-        params.push({ path: [], name: key, params: this.params[key] })
+        params.push({ path: [], name: key, params: this.$params[key] })
       }
     }
     return params
@@ -154,7 +153,9 @@ function makePendingAsyncVm (Vue, promise) {
 }
 
 function makeValidationVm (validations, parentVm, rootVm = parentVm, parentProp = null) {
-  const validationKeys = Object.keys(validations).filter(key => key !== '$params' && !!validations[key])
+  const validationKeys = Object.keys(validations).filter(key => {
+    return key !== paramsSymbol && !!validations[key]
+  })
   const dynamicKeys = validationKeys.map(mapDynamicKeyName)
 
   const computedRules = buildFromKeys(validationKeys, (key) => {
@@ -163,11 +164,7 @@ function makeValidationVm (validations, parentVm, rootVm = parentVm, parentProp 
   }, mapDynamicKeyName)
 
   const $params = buildFromKeys(validationKeys, k => {
-    const v = validations[k]
-    if (v.hasOwnProperty('$params')) {
-      return v.$params
-    }
-    return null
+    return validations[k][paramsSymbol] || null
   })
 
   const Vue = getVue(rootVm)
@@ -175,8 +172,10 @@ function makeValidationVm (validations, parentVm, rootVm = parentVm, parentProp 
   const validationVm = new Vue({
     data: {
       dirty: false,
-      params: $params,
       dynamicKeys
+    },
+    beforeCreate () {
+      this.$params = $params
     },
     methods: defaultMethods,
     computed: {
@@ -185,7 +184,7 @@ function makeValidationVm (validations, parentVm, rootVm = parentVm, parentProp 
     }
   })
 
-  return proxyVm(validationVm, validationKeys, {$childParams: {enumerable: true, value: $params}})
+  return proxyVm(validationVm, validationKeys)
 }
 
 function mapValidator (rootVm, rule, ruleKey, vm, vmProp) {
@@ -327,7 +326,12 @@ function proxyVm (vm, originalKeys, extras) {
       enumerable: false,
       value: true
     },
-    ...extras
+    $params: {
+      enumerable: true,
+      get () {
+        return vm.$params
+      }
+    }
   }
 
   return Object.defineProperties({}, redirectDef)
@@ -359,5 +363,7 @@ function Validation (Vue) {
   Vue.mixin(validationMixin)
 }
 
-export { Validation, validationMixin, validateModel }
+import withParams, { paramsSymbol } from './withParams'
+
+export { Validation, validationMixin, validateModel, withParams }
 export default Validation
