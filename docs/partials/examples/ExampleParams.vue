@@ -6,14 +6,14 @@
     span.form-group__message(v-if="!$v.form.userName.required")
       | Field is required.
     span.form-group__message(v-if="!$v.form.userName.minLength")
-      | Field must have at least {{ $v.form.userName.$childParams.minLength.min }} characters.
+      | Field must have at least {{ $v.form.userName.$params.minLength.min }} characters.
     .form-group(v-bind:class="{ 'form-group--error': $v.form.password.$error }")
       label.form__label Nested B
       input.form__input(v-model.trim="form.password" @input="$v.form.password.$touch()" type="password")
     span.form-group__message(v-if="!$v.form.password.required")
       | Field is required.
     span.form-group__message(v-if="!$v.form.password.minLength")
-      | Field must have at least {{ $v.form.password.$childParams.minLength.min }} characters.
+      | Field must have at least {{ $v.form.password.$params.minLength.min }} characters.
 
     .form-group(v-bind:class="{ 'form-group--error': $v.form.$error }")
       span.form-group__message(v-if="$v.form.$error") Form is invalid.
