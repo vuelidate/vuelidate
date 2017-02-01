@@ -3,7 +3,7 @@ node_modules/
 lib/
 npm-debug.log
 test/unit/coverage
-test/unit/coverage
+test/ts/coverage
 gh-pages
 yarn.lock
 *.tgz
