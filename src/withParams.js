@@ -9,6 +9,6 @@ export default function withParams (params, subject) {
     subject = {...subject}
   }
 
-  subject[paramsSymbol] = Object.assign({}, entryParams, params)
+  subject[paramsSymbol] = { ...entryParams, ...params }
   return subject
 }

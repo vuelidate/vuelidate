@@ -1,5 +1,5 @@
 import Vue from 'vue'
-import withParams from 'src/validators/withParams'
+import { withParams } from 'src'
 
 const isEven = withParams({ type: 'isEven' }, (v) => {
   return v % 2 === 0
@@ -631,9 +631,7 @@ describe('Validation plugin', () => {
     })
 
     it('should pass $params from validation function', () => {
-      const fn = () => true
-      fn.$params = {type: 'alwaysTrue'}
-
+      const fn = withParams({type: 'alwaysTrue'}, () => true)
       const vm = new Vue({
         ...base,
         validations: {
@@ -644,8 +642,6 @@ describe('Validation plugin', () => {
     })
 
     it('should default $params for nested validation object to set of nulls', () => {
-      const fn = () => true
-      fn.$params = {type: 'alwaysTrue'}
       const vm = new Vue({
         ...baseGroup,
         validations: {
@@ -659,16 +655,13 @@ describe('Validation plugin', () => {
     })
 
     it('should pass $params from nested validation object', () => {
-      const fn = () => true
-      fn.$params = {type: 'alwaysTrue'}
       const vm = new Vue({
         ...baseGroup,
         validations: {
-          nested: {
+          nested: withParams({ hello: 'world' }, {
             value3: { isOdd },
-            value4: { isOdd },
-            $params: { hello: 'world' }
-          }
+            value4: { isOdd }
+          })
         }
       })
 
@@ -694,8 +687,9 @@ describe('Validation plugin', () => {
     })
 
     it('should return validator params', () => {
+      // console.log(vm.$v.$flattenParams()[0])
       expect(vm.$v.$flattenParams()).to.be.deep.equal([
-        { field: ['value'], name: 'isEven', params: { type: 'isEven' } }
+        { path: ['value'], name: 'isEven', params: { type: 'isEven' } }
       ])
     })
 
@@ -708,11 +702,11 @@ describe('Validation plugin', () => {
           }
         },
         validations: {
-          value: { isEven }
+          value: {}
         }
       })
 
-      it('should return an empty', () => {
+      it('should return an empty array', () => {
         expect(vm.$v.$flattenParams()).to.be.empty
       })
     })
