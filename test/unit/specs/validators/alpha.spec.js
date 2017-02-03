@@ -21,10 +21,6 @@ describe('alpha validator', () => {
     expect(alpha('ABCDEFGHIJKLMNOPQRSTUVWXYZ')).to.be.true
   })
 
-  it('should validate english letters uppercase', () => {
-    expect(alpha('ABCDEFGHIJKLMNOPQRSTUVWXYZ')).to.be.true
-  })
-
   it('should not validate alphanum', () => {
     expect(alpha('abc123')).to.be.false
   })
