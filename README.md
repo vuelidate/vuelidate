@@ -42,7 +42,7 @@ import { validationMixin } from 'vuelidate'
 
 var Component = Vue.extend({
   mixins: [validationMixin],
-  validation: { ... }
+  validations: { ... }
 })
 ```
 
