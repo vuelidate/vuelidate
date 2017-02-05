@@ -50,6 +50,8 @@ The browser-ready bundle is also provided in the package.
 
 ```html
 <script src="vuelidate/dist/vuelidate.min.js"></script>
+<!-- The builtin validators is added by adding the following line. -->
+<script src="vuelidate/dist/validators.min.js"></script>
 ```
 
 ```javascript
@@ -116,7 +118,7 @@ npm install
 npm run dev
 
 # create UMD bundle.
-npm run bundle
+npm run build
 
 # Create docs inside /gh-pages ready to be published
 npm run docs
