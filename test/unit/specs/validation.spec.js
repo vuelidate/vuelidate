@@ -638,7 +638,7 @@ describe('Validation plugin', () => {
           value: { fn }
         }
       })
-      expect(vm.$v.value.$params.fn.type).to.be.equal('alwaysTrue')
+      expect(vm.$v.value.$params.fn).to.deep.equal({type: 'alwaysTrue'})
     })
 
     it('should default $params for nested validation object to set of nulls', () => {
@@ -652,20 +652,6 @@ describe('Validation plugin', () => {
         }
       })
       expect(vm.$v.nested.$params).to.be.eql({value3: null, value4: null})
-    })
-
-    it('should pass $params from nested validation object', () => {
-      const vm = new Vue({
-        ...baseGroup,
-        validations: {
-          nested: withParams({ hello: 'world' }, {
-            value3: { isOdd },
-            value4: { isOdd }
-          })
-        }
-      })
-
-      expect(vm.$v.$params.nested.hello).to.be.equal('world')
     })
   })
 

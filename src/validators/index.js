@@ -9,7 +9,6 @@ import required from './required'
 import sameAs from './sameAs'
 import or from './or'
 import and from './and'
-import withParams from './withParams'
 
 export {
   alpha,
@@ -22,6 +21,5 @@ export {
   required,
   sameAs,
   or,
-  and,
-  withParams
+  and
 }

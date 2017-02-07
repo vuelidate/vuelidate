@@ -1,4 +1,4 @@
-import withParams from './withParams'
+import withParams from '../withParams'
 export default equalTo => {
   const $params = {type: 'sameAs', eq: equalTo}
   return withParams($params, function (value, parentVm) {

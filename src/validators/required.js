@@ -1,4 +1,4 @@
-import withParams from './withParams'
+import withParams from '../withParams'
 export default withParams({type: 'required'}, value => {
   if (Array.isArray(value)) return !!value.length
 

@@ -1,5 +1,5 @@
 import required from './required'
-import withParams from './withParams'
+import withParams from '../withParams'
 
 export default (min, max) =>
   withParams({type: 'between', min, max}, value =>

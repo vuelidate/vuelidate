@@ -1,4 +1,4 @@
-import withParams from './withParams'
+import withParams from '../withParams'
 export default withParams({type: 'alphaNum'}, value => {
   if (typeof value === 'undefined' || value === null || value === '') {
     return true

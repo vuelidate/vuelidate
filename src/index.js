@@ -14,8 +14,15 @@ function isPromise (object) {
   return (typeof object === 'object' || typeof object === 'function') && typeof object.then === 'function'
 }
 
+function RuleOut ($v, $p) {
+  this.$v = $v
+  this.$p = $p
+}
+
 function isNested (ruleset) {
-  return isObject(ruleset) && !ruleset.__isVuelidateAsyncVm
+  return isObject(ruleset) &&
+    !(ruleset instanceof RuleOut) &&
+    !ruleset.__isVuelidateAsyncVm
 }
 
 let _cachedVue = null
@@ -113,11 +120,24 @@ const defaultComputed = {
   },
   $pending () {
     return this.dynamicKeys.some(ruleOrNested => {
-      const val = this[ruleOrNested]
+      const raw = this[ruleOrNested]
+      if (isNested(raw)) {
+        return raw.$pending
+      }
+      const val = raw.$v
       if (val.__isVuelidateAsyncVm) {
         return val.pending
       }
-      return isNested(val) ? val.$pending : false
+      return false
+    })
+  },
+  $params () {
+    return buildFromKeys(this.dynamicKeys.map(k => k.substr(3)), ruleOrNested => {
+      const raw = this[mapDynamicKeyName(ruleOrNested)]
+      if (isNested(raw)) {
+        return null
+      }
+      return raw.$p
     })
   }
 }
@@ -153,19 +173,13 @@ function makePendingAsyncVm (Vue, promise) {
 }
 
 function makeValidationVm (validations, parentVm, rootVm = parentVm, parentProp = null) {
-  const validationKeys = Object.keys(validations).filter(key => {
-    return key !== paramsSymbol && !!validations[key]
-  })
+  const validationKeys = Object.keys(validations).filter(key => !!validations[key])
   const dynamicKeys = validationKeys.map(mapDynamicKeyName)
 
   const computedRules = buildFromKeys(validationKeys, (key) => {
     const rule = validations[key]
     return mapValidator(rootVm, rule, key, parentVm, parentProp)
   }, mapDynamicKeyName)
-
-  const $params = buildFromKeys(validationKeys, k => {
-    return validations[k][paramsSymbol] || null
-  })
 
   const Vue = getVue(rootVm)
 
@@ -174,16 +188,12 @@ function makeValidationVm (validations, parentVm, rootVm = parentVm, parentProp 
       dirty: false,
       dynamicKeys
     },
-    beforeCreate () {
-      this.$params = $params
-    },
     methods: defaultMethods,
     computed: {
       ...computedRules,
       ...defaultComputed
     }
   })
-
   return proxyVm(validationVm, validationKeys)
 }
 
@@ -198,7 +208,11 @@ function mapValidator (rootVm, rule, ruleKey, vm, vmProp) {
 }
 
 function unwrapMaybeAsync (vm, dynamicKey) {
-  const val = vm[dynamicKey]
+  const raw = vm[dynamicKey]
+  if (isNested(raw)) {
+    return raw
+  }
+  const val = raw.$v
   if (typeof val === 'object' && val.__isVuelidateAsyncVm) {
     return val.value
   }
@@ -208,7 +222,26 @@ function unwrapMaybeAsync (vm, dynamicKey) {
 function mapRule (rootVm, rule, ruleKey, parentVm, prop) {
   let indirectWatcher = null
 
-  const runRule = () => rule.call(rootVm, parentVm[prop], parentVm)
+  const runRule = () => {
+    pushParams()
+    const validatorOutput = rule.call(rootVm, parentVm[prop], parentVm)
+    const params = popParams()
+    const $p = params && params.$sub ? params.$sub.length > 1 ? params : params.$sub[0] : null
+
+    let $v = null
+    if (isPromise(validatorOutput)) {
+      // handle async validators that return a Promise
+      $v = makePendingAsyncVm(getVue(rootVm), validatorOutput)
+    } else if (isObject(validatorOutput) && !!validatorOutput.__isVuelidateVm) {
+      // support cross referencing validators, especially validation groups
+      $v = validatorOutput
+    } else {
+      // only standard sync validators left
+      $v = !!validatorOutput
+    }
+
+    return new RuleOut($v, $p)
+  }
   let lastInputVal = {}
   return function () {
     const isArrayDependant =
@@ -240,18 +273,7 @@ function mapRule (rootVm, rule, ruleKey, parentVm, prop) {
       indirectWatcher.depend()
     }
 
-    const validatorOutput = indirectWatcher ? indirectWatcher.value : runRule()
-
-    if (isPromise(validatorOutput)) {
-      // handle async validators that return a Promise
-      return makePendingAsyncVm(getVue(rootVm), validatorOutput)
-    } else if (isObject(validatorOutput) && !!validatorOutput.__isVuelidateVm) {
-      // support cross referencing validators, especially validation groups
-      return validatorOutput
-    } else {
-      // only standard sync validators left
-      return !!validatorOutput
-    }
+    return indirectWatcher ? indirectWatcher.value : runRule()
   }
 }
 
@@ -325,12 +347,6 @@ function proxyVm (vm, originalKeys, extras) {
       configurable: false,
       enumerable: false,
       value: true
-    },
-    $params: {
-      enumerable: true,
-      get () {
-        return vm.$params
-      }
     }
   }
 
@@ -348,22 +364,85 @@ const validationMixin = {
       options.computed = {}
     }
 
-    options.computed.$v = () => validateModel(this, validations)
+    if (typeof validations === 'function') {
+      const getV = () => {
+        return validateModel(this, validations.call(this))
+      }
+      options.computed.$v = getV
+    } else {
+      options.computed.$v = () => validateModel(this, validations)
+    }
   }
 }
 
 const validateModel = (model, validations) => makeValidationVm(validations, model)
 
-function Validation (Vue) {
+function Vuelidate (Vue) {
   /* istanbul ignore if */
-  if (Validation.installed) {
+  if (Vuelidate.installed) {
     return
   }
   _cachedVue = Vue
   Vue.mixin(validationMixin)
 }
 
-import withParams, { paramsSymbol } from './withParams'
+function withParams (paramsOrClosure, maybeSubject) {
+  if (typeof paramsOrClosure === 'object' && maybeSubject !== undefined) {
+    return withParamsDirect(paramsOrClosure, maybeSubject)
+  }
+  return withParamsClosure(paramsOrClosure)
+}
 
-export { Validation, validationMixin, validateModel, withParams }
-export default Validation
+const stack = []
+withParams.target = null
+
+function pushParams () {
+  if (withParams.target !== null) {
+    stack.push(withParams.target)
+  }
+  withParams.target = {}
+}
+
+function popParams () {
+  const lastTarget = withParams.target
+  const newTarget = withParams.target = stack.pop() || null
+  if (newTarget) {
+    if (!Array.isArray(newTarget.$sub)) {
+      newTarget.$sub = []
+    }
+    newTarget.$sub.push(lastTarget)
+  }
+  return lastTarget
+}
+
+function addParams (params) {
+  if (typeof params === 'object' && !Array.isArray(params)) {
+    withParams.target = {...withParams.target, ...params}
+  } else {
+    throw new Error('params must be an object')
+  }
+}
+
+function withParamsDirect (params, validator) {
+  return withParamsClosure(add => {
+    return function (...args) {
+      add(params)
+      return validator.apply(this, args)
+    }
+  })
+}
+
+function withParamsClosure (closure) {
+  const validator = closure(addParams)
+  return function (...args) {
+    pushParams()
+    try {
+      return validator.apply(this, args)
+    } finally {
+      popParams()
+    }
+  }
+}
+
+export { Vuelidate, validationMixin, validateModel, withParams }
+export default Vuelidate
