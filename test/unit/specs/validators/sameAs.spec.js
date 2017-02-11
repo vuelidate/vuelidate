@@ -6,14 +6,6 @@ describe('sameAs validator', () => {
     second: 'world'
   }
 
-  it('should validate empty string', () => {
-    expect(sameAs('second')('', parentVm)).to.be.true
-  })
-
-  it('should validate null', () => {
-    expect(sameAs('second')(null, parentVm)).to.be.true
-  })
-
   it('should not validate different string', () => {
     expect(sameAs('first')('world', parentVm)).to.be.false
     expect(sameAs('second')('hello', parentVm)).to.be.false
