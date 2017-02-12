@@ -1,6 +1,14 @@
 import email from 'src/validators/email'
 
 describe('email validator', () => {
+  it('should validate undefined', () => {
+    expect(email(undefined)).to.be.true
+  })
+
+  it('should validate null', () => {
+    expect(email(null)).to.be.true
+  })
+
   it('should validate empty string', () => {
     expect(email('')).to.be.true
   })

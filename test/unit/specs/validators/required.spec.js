@@ -13,6 +13,10 @@ describe('required validator', () => {
     expect(required([1])).to.be.true
   })
 
+  it('should not validate undefined', () => {
+    expect(required(undefined)).to.be.false
+  })
+
   it('should not validate null', () => {
     expect(required(null)).to.be.false
   })

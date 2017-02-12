@@ -1,7 +1,11 @@
 import numeric from 'src/validators/numeric'
 
 describe('numeric validator', () => {
-  it('should validate null string', () => {
+  it('should validate undefined', () => {
+    expect(numeric(undefined)).to.be.true
+  })
+
+  it('should validate null', () => {
     expect(numeric(null)).to.be.true
   })
 

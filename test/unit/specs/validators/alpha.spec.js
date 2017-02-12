@@ -1,7 +1,11 @@
 import alpha from 'src/validators/alpha'
 
 describe('alpha validator', () => {
-  it('should validate null string', () => {
+  it('should validate undefined', () => {
+    expect(alpha(undefined)).to.be.true
+  })
+
+  it('should validate null', () => {
     expect(alpha(null)).to.be.true
   })
 
