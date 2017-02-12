@@ -1,6 +1,10 @@
 import alpha from 'src/validators/alpha'
 
 describe('alpha validator', () => {
+  it('should validate null string', () => {
+    expect(alpha(null)).to.be.true
+  })
+
   it('should validate empty string', () => {
     expect(alpha('')).to.be.true
   })
