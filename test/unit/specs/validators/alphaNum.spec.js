@@ -1,6 +1,10 @@
 import alphaNum from 'src/validators/alphaNum'
 
 describe('alphaNum validator', () => {
+  it('should validate null string', () => {
+    expect(alphaNum(null)).to.be.true
+  })
+
   it('should validate empty string', () => {
     expect(alphaNum('')).to.be.true
   })
