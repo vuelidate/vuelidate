@@ -1,0 +1,17 @@
+{
+    "compilerOptions": {
+        "baseUrl": "node_modules",
+        "lib": [
+            "dom",
+            "es2015"
+        ],
+        "experimentalDecorators": true,
+        "listEmittedFiles": false,
+        "module": "commonjs",
+        "moduleResolution": "Node",
+        "target": "es5"
+    },
+    "exclude": [
+        "node_modules"
+    ]
+}
