@@ -359,7 +359,7 @@ const validationMixin = {
     if (!options.validations) return
     const validations = options.validations
 
-    /* istanbul ignore if */
+    /* istanbul ignore else */
     if (typeof options.computed === 'undefined') {
       options.computed = {}
     }
@@ -378,17 +378,12 @@ const validationMixin = {
 const validateModel = (model, validations) => makeValidationVm(validations, model)
 
 function Vuelidate (Vue) {
-  /* istanbul ignore if */
-  if (Vuelidate.installed) {
-    return
-  }
-  _cachedVue = Vue
   Vue.mixin(validationMixin)
 }
 
-function withParams (paramsOrClosure, maybeSubject) {
-  if (typeof paramsOrClosure === 'object' && maybeSubject !== undefined) {
-    return withParamsDirect(paramsOrClosure, maybeSubject)
+function withParams (paramsOrClosure, maybeValidator) {
+  if (typeof paramsOrClosure === 'object' && maybeValidator !== undefined) {
+    return withParamsDirect(paramsOrClosure, maybeValidator)
   }
   return withParamsClosure(paramsOrClosure)
 }
