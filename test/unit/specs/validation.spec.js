@@ -613,4 +613,29 @@ describe('Validation plugin', () => {
       expect(spy).to.have.been.calledTwice
     })
   })
+
+  describe('for functional validations', () => {
+    it('validateions as function called with vue instance', () => {
+      const spy = sinon.spy()
+      const vm = new Vue({
+        ...base,
+        methods: {
+          myMethods () {
+            spy()
+          }
+        },
+        validations (self) {
+          self.$options.methods.myMethods()
+          return {
+            value: { isEven }
+          }
+        }
+      })
+      sinon.stub(vm, 'myMethods')
+      expect(vm.$v.value.$invalid).to.be.false
+      vm.value = 3
+      expect(vm.$v.value.$invalid).to.be.true
+      expect(spy).to.have.been.called
+    })
+  })
 })

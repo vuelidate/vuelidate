@@ -310,7 +310,7 @@ const validationMixin = {
   beforeCreate () {
     const options = this.$options
     if (!options.validations) return
-    const validations = options.validations
+    const validations = typeof options.validations === 'function' ? options.validations(this) : options.validations
 
     /* istanbul ignore if */
     if (typeof options.computed === 'undefined') {
