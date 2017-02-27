@@ -49,6 +49,34 @@ describe('Validation plugin', () => {
     expect(vm.$v).to.exist
   })
 
+  it('should have a $v key while not overriding existing computed', () => {
+    const vm = new Vue({
+      ...base,
+      validations: {
+        value: { isEven }
+      },
+      computed: {
+        x () {
+          return 1
+        }
+      }
+    })
+    expect(vm.$v).to.exist
+    expect(vm.x).to.equal(1)
+  })
+
+  it('should have a $v key defined if used as function', () => {
+    const vm = new Vue({
+      ...base,
+      validations () {
+        return {
+          value: { isEven }
+        }
+      }
+    })
+    expect(vm.$v).to.exist
+  })
+
   it('should not interfere with lifecycle hooks', () => {
     const createSpy = sinon.spy()
     const Ctor = Vue.extend({
@@ -90,6 +118,12 @@ describe('Validation plugin', () => {
       const { vm } = setupAsync()
       vm.value = 'x1'
       expect(vm.$v.value.$pending).to.be.true
+    })
+
+    it('$pending should cascade to root $v', () => {
+      const { vm } = setupAsync()
+      vm.value = 'x1'
+      expect(vm.$v.$pending).to.be.true
     })
 
     it('should not be computed without getter evaluation', () => {

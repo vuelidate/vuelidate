@@ -1,6 +1,5 @@
 // utilities
 const constant = c => () => c
-const noop = () => {}
 const buildFromKeys = (keys, fn, keyFn) => keys.reduce((build, key) => {
   build[keyFn ? keyFn(key) : key] = fn(key)
   return build
@@ -258,7 +257,7 @@ function mapRule (rootVm, rule, ruleKey, parentVm, prop) {
 
       if (!indirectWatcher) {
         const Watcher = target.constructor
-        indirectWatcher = new Watcher(rootVm, runRule, noop, { lazy: true })
+        indirectWatcher = new Watcher(rootVm, runRule, null, { lazy: true })
       }
 
       // if the update cause is only the array update
@@ -359,7 +358,6 @@ const validationMixin = {
     if (!options.validations) return
     const validations = options.validations
 
-    /* istanbul ignore else */
     if (typeof options.computed === 'undefined') {
       options.computed = {}
     }

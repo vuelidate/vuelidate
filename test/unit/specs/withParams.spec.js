@@ -7,6 +7,15 @@ describe('withParams validator modifier', () => {
     withParams.target = null
   })
 
+  it('should throw on invalid params', () => {
+    expect(() => withParams([], func)).to.throw
+  })
+
+  it('should throw on invalid params in closure', () => {
+    const v = withParams((addParams) => () => addParams('notObject'))
+    expect(v).to.throw('params must be an object')
+  })
+
   it('should throw on invalid input', () => {
     expect(() => withParams({}, 'string')).to.throw
   })
@@ -37,5 +46,20 @@ describe('withParams validator modifier', () => {
     withParams($params2, withParams($params1, func))('test')
     expect(withParams.target.$sub[0])
       .to.deep.equal({a: 1, b: 2, $sub: [{a: 0, c: 3}]})
+  })
+
+  it('should stack multiple $sub keys', () => {
+    const $params1 = {a: 0, c: 3}
+    const $params2 = {a: 1, b: 2}
+    const $params3 = {a: 2, b: 3}
+    withParams.target = {}
+    withParams($params1, v => {
+      const v1 = withParams($params2, func)(v)
+      const v2 = withParams($params3, func)(v)
+      return v1 && v2
+    })('test')
+
+    expect(withParams.target.$sub[0])
+      .to.deep.equal({a: 0, c: 3, $sub: [{a: 1, b: 2}, {a: 2, b: 3}]})
   })
 })
