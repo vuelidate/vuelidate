@@ -16,8 +16,15 @@
     "**/.*",
     "node_modules",
     "bower_components",
+    "gh-pages",
+    "static",
     "test",
-    "tests",
-    "yarn.lock"
+    "build",
+    "config",
+    "docs",
+    "yarn.lock",
+    "circle.yml",
+    "*.html",
+    "*.tgz"
   ]
 }

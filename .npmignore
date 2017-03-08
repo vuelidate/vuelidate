@@ -1,9 +1,12 @@
+gh-pages
 static
+
 test
 build
 config
 docs
 .*
 yarn.lock
+circle.yml
 *.html
 *.tgz
