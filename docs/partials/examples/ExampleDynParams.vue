@@ -1,19 +1,21 @@
 <template lang="pug">
   div
+    .form-group
+      label.form__label Validator name
+      input.form__input(v-model.trim="valName" @input="$v.name.$touch()")
+    .form-group
+      label.form__label Dynamic min length
+      input.form__input(type="number" v-model.number="minLength" @input="$v.name.$touch()")
     .form-group(v-bind:class="{ 'form-group--error': $v.name.$error }")
       label.form__label Name
       input.form__input(v-model.trim="name" @input="$v.name.$touch()")
     span.form-group__message(v-if="!$v.name[valName]") Field is invalid
     pre
       | $v: {{ $v }}
-    .form-group
-      label.form__label min length
-      input.form__input(type="number" v-model="minLength")
-      input.form__input(v-model="valName")
 </template>
 
 <script>
-import { or, minLength, alpha } from 'vuelidate/lib/validators'
+import { minLength } from 'vuelidate/lib/validators'
 
 export default {
   data () {
@@ -26,7 +28,7 @@ export default {
   validations () {
     return {
       name: {
-        [this.valName]: or(function (v) { return minLength(this.minLength)(v) }, alpha)
+        [this.valName]: minLength(this.minLength)
       }
     }
   }
