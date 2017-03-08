@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang=en><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1,maximum-scale=1"><title>Vuelidate | A Vue.js model validation library</title><link rel=icon href=static/img/vue-logo.e1ea82c.png type=image/x-icon><meta name=description content="Simple, lightweight model-based validation for Vue.js"><meta property=og:title content="Vuelidate | A Vue.js library."><meta property=og:site_name content="Vuelidate | A Vue.js library."><meta property=og:url content=http://monterail.github.io/vuelidate><meta property=og:description content="Simple, lightweight model-based validation for Vue.js"><meta property=og:image content=http://monterail.github.io/vue-multiselect/static/vue-logo.png><meta property=twitter:image content=http://monterail.github.io/vue-multiselect/static/vue-logo.png><meta property=twitter:title content="Vuelidate | A Vue.js library."><meta property=twitter:description content="Simple, lightweight model-based validation for Vue.js"><link href=static/css/app.3faca2b162ffc0212a05ff07a164bb24.css rel=stylesheet></head><body><div id=app><section class=start v-bind:style=gradient><div class=center-vertically><h1 class=typo__h1><img class=logo src=static/img/vue-logo.e1ea82c.png>Vuelidate<small class=version>(0.2.0)</small></h1><h3 class=typo__h3>Simple, lightweight model-based validation for <a class=typo__link href=http://vuejs.org target=_BLANK>Vue.js 2.0</a></h3><div class="grid__row grid__row--centered"><div class="grid__column grid__unit--md-6"><div class=multiselect-example__container><div class="grid__row start__list"><div class="grid__column grid__unit--md-6 list"><ul class=list__ul><li class=typo__li>Model based</li><li class=typo__li>Decoupled from templates</li><li class=typo__li>Dependency free, minimalistic library</li><li class=typo__li><a class=typo__link href=#sub-collections-validation>Support for collection validations</a></li><li class=typo__li><a class=typo__link href=#sub-data-nesting>Support for nested models</a></li></ul></div><div class="grid__column grid__unit--md-6 list"><ul class=list__ul><li class=typo__li><a class=typo__link href=#sub-contextified-validators>Contextified validators</a></li><li class=typo__li>Easy to use with custom validators (e.g. Moment.js)</li><li class=typo__li>Support for function composition</li><li class=typo__li>Validates different data sources: Vuex getters, computed values, etc.</li><li class=typo__li>High test coverage</li></ul></div></div></div></div></div><div class="grid__row grid__row--centered"><div class="grid__column utils--center"><a class="button button--large button--secondary button--github" href=https://github.com/monterail/vuelidate target=_BLANK>View on GitHub</a><a class="button button--large" href=#getting-started>Getting started & examples</a></div></div></div></section><div class="grid__row docs"><div class="grid__columns grid__unit--sm-3 small--hidden"><ul class=list :class="{ 'list--sticky': isNavSticky }"><li class=list__heading><a class="link blank__link" href=#getting-started>Getting started</a></li><li class=list__element><a class="link list__link" href=#sub-package-content>Package content</a></li><li class=list__element><a class="link list__link" href=#sub-installation>Installation</a></li><li class=list__element><a class="link list__link" href=#sub-basic-usage>Basic usage</a></li><li class=list__heading><a class="link blank__link" href=#examples>Examples</a></li><li class=list__element><a class="link list__link" href=#sub-basic-form>Basic form</a></li><li class=list__element><a class="link list__link" href=#sub-contextified-validators>Contextified validators</a></li><li class=list__element><a class="link list__link" href=#sub-data-nesting>Data nesting</a></li><li class=list__element><a class="link list__link" href=#sub-validation-groups>Validation Groups</a></li><li class=list__element><a class="link list__link" href=#sub-collections-validation>Collections validation</a></li><li class=list__element><a class="link list__link" href=#sub-asynchronous-validation>Asynchronous validation</a></li><li class=list__heading><a class="link blank__link" href=#a-p-i>API</a></li><li class=list__element><a class="link list__link" href=#sub-v-values>$v values</a></li><li class=list__element><a class="link list__link" href=#sub-v-methods>$v methods</a></li><li class=list__element><a class="link list__link" href=#sub-config-keywords>Config keywords</a></li><li class=list__heading><a class="link blank__link" href=#validators>Validators</a></li><li class=list__element><a class="link list__link" href=#sub-builtin-validators>Builtin validators</a></li><li class=list__element><a class="link list__link" href=#sub-custom-validators>Custom validators</a></li></ul></div><div class="grid__columns grid__unit--sm-12 grid__unit--md-9"><div class=grid__row><div class=grid__column><section class=docs id=getting-started><h1 class=typo__h1>Getting started</h1><hr class=typo__hr><div class=grid__row><div class=grid__column><h2 class=typo__h2 id=sub-package-content>Package content</h2><p class=typo__p>Simple, lightweight model-based validation for Vue.js</p><p class=typo__p>You can read the <a class=typo__link href=http://monterail.com/blog/2016/rethinking-validations-for-vue-js/ alt="Rethinking validations for vue.js" target=_BLANK>introduction post</a> for more insight on how this solution differs from other validation libraries.</p></div></div><div class=grid__row><div class=grid__column><h2 class=typo__h2 id=sub-installation>Installation</h2><p class=typo__p>Package is installable via npm</p><pre class=language-bash><code>npm install vuelidate --save</code></pre></div></div><div class=grid__row><div class=grid__column><h2 class=typo__h2 id=sub-basic-usage>Basic usage</h2><p class=typo__p>You can import the library and <kbd>use</kbd> as a Vue plugin to enable the functionality globally on all components containing validation configuration.</p><pre class=language-javascript><code>import Vue from 'vue'
+<!DOCTYPE html><html lang=en><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1,maximum-scale=1"><title>Vuelidate | A Vue.js model validation library</title><link rel=icon href=static/img/vue-logo.e1ea82c.png type=image/x-icon><meta name=description content="Simple, lightweight model-based validation for Vue.js"><meta property=og:title content="Vuelidate | A Vue.js library."><meta property=og:site_name content="Vuelidate | A Vue.js library."><meta property=og:url content=http://monterail.github.io/vuelidate><meta property=og:description content="Simple, lightweight model-based validation for Vue.js"><meta property=og:image content=http://monterail.github.io/vue-multiselect/static/vue-logo.png><meta property=twitter:image content=http://monterail.github.io/vue-multiselect/static/vue-logo.png><meta property=twitter:title content="Vuelidate | A Vue.js library."><meta property=twitter:description content="Simple, lightweight model-based validation for Vue.js"><link href=static/css/app.a2b5d34569f29c1b3a7efe3201d528ca.css rel=stylesheet></head><body><div id=app><section class=start v-bind:style=gradient><div class=center-vertically><h1 class=typo__h1><img class=logo src=static/img/vue-logo.e1ea82c.png>Vuelidate<small class=version>(0.3.0)</small></h1><h3 class=typo__h3>Simple, lightweight model-based validation for <a class=typo__link href=http://vuejs.org target=_BLANK>Vue.js 2.0</a></h3><div class="grid__row grid__row--centered"><div class="grid__column grid__unit--md-6"><div class=multiselect-example__container><div class="grid__row start__list"><div class="grid__column grid__unit--md-6 list"><ul class=list__ul><li class=typo__li>Model based</li><li class=typo__li>Decoupled from templates</li><li class=typo__li>Dependency free, minimalistic library</li><li class=typo__li><a class=typo__link href=#sub-collections-validation>Support for collection validations</a></li><li class=typo__li><a class=typo__link href=#sub-data-nesting>Support for nested models</a></li></ul></div><div class="grid__column grid__unit--md-6 list"><ul class=list__ul><li class=typo__li><a class=typo__link href=#sub-contextified-validators>Contextified validators</a></li><li class=typo__li>Easy to use with custom validators (e.g. Moment.js)</li><li class=typo__li>Support for function composition</li><li class=typo__li>Validates different data sources: Vuex getters, computed values, etc.</li><li class=typo__li>High test coverage</li></ul></div></div></div></div></div><div class="grid__row grid__row--centered"><div class="grid__column utils--center"><a class="button button--large button--secondary button--github" href=https://github.com/monterail/vuelidate target=_BLANK>View on GitHub</a><a class="button button--large" href=#getting-started>Getting started & examples</a></div></div></div></section><div class="grid__row docs"><div class="grid__columns grid__unit--sm-3 small--hidden"><ul class=list :class="{ 'list--sticky': isNavSticky }"><li class=list__heading><a class="link blank__link" href=#getting-started>Getting started</a></li><li class=list__element><a class="link list__link" href=#sub-package-content>Package content</a></li><li class=list__element><a class="link list__link" href=#sub-installation>Installation</a></li><li class=list__element><a class="link list__link" href=#sub-basic-usage>Basic usage</a></li><li class=list__heading><a class="link blank__link" href=#examples>Examples</a></li><li class=list__element><a class="link list__link" href=#sub-basic-form>Basic form</a></li><li class=list__element><a class="link list__link" href=#sub-contextified-validators>Contextified validators</a></li><li class=list__element><a class="link list__link" href=#sub-data-nesting>Data nesting</a></li><li class=list__element><a class="link list__link" href=#sub-validation-groups>Validation Groups</a></li><li class=list__element><a class="link list__link" href=#sub-collections-validation>Collections validation</a></li><li class=list__element><a class="link list__link" href=#sub-asynchronous-validation>Asynchronous validation</a></li><li class=list__element><a class="link list__link" href=#sub-delayed-validation-errors>Delayed validation errors</a></li><li class=list__element><a class="link list__link" href=#sub-accessing-validator-parameters>Accessing validator parameters</a></li><li class=list__element><a class="link list__link" href=#sub-accessing-dynamic-parameters>Accessing dynamic parameters</a></li><li class=list__heading><a class="link blank__link" href=#a-p-i>API</a></li><li class=list__element><a class="link list__link" href=#sub-v-values>$v values</a></li><li class=list__element><a class="link list__link" href=#sub-v-methods>$v methods</a></li><li class=list__element><a class="link list__link" href=#sub-config-keywords>Config keywords</a></li><li class=list__heading><a class="link blank__link" href=#validators>Validators</a></li><li class=list__element><a class="link list__link" href=#sub-builtin-validators>Builtin validators</a></li><li class=list__element><a class="link list__link" href=#sub-validator-parameters>Validator parameters</a></li><li class=list__element><a class="link list__link" href=#sub-custom-validators>Custom validators</a></li></ul></div><div class="grid__columns grid__unit--sm-12 grid__unit--md-9"><div class=grid__row><div class=grid__column><section class=docs id=getting-started><h1 class=typo__h1>Getting started</h1><hr class=typo__hr><div class=grid__row><div class=grid__column><h2 class=typo__h2 id=sub-package-content>Package content</h2><p class=typo__p>Simple, lightweight model-based validation for Vue.js</p><p class=typo__p>You can read the <a class=typo__link href=http://monterail.com/blog/2016/rethinking-validations-for-vue-js/ alt="Rethinking validations for vue.js" target=_BLANK>introduction post</a> for more insight on how this solution differs from other validation libraries.</p></div></div><div class=grid__row><div class=grid__column><h2 class=typo__h2 id=sub-installation>Installation</h2><p class=typo__p>Package is installable via npm</p><pre class=language-bash><code>npm install vuelidate --save</code></pre></div></div><div class=grid__row><div class=grid__column><h2 class=typo__h2 id=sub-basic-usage>Basic usage</h2><p class=typo__p>You can import the library and <kbd>use</kbd> as a Vue plugin to enable the functionality globally on all components containing validation configuration.</p><pre class=language-javascript><code>import Vue from 'vue'
 import Vuelidate from 'vuelidate'
 Vue.use(Vuelidate)</code></pre><p class=typo__p>Alternatively it is possible to import a mixin directly to components in which it will be used.</p><pre class=language-javascript><code>import { validationMixin } from 'vuelidate'
 
@@ -35,14 +35,16 @@ div
     label.form__label Name
     input.form__input(v-model.trim=&quot;name&quot; @input=&quot;$v.name.$touch()&quot;)
   span.form-group__message(v-if=&quot;!$v.name.required&quot;) Field is required
-  span.form-group__message(v-if=&quot;!$v.name.minLength&quot;) Name must be longer than 3 letters.
+  span.form-group__message(v-if=&quot;!$v.name.minLength&quot;)
+    | Name must have at least {{$v.name.$params.minLength.min}} letters.
   pre
     | name: {{ $v.name }}
 
   .form-group(v-bind:class=&quot;{ 'form-group--error': $v.age.$error }&quot;)
     label.form__label Age
     input.form__input(v-model.trim=&quot;age&quot; @blur=&quot;$v.age.$touch()&quot;)
-  span.form-group__message(v-if=&quot;!$v.age.between&quot;) Must be between 20 and 30
+  span.form-group__message(v-if=&quot;!$v.age.between&quot;)
+    | Must be between {{$v.age.$params.between.min}} and {{$v.age.$params.between.max}}
   pre
     | age: {{ $v.age }}
 </code></pre></div><div v-show="markupLanguage === 'html'"><pre class=language-html v-pre><code>
@@ -50,12 +52,12 @@ div
   &lt;div class=&quot;form-group&quot; v-bind:class=&quot;{ 'form-group--error': $v.name.$error }&quot;&gt;
     &lt;label class=&quot;form__label&quot;&gt;Name&lt;/label&gt;
     &lt;input class=&quot;form__input&quot; v-model.trim=&quot;name&quot; @input=&quot;$v.name.$touch()&quot;&gt;
-  &lt;/div&gt;&lt;span class=&quot;form-group__message&quot; v-if=&quot;!$v.name.required&quot;&gt;Field is required&lt;/span&gt;&lt;span class=&quot;form-group__message&quot; v-if=&quot;!$v.name.minLength&quot;&gt;Name must be longer than 3 letters.&lt;/span&gt;
+  &lt;/div&gt;&lt;span class=&quot;form-group__message&quot; v-if=&quot;!$v.name.required&quot;&gt;Field is required&lt;/span&gt;&lt;span class=&quot;form-group__message&quot; v-if=&quot;!$v.name.minLength&quot;&gt;Name must have at least {{$v.name.$params.minLength.min}} letters.&lt;/span&gt;
   &lt;pre&gt;name: {{ $v.name }}&lt;/pre&gt;
   &lt;div class=&quot;form-group&quot; v-bind:class=&quot;{ 'form-group--error': $v.age.$error }&quot;&gt;
     &lt;label class=&quot;form__label&quot;&gt;Age&lt;/label&gt;
     &lt;input class=&quot;form__input&quot; v-model.trim=&quot;age&quot; @blur=&quot;$v.age.$touch()&quot;&gt;
-  &lt;/div&gt;&lt;span class=&quot;form-group__message&quot; v-if=&quot;!$v.age.between&quot;&gt;Must be between 20 and 30&lt;/span&gt;
+  &lt;/div&gt;&lt;span class=&quot;form-group__message&quot; v-if=&quot;!$v.age.between&quot;&gt;Must be between {{$v.age.$params.between.min}} and {{$v.age.$params.between.max}}&lt;/span&gt;
   &lt;pre&gt;age: {{ $v.age }}&lt;/pre&gt;
 &lt;/div&gt;</code></pre></div></div></div></div></div><div class=grid__row><div class=grid__column><h2 class=typo__h2 id=sub-contextified-validators>Contextified validators</h2><p class=typo__p>You can link related fields by contextified validators. An example of this being <kbd>sameAs</kbd> builtin validator.</p><div class=example><div class="grid__column grid__unit--md-5"><example-repeat-password></example-repeat-password></div><div class="grid__column grid__unit--md-7"><label class=typo__label>Code sample</label><div><pre class=language-javascript v-pre><code>import { required, sameAs, minLength } from 'vuelidate/lib/validators'
 
@@ -82,7 +84,8 @@ div
     label.form__label Password
     input.form__input(v-model.trim=&quot;password&quot; @input=&quot;$v.password.$touch()&quot;)
   span.form-group__message(v-if=&quot;!$v.password.required&quot;) Password is required.
-  span.form-group__message(v-if=&quot;!$v.password.minLength&quot;) Password must be longer than 5 letters.
+  span.form-group__message(v-if=&quot;!$v.password.minLength&quot;)
+    | Password must have at least {{ $v.password.$params.minLength.min }} letters.
 
   .form-group(v-bind:class=&quot;{ 'form-group--error': $v.repeatPassword.$error }&quot;)
     label.form__label Repeat password
@@ -96,7 +99,7 @@ div
   &lt;div class=&quot;form-group&quot; v-bind:class=&quot;{ 'form-group--error': $v.password.$error }&quot;&gt;
     &lt;label class=&quot;form__label&quot;&gt;Password&lt;/label&gt;
     &lt;input class=&quot;form__input&quot; v-model.trim=&quot;password&quot; @input=&quot;$v.password.$touch()&quot;&gt;
-  &lt;/div&gt;&lt;span class=&quot;form-group__message&quot; v-if=&quot;!$v.password.required&quot;&gt;Password is required.&lt;/span&gt;&lt;span class=&quot;form-group__message&quot; v-if=&quot;!$v.password.minLength&quot;&gt;Password must be longer than 5 letters.&lt;/span&gt;
+  &lt;/div&gt;&lt;span class=&quot;form-group__message&quot; v-if=&quot;!$v.password.required&quot;&gt;Password is required.&lt;/span&gt;&lt;span class=&quot;form-group__message&quot; v-if=&quot;!$v.password.minLength&quot;&gt;Password must have at least {{ $v.password.$params.minLength.min }} letters.&lt;/span&gt;
   &lt;div class=&quot;form-group&quot; v-bind:class=&quot;{ 'form-group--error': $v.repeatPassword.$error }&quot;&gt;
     &lt;label class=&quot;form__label&quot;&gt;Repeat password&lt;/label&gt;
     &lt;input class=&quot;form__input&quot; v-model.trim=&quot;repeatPassword&quot; @input=&quot;$v.repeatPassword.$touch()&quot;&gt;
@@ -152,7 +155,7 @@ div
   &lt;/div&gt;&lt;span class=&quot;form-group__message&quot; v-if=&quot;!$v.form.nestedB.required&quot;&gt;Field is required.&lt;/span&gt;
   &lt;div class=&quot;form-group&quot; v-bind:class=&quot;{ 'form-group--error': $v.form.$error }&quot;&gt;&lt;/div&gt;&lt;span class=&quot;form-group__message&quot; v-if=&quot;$v.form.$error&quot;&gt;Form is invalid.&lt;/span&gt;
   &lt;pre&gt;form: {{ $v.form }}&lt;/pre&gt;
-&lt;/div&gt;</code></pre></div></div></div></div></div><div class=grid__row><div class=grid__column><h2 class=typo__h2 id=sub-validation-groups>Validation Groups</h2><p class=typo__p>If you want to create a validator that groups many otherise unrelated fields together, you can create a validation group.</p><div class=example><div class="grid__column grid__unit--md-5"><example-validation-groups></example-validation-groups></div><div class="grid__column grid__unit--md-7"><label class=typo__label>Code sample</label><div><pre class=language-javascript v-pre><code>import { required } from 'vuelidate/lib/validators'
+&lt;/div&gt;</code></pre></div></div></div></div></div><div class=grid__row><div class=grid__column><h2 class=typo__h2 id=sub-validation-groups>Validation Groups</h2><p class=typo__p>If you want to create a validator that groups many otherwise unrelated fields together, you can create a validation group.</p><div class=example><div class="grid__column grid__unit--md-5"><example-validation-groups></example-validation-groups></div><div class="grid__column grid__unit--md-7"><label class=typo__label>Code sample</label><div><pre class=language-javascript v-pre><code>import { required } from 'vuelidate/lib/validators'
 
 export default {
   data () {
@@ -225,10 +228,11 @@ export default {
 
     people: {
       required,
-      minLength: minLength(2),
+      minLength: minLength(3),
       $each: {
         name: {
-          required
+          required,
+          minLength: minLength(2)
         }
       }
     }
@@ -242,12 +246,15 @@ div
       label.form__label Name for {{ index }}
       input.form__input(v-model.trim=&quot;person.name&quot; @input=&quot;$v.people.$each[index].name.$touch()&quot;)
     span.form-group__message(v-if=&quot;!$v.people.$each[index].name.required&quot;) Name is required.
+    span.form-group__message(v-if=&quot;!$v.people.$each[index].name.minLength&quot;)
+      | Name must have at least {{ $v.people.$each[index].name.$params.minLength.min }} letters.
 
   div
     button.button(@click=&quot;people.push({name: ''})&quot;) Add
     button.button(@click=&quot;people.pop()&quot;) Remove
   .form-group(v-bind:class=&quot;{ 'form-group--error': $v.people.$error }&quot;)
-  span.form-group__message(v-if=&quot;!$v.people.minLength&quot;) List must have at least 2 elements.
+  span.form-group__message(v-if=&quot;!$v.people.minLength&quot;)
+    | List must have at least {{ $v.people.$params.minLength.min }} elements.
   span.form-group__message(v-else-if=&quot;!$v.people.required&quot;) List must not be empty.
   span.form-group__message(v-else-if=&quot;$v.people.$error&quot;) List is invalid.
   button.button(@click=&quot;$v.people.$touch&quot;) $touch
@@ -261,13 +268,13 @@ div
     &lt;div class=&quot;form-group&quot; v-bind:class=&quot;{ 'form-group--error': $v.people.$each[index].$error }&quot;&gt;
       &lt;label class=&quot;form__label&quot;&gt;Name for {{ index }}&lt;/label&gt;
       &lt;input class=&quot;form__input&quot; v-model.trim=&quot;person.name&quot; @input=&quot;$v.people.$each[index].name.$touch()&quot;&gt;
-    &lt;/div&gt;&lt;span class=&quot;form-group__message&quot; v-if=&quot;!$v.people.$each[index].name.required&quot;&gt;Name is required.&lt;/span&gt;
+    &lt;/div&gt;&lt;span class=&quot;form-group__message&quot; v-if=&quot;!$v.people.$each[index].name.required&quot;&gt;Name is required.&lt;/span&gt;&lt;span class=&quot;form-group__message&quot; v-if=&quot;!$v.people.$each[index].name.minLength&quot;&gt;Name must have at least {{ $v.people.$each[index].name.$params.minLength.min }} letters.&lt;/span&gt;
   &lt;/div&gt;
   &lt;div&gt;
     &lt;button class=&quot;button&quot; @click=&quot;people.push({name: ''})&quot;&gt;Add&lt;/button&gt;
     &lt;button class=&quot;button&quot; @click=&quot;people.pop()&quot;&gt;Remove&lt;/button&gt;
   &lt;/div&gt;
-  &lt;div class=&quot;form-group&quot; v-bind:class=&quot;{ 'form-group--error': $v.people.$error }&quot;&gt;&lt;/div&gt;&lt;span class=&quot;form-group__message&quot; v-if=&quot;!$v.people.minLength&quot;&gt;List must have at least 2 elements.&lt;/span&gt;&lt;span class=&quot;form-group__message&quot; v-else-if=&quot;!$v.people.required&quot;&gt;List must not be empty.&lt;/span&gt;&lt;span class=&quot;form-group__message&quot; v-else-if=&quot;$v.people.$error&quot;&gt;List is invalid.&lt;/span&gt;
+  &lt;div class=&quot;form-group&quot; v-bind:class=&quot;{ 'form-group--error': $v.people.$error }&quot;&gt;&lt;/div&gt;&lt;span class=&quot;form-group__message&quot; v-if=&quot;!$v.people.minLength&quot;&gt;List must have at least {{ $v.people.$params.minLength.min }} elements.&lt;/span&gt;&lt;span class=&quot;form-group__message&quot; v-else-if=&quot;!$v.people.required&quot;&gt;List must not be empty.&lt;/span&gt;&lt;span class=&quot;form-group__message&quot; v-else-if=&quot;$v.people.$error&quot;&gt;List is invalid.&lt;/span&gt;
   &lt;button class=&quot;button&quot; @click=&quot;$v.people.$touch&quot;&gt;$touch&lt;/button&gt;
   &lt;button class=&quot;button&quot; @click=&quot;$v.people.$reset&quot;&gt;$reset&lt;/button&gt;
   &lt;pre&gt;people: {{ $v.people }}&lt;/pre&gt;
@@ -318,28 +325,178 @@ div
     const response = await fetch(`/api/unique/${value}`)
     return Boolean(await response.json())
   }
-}</code></pre></div></div></div></section></div></div><div class=grid__row><div class=grid__column><section class=docs id=a-p-i><h1 class=typo__h1>API</h1><hr class=typo__hr><p class=typo__p>There are two distinct structures present in <em>vuelidate</em>:<ul><li><kbd>validations</kbd> component option - the definition of your validation</li><li><kbd>$v</kbd> structure - an object in your viewmodel that holds the validation state</li></ul></p><div class=grid__row><div class=grid__column><h2 class=typo__h2 id=sub-v-values>$v values</h2><p class=typo__p><kbd>$v</kbd> model represents the current state of validation. It does so by defining a set of properties which hold the output of user defined validation functions, following the <kbd>validations</kbd> option structure. The presense of those special reserved keywords means that you cannot specify your own validators with that name.</p><div class=table__container><table class="table table--full-size table--fixed"><thead><tr class=table__tr><th class=table__th width=130>Name</th><th class=table__th width=80>Type</th><th class=table__th>Description</th></tr></thead><tbody><tr class=table__tr><td class=table__td><kbd>$invalid</kbd></td><td class=table__td><strong>boolean</strong></td><td class=table__td>Indicates the state of validation for given model. becomes <kbd>true</kbd> when any of it's child validators specified in options returns a <strong>falsy</strong> value. In case of validation groups, all grouped validators are considered.</td></tr><tr class=table__tr><td class=table__td><kbd>$dirty</kbd></td><td class=table__td><strong>boolean</strong></td><td class=table__td>A flag representing if the field under validation was touched by the user at least once. Usually it is used to decide if the message is supposed to be displayed to the end user. Flag is managed manually. You have to use <kbd>$touch</kbd> and <kbd>$reset</kbd> methods to manipulate it. The <kbd>$dirty</kbd> flag is considered <kbd>true</kbd> if given model was <kbd>$touch</kbd>ed or <strong>all of it's children</strong> are <kbd>$dirty</kbd>.</td></tr><tr class=table__tr><td class=table__td><kbd>$error</kbd></td><td class=table__td><strong>boolean</strong></td><td class=table__td>Convinience flag to easily decide if a message should be displayed. It is a shorthand to <kbd>$invalid && $dirty</kbd>.</td></tr><tr class=table__tr><td class=table__td><kbd>$pending</kbd></td><td class=table__td><strong>boolean</strong></td><td class=table__td>Indicates if any child async validator is currently pending. Always <kbd>false</kbd> if all validators are synchronous.</td></tr><tr class=table__tr><td class=table__td><kbd>$each</kbd></td><td class=table__td><strong>object</strong></td><td class=table__td>Holds all validation models of collection validator. Always preserves the keys of original model, so it can be safely referenced in the <kbd>v-for</kbd> loop iterating over your data using the same index.</td></tr></tbody></table></div></div></div><div class=grid__row><div class=grid__column><h2 class=typo__h2 id=sub-v-methods>$v methods</h2><p class=typo__p>A set of methods to control the validation model. Accessible on every level of nesting. All methods are ment to be used on any event handler you wish. There is no extra syntax to decide when the dirty flag should be set. Just use standard <kbd>@input</kbd> or <kbd>@blur</kbd> bindings.</p><div class=table__container><table class="table table--full-size table--fixed"><thead><tr class=table__tr><th class=table__th width=130>Name</th><th class=table__th>Description</th></tr></thead><tbody><tr class=table__tr><td class=table__td><kbd>$touch</kbd></td><td class=table__td>Sets the <kbd>$dirty</kbd> flag of the model and all its children to <kbd>true</kbd> recursively.</td></tr><tr class=table__tr><td class=table__td><kbd>$reset</kbd></td><td class=table__td>Sets the <kbd>$dirty</kbd> flag of the model and all its children to <kbd>false</kbd> recursively.</td></tr></tbody></table></div></div></div><div class=grid__row><div class=grid__column><h2 class=typo__h2 id=sub-config-keywords>Config keywords</h2><div class=table__container><table class="table table--full-size"><thead><tr class=table__tr><th class=table__th width=130>Name</th><th class=table__th width=80>Type</th><th class=table__th>Description</th></tr></thead><tbody><tr class=table__tr><td class=table__td><kbd>$each</kbd></td><td class=table__td><strong>object</strong></td><td class=table__td>A definition of nested validation applied to each prop of given model separately. Perfect for validation arrays, but can be used with any object or collection.</td></tr><tr class=table__tr><td class=table__td><kbd>$trackBy</kbd></td><td class=table__td><strong>string || func</strong></td><td class=table__td>Must be a direct children of <kbd>$each</kbd>, but is optional. Defines the accessor to object's property by which <kbd>$each</kbd> tracks it's child models. Necessary to correctly preserve <kbd>$dirty</kbd> flag on random insertions. If this property not preset, the key is used for tracking.</td></tr></tbody></table></div></div></div></section></div></div><div class=grid__row><div class=grid__column><section class=docs id=validators><h1 class=typo__h1>Validators</h1><hr class=typo__hr><p class=typo__p><em>vuelidate</em> comes with a set of builtin validators that you can just require and use, but it doesn't end there. All of those are just simple predicates - functions of data into <kbd>boolean</kbd>, which denotes if data is valid. You can easily write your own or use any function in this shape from any library you already have, like <kbd>_.conforomsTo</kbd> from <em>lodash</em> or higher order functions and chains like <kbd>R.cond</kbd> from <em>ramda</em>. Think of the possibilities.</p><p class=typo__p>This documentation presents every builtin validator with short description and presents an example custom validator implementation to help understanding them and writing your own as easy as possible.</p><div class=grid__row><div class=grid__column><h2 class=typo__h2 id=sub-builtin-validators>Builtin validators</h2><p class=typo__p>To use any of builtin validators, you have to import it from vuelidate library.</p><pre class=language-javascript v-pre><code>import { required, maxLength } from 'vuelidate/lib/validators'</code></pre><p class=typo__p>You can also import specific validators directly, to avoid loading unused ones in case your bundler doesn't support tree shaking. This is not required for Rollup or Webpack 2 among others.</p><pre class=language-javascript v-pre><code>import required from 'vuelidate/lib/validators/required'
+}
+</code></pre></div></div></div><div class=grid__row><div class=grid__column><h2 class=typo__h2 id=sub-delayed-validation-errors>Delayed validation errors</h2><p class=typo__p>You can do anything you need with the $touch state, no matter how fancy your requirements are. It all boils down to calling $touch and $reset in the right moment. As an example of that, here is an easy to follow implementation of delayed error based on custom <kbd>setTimeout</kbd> logic. It triggers one second after last input.</p><div class=example><div class="grid__column grid__unit--md-5"><example-delayed-touch></example-delayed-touch></div><div class="grid__column grid__unit--md-7"><label class=typo__label>Code sample</label><div><pre class=language-javascript v-pre><code>import { required, minLength, maxLength } from 'vuelidate/lib/validators'
+
+const touchMap = new WeakMap()
+
+export default {
+  data () {
+    return {
+      name: ''
+    }
+  },
+  validations: {
+    name: {
+      required,
+      minLength: minLength(4),
+      maxLength: maxLength(15)
+    }
+  },
+  methods: {
+    delayTouch ($v) {
+      $v.$reset()
+      if (touchMap.has($v)) {
+        clearTimeout(touchMap.get($v))
+      }
+      touchMap.set($v, setTimeout($v.$touch, 1000))
+    }
+  }
+}
+</code></pre></div><lang-switcher v-bind:langs=markupLangs v-bind:current=markupLanguage v-on:select=selectLanguage></lang-switcher><div v-show="markupLanguage === 'pug'"><pre class=language-pug v-pre><code>
+div
+  .form-group(v-bind:class=&quot;{ 'form-group--error': $v.name.$error }&quot;)
+    label.form__label Name
+    input.form__input(v-model.trim=&quot;name&quot; @input=&quot;delayTouch($v.name)&quot;)
+  span.form-group__message(v-if=&quot;!$v.name.required&quot;) Field is required
+  span.form-group__message(v-if=&quot;!$v.name.minLength&quot;)
+    | Name must have at least {{$v.name.$params.minLength.min}} letters.
+  span.form-group__message(v-if=&quot;!$v.name.maxLength&quot;)
+    | Name must have at most {{$v.name.$params.maxLength.max}} letters.
+
+  pre
+    | name: {{ $v.name }}
+</code></pre></div><div v-show="markupLanguage === 'html'"><pre class=language-html v-pre><code>
+&lt;div&gt;
+  &lt;div class=&quot;form-group&quot; v-bind:class=&quot;{ 'form-group--error': $v.name.$error }&quot;&gt;
+    &lt;label class=&quot;form__label&quot;&gt;Name&lt;/label&gt;
+    &lt;input class=&quot;form__input&quot; v-model.trim=&quot;name&quot; @input=&quot;delayTouch($v.name)&quot;&gt;
+  &lt;/div&gt;&lt;span class=&quot;form-group__message&quot; v-if=&quot;!$v.name.required&quot;&gt;Field is required&lt;/span&gt;&lt;span class=&quot;form-group__message&quot; v-if=&quot;!$v.name.minLength&quot;&gt;Name must have at least {{$v.name.$params.minLength.min}} letters.&lt;/span&gt;&lt;span class=&quot;form-group__message&quot; v-if=&quot;!$v.name.maxLength&quot;&gt;Name must have at most {{$v.name.$params.maxLength.max}} letters.&lt;/span&gt;
+  &lt;pre&gt;name: {{ $v.name }}&lt;/pre&gt;
+&lt;/div&gt;</code></pre></div></div></div></div></div><div class=grid__row><div class=grid__column><h2 class=typo__h2 id=sub-accessing-validator-parameters>Accessing validator parameters</h2><p class=typo__p>You can access information about your validations through `$params` of a parent validator. This is be useful for reporting errors to users.</p><div class=example><div class="grid__column grid__unit--md-5"><example-params></example-params></div><div class="grid__column grid__unit--md-7"><label class=typo__label>Code sample</label><div><pre class=language-javascript v-pre><code>import { required, minLength } from 'vuelidate/lib/validators'
+
+export default {
+  data () {
+    return {
+      form: {
+        userName: '',
+        password: ''
+      }
+    }
+  },
+  validations: {
+    form: {
+      userName: {
+        required,
+        minLength: minLength(5)
+      },
+      password: {
+        required,
+        minLength: minLength(8)
+      }
+    }
+  }
+}
+</code></pre></div><lang-switcher v-bind:langs=markupLangs v-bind:current=markupLanguage v-on:select=selectLanguage></lang-switcher><div v-show="markupLanguage === 'pug'"><pre class=language-pug v-pre><code>
+div
+  .form-group(v-bind:class=&quot;{ 'form-group--error': $v.form.userName.$error }&quot;)
+    label.form__label Nested A
+    input.form__input(v-model.trim=&quot;form.userName&quot; @input=&quot;$v.form.userName.$touch()&quot;)
+  span.form-group__message(v-if=&quot;!$v.form.userName.required&quot;)
+    | Field is required.
+  span.form-group__message(v-if=&quot;!$v.form.userName.minLength&quot;)
+    | Field must have at least {{ $v.form.userName.$params.minLength.min }} characters.
+  .form-group(v-bind:class=&quot;{ 'form-group--error': $v.form.password.$error }&quot;)
+    label.form__label Nested B
+    input.form__input(v-model.trim=&quot;form.password&quot; @input=&quot;$v.form.password.$touch()&quot; type=&quot;password&quot;)
+  span.form-group__message(v-if=&quot;!$v.form.password.required&quot;)
+    | Field is required.
+  span.form-group__message(v-if=&quot;!$v.form.password.minLength&quot;)
+    | Field must have at least {{ $v.form.password.$params.minLength.min }} characters.
+
+  .form-group(v-bind:class=&quot;{ 'form-group--error': $v.form.$error }&quot;)
+    span.form-group__message(v-if=&quot;$v.form.$error&quot;) Form is invalid.
+
+  pre form: {{ $v.form }}
+</code></pre></div><div v-show="markupLanguage === 'html'"><pre class=language-html v-pre><code>
+&lt;div&gt;
+  &lt;div class=&quot;form-group&quot; v-bind:class=&quot;{ 'form-group--error': $v.form.userName.$error }&quot;&gt;
+    &lt;label class=&quot;form__label&quot;&gt;Nested A&lt;/label&gt;
+    &lt;input class=&quot;form__input&quot; v-model.trim=&quot;form.userName&quot; @input=&quot;$v.form.userName.$touch()&quot;&gt;
+  &lt;/div&gt;&lt;span class=&quot;form-group__message&quot; v-if=&quot;!$v.form.userName.required&quot;&gt;Field is required.&lt;/span&gt;&lt;span class=&quot;form-group__message&quot; v-if=&quot;!$v.form.userName.minLength&quot;&gt;Field must have at least {{ $v.form.userName.$params.minLength.min }} characters.&lt;/span&gt;
+  &lt;div class=&quot;form-group&quot; v-bind:class=&quot;{ 'form-group--error': $v.form.password.$error }&quot;&gt;
+    &lt;label class=&quot;form__label&quot;&gt;Nested B&lt;/label&gt;
+    &lt;input class=&quot;form__input&quot; v-model.trim=&quot;form.password&quot; @input=&quot;$v.form.password.$touch()&quot; type=&quot;password&quot;&gt;
+  &lt;/div&gt;&lt;span class=&quot;form-group__message&quot; v-if=&quot;!$v.form.password.required&quot;&gt;Field is required.&lt;/span&gt;&lt;span class=&quot;form-group__message&quot; v-if=&quot;!$v.form.password.minLength&quot;&gt;Field must have at least {{ $v.form.password.$params.minLength.min }} characters.&lt;/span&gt;
+  &lt;div class=&quot;form-group&quot; v-bind:class=&quot;{ 'form-group--error': $v.form.$error }&quot;&gt;&lt;span class=&quot;form-group__message&quot; v-if=&quot;$v.form.$error&quot;&gt;Form is invalid.&lt;/span&gt;&lt;/div&gt;
+  &lt;pre&gt;form: {{ $v.form }}&lt;/pre&gt;
+&lt;/div&gt;</code></pre></div></div></div></div></div><div class=grid__row><div class=grid__column><h2 class=typo__h2 id=sub-accessing-dynamic-parameters>Accessing dynamic parameters</h2><p class=typo__p>bla bla</p><div class=example><div class="grid__column grid__unit--md-5"><example-dyn-params></example-dyn-params></div><div class="grid__column grid__unit--md-7"><label class=typo__label>Code sample</label><div><pre class=language-javascript v-pre><code>import { or, minLength, alpha } from 'vuelidate/lib/validators'
+
+export default {
+  data () {
+    return {
+      name: '',
+      minLength: 3,
+      valName: 'validatorName'
+    }
+  },
+  validations () {
+    return {
+      name: {
+        [this.valName]: or(function (v) { return minLength(this.minLength)(v) }, alpha)
+      }
+    }
+  }
+}
+</code></pre></div><lang-switcher v-bind:langs=markupLangs v-bind:current=markupLanguage v-on:select=selectLanguage></lang-switcher><div v-show="markupLanguage === 'pug'"><pre class=language-pug v-pre><code>
+div
+  .form-group(v-bind:class=&quot;{ 'form-group--error': $v.name.$error }&quot;)
+    label.form__label Name
+    input.form__input(v-model.trim=&quot;name&quot; @input=&quot;$v.name.$touch()&quot;)
+  span.form-group__message(v-if=&quot;!$v.name[valName]&quot;) Field is invalid
+  pre
+    | $v: {{ $v }}
+  .form-group
+    label.form__label min length
+    input.form__input(type=&quot;number&quot; v-model=&quot;minLength&quot;)
+    input.form__input(v-model=&quot;valName&quot;)
+</code></pre></div><div v-show="markupLanguage === 'html'"><pre class=language-html v-pre><code>
+&lt;div&gt;
+  &lt;div class=&quot;form-group&quot; v-bind:class=&quot;{ 'form-group--error': $v.name.$error }&quot;&gt;
+    &lt;label class=&quot;form__label&quot;&gt;Name&lt;/label&gt;
+    &lt;input class=&quot;form__input&quot; v-model.trim=&quot;name&quot; @input=&quot;$v.name.$touch()&quot;&gt;
+  &lt;/div&gt;&lt;span class=&quot;form-group__message&quot; v-if=&quot;!$v.name[valName]&quot;&gt;Field is invalid&lt;/span&gt;
+  &lt;pre&gt;$v: {{ $v }}&lt;/pre&gt;
+  &lt;div class=&quot;form-group&quot;&gt;
+    &lt;label class=&quot;form__label&quot;&gt;min length&lt;/label&gt;
+    &lt;input class=&quot;form__input&quot; type=&quot;number&quot; v-model=&quot;minLength&quot;&gt;
+    &lt;input class=&quot;form__input&quot; v-model=&quot;valName&quot;&gt;
+  &lt;/div&gt;
+&lt;/div&gt;</code></pre></div></div></div></div></div></section></div></div><div class=grid__row><div class=grid__column><section class=docs id=a-p-i><h1 class=typo__h1>API</h1><hr class=typo__hr><p class=typo__p>There are two distinct structures present in <em>vuelidate</em>:<ul><li><kbd>validations</kbd> component option - the definition of your validation</li><li><kbd>$v</kbd> structure - an object in your viewmodel that holds the validation state</li></ul></p><div class=grid__row><div class=grid__column><h2 class=typo__h2 id=sub-v-values>$v values</h2><p class=typo__p><kbd>$v</kbd> model represents the current state of validation. It does so by defining a set of properties which hold the output of user defined validation functions, following the <kbd>validations</kbd> option structure. The presense of those special reserved keywords means that you cannot specify your own validators with that name.</p><div class=table__container><table class="table table--full-size table--fixed"><thead><tr class=table__tr><th class=table__th width=130>Name</th><th class=table__th width=80>Type</th><th class=table__th>Description</th></tr></thead><tbody><tr class=table__tr><td class=table__td><kbd>$invalid</kbd></td><td class=table__td><strong>boolean</strong></td><td class=table__td>Indicates the state of validation for given model. becomes <kbd>true</kbd> when any of it's child validators specified in options returns a <strong>falsy</strong> value. In case of validation groups, all grouped validators are considered.</td></tr><tr class=table__tr><td class=table__td><kbd>$dirty</kbd></td><td class=table__td><strong>boolean</strong></td><td class=table__td>A flag representing if the field under validation was touched by the user at least once. Usually it is used to decide if the message is supposed to be displayed to the end user. Flag is managed manually. You have to use <kbd>$touch</kbd> and <kbd>$reset</kbd> methods to manipulate it. The <kbd>$dirty</kbd> flag is considered <kbd>true</kbd> if given model was <kbd>$touch</kbd>ed or <strong>all of it's children</strong> are <kbd>$dirty</kbd>.</td></tr><tr class=table__tr><td class=table__td><kbd>$error</kbd></td><td class=table__td><strong>boolean</strong></td><td class=table__td>Convenience flag to easily decide if a message should be displayed. It is a shorthand to <kbd>$invalid && $dirty</kbd>.</td></tr><tr class=table__tr><td class=table__td><kbd>$pending</kbd></td><td class=table__td><strong>boolean</strong></td><td class=table__td>Indicates if any child async validator is currently pending. Always <kbd>false</kbd> if all validators are synchronous.</td></tr><tr class=table__tr><td class=table__td><kbd>$params</kbd></td><td class=table__td><strong>object</strong></td><td class=table__td>Contains types and parameters of all provided validators at the current level, as well as types and parameters of child validation groups, which may be declared using `withParams`. Useful as an input to your error rendering system. Safe to use in translated text.</td></tr><tr class=table__tr><td class=table__td><kbd>$each</kbd></td><td class=table__td><strong>object</strong></td><td class=table__td>Holds all validation models of collection validator. Always preserves the keys of original model, so it can be safely referenced in the <kbd>v-for</kbd> loop iterating over your data using the same index.</td></tr></tbody></table></div></div></div><div class=grid__row><div class=grid__column><h2 class=typo__h2 id=sub-v-methods>$v methods</h2><p class=typo__p>A set of methods to control the validation model. Accessible on every level of nesting. All methods are ment to be used on any event handler you wish. There is no extra syntax to decide when the dirty flag should be set. Just use standard <kbd>@input</kbd> or <kbd>@blur</kbd> bindings.</p><div class=table__container><table class="table table--full-size table--fixed"><thead><tr class=table__tr><th class=table__th width=130>Name</th><th class=table__th>Description</th></tr></thead><tbody><tr class=table__tr><td class=table__td><kbd>$touch</kbd></td><td class=table__td>Sets the <kbd>$dirty</kbd> flag of the model and all its children to <kbd>true</kbd> recursively.</td></tr><tr class=table__tr><td class=table__td><kbd>$reset</kbd></td><td class=table__td>Sets the <kbd>$dirty</kbd> flag of the model and all its children to <kbd>false</kbd> recursively.</td></tr><tr class=table__tr><td class=table__td><kbd>$flattenParams</kbd></td><td class=table__td>Returns an array of leaf params.</td></tr></tbody></table></div></div></div><div class=grid__row><div class=grid__column><h2 class=typo__h2 id=sub-config-keywords>Config keywords</h2><div class=table__container><table class="table table--full-size"><thead><tr class=table__tr><th class=table__th width=130>Name</th><th class=table__th width=80>Type</th><th class=table__th>Description</th></tr></thead><tbody><tr class=table__tr><td class=table__td><kbd>$each</kbd></td><td class=table__td><strong>object</strong></td><td class=table__td>A definition of nested validation applied to each prop of given model separately. Perfect for validation arrays, but can be used with any object or collection.</td></tr><tr class=table__tr><td class=table__td><kbd>$trackBy</kbd></td><td class=table__td><strong>string || func</strong></td><td class=table__td>Must be a direct children of <kbd>$each</kbd>, but is optional. Defines the accessor to object's property by which <kbd>$each</kbd> tracks it's child models. Necessary to correctly preserve <kbd>$dirty</kbd> flag on random insertions. If this property not preset, the key is used for tracking.</td></tr></tbody></table></div></div></div></section></div></div><div class=grid__row><div class=grid__column><section class=docs id=validators><h1 class=typo__h1>Validators</h1><hr class=typo__hr><p class=typo__p><em>vuelidate</em> comes with a set of builtin validators that you can just require and use, but it doesn't end there. All of those are just simple predicates - functions of data into <kbd>boolean</kbd>, which denotes if data is valid. You can easily write your own or use any function in this shape from any library you already have, like <kbd>_.conforomsTo</kbd> from <em>lodash</em> or higher order functions and chains like <kbd>R.cond</kbd> from <em>ramda</em>. Think of the possibilities.</p><p class=typo__p>This documentation presents every builtin validator with short description and presents an example custom validator implementation to help understanding them and writing your own as easy as possible.</p><div class=grid__row><div class=grid__column><h2 class=typo__h2 id=sub-builtin-validators>Builtin validators</h2><p class=typo__p>To use any of builtin validators, you have to import it from vuelidate library.</p><pre class=language-javascript v-pre><code>import { required, maxLength } from 'vuelidate/lib/validators'</code></pre><p class=typo__p>You can also import specific validators directly, to avoid loading unused ones in case your bundler doesn't support tree shaking. This is not required for Rollup or Webpack 2 among others.</p><pre class=language-javascript v-pre><code>import required from 'vuelidate/lib/validators/required'
 import maxLength from 'vuelidate/lib/validators/maxLength'</code></pre><p class=typo__p>It is possible to use validators directly in browser by using a browser-ready bundle. Keep in mind this will always load all builtin validators at once.</p><pre class=language-html v-pre><code>&lt;script src=&quot;vuelidate/dist/validators.min.js&quot;&gt;&lt;/script&gt;</code></pre><pre class=language-javascript v-pre><code>var required = validators.required
-var maxLength = validators.maxLength</code></pre><p class=typo__p>Here is a full list of provided validators.</p><div class=table__container><table class="table table--full-size table--fixed"><thead><tr class=table__tr><th class=table__th width=140>Name</th><th class=table__th width=120>Meta parameters</th><th class=table__th>Description</th></tr></thead><tbody><tbody><tr class=table__tr><td class=table__td><kbd>required</kbd></td><td class=table__td><em>none</em></td><td class=table__td>Requires non-empty data. Checks for empty arrays and strings containing only whitespaces.</td></tr></tbody><tbody><tr class=table__tr><td class=table__td><kbd>minLength</kbd></td><td class=table__td>min length</td><td class=table__td>Requires the input to have a minimum specified length, inclusive. Works with arrays.</td></tr></tbody><tbody><tr class=table__tr><td class=table__td><kbd>maxLength</kbd></td><td class=table__td>max length</td><td class=table__td>Requires the input to have a maximum specified length, inclusive. Works with arrays.</td></tr></tbody><tbody><tr class=table__tr><td class=table__td><kbd>between</kbd></td><td class=table__td>min, max</td><td class=table__td>Checks if a number is in specified bounds. Min and max are both inclusive.</td></tr></tbody><tbody><tr class=table__tr><td class=table__td><kbd>alpha</kbd></td><td class=table__td><em>none</em></td><td class=table__td>Accepts only alphabet characters.</td></tr></tbody><tbody><tr class=table__tr><td class=table__td><kbd>alphaNum</kbd></td><td class=table__td><em>none</em></td><td class=table__td>Accepts only alphanumerics.</td></tr></tbody><tbody><tr class=table__tr><td class=table__td><kbd>email</kbd></td><td class=table__td><em>none</em></td><td class=table__td>Accepts valid email addresses. Keep in mind you still have to carefully verify it on your server, as it is impossible to tell if the address is real without sending verification email.</td></tr></tbody><tbody><tr class=table__tr><td class=table__td><kbd>sameAs</kbd></td><td class=table__td>locator</td><td class=table__td>Checks for equality with a given property. Locator might be either a sibling property name or a function, that will get your component as <kbd>this</kbd> and nested model which sibling properties under second parameter.</td></tr></tbody><tbody><tr class=table__tr><td class=table__td><kbd>or</kbd></td><td class=table__td>validators...</td><td class=table__td>Passes when at least one of provided validators passes.</td></tr></tbody><tbody><tr class=table__tr><td class=table__td><kbd>and</kbd></td><td class=table__td>validators...</td><td class=table__td>Passes when all of provided validators passes.</td></tr></tbody></tbody></table></div><p></p></div></div><div class=grid__row><div class=grid__column><h2 class=typo__h2 id=sub-custom-validators>Custom validators</h2><p class=typo__p>You can easily write custom validators and combine them with builtin ones, as those are just a simple predicate functions.</p><p class=typo__p>Let's take a simple <kbd>required</kbd> as an example. It's simply just a function that, given it's input value, returns if the data is valid or not.</p><pre class=language-javascript v-pre><code>export default value =&gt; {
+var maxLength = validators.maxLength</code></pre><p class=typo__p>Here is a full list of provided validators.</p><div class=table__container><table class="table table--full-size table--fixed"><thead><tr class=table__tr><th class=table__th width=140>Name</th><th class=table__th width=120>Meta parameters</th><th class=table__th>Description</th></tr></thead><tbody><tbody><tr class=table__tr><td class=table__td><kbd>required</kbd></td><td class=table__td><em>none</em></td><td class=table__td>Requires non-empty data. Checks for empty arrays and strings containing only whitespaces.</td></tr></tbody><tbody><tr class=table__tr><td class=table__td><kbd>minLength</kbd></td><td class=table__td>min length</td><td class=table__td>Requires the input to have a minimum specified length, inclusive. Works with arrays.</td></tr></tbody><tbody><tr class=table__tr><td class=table__td><kbd>maxLength</kbd></td><td class=table__td>max length</td><td class=table__td>Requires the input to have a maximum specified length, inclusive. Works with arrays.</td></tr></tbody><tbody><tr class=table__tr><td class=table__td><kbd>between</kbd></td><td class=table__td>min, max</td><td class=table__td>Checks if a number is in specified bounds. Min and max are both inclusive.</td></tr></tbody><tbody><tr class=table__tr><td class=table__td><kbd>alpha</kbd></td><td class=table__td><em>none</em></td><td class=table__td>Accepts only alphabet characters.</td></tr></tbody><tbody><tr class=table__tr><td class=table__td><kbd>alphaNum</kbd></td><td class=table__td><em>none</em></td><td class=table__td>Accepts only alphanumerics.</td></tr></tbody><tbody><tr class=table__tr><td class=table__td><kbd>numeric</kbd></td><td class=table__td><em>none</em></td><td class=table__td>Accepts only numerics.</td></tr></tbody><tbody><tr class=table__tr><td class=table__td><kbd>email</kbd></td><td class=table__td><em>none</em></td><td class=table__td>Accepts valid email addresses. Keep in mind you still have to carefully verify it on your server, as it is impossible to tell if the address is real without sending verification email.</td></tr></tbody><tbody><tr class=table__tr><td class=table__td><kbd>sameAs</kbd></td><td class=table__td>locator</td><td class=table__td>Checks for equality with a given property. Locator might be either a sibling property name or a function, that will get your component as <kbd>this</kbd> and nested model which sibling properties under second parameter.</td></tr></tbody><tbody><tr class=table__tr><td class=table__td><kbd>or</kbd></td><td class=table__td>validators...</td><td class=table__td>Passes when at least one of provided validators passes.</td></tr></tbody><tbody><tr class=table__tr><td class=table__td><kbd>and</kbd></td><td class=table__td>validators...</td><td class=table__td>Passes when all of provided validators passes.</td></tr></tbody><tbody><tr class=table__tr><td class=table__td><kbd>withParams</kbd></td><td class=table__td>$params, validator</td><td class=table__td>Not really a validator, but a validator modifier. Adds a `$params` object to the provided validator. Can be used on validation functions or even entire nested field validation objects. Useful for creating your own custom validators.</td></tr></tbody></tbody></table></div><p></p></div></div><div class=grid__row><div class=grid__column><h2 class=typo__h2 id=sub-validator-parameters>Validator parameters</h2><p class=typo__p>Every validator can save parameters. Validators are responsible for saving their type and parameters, because they are simple functions, and we may want to inform the user about them.</p><p class=typo__p>Use <kbd>withParams</kbd> to apply parameters to a validator. Declared parameters bubble up by one level, so they are included in the <kbd>$params</kbd> of the parent validation object. Vuelidate is designed in a way that does not allow the validation result to directly include params.</p><p class=typo__p>You may call the <kbd>$flattenParams</kbd> method on a validation object to get an array of validator params for all validators that exist in that validation object. For example, let's say a validation object contains a <kbd>between</kbd> validator to check that a value is between 5 and 10. Calling <kbd>$flattenParams</kbd> returns the following array.</p><code>[{ path: [], name: 'between', params: { type: 'between', min: 5, max: 10 } }]</code></div></div><div class=grid__row><div class=grid__column><h2 class=typo__h2 id=sub-custom-validators>Custom validators</h2><p class=typo__p>You can easily write custom validators and combine them with builtin ones, as those are just a simple predicate functions.</p><p class=typo__p>Let's take a simple <kbd>required</kbd> as an example. It uses `withParams` to save its own type so that it can be later accessed. Besides the use of `withParams`, it's simply just a function that, given it's input value, returns if the data is valid or not.</p><pre class=language-javascript v-pre><code>import withParams from '../withParams'
+export default withParams({type: 'required'}, value =&gt; {
   if (Array.isArray(value)) return !!value.length
 
   return value === undefined || value === null
     ? false
     : !!String(value).length
-}
+})
 </code></pre><p class=typo__p>If your validator needs extra parameters, you can simply create a higher order function that returns the actual predicate, like in <kbd>between</kbd>.</p><pre class=language-javascript v-pre><code>import required from './required'
+import withParams from '../withParams'
 
 export default (min, max) =&gt;
-  value =&gt; !required(value) || (!/\s/.test(value) &amp;&amp; Number(min) &lt;= value &amp;&amp; Number(max) &gt;= value)
-</code></pre><p class=typo__p>In more complex cases when access to the whole model is necessary, like <kbd>sameAs</kbd>, make use of the function context (<kbd>this</kbd>) to access any value on your component or use provided <kbd>parentVm</kbd> to access sibling properties.</p><pre class=language-javascript v-pre><code>export default equalTo =&gt; function (value, parentVm) {
-  if (value === null || value === undefined || value === '') {
-    return true
-  }
-
-  const compareTo = typeof equalTo === 'function'
-    ? equalTo.call(this, parentVm)
-    : parentVm[equalTo]
-  return value === compareTo
+  withParams({type: 'between', min, max}, value =&gt;
+    !required(value) || (!/\s/.test(value) &amp;&amp; Number(min) &lt;= value &amp;&amp; Number(max) &gt;= value))
+</code></pre><p class=typo__p>In more complex cases when access to the whole model is necessary, like <kbd>sameAs</kbd>, make use of the function context (<kbd>this</kbd>) to access any value on your component or use provided <kbd>parentVm</kbd> to access sibling properties.</p><pre class=language-javascript v-pre><code>import withParams from '../withParams'
+export default equalTo =&gt; {
+  const $params = {type: 'sameAs', eq: equalTo}
+  return withParams($params, function (value, parentVm) {
+    const compareTo = typeof equalTo === 'function'
+      ? equalTo.call(this, parentVm)
+      : parentVm[equalTo]
+    return value === compareTo
+  })
 }
 </code></pre></div></div></section></div></div></div></div><section class=utils--center><h4 class=typo__h4>Created by<strong><a class=typo__link href=https://twitter.com/DamianDulisz target=_BLANK> Damian Dulisz</a> &amp;<a class=typo__link href=https://twitter.com/frizi09 target=_BLANK> Paweł Grabarz</a></strong></h4><h4 class=typo__h4>With love from<strong><a class="typo__link monterail-link" href=http://monterail.com target=_BLANK> Monterail</a></strong></h4><a href=http://monterail.com target=_BLANK><img class=monterail-logo src=static/img/monterail-logo.da236ce.png></a></section></div><script src=1cddcce43ea5add1db8b59df834a68f1.js></script><script>(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
 (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
@@ -360,4 +517,4 @@ WebFontConfig = {
   wf.async = 'true'
   var s = document.getElementsByTagName('script')[0]
   s.parentNode.insertBefore(wf, s)
-})()</script><script type=text/javascript src=static/js/manifest.a8e6b0f0609b7d7a998f.js></script><script type=text/javascript src=static/js/vendor.755060297f43b0074b3d.js></script><script type=text/javascript src=static/js/app.fd88d0728dc78bc5bafa.js></script></body></html>
+})()</script><script type=text/javascript src=static/js/manifest.11baf083c8b5cc0b97f8.js></script><script type=text/javascript src=static/js/vendor.955693ee53900696c8ef.js></script><script type=text/javascript src=static/js/app.7b8ca2d5c8957161c02f.js></script></body></html>
