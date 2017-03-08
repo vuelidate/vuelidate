@@ -83,20 +83,41 @@ mixin validatorRow(validator, params)
               | Passes when at least one of provided validators passes.
             +validatorRow('and', ['validators...'])
               | Passes when all of provided validators passes.
+            +validatorRow('withParams', ['$params', 'validator'])
+              | Not really a validator, but a validator modifier. Adds a `$params` object to the
+              | provided validator. Can be used on validation functions or even entire nested
+              | field validation objects. Useful for creating your own custom validators.
+  +subsection('Validator parameters')
+    p.typo__p
+      | Every validator can save parameters. Validators are responsible for saving their type
+      | and parameters, because they are simple functions, and we may want to inform the user about
+      | them.
+    p.typo__p
+      | Use <kbd>withParams</kbd> to apply parameters to a validator. Declared parameters bubble up
+      | by one level, so they are included in the <kbd>$params</kbd> of the parent validation object.
+      | Vuelidate is designed in a way that does not allow the validation result to directly include
+      | params.
+    p.typo__p
+      | You may call the <kbd>$flattenParams</kbd> method on a validation object to get an array of validator
+      | params for all validators that exist in that validation object. For example, let's say
+      | a validation object contains a <kbd>between</kbd> validator to check that a value is between
+      | 5 and 10. Calling <kbd>$flattenParams</kbd> returns the following array.
+    code
+      | [{ path: [], name: 'between', params: { type: 'between', min: 5, max: 10 } }]
   +subsection('Custom validators')
     p.typo__p
       | You can easily write custom validators and combine them with builtin ones,
       | as those are just a simple predicate functions.
     p.typo__p
       | Let's take a simple <kbd>required</kbd> as an example.
-      | It's simply just a function that, given it's input value, returns
-      | if the data is valid or not.
+      | It uses `withParams` to save its own type so that it can be later accessed.
+      | Besides the use of `withParams`, it's simply just a function that,
+      | given it's input value, returns if the data is valid or not.
     +validatorCode('required')
     p.typo__p
       | If your validator needs extra parameters, you can simply create a
       | higher order function that returns the actual predicate, like in <kbd>between</kbd>.
     +validatorCode('between')
-
     p.typo__p
       | In more complex cases when access to the whole model is necessary, like <kbd>sameAs</kbd>,
       | make use of the function context (<kbd>this</kbd>) to access any value on your component

@@ -19,6 +19,10 @@ base.output = {
   library: '[name]'
 }
 
+base.alias = {
+  'vuelidate/withParams': '../withParamsBrowser'
+}
+
 var webpackConfig = Object.assign({}, base)
 
 webpackConfig.plugins = (webpackConfig.plugins || []).concat([

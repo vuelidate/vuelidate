@@ -1,5 +1,8 @@
 {
   "presets": ["es2015", "stage-2"],
-  "plugins": ["transform-export-extensions"],
+  "plugins": [
+    "transform-inline-environment-variables",
+    "transform-export-extensions"
+  ],
   "comments": false
 }
