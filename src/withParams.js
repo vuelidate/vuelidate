@@ -1,5 +1,5 @@
 const withParams = process.env.BUILD === 'web'
-  ? require('./withParamsBrowser')
+  ? require('./withParamsBrowser').default
   : require('./index').withParams
 
 export default withParams

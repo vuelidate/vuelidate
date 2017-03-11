@@ -18,6 +18,6 @@ const fakeWithParams = (paramsOrClosure, maybeValidator) => {
   return paramsOrClosure(() => {})
 }
 
-const withParams = root.Vuelidate ? root.Vuelidate.withParams : fakeWithParams
+const withParams = root.vuelidate ? root.vuelidate.withParams : fakeWithParams
 
 export default withParams
