@@ -1,0 +1,28 @@
+<script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.2.2/vue.min.js"></script>
+<script src="../../dist/vuelidate.min.js"></script>
+<script src="../../dist/validators.min.js"></script>
+
+<div id="app">
+  <input type="text" v-model="model">
+  <pre>{{ $v }}</pre>
+</div>
+
+<script>
+  /* global Vue */
+  Vue.use(window.vuelidate.default)
+  var required = window.validators.required
+  var minLength = window.validators.minLength
+
+  new Vue({ // eslint-disable-line no-new
+    el: '#app',
+    data: {
+      model: ''
+    },
+    validations: {
+      model: {
+        required: required,
+        minLength: minLength(5)
+      }
+    }
+  })
+</script>
