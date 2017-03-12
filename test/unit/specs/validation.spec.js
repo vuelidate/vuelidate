@@ -183,6 +183,27 @@ describe('Validation plugin', () => {
       expect(vm.$v.value.$dirty).to.be.false
     })
 
+    it('should preserve $dirty flag o validation recomputation', () => {
+      const vm = new Vue({
+        data: {
+          out: false,
+          value: 1,
+          value2: 2
+        },
+        validations () {
+          return {
+            value: { fn: this.out ? T : F },
+            value2: { fn: this.out ? T : F }
+          }
+        }
+      })
+
+      vm.$v.value.$touch()
+      vm.out = true
+      expect(vm.$v.value.$dirty).to.be.true
+      expect(vm.$v.value2.$dirty).to.be.false
+    })
+
     it('should have a $error set to false on initialization', () => {
       const vm = new Vue({
         ...base,

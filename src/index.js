@@ -430,10 +430,14 @@ const makeValidationVm = (validations, model) => {
 
   let Root = new Vue({
     render (h) {
+      const vals = typeof validations === 'function'
+        ? validations.call(model)
+        : validations
+
       return h(Validation, {
         ref: '$v',
         attrs: {
-          validations,
+          validations: vals,
           parentModel: null,
           prop: '$v',
           model,
@@ -456,14 +460,7 @@ const validationMixin = {
       options.computed = {}
     }
 
-    if (typeof validations === 'function') {
-      const getV = () => {
-        return validateModel(this, validations.call(this))
-      }
-      options.computed.$v = getV
-    } else {
-      options.computed.$v = () => validateModel(this, validations)
-    }
+    options.computed.$v = () => validateModel(this, validations)
   }
 }
 
