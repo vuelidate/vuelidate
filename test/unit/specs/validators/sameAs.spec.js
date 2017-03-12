@@ -27,4 +27,8 @@ describe('sameAs validator', () => {
     expect(sameAs('nil')(null, parentVm)).to.be.true
     expect(sameAs('empty')('', parentVm)).to.be.true
   })
+
+  it('should allow function expression', () => {
+    expect(sameAs(p => p.first)('hello', parentVm)).to.be.true
+  })
 })
