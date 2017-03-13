@@ -161,10 +161,8 @@ const getComponents = (Vue) => {
     $params () {
       const vals = this.validations
       return {
-        ...buildFromKeys(this.nestedKeys, key => vals[key].$params || null),
-        ...buildFromKeys(this.ruleKeys, key => {
-          return this.getRef(key).$params
-        })
+        ...buildFromKeys(this.nestedKeys, key => vals[key] && vals[key].$params || null),
+        ...buildFromKeys(this.ruleKeys, key => this.getRef(key).$params)
       }
     }
   }
