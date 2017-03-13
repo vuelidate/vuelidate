@@ -183,7 +183,7 @@ describe('Validation plugin', () => {
       expect(vm.$v.value.$dirty).to.be.false
     })
 
-    it('should preserve $dirty flag o validation recomputation', () => {
+    it('should preserve $dirty flag on validation recomputation', () => {
       const vm = new Vue({
         data: {
           out: false,

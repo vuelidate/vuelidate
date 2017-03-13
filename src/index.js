@@ -15,7 +15,7 @@ const getPath = (ctx, obj, path, fallback) => {
 
   path = Array.isArray(path) ? path : path.split('.')
   for (let i = 0; i < path.length; i++) {
-    if (typeof obj === 'object') {
+    if (obj && typeof obj === 'object') {
       obj = obj[path[i]]
     } else {
       return fallback
