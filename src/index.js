@@ -324,7 +324,8 @@ const getComponent = (Vue) => {
       return null
     }
     if (key === '$each') {
-      return h(EachValidation, {key,
+      return h(EachValidation, {
+        key,
         ref: key,
         attrs: {
           validations: vm.validations[key],
@@ -332,7 +333,8 @@ const getComponent = (Vue) => {
           prop: key,
           model: vm.model,
           rootModel: vm.rootModel
-        }})
+        }
+      })
     }
     const validations = vm.validations[key]
     if (Array.isArray(validations)) {
@@ -342,7 +344,8 @@ const getComponent = (Vue) => {
         path => function () { return getPath(root, root.$v, path) },
         v => Array.isArray(v) ? v.join('.') : v
       )
-      return h(GroupValidation, {key,
+      return h(GroupValidation, {
+        key,
         ref: key,
         attrs: {
           validations: refVals,
@@ -350,9 +353,11 @@ const getComponent = (Vue) => {
           prop: key,
           model: null,
           rootModel: root
-        }})
+        }
+      })
     }
-    return h(Validation, {key,
+    return h(Validation, {
+      key,
       ref: key,
       attrs: {
         validations,
@@ -360,7 +365,8 @@ const getComponent = (Vue) => {
         prop: key,
         model: vm.model[key],
         rootModel: vm.rootModel
-      }})
+      }
+    })
   }
 
   const renderEach = (h, vm) => {
@@ -418,8 +424,7 @@ function getVue (rootVm) {
 const validateModel = (model, validations) => {
   const Vue = getVue(model)
   const Validation = getComponent(Vue)
-
-  let Root = new Vue({
+  const root = new Vue({
     render (h) {
       const vals = typeof validations === 'function'
         ? validations.call(model)
@@ -437,21 +442,29 @@ const validateModel = (model, validations) => {
       })
     }
   })
-  Root.$mount()
-  return Root.$refs.$v.proxy
+  root.$mount()
+  return root
 }
 
 const validationMixin = {
   beforeCreate () {
     const options = this.$options
-    if (!options.validations) return
-    const validations = options.validations
-
-    if (typeof options.computed === 'undefined') {
-      options.computed = {}
+    const vals = options.validations
+    if (!vals) return
+    if (!options.computed) options.computed = {}
+    options.computed.$v = () => this._vuelidate.$refs.$v.proxy
+  },
+  created () {
+    const vals = this.$options.validations
+    if (vals) {
+      this._vuelidate = validateModel(this, vals)
     }
-
-    options.computed.$v = () => validateModel(this, validations)
+  },
+  beforeDestroy () {
+    if (this._vuelidate) {
+      this._vuelidate.$destroy()
+      this._vuelidate = null
+    }
   }
 }
 
@@ -459,5 +472,5 @@ function Vuelidate (Vue) {
   Vue.mixin(validationMixin)
 }
 
-export { Vuelidate, validationMixin, validateModel, withParams }
+export { Vuelidate, validationMixin, withParams }
 export default Vuelidate

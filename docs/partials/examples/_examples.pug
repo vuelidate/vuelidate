@@ -70,7 +70,15 @@
       | This is be useful for reporting errors to users.
     +example('ExampleParams')
 
-  +subsection('Accessing dynamic parameters')
+  +subsection('Dynamic validation schema')
+    p.typo__p
+      | Validations schema can be a function, which will make it dynamic and possibly
+      | dependant on your model's data. Recomputations will happend automatically as if
+      | it was a computed value. Validation's <kbd>$dirty</kbd> state will be preserved
+      | as long as the key name won't change or disappear.
+    +example('ExampleDynamic')
+
+  +subsection('Dynamic parameters')
     p.typo__p
       | Because the whole validation process is based on computed properties,
       | nothing prevents you from making the validator name dynamic.
