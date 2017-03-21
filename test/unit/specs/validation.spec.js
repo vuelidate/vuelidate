@@ -183,6 +183,27 @@ describe('Validation plugin', () => {
       expect(vm.$v.value.$dirty).to.be.false
     })
 
+    it('should preserve $dirty flag on validation recomputation', () => {
+      const vm = new Vue({
+        data: {
+          out: false,
+          value: 1,
+          value2: 2
+        },
+        validations () {
+          return {
+            value: { fn: this.out ? T : F },
+            value2: { fn: this.out ? T : F }
+          }
+        }
+      })
+
+      vm.$v.value.$touch()
+      vm.out = true
+      expect(vm.$v.value.$dirty).to.be.true
+      expect(vm.$v.value2.$dirty).to.be.false
+    })
+
     it('should have a $error set to false on initialization', () => {
       const vm = new Vue({
         ...base,
@@ -437,6 +458,18 @@ describe('Validation plugin', () => {
       })
       expect(vm.$v.group.$invalid).to.be.true
     })
+    it('should allow groups defined by paths', () => {
+      const vm = new Vue({
+        ...baseGroup,
+        validations: {
+          group: [['nested', 'value3']],
+          nested: {
+            value3: { isOdd }
+          }
+        }
+      })
+      expect(vm.$v.group['nested.value3'].$invalid).to.be.false
+    })
     it('should have $invalid value set to true when nested.value3 fail', () => {
       const vm = new Vue({
         ...baseGroup,
@@ -542,6 +575,7 @@ describe('Validation plugin', () => {
       vm.list.unshift({value: 0})
       expect(vm.$v.list.$each[0].$dirty).to.be.true
       expect(vm.$v.list.$each[1].$dirty).to.be.false
+      expect(vm.$v.list.$each[2].$dirty).to.be.false
     })
     it('should not loose $dirty after insertion based by $trackBy', () => {
       const vm = new Vue(vmDef(isEven, 'value'))
@@ -675,6 +709,19 @@ describe('Validation plugin', () => {
       expect(vm.$v.value.$params.fn).to.deep.equal({type: 'alwaysTrue'})
     })
 
+    it('should pass $params from validation object', () => {
+      const vm = new Vue({
+        ...base,
+        validations: {
+          value: {
+            $params: {test: true},
+            T
+          }
+        }
+      })
+      expect(vm.$v.$params.value).to.deep.equal({test: true})
+    })
+
     it('should default $params for nested validation object to set of nulls', () => {
       const vm = new Vue({
         ...baseGroup,
@@ -686,6 +733,43 @@ describe('Validation plugin', () => {
         }
       })
       expect(vm.$v.nested.$params).to.be.eql({value3: null, value4: null})
+    })
+
+    it('should return $sub $params on combined validators', () => {
+      const tr = withParams({type: 'alwaysTrue'}, () => true)
+      const fl = withParams({type: 'alwaysFalse'}, () => false)
+      const combo = withParams({type: 'combo'}, v => tr(v) && fl(v))
+      const vm = new Vue({
+        ...baseGroup,
+        validations: {
+          value: { combo }
+        }
+      })
+      expect(vm.$v.value.$params.combo).to.be.eql({
+        type: 'combo',
+        $sub: [
+          {type: 'alwaysTrue'},
+          {type: 'alwaysFalse'}
+        ]
+      })
+    })
+
+    it('should return $sub $params on multiple direct validators', () => {
+      const tr = withParams({type: 'alwaysTrue'}, () => true)
+      const fl = withParams({type: 'alwaysFalse'}, () => false)
+      const comboDirect = v => tr(v) && fl(v)
+      const vm = new Vue({
+        ...baseGroup,
+        validations: {
+          value: { comboDirect }
+        }
+      })
+      expect(vm.$v.value.$params.comboDirect).to.be.eql({
+        $sub: [
+          {type: 'alwaysTrue'},
+          {type: 'alwaysFalse'}
+        ]
+      })
     })
   })
 
@@ -707,7 +791,6 @@ describe('Validation plugin', () => {
     })
 
     it('should return validator params', () => {
-      // console.log(vm.$v.$flattenParams()[0])
       expect(vm.$v.$flattenParams()).to.be.deep.equal([
         { path: ['value'], name: 'isEven', params: { type: 'isEven' } }
       ])
