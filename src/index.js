@@ -1,4 +1,3 @@
-// utilities
 const buildFromKeys = (keys, fn, keyFn) => keys.reduce((build, key) => {
   build[keyFn ? keyFn(key) : key] = fn(key)
   return build
@@ -25,6 +24,8 @@ const getPath = (ctx, obj, path, fallback) => {
   return typeof obj === 'undefined' ? fallback : obj
 }
 
+import {withParams, pushParams, popParams} from './params'
+
 function makePendingAsyncVm (Vue, promise) {
   const asyncVm = new Vue({
     data: {
@@ -47,10 +48,84 @@ function makePendingAsyncVm (Vue, promise) {
   return asyncVm
 }
 
-let _cachedComponents = null
-const getComponents = (Vue) => {
-  if (_cachedComponents) {
-    return _cachedComponents
+const validationGetters = {
+  $invalid () {
+    const proxy = this.proxy
+    return this.nestedKeys.some(nested => proxy[nested].$invalid) ||
+      this.ruleKeys.some(rule => !proxy[rule])
+  },
+  $dirty () {
+    if (this.dirty) {
+      return true
+    }
+    if (this.nestedKeys.length === 0) {
+      return false
+    }
+
+    const proxy = this.proxy
+    return this.nestedKeys.every(key => {
+      return proxy[key].$dirty
+    })
+  },
+  $error () {
+    return !this.$pending && this.$dirty && this.$invalid
+  },
+  $pending () {
+    const proxy = this.proxy
+    return this.nestedKeys.some(key => proxy[key].$pending) ||
+      this.ruleKeys.some(key => this.getRef(key).$pending)
+  },
+  $params () {
+    const vals = this.validations
+    return {
+      ...buildFromKeys(this.nestedKeys, key => vals[key] && vals[key].$params || null),
+      ...buildFromKeys(this.ruleKeys, key => this.getRef(key).$params)
+    }
+  }
+}
+
+function setDirtyRecursive (newState) {
+  this.dirty = newState
+  const proxy = this.proxy
+  const method = newState ? '$touch' : '$reset'
+  this.nestedKeys.forEach(key => {
+    proxy[key][method]()
+  })
+}
+
+const validationMethods = {
+  $touch () {
+    setDirtyRecursive.call(this, true)
+  },
+  $reset () {
+    setDirtyRecursive.call(this, false)
+  },
+  $flattenParams () {
+    const proxy = this.proxy
+    let params = []
+    for (const key in this.$params) {
+      if (this.isNested(key)) {
+        const childParams = proxy[key].$flattenParams()
+        for (let j = 0; j < childParams.length; j++) {
+          childParams[j].path.unshift(key)
+        }
+        params = params.concat(childParams)
+      } else {
+        params.push({ path: [], name: key, params: this.$params[key] })
+      }
+    }
+    return params
+  }
+
+}
+
+const getterNames = Object.keys(validationGetters)
+const methodNames = Object.keys(validationMethods)
+
+let _cachedComponent = null
+const getComponent = (Vue) => {
+  if (_cachedComponent) {
+    return _cachedComponent
   }
 
   const ValidationRule = Vue.extend({
@@ -58,7 +133,7 @@ const getComponents = (Vue) => {
     methods: {
       runRule (parent) {
         // Avoid using this.parentModel to not get dependent on it.
-        // Passed as an argumend for workaround
+        // Passed as an argument for workaround
         pushParams()
         const rawOutput = this.rule.call(this.rootModel, this.model, parent)
         const output = isPromise(rawOutput)
@@ -131,80 +206,6 @@ const getComponents = (Vue) => {
     }
   })
 
-  const validationGetters = {
-    $invalid () {
-      const proxy = this.proxy
-      return this.nestedKeys.some(nested => proxy[nested].$invalid) ||
-        this.ruleKeys.some(rule => !proxy[rule])
-    },
-    $dirty () {
-      if (this.dirty) {
-        return true
-      }
-      if (this.nestedKeys.length === 0) {
-        return false
-      }
-
-      const proxy = this.proxy
-      return this.nestedKeys.every(key => {
-        return proxy[key].$dirty
-      })
-    },
-    $error () {
-      return !!(!this.$pending && this.$dirty && this.$invalid)
-    },
-    $pending () {
-      const proxy = this.proxy
-      return this.nestedKeys.some(key => proxy[key].$pending) ||
-        this.ruleKeys.some(key => this.getRef(key).$pending)
-    },
-    $params () {
-      const vals = this.validations
-      return {
-        ...buildFromKeys(this.nestedKeys, key => vals[key] && vals[key].$params || null),
-        ...buildFromKeys(this.ruleKeys, key => this.getRef(key).$params)
-      }
-    }
-  }
-
-  function setDirtyRecursive (newState) {
-    this.dirty = newState
-    const proxy = this.proxy
-    const method = newState ? '$touch' : '$reset'
-    this.nestedKeys.forEach(key => {
-      proxy[key][method]()
-    })
-  }
-
-  const validationMethods = {
-    $touch () {
-      setDirtyRecursive.call(this, true)
-    },
-    $reset () {
-      setDirtyRecursive.call(this, false)
-    },
-    $flattenParams () {
-      const proxy = this.proxy
-      let params = []
-      for (const key in this.$params) {
-        if (this.isNested(key)) {
-          const childParams = proxy[key].$flattenParams()
-          for (let j = 0; j < childParams.length; j++) {
-            childParams[j].path.unshift(key)
-          }
-          params = params.concat(childParams)
-        } else {
-          params.push({ path: [], name: key, params: this.$params[key] })
-        }
-      }
-      return params
-    }
-
-  }
-
-  const getterNames = Object.keys(validationGetters)
-  const methodNames = Object.keys(validationMethods)
-
   const Validation = Vue.extend({
     data () {
       return {
@@ -257,16 +258,8 @@ const getComponents = (Vue) => {
           get: () => this[key]
         }))
 
-        const defaultDefs = {
-          __isVuelidateVm: {
-            enumerable: false,
-            configurable: false,
-            value: true
-          }
-        }
-
         return Object.defineProperties({}, {
-          ...keyDefs, ...getterDefs, ...methodDefs, ...defaultDefs
+          ...keyDefs, ...getterDefs, ...methodDefs
         })
       }
     },
@@ -353,8 +346,8 @@ const getComponents = (Vue) => {
         ref: key,
         attrs: {
           validations: refVals,
-          prop: key,
           parentModel: null,
+          prop: key,
           model: null,
           rootModel: root
         }})
@@ -363,8 +356,8 @@ const getComponents = (Vue) => {
       ref: key,
       attrs: {
         validations,
-        prop: key,
         parentModel: vm.model,
+        prop: key,
         model: vm.model[key],
         rootModel: vm.rootModel
       }})
@@ -388,7 +381,7 @@ const getComponents = (Vue) => {
         key: track,
         ref: track,
         attrs: {
-          validations: validations,
+          validations,
           prop: key,
           parentModel: vm.model,
           model: vm.model[key],
@@ -408,8 +401,8 @@ const getComponents = (Vue) => {
       }})
   }
 
-  _cachedComponents = { Validation, ValidationRule }
-  return _cachedComponents
+  _cachedComponent = Validation
+  return _cachedComponent
 }
 
 let _cachedVue = null
@@ -422,9 +415,9 @@ function getVue (rootVm) {
   return Vue
 }
 
-const makeValidationVm = (validations, model) => {
+const validateModel = (model, validations) => {
   const Vue = getVue(model)
-  const { Validation } = getComponents(Vue)
+  const Validation = getComponent(Vue)
 
   let Root = new Vue({
     render (h) {
@@ -462,68 +455,8 @@ const validationMixin = {
   }
 }
 
-const validateModel = (model, validations) => makeValidationVm(validations, model)
-
 function Vuelidate (Vue) {
   Vue.mixin(validationMixin)
-}
-
-function withParams (paramsOrClosure, maybeValidator) {
-  if (typeof paramsOrClosure === 'object' && maybeValidator !== undefined) {
-    return withParamsDirect(paramsOrClosure, maybeValidator)
-  }
-  return withParamsClosure(paramsOrClosure)
-}
-
-const stack = []
-withParams.target = null
-
-function pushParams () {
-  if (withParams.target !== null) {
-    stack.push(withParams.target)
-  }
-  withParams.target = {}
-}
-
-function popParams () {
-  const lastTarget = withParams.target
-  const newTarget = withParams.target = stack.pop() || null
-  if (newTarget) {
-    if (!Array.isArray(newTarget.$sub)) {
-      newTarget.$sub = []
-    }
-    newTarget.$sub.push(lastTarget)
-  }
-  return lastTarget
-}
-
-function addParams (params) {
-  if (typeof params === 'object' && !Array.isArray(params)) {
-    withParams.target = {...withParams.target, ...params}
-  } else {
-    throw new Error('params must be an object')
-  }
-}
-
-function withParamsDirect (params, validator) {
-  return withParamsClosure(add => {
-    return function (...args) {
-      add(params)
-      return validator.apply(this, args)
-    }
-  })
-}
-
-function withParamsClosure (closure) {
-  const validator = closure(addParams)
-  return function (...args) {
-    pushParams()
-    try {
-      return validator.apply(this, args)
-    } finally {
-      popParams()
-    }
-  }
 }
 
 export { Vuelidate, validationMixin, validateModel, withParams }

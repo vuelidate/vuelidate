@@ -1,10 +1,11 @@
 import withParams from 'src/withParams'
+import { target, _setTarget } from 'src/params'
 
 describe('withParams validator modifier', () => {
   const func = (x) => true
 
   beforeEach(() => {
-    withParams.target = null
+    _setTarget(null)
   })
 
   it('should throw on invalid params', () => {
@@ -43,17 +44,17 @@ describe('withParams validator modifier', () => {
 
   it('should add params after function evaluation', () => {
     const $params = {a: 1, b: 2}
-    withParams.target = {}
+    _setTarget({})
     withParams($params, func)('test')
-    expect(withParams.target.$sub[0]).to.deep.equal($params)
+    expect(target.$sub[0]).to.deep.equal($params)
   })
 
   it('should stack combining params to $sub key', () => {
     const $params1 = {a: 0, c: 3}
     const $params2 = {a: 1, b: 2}
-    withParams.target = {}
+    _setTarget({})
     withParams($params2, withParams($params1, func))('test')
-    expect(withParams.target.$sub[0])
+    expect(target.$sub[0])
       .to.deep.equal({a: 1, b: 2, $sub: [{a: 0, c: 3}]})
   })
 
@@ -61,14 +62,14 @@ describe('withParams validator modifier', () => {
     const $params1 = {a: 0, c: 3}
     const $params2 = {a: 1, b: 2}
     const $params3 = {a: 2, b: 3}
-    withParams.target = {}
+    _setTarget({})
     withParams($params1, v => {
       const v1 = withParams($params2, func)(v)
       const v2 = withParams($params3, func)(v)
       return v1 && v2
     })('test')
 
-    expect(withParams.target.$sub[0])
+    expect(target.$sub[0])
       .to.deep.equal({a: 0, c: 3, $sub: [{a: 1, b: 2}, {a: 2, b: 3}]})
   })
 })
