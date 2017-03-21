@@ -1,5 +1,6 @@
 "use strict";
 
+/* http://prismjs.com/download.html?themes=prism&languages=markup+css+clike+javascript+coffeescript+css-extras+git+jade+sass+scss&plugins=show-language+remove-initial-line-feed */
 var _self = "undefined" != typeof window ? window : "undefined" != typeof WorkerGlobalScope && self instanceof WorkerGlobalScope ? self : {},
     Prism = function () {
   var e = /\blang(?:uage)?-(?!\*)(\w+)\b/i,
