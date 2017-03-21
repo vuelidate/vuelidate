@@ -6,6 +6,8 @@ import email from './email'
 import maxLength from './maxLength'
 import minLength from './minLength'
 import required from './required'
+import requiredIf from './requiredIf'
+import requiredUnless from './requiredUnless'
 import sameAs from './sameAs'
 import or from './or'
 import and from './and'
@@ -19,6 +21,8 @@ export {
   maxLength,
   minLength,
   required,
+  requiredIf,
+  requiredUnless,
   sameAs,
   or,
   and
