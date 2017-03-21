@@ -59,6 +59,10 @@ mixin validatorRow(validator, params)
             +validatorRow('required')
               | Requires non-empty data.
               | Checks for empty arrays and strings containing only whitespaces.
+            +validatorRow('requiredIf', ['locator'])
+              | Requires non-empty data only if provided property or predicate is true.
+            +validatorRow('requiredUnless', ['locator'])
+              | Requires non-empty data only if provided property or predicate is false.
             +validatorRow('minLength', ['min length'])
               | Requires the input to have a minimum specified length, inclusive. Works with arrays.
             +validatorRow('maxLength', ['max length'])
@@ -79,6 +83,8 @@ mixin validatorRow(validator, params)
               | Locator might be either a sibling property name
               | or a function, that will get your component as <kbd>this</kbd> and
               | nested model which sibling properties under second parameter.
+            +validatorRow('url')
+              | Accepts only URLs.
             +validatorRow('or', ['validators...'])
               | Passes when at least one of provided validators passes.
             +validatorRow('and', ['validators...'])
