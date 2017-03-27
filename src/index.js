@@ -219,6 +219,7 @@ const getComponent = (Vue) => {
     methods: {
       ...validationMethods,
       getRef (key) {
+        this._watcher.depend()
         if (this._watcher.dirty) {
           this._watcher.evaluate()
         }
@@ -308,6 +309,7 @@ const getComponent = (Vue) => {
         return true
       },
       getRef (key) {
+        this._watcher.depend()
         if (this._watcher.dirty) {
           this._watcher.evaluate()
         }
