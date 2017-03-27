@@ -2,7 +2,7 @@ import Vue from 'vue'
 
 const T = () => true
 
-describe('#79 Error when validating a collection after removing an item ', () => {
+describe('#79 Error when validating a collection after removing an item', () => {
   it('should correctly recalculate one-level nested $each count on remove', () => {
     const vm = new Vue({
       data: {
