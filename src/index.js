@@ -453,14 +453,9 @@ const validationMixin = {
     const options = this.$options
     const vals = options.validations
     if (!vals) return
+    else this._vuelidate = validateModel(this, vals)
     if (!options.computed) options.computed = {}
     options.computed.$v = () => this._vuelidate.$refs.$v.proxy
-  },
-  created () {
-    const vals = this.$options.validations
-    if (vals) {
-      this._vuelidate = validateModel(this, vals)
-    }
   },
   beforeDestroy () {
     if (this._vuelidate) {
