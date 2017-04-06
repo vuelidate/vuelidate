@@ -1,6 +1,5 @@
-import required from './required'
-import withParams from '../withParams'
+import {req, withParams} from './common'
 
 export default (min, max) =>
   withParams({type: 'between', min, max}, value =>
-    !required(value) || (!/\s/.test(value) && Number(min) <= value && Number(max) >= value))
+    !req(value) || (!/\s/.test(value) && +min <= +value && +max >= +value))
