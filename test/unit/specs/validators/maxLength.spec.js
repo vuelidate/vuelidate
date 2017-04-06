@@ -44,4 +44,20 @@ describe('maxLength validator', () => {
   it('should validate arrays on length bound', () => {
     expect(maxLength(5)([1, 2, 3, 4, 5])).to.be.true
   })
+
+  it('should validate empty objects', () => {
+    expect(maxLength(-2)({})).to.be.true
+  })
+
+  it('should validate short objects', () => {
+    expect(maxLength(5)({a: 1})).to.be.true
+  })
+
+  it('should not validate too long objects', () => {
+    expect(maxLength(5)({a: 1, b: 2, c: 3, d: 4, e: 5, f: 6})).to.be.false
+  })
+
+  it('should validate objects on length bound', () => {
+    expect(maxLength(5)({a: 1, b: 2, c: 3, d: 4, e: 5})).to.be.true
+  })
 })

@@ -36,4 +36,16 @@ describe('minLength validator', () => {
   it('should validate arrays with enough elements', () => {
     expect(minLength(5)([1, 2, 3, 4, 5])).to.be.true
   })
+
+  it('should validate empty objects', () => {
+    expect(minLength(5)({})).to.be.true
+  })
+
+  it('should not validate too short objects', () => {
+    expect(minLength(5)({a: 1})).to.be.false
+  })
+
+  it('should validate objects with enough elements', () => {
+    expect(minLength(5)({a: 1, b: 2, c: 3, d: 4, e: 5})).to.be.true
+  })
 })

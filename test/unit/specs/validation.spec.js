@@ -49,6 +49,21 @@ describe('Validation plugin', () => {
     expect(vm.$v).to.exist
   })
 
+  it('should not leak vue instances on destroy', () => {
+    const vm = new Vue({
+      ...base,
+      validations: {
+        value: { isEven }
+      }
+    })
+
+    vm.$v
+    const vRef = vm._vuelidate
+    vm.$destroy()
+    expect(vRef._isDestroyed).to.be.true
+    expect(vm._vuelidate).to.be.null
+  })
+
   it('should have a $v key while not overriding existing computed', () => {
     const vm = new Vue({
       ...base,

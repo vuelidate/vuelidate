@@ -13,6 +13,14 @@ describe('required validator', () => {
     expect(required([1])).to.be.true
   })
 
+  it('should not validate empty objects', () => {
+    expect(required({})).to.be.false
+  })
+
+  it('should validate nonempty objects', () => {
+    expect(required({a: 1})).to.be.true
+  })
+
   it('should not validate undefined', () => {
     expect(required(undefined)).to.be.false
   })
