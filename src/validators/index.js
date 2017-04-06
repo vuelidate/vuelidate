@@ -9,6 +9,7 @@ import required from './required'
 import requiredIf from './requiredIf'
 import requiredUnless from './requiredUnless'
 import sameAs from './sameAs'
+import url from './url'
 import or from './or'
 import and from './and'
 
@@ -24,6 +25,7 @@ export {
   requiredIf,
   requiredUnless,
   sameAs,
+  url,
   or,
   and
 }
