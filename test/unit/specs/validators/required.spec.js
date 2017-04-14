@@ -29,6 +29,14 @@ describe('required validator', () => {
     expect(required(null)).to.be.false
   })
 
+  it('should not validate false', () => {
+    expect(required(false)).to.be.false
+  })
+
+  it('should validate true', () => {
+    expect(required(true)).to.be.true
+  })
+
   it('should validate string only with spaces', () => {
     expect(required('  ')).to.be.true
   })
