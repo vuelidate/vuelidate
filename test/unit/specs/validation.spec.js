@@ -64,6 +64,23 @@ describe('Validation plugin', () => {
     expect(vm._vuelidate).to.be.null
   })
 
+  it('should allow watching a $v state', (done) => {
+    const vm = new Vue({
+      ...base,
+      validations: {
+        value: { isEven }
+      },
+      watch: {
+        '$v.value.$invalid' (v, oldv) {
+          expect(v).to.be.true
+          expect(oldv).to.be.false
+          done()
+        }
+      }
+    })
+    vm.value = 123
+  })
+
   it('should have a $v key while not overriding existing computed', () => {
     const vm = new Vue({
       ...base,
@@ -618,6 +635,66 @@ describe('Validation plugin', () => {
       expect(vm.$v.list.$each[0]).to.be.equal(vm.$v.list.$each[1])
       expect(vm.$v.list.$each[0].$dirty).to.be.true
     })
+
+    it('should allow deleting first child', () => {
+      const vm = new Vue(vmDef(isEven, 'value'))
+      expect(vm.$v.list.$each[0].$invalid).to.be.true
+      vm.list.shift()
+      expect(vm.$v.list.$each[0].$invalid).to.be.false
+    })
+    it('should allow deleting last child', () => {
+      const vm = new Vue(vmDef(isEven, 'value'))
+      expect(vm.$v.list.$each[1].$invalid).to.be.false
+      vm.list.pop()
+      expect(vm.$v.list.$each[1]).to.not.exist
+    })
+    it('should allow swapping children', () => {
+      const vm = new Vue(vmDef(isEven, 'value'))
+      expect(vm.$v.list.$each[0].$invalid).to.be.true
+      expect(vm.$v.list.$each[1].$invalid).to.be.false
+      vm.list[0].value = 2
+      vm.list[1].value = 1
+      expect(vm.$v.list.$each[0].$invalid).to.be.false
+      expect(vm.$v.list.$each[1].$invalid).to.be.true
+    })
+    it('should allow reordering with insertion children', () => {
+      const vm = new Vue(vmDef(isEven, 'value'))
+      vm.list.push(
+        {value: 3},
+        {value: 4},
+        {value: 5}
+      )
+      expect(vm.$v.list.$each[0].$invalid).to.be.true
+      expect(vm.$v.list.$each[4].$invalid).to.be.true
+      vm.list[0].value = 1
+      vm.list[1].value = 5
+      vm.list[2].value = 6
+      vm.list[3].value = 2
+      vm.list[4].value = 4
+      expect(vm.$v.list.$each[0].$invalid).to.be.true
+      expect(vm.$v.list.$each[4].$invalid).to.be.false
+      expect(vm.$v.list.$each[2].$invalid).to.be.false
+    })
+    it('should allow reordering with different beginning and ending', () => {
+      const vm = new Vue(vmDef(isEven, 'value'))
+      vm.list.push(
+        {value: 3},
+        {value: 4},
+        {value: 5},
+        {value: 6}
+      )
+      vm.$v.list.$each[0]
+      vm.list[0].value = 5
+      vm.list[1].value = 6
+      vm.list[2].value = 2
+      vm.list[3].value = 1
+      vm.list[4].value = 4
+      expect(vm.$v.list.$each[0].$invalid).to.be.true
+      expect(vm.$v.list.$each[1].$invalid).to.be.false
+      expect(vm.$v.list.$each[2].$invalid).to.be.false
+      expect(vm.$v.list.$each[3].$invalid).to.be.true
+      expect(vm.$v.list.$each[4].$invalid).to.be.false
+    })
   })
 
   describe('validating direct values with $each', () => {
@@ -735,6 +812,7 @@ describe('Validation plugin', () => {
         }
       })
       expect(vm.$v.$params.value).to.deep.equal({test: true})
+      expect(vm.$v.value.$params).to.deep.equal({T: null})
     })
 
     it('should default $params for nested validation object to set of nulls', () => {
