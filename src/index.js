@@ -55,7 +55,12 @@ const validationGetters = {
   $invalid () {
     const proxy = this.proxy
     return this.nestedKeys.some(nested => proxy[nested].$invalid) ||
-      this.ruleKeys.some(rule => !proxy[rule])
+      this.ruleKeys.some(rule => proxy[rule] === false || proxy[rule] === 'error')
+  },
+  $warning () {
+    const proxy = this.proxy
+    return this.nestedKeys.some(nested => proxy[nested].$warning) ||
+      this.ruleKeys.some(rule => proxy[rule] === 'warning')
   },
   $dirty () {
     if (this.dirty) {
@@ -222,9 +227,9 @@ const getComponent = (Vue) => {
       proxy () {
         const output = this.run.output
         if (output[__isVuelidateAsyncVm]) {
-          return !!output.v
+          return output.v
         }
-        return !!output
+        return output
       },
       $pending () {
         const output = this.run.output
