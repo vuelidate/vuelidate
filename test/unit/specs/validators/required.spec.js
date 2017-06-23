@@ -52,4 +52,12 @@ describe('required validator', () => {
   it('should validate unicode', () => {
     expect(required('🎉')).to.be.true
   })
+
+  it('should validate correct date', () => {
+    expect(required(new Date(1234123412341))).to.be.true
+  })
+
+  it('should not validate invalid date', () => {
+    expect(required(new Date('a'))).to.be.false
+  })
 })
