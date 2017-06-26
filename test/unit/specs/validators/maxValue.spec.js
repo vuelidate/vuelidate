@@ -16,5 +16,4 @@ describe('maxValue validator', () => {
   it('should validate the string value', () => {
     expect(maxValue(5)('not string here')).to.be.false
   })
-
 })

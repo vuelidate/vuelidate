@@ -16,5 +16,4 @@ describe('minValue validator', () => {
   it('should validate the string value', () => {
     expect(minValue(5)('not string here')).to.be.false
   })
-
 })
