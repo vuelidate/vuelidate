@@ -1,5 +1,5 @@
-import { withParams } from './common'
+import { req, withParams } from './common'
 export default (min) => withParams(
   { type: 'minValue', min },
-    value => value >= min
+    value => !req(value) || value >= min
   )
