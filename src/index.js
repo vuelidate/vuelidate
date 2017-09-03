@@ -193,37 +193,7 @@ const getComponent = (Vue) => {
     },
     computed: {
       run () {
-        const parent = this.lazyParentModel()
-        const isArrayDependant =
-          Array.isArray(parent) &&
-          parent.__ob__
-
-        if (isArrayDependant) {
-          // force depend on the array
-          const arrayDep = parent.__ob__.dep
-          arrayDep.depend()
-
-          const target = arrayDep.constructor.target
-
-          if (!this._indirectWatcher) {
-            const Watcher = target.constructor
-            this._indirectWatcher = new Watcher(this, () => this.runRule(parent), null, { lazy: true })
-          }
-
-          // if the update cause is only the array update
-          // and value stays the same, don't recalculate
-          const model = this.getModel()
-          if (!this._indirectWatcher.dirty && this._lastModel === model) {
-            this._indirectWatcher.depend()
-            return target.value
-          }
-
-          this._lastModel = model
-          this._indirectWatcher.evaluate()
-          this._indirectWatcher.depend()
-        }
-
-        return this._indirectWatcher ? this._indirectWatcher.value : this.runRule(parent)
+        return this.runRule(this.lazyParentModel())
       },
       $params () {
         return this.run.params
