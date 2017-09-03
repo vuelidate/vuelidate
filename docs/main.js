@@ -8,19 +8,6 @@ Vue.use(Validation)
 
 import './docs.scss'
 
-function throttle (callback, limit) {
-  var wait = false
-  return function () {
-    if (!wait) {
-      callback.call()
-      wait = true
-      setTimeout(function () {
-        wait = false
-      }, limit)
-    }
-  }
-}
-
 const SL = ', 100%, 85%'
 
 /* eslint-disable no-new */
@@ -36,7 +23,8 @@ new Vue({
       firstColor: Math.floor(Math.random() * 255),
       secondColor: Math.floor(Math.random() * 255),
       markupLangs: ['pug', 'html'],
-      markupLanguage: 'pug'
+      markupLanguage: 'pug',
+      currentHash: ''
     }
   },
   computed: {
@@ -44,6 +32,9 @@ new Vue({
       return {
         background: `linear-gradient(to left bottom, hsl(${this.firstColor + SL}) 0%, hsl(${this.secondColor + SL}) 100%)`
       }
+    },
+    allHeaders () {
+      return [].slice.call(document.querySelectorAll('section[id], .typo__h2[id]'))
     }
   },
   methods: {
@@ -51,11 +42,42 @@ new Vue({
       this.markupLanguage = lang
     },
     adjustNav () {
-      this.isNavSticky = window.scrollY > window.innerHeight
+      const $nav = document.getElementById('main-nav')
+      const navTop = $nav.getBoundingClientRect().top
+      this.isNavSticky = navTop < 0
+
+      const found = this.allHeaders.findIndex(e => {
+        const top = e.getBoundingClientRect().top
+        return top > 0
+      })
+
+      console.log(this.allHeaders)
+
+      const head = found === -1 ? this.allHeaders.length - 1 : found - 1
+
+      if (head !== -1) {
+        const el = this.allHeaders[head]
+        const hash = el.getAttribute('id')
+        if (this.currentHash !== hash) {
+          this.currentHash = hash
+          el.setAttribute('id', '')
+          window.location.hash = hash
+          el.setAttribute('id', hash)
+        }
+      }
+    },
+    requestFrame () {
+      if (!this._frameRequested) {
+        this._frameRequested = true
+        window.requestAnimationFrame(() => {
+          this._frameRequested = false
+          this.adjustNav()
+        })
+      }
     }
   },
   mounted () {
     this.adjustNav()
-    window.addEventListener('scroll', throttle(this.adjustNav, 50))
+    window.addEventListener('scroll', this.requestFrame)
   }
 })

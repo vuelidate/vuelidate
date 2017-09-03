@@ -19,11 +19,11 @@ mixin renderToc()
 
 mixin tocSection(name)
   li.list__heading
-    a.link.blank__link(href="#" + hyphenate(name))=name
+    a.link.blank__link(href="#" + hyphenate(name), :class="{'link-active': currentHash ==  '" + hyphenate(name) + "'}")=name
 
 mixin tocSubsection(name)
   li.list__element
-    a.link.list__link(href="#sub-" + hyphenate(name))=name
+    a.link.list__link(href="#sub-" + hyphenate(name), :class="{'link-active': currentHash ==  'sub-" + hyphenate(name) + "'}")=name
 
 
 mixin section(name)

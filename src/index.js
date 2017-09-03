@@ -117,7 +117,6 @@ const validationMethods = {
     }
     return params
   }
-
 }
 
 const getterNames = Object.keys(validationGetters)
