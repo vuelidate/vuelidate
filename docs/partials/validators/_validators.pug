@@ -95,6 +95,38 @@ mixin validatorRow(validator, params)
       | When provided as a function, it receives the model under validation as argument and
       | <kbd>this</kbd> is bound to the component instance so you can access all its
       | properties and methods, even in the scope of a nested validation.
+    p.typo__p
+      | Example of conditional validations using a locator meta parameter:
+      pre(v-pre).language-javascript
+        code.
+          export default {
+            ...,
+            data() {
+              return {
+                field: "foo",
+                nested: {
+                  field: "bar",
+                  someFlag: true
+                }
+              }
+            },
+            computed: {
+              isOptional() {
+                return true // some conditional logic here...
+              }
+            },
+            validations: {
+              field: {
+                required: requiredUnless('isOptional')
+              },
+              nested: {
+                required: requiredIf(function (nestedModel) {
+                  return !this.isOptional && nestedModel.someFlag
+                })
+              }
+            }
+          }
+
   +subsection('Validator parameters')
     p.typo__p
       | Every validator can save parameters. Validators are responsible for saving their type
