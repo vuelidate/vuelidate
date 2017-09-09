@@ -59,9 +59,9 @@ mixin validatorRow(validator, params)
             +validatorRow('required')
               | Requires non-empty data.
               | Checks for empty arrays and strings containing only whitespaces.
-            +validatorRow('requiredIf', ['locator'])
+            +validatorRow('requiredIf', ['locator *'])
               | Requires non-empty data only if provided property or predicate is true.
-            +validatorRow('requiredUnless', ['locator'])
+            +validatorRow('requiredUnless', ['locator *'])
               | Requires non-empty data only if provided property or predicate is false.
             +validatorRow('minLength', ['min length'])
               | Requires the input to have a minimum specified length, inclusive. Works with arrays.
@@ -78,11 +78,8 @@ mixin validatorRow(validator, params)
             +validatorRow('email')
               | Accepts valid email addresses. Keep in mind you still have to carefully verify it on your server,
               | as it is impossible to tell if the address is real without sending verification email.
-            +validatorRow('sameAs', ['locator'])
+            +validatorRow('sameAs', ['locator *'])
               | Checks for equality with a given property.
-              | Locator might be either a sibling property name
-              | or a function, that will get your component as <kbd>this</kbd> and
-              | nested model which sibling properties under second parameter.
             +validatorRow('url')
               | Accepts only URLs.
             +validatorRow('or', ['validators...'])
@@ -93,6 +90,11 @@ mixin validatorRow(validator, params)
               | Not really a validator, but a validator modifier. Adds a `$params` object to the
               | provided validator. Can be used on validation functions or even entire nested
               | field validation objects. Useful for creating your own custom validators.
+    p.typo__p
+      | * Locator can be either a sibling property name or a function.
+      | When provided as a function, it receives the model under validation as argument and
+      | <kbd>this</kbd> is bound to the component instance so you can access all its
+      | properties and methods, even in the scope of a nested validation.
   +subsection('Validator parameters')
     p.typo__p
       | Every validator can save parameters. Validators are responsible for saving their type
