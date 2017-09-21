@@ -1,5 +1,7 @@
 import {h, patchChildren} from './vval'
 
+const NUL = () => null
+
 const buildFromKeys = (keys, fn, keyFn) => keys.reduce((build, key) => {
   build[keyFn ? keyFn(key) : key] = fn(key)
   return build
@@ -54,7 +56,7 @@ function makePendingAsyncVm (Vue, promise) {
 const validationGetters = {
   $invalid () {
     const proxy = this.proxy
-    return this.nestedKeys.some(nested => proxy[nested].$invalid) ||
+    return this.nestedKeys.some(nested => this.refProxy(nested).$invalid) ||
       this.ruleKeys.some(rule => !proxy[rule])
   },
   $dirty () {
@@ -65,18 +67,14 @@ const validationGetters = {
       return false
     }
 
-    const proxy = this.proxy
-    return this.nestedKeys.every(key => {
-      return proxy[key].$dirty
-    })
+    return this.nestedKeys.every(key => this.refProxy(key).$dirty)
   },
   $error () {
     return this.$dirty && !this.$pending && this.$invalid
   },
   $pending () {
-    const proxy = this.proxy
-    return this.nestedKeys.some(key => proxy[key].$pending) ||
-      this.ruleKeys.some(key => this.getRef(key).$pending)
+    return this.ruleKeys.some(key => this.getRef(key).$pending) ||
+           this.nestedKeys.some(key => this.refProxy(key).$pending)
   },
   $params () {
     const vals = this.validations
@@ -119,7 +117,6 @@ const validationMethods = {
     }
     return params
   }
-
 }
 
 const getterNames = Object.keys(validationGetters)
@@ -140,6 +137,14 @@ const getComponent = (Vue) => {
         patchChildren(this._vval)
       }
     },
+    methods: {
+      getModel () {
+        return this.lazyModel ? this.lazyModel(this.prop) : this.model
+      },
+      getModelKey (key) {
+        return this.getModel()[key]
+      }
+    },
     computed: {
       refs () {
         const oldVval = this._vval
@@ -158,17 +163,19 @@ const getComponent = (Vue) => {
     data () {
       return {
         rule: null,
+        lazyModel: null,
         model: null,
-        parentModel: null,
+        lazyParentModel: null,
         rootModel: null
       }
     },
     methods: {
       runRule (parent) {
-        // Avoid using this.parentModel to not get dependent on it.
+        // Avoid using this.lazyParentModel to not get dependent on it.
         // Passed as an argument for workaround
+        const model = this.getModel()
         pushParams()
-        const rawOutput = this.rule.call(this.rootModel, this.model, parent)
+        const rawOutput = this.rule.call(this.rootModel, model, parent)
         const output = isPromise(rawOutput)
           ? makePendingAsyncVm(Vue, rawOutput)
           : rawOutput
@@ -185,36 +192,7 @@ const getComponent = (Vue) => {
     },
     computed: {
       run () {
-        const parent = this.parentModel
-        const isArrayDependant =
-          Array.isArray(parent) &&
-          parent.__ob__
-
-        if (isArrayDependant) {
-          // force depend on the array
-          const arrayDep = parent.__ob__.dep
-          arrayDep.depend()
-
-          const target = arrayDep.constructor.target
-
-          if (!this._indirectWatcher) {
-            const Watcher = target.constructor
-            this._indirectWatcher = new Watcher(this.rootModel, () => this.runRule(parent), null, { lazy: true })
-          }
-
-          // if the update cause is only the array update
-          // and value stays the same, don't recalculate
-          if (!this._indirectWatcher.dirty && this._lastModel === this.model) {
-            this._indirectWatcher.depend()
-            return target.value
-          }
-
-          this._lastModel = this.model
-          this._indirectWatcher.evaluate()
-          this._indirectWatcher.depend()
-        }
-
-        return this._indirectWatcher ? this._indirectWatcher.value : this.runRule(parent)
+        return this.runRule(this.lazyParentModel())
       },
       $params () {
         return this.run.params
@@ -241,14 +219,18 @@ const getComponent = (Vue) => {
       return {
         dirty: false,
         validations: null,
+        lazyModel: null,
         model: null,
         prop: null,
-        parentModel: null,
+        lazyParentModel: null,
         rootModel: null
       }
     },
     methods: {
       ...validationMethods,
+      refProxy (key) {
+        return this.getRef(key).proxy
+      },
       getRef (key) {
         return this.refs[key]
       },
@@ -271,7 +253,7 @@ const getComponent = (Vue) => {
         const keyDefs = buildFromKeys(this.keys, key => ({
           enumerable: true,
           configurable: false,
-          get: () => this.getRef(key).proxy
+          get: () => this.refProxy(key)
         }))
 
         const getterDefs = buildFromKeys(getterNames, key => ({
@@ -319,16 +301,21 @@ const getComponent = (Vue) => {
   const EachValidation = Validation.extend({
     computed: {
       keys () {
-        return Object.keys(this.model)
+        return Object.keys(this.getModel())
       },
       tracker () {
         const trackBy = this.validations.$trackBy
         return trackBy
-            ? key => `${getPath(this.rootModel, this.model[key], trackBy)}`
+            ? key => `${getPath(this.rootModel, this.getModelKey(key), trackBy)}`
             : x => `${x}`
+      },
+      eagerParentModel () {
+        const parent = this.lazyParentModel()
+        return () => parent
       },
       children () {
         const def = this.validations
+        const model = this.getModel()
 
         const validations = { ...def }
         delete validations['$trackBy']
@@ -344,8 +331,8 @@ const getComponent = (Vue) => {
           return h(Validation, track, {
             validations,
             prop: key,
-            parentModel: this.model,
-            model: this.model[key],
+            lazyParentModel: this.eagerParentModel,
+            model: model[key],
             rootModel: this.rootModel
           })
         }).filter(Boolean)
@@ -365,9 +352,9 @@ const getComponent = (Vue) => {
     if (key === '$each') {
       return h(EachValidation, key, {
         validations: vm.validations[key],
-        parentModel: vm.parentModel,
+        lazyParentModel: vm.lazyParentModel,
         prop: key,
-        model: vm.model,
+        lazyModel: vm.getModel,
         rootModel: vm.rootModel
       })
     }
@@ -381,17 +368,17 @@ const getComponent = (Vue) => {
       )
       return h(GroupValidation, key, {
         validations: refVals,
-        parentModel: null,
+        lazyParentModel: NUL,
         prop: key,
-        model: null,
+        lazyModel: NUL,
         rootModel: root
       })
     }
     return h(Validation, key, {
       validations,
-      parentModel: vm.model,
+      lazyParentModel: vm.getModel,
       prop: key,
-      model: vm.model[key],
+      lazyModel: vm.getModelKey,
       rootModel: vm.rootModel
     })
   }
@@ -399,8 +386,8 @@ const getComponent = (Vue) => {
   const renderRule = (vm, key) => {
     return h(ValidationRule, key, {
       rule: vm.validations[key],
-      parentModel: vm.parentModel,
-      model: vm.model,
+      lazyParentModel: vm.lazyParentModel,
+      lazyModel: vm.getModel,
       rootModel: vm.rootModel
     })
   }
@@ -431,7 +418,7 @@ const validateModel = (model, validations) => {
 
         return [h(Validation, '$v', {
           validations: vals,
-          parentModel: null,
+          lazyParentModel: NUL,
           prop: '$v',
           model,
           rootModel: model
