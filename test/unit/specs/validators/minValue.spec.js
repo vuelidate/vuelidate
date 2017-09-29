@@ -1,7 +1,7 @@
 import minValue from 'src/validators/minValue'
 
 describe('minValue validator', () => {
-  it('should ', () => {
+  it('should validate min number', () => {
     expect(minValue(5)(5)).to.be.true
   })
 

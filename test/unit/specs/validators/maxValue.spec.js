@@ -1,7 +1,7 @@
 import maxValue from 'src/validators/maxValue'
 
 describe('maxValue validator', () => {
-  it('should ', () => {
+  it('should validate max number', () => {
     expect(maxValue(5)(5)).to.be.true
   })
 
