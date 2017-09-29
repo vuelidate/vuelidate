@@ -14,6 +14,8 @@
       input.form__input(v-model.trim="age" @blur="$v.age.$touch()")
     span.form-group__message(v-if="!$v.age.between")
       | Must be between {{$v.age.$params.between.min}} and {{$v.age.$params.between.max}}
+      pre
+        | age: {{ $v.age }}
 </template>
 
 <script>
