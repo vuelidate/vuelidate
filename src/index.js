@@ -132,7 +132,7 @@ const validationMethods = {
         for (let j = 1; j < params.length; j++) {
           key = params[j].split(' ')[0]
           if (key === 'field') {
-            final = final.replace('|field', fieldName || validators[i]['name'] || '|field')
+            final = final.replace('|field', fieldName || this.prop || '|field')
           } else {
             final = final.replace('|' + key, validators[i]['params'][key] || '|' + key)
           }
