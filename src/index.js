@@ -2,6 +2,25 @@ import {h, patchChildren} from './vval'
 
 const NUL = () => null
 
+const defaultErrorMessage = {
+  default: '|field is invalid',
+  required: '|field is required',
+  requiredIf: 'requiredIf fail',
+  requiredUnless: 'requiredUnless fail',
+  minLength: '|min characters minimum',
+  maxLength: '|max characters maximum',
+  between: '|field must be between |min and |max',
+  alpha: '|field must contain only alphabet characters',
+  alphaNum: '|field must contain only alphanumerics',
+  numeric: '|field must contain only numerics',
+  email: '|field is invalid',
+  sameAs: 'sameAs fail',
+  url: '|field is invalid',
+  or: 'or fail',
+  and: 'and fail',
+  withParams: 'withParams fail'
+}
+
 const buildFromKeys = (keys, fn, keyFn) => keys.reduce((build, key) => {
   build[keyFn ? keyFn(key) : key] = fn(key)
   return build
@@ -116,6 +135,38 @@ const validationMethods = {
       }
     }
     return params
+  },
+  $errorMessage (messages = {}, fieldName = null) {
+    if (this.$error === false) {
+      return ''
+    }
+
+    messages = {
+      ...defaultErrorMessage,
+      ...messages
+    }
+
+    let validators = this.proxy.$flattenParams()
+    let final = ''
+    for (let i = 0; i < validators.length; i++) {
+      if (this.proxy[validators[i]['name']] === false) {
+        final = messages[validators[i]['name']] || messages['default'] || 'Error: message does not exist'
+        let params = final.split('|')
+        let key = ''
+        for (let j = 1; j < params.length; j++) {
+          key = params[j].split(' ')[0]
+          if (key === 'field') {
+            final = final.replace('|field', fieldName || validators[i]['name'] || '|field')
+          } else {
+            final = final.replace('|' + key, validators[i]['params'][key] || '|' + key)
+          }
+        }
+
+        return final.charAt(0).toUpperCase() + final.slice(1);
+      }
+    }
+
+    return 'ERROR'
   }
 }
 
