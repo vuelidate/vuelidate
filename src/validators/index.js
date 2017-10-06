@@ -3,6 +3,8 @@ import alphaNum from './alphaNum'
 import numeric from './numeric'
 import between from './between'
 import email from './email'
+import ipAddress from './ipAddress'
+import macAddress from './macAddress'
 import maxLength from './maxLength'
 import minLength from './minLength'
 import required from './required'
@@ -21,6 +23,8 @@ export {
   numeric,
   between,
   email,
+  ipAddress,
+  macAddress,
   maxLength,
   minLength,
   required,
