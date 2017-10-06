@@ -52,7 +52,7 @@ mixin validatorRow(validator, params)
         table.table.table--full-size.table--fixed
           thead
             tr.table__tr
-              th.table__th(width="140") Name
+              th.table__th(width="160") Name
               th.table__th(width="120") Meta parameters
               th.table__th Description
           tbody
@@ -82,6 +82,12 @@ mixin validatorRow(validator, params)
             +validatorRow('email')
               | Accepts valid email addresses. Keep in mind you still have to carefully verify it on your server,
               | as it is impossible to tell if the address is real without sending verification email.
+            +validatorRow('ipAddress')
+              | Accepts valid IPv4 addresses in dotted decimal notation like <em>127.0.0.1</em>.
+            +validatorRow('macAddress', [ 'separator\=\':\'' ])
+              | Accepts valid MAC addresses like <em>00:ff:11:22:33:44:55</em>. Don't forget to call it <kbd>macAddress()</kbd>, as it has optional parameter.
+              | You can specify your own separator instead of <kbd>':'</kbd>.
+              | Provide empty separator <kbd>macAddress('')</kbd> to validate MAC addresses like <em>00ff1122334455</em>.
             +validatorRow('sameAs', ['locator *'])
               | Checks for equality with a given property.
             +validatorRow('url')
