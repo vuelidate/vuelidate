@@ -140,12 +140,10 @@ const validationMethods = {
     if (this.$error === false) {
       return ''
     }
-
     messages = {
       ...defaultErrorMessage,
       ...messages
     }
-
     let validators = this.proxy.$flattenParams()
     let final = ''
     for (let i = 0; i < validators.length; i++) {
@@ -161,11 +159,9 @@ const validationMethods = {
             final = final.replace('|' + key, validators[i]['params'][key] || '|' + key)
           }
         }
-
         return final.charAt(0).toUpperCase() + final.slice(1)
       }
     }
-
     return 'ERROR'
   }
 }
