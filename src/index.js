@@ -114,28 +114,6 @@ function setDirtyRecursive (newState) {
 }
 
 const validationMethods = {
-  $touch () {
-    setDirtyRecursive.call(this, true)
-  },
-  $reset () {
-    setDirtyRecursive.call(this, false)
-  },
-  $flattenParams () {
-    const proxy = this.proxy
-    let params = []
-    for (const key in this.$params) {
-      if (this.isNested(key)) {
-        const childParams = proxy[key].$flattenParams()
-        for (let j = 0; j < childParams.length; j++) {
-          childParams[j].path.unshift(key)
-        }
-        params = params.concat(childParams)
-      } else {
-        params.push({ path: [], name: key, params: this.$params[key] })
-      }
-    }
-    return params
-  },
   $errorMessage (messages = {}, fieldName = null) {
     if (this.$error === false) {
       return ''
@@ -163,6 +141,28 @@ const validationMethods = {
       }
     }
     return 'ERROR'
+  },
+  $touch () {
+    setDirtyRecursive.call(this, true)
+  },
+  $reset () {
+    setDirtyRecursive.call(this, false)
+  },
+  $flattenParams () {
+    const proxy = this.proxy
+    let params = []
+    for (const key in this.$params) {
+      if (this.isNested(key)) {
+        const childParams = proxy[key].$flattenParams()
+        for (let j = 0; j < childParams.length; j++) {
+          childParams[j].path.unshift(key)
+        }
+        params = params.concat(childParams)
+      } else {
+        params.push({ path: [], name: key, params: this.$params[key] })
+      }
+    }
+    return params
   }
 }
 
