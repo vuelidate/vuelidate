@@ -162,7 +162,7 @@ const validationMethods = {
           }
         }
 
-        return final.charAt(0).toUpperCase() + final.slice(1);
+        return final.charAt(0).toUpperCase() + final.slice(1)
       }
     }
 
