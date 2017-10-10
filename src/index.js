@@ -310,7 +310,7 @@ const getComponent = (Vue) => {
     computed: {
       keys () {
         var model = this.getModel()
-        if (isFunction(model) || (isObject(model) && model !== null)) {
+        if (isObject(model)) {
           return Object.keys(model)
         } else {
           return []
