@@ -301,11 +301,7 @@ const getComponent = (Vue) => {
   const EachValidation = Validation.extend({
     computed: {
       keys () {
-        var model = this.getModel()
-        if (model === undefined || model === null) {
-          return []
-        }
-        return Object.keys(model)
+        return Object.keys(this.getModel())
       },
       tracker () {
         const trackBy = this.validations.$trackBy
