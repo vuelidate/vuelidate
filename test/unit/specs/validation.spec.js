@@ -568,6 +568,17 @@ describe('Validation plugin', () => {
       }
     })
 
+    it('should allow changing the array to a non array value and back', () => {
+      const vm = new Vue(vmDef(isEven))
+      vm.list = undefined
+      vm.list = null
+      vm.list = false
+      vm.list = ''
+      vm.list = 1
+      vm.list = [{value: 1}]
+      expect(vm.$v.list.$each[0]).to.exist
+      expect(vm.$v.list.$each[1]).to.not.exist
+    })
     it('should create validators for list items', () => {
       const vm = new Vue(vmDef(isEven))
       expect(vm.$v.list.$each[0]).to.exist
