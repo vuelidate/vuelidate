@@ -571,11 +571,17 @@ describe('Validation plugin', () => {
     it('should allow changing the array to a non array value and back', () => {
       const vm = new Vue(vmDef(isEven))
       vm.list = undefined
+      expect(vm.$v.list.$invalid).to.be.false
       vm.list = null
+      expect(vm.$v.list.$invalid).to.be.false
       vm.list = false
+      expect(vm.$v.list.$invalid).to.be.false
       vm.list = ''
+      expect(vm.$v.list.$invalid).to.be.false
       vm.list = 1
-      vm.list = [{value: 1}]
+      expect(vm.$v.list.$invalid).to.be.false
+      vm.list = [{value: 2}]
+      expect(vm.$v.list.$invalid).to.be.false
       expect(vm.$v.list.$each[0]).to.exist
       expect(vm.$v.list.$each[1]).to.not.exist
     })
