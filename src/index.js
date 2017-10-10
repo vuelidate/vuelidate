@@ -7,16 +7,16 @@ const buildFromKeys = (keys, fn, keyFn) => keys.reduce((build, key) => {
   return build
 }, {})
 
-function isFunction (object) {
-  return typeof object === 'function'
+function isFunction (val) {
+  return typeof val === 'function'
 }
 
-function isObject (object) {
-  return typeof object === 'object'
+function isObject (val) {
+  return val !== null && (typeof val === 'object' || isFunction(val))
 }
 
 function isPromise (object) {
-  return (isObject(object) || isFunction(object)) && isFunction(object.then)
+  return isObject(object) && isFunction(object.then)
 }
 
 const getPath = (ctx, obj, path, fallback) => {
