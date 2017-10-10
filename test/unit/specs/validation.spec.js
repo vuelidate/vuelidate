@@ -580,6 +580,8 @@ describe('Validation plugin', () => {
       expect(vm.$v.list.$invalid).to.be.false
       vm.list = 1
       expect(vm.$v.list.$invalid).to.be.false
+      vm.list = function () {}
+      expect(vm.$v.list.$invalid).to.be.false
       vm.list = [{value: 2}]
       expect(vm.$v.list.$invalid).to.be.false
       expect(vm.$v.list.$each[0]).to.exist
