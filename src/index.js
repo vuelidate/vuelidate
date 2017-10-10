@@ -7,8 +7,16 @@ const buildFromKeys = (keys, fn, keyFn) => keys.reduce((build, key) => {
   return build
 }, {})
 
+function isFunction (object) {
+  return typeof object === 'function'
+}
+
+function isObject (object) {
+  return typeof object === 'object'
+}
+
 function isPromise (object) {
-  return (typeof object === 'object' || typeof object === 'function') && typeof object.then === 'function'
+  return (isObject(object) || isFunction(object)) && isFunction(object.then)
 }
 
 const getPath = (ctx, obj, path, fallback) => {
@@ -302,10 +310,11 @@ const getComponent = (Vue) => {
     computed: {
       keys () {
         var model = this.getModel()
-        if (model === undefined || model === null) {
+        if (isFunction(model) || (isObject(model) && model !== null)) {
+          return Object.keys(model)
+        } else {
           return []
         }
-        return Object.keys(model)
       },
       tracker () {
         const trackBy = this.validations.$trackBy
