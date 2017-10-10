@@ -302,7 +302,9 @@ const getComponent = (Vue) => {
     computed: {
       keys () {
         var model = this.getModel()
-        if (model === undefined || model === null) return []
+        if (model === undefined || model === null) {
+          return []
+        }
         return Object.keys(model)
       },
       tracker () {
