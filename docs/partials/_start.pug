@@ -3,7 +3,8 @@ section.start(v-bind:style="gradient")
     h1.typo__h1
       img.logo(src=require('assets/logo.svg'))
       | Vuelidate
-      small.version=`(${require('../../package.json').version})`
+      small
+        a.version(href="https://github.com/monterail/vuelidate/releases")=`(${require('../../package.json').version})`
     h3.typo__h3
       | Simple, lightweight model-based validation for
       = ' '
@@ -31,5 +32,5 @@ section.start(v-bind:style="gradient")
     .grid__row.grid__row--centered
       .grid__column.utils--center
         a.button.button--large(href="#getting-started") Getting started & examples
-        a.button.button--large.button--info(href="https://jsfiddle.net/Frizi/b5v4faqf/") JSFiddle
+        a.button.button--large.button--info(href="https://jsfiddle.net/Frizi/b5v4faqf/" target="_BLANK" rel="nofollow") JSFiddle
         a.button.button--large.button--secondary.button--github(href="https://github.com/monterail/vuelidate" target="_BLANK") View on GitHub
