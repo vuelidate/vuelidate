@@ -70,4 +70,20 @@ describe('between validator', () => {
   it('should not validate NaN', () => {
     expect(between(3, 16)(NaN)).to.be.false
   })
+
+  it('should validate the upper bound date value', () => {
+    expect(between(new Date(100), new Date(10000))(new Date(10000))).to.be.true
+  })
+
+  it('should validate the lower bound date value', () => {
+    expect(between(new Date(100), new Date(10000))(new Date(100))).to.be.true
+  })
+
+  it('should validate the valid date value', () => {
+    expect(between(new Date(100), new Date(10000))(new Date(1000))).to.be.true
+  })
+
+  it('should validate the invalid date value', () => {
+    expect(between(new Date(100), new Date(10000))(new Date(100000))).to.be.false
+  })
 })

@@ -68,11 +68,11 @@ mixin validatorRow(validator, params)
             +validatorRow('maxLength', ['max length'])
               | Requires the input to have a maximum specified length, inclusive. Works with arrays.
             +validatorRow('minValue', ['min'])
-              | Requires entry to have a specified minimum numeric value.
+              | Requires entry to have a specified minimum numeric value or Date.
             +validatorRow('maxValue', ['max'])
-              | Requires entry to have a specified maximum numeric value.
+              | Requires entry to have a specified maximum numeric value or Date.
             +validatorRow('between', ['min, max'])
-              | Checks if a number is in specified bounds. Min and max are both inclusive.
+              | Checks if a number or Date is in specified bounds. Min and max are both inclusive.
             +validatorRow('alpha')
               | Accepts only alphabet characters.
             +validatorRow('alphaNum')
