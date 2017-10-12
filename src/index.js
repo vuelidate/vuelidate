@@ -150,7 +150,10 @@ const getComponent = (Vue) => {
         return this.lazyModel ? this.lazyModel(this.prop) : this.model
       },
       getModelKey (key) {
-        return this.getModel()[key]
+        var model = this.getModel()
+        if (model) {
+          return model[key]
+        }
       }
     },
     computed: {
