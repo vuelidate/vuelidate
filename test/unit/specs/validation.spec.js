@@ -9,6 +9,8 @@ const isOdd = withParams({ type: 'isOdd' }, (v) => {
   return v % 2 === 1
 })
 
+const noUndef = withParams({type: 'noUndef'}, (v) => v !== undefined)
+
 const T = () => true
 const F = () => false
 
@@ -586,6 +588,42 @@ describe('Validation plugin', () => {
       expect(vm.$v.list.$invalid).to.be.false
       expect(vm.$v.list.$each[0]).to.exist
       expect(vm.$v.list.$each[1]).to.not.exist
+    })
+    it('should allow parent object to be non object', function () {
+      const vm = new Vue({
+        data () {
+          return {
+            obj: {
+              value: 1
+            }
+          }
+        },
+        validations: {
+          obj: {
+            value: {
+              noUndef
+            }
+          }
+        }
+      })
+      vm.obj = undefined
+      expect(vm.$v.obj.$invalid).to.be.true
+      vm.obj = null
+      expect(vm.$v.obj.$invalid).to.be.true
+      vm.obj = false
+      expect(vm.$v.obj.$invalid).to.be.true
+      vm.obj = 1
+      expect(vm.$v.obj.$invalid).to.be.true
+      vm.obj = 'string'
+      expect(vm.$v.obj.$invalid).to.be.true
+      vm.obj = function () {}
+      expect(vm.$v.obj.$invalid).to.be.true
+      vm.obj = []
+      expect(vm.$v.obj.$invalid).to.be.true
+      vm.obj = {}
+      expect(vm.$v.obj.$invalid).to.be.true
+      vm.obj = {value: 1}
+      expect(vm.$v.obj.$invalid).to.be.false
     })
     it('should create validators for list items', () => {
       const vm = new Vue(vmDef(isEven))
