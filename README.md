@@ -10,7 +10,7 @@
 * Dependency free, minimalistic library
 * Support for collection validations
 * Support for nested models
-* Contextified valdiators
+* Contextified validators
 * Easy to use with custom validators (e.g. Moment.js)
 * Support for function composition
 * Validates different data sources: Vuex getters, computed values, etc.
