@@ -7,6 +7,8 @@ describe('url validator', () => {
 
   const correctUrls = [
     'http://foo.com/blah_blah',
+    'HTTP://FOO.COM/BLAH_BLAH',
+    'HTTP://FOO.COM/blah_blah',
     'http://foo.com/blah_blah/',
     'http://foo.com/blah_blah_(wikipedia)',
     'http://foo.com/blah_blah_(wikipedia)_(again)',
