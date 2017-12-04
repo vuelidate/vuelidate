@@ -1,14 +1,12 @@
 <template lang="pug">
   div
-    div(v-for="v in $v.people.$each")
-      pre {{ v }}
-      //- .form-group(:class="{ 'form-group--error': v.$error }")
-      //-   label.form__label Name for {{ index }}
-      //-   input.form__input(v-model.trim="v.$model")
-      //- .error(v-if="!v.name.required") Name is required.
-      //- .error(v-if="!v.name.minLength")
-      //-   | Name must have at least {{ $v.people.$each[index].name.$params.minLength.min }} letters.
-
+    div(v-for="(v, index) in $v.people.$each.$iter")
+      .form-group(:class="{ 'form-group--error': v.$error }")
+        label.form__label Name for {{ index }}
+        input.form__input(v-model.trim="v.name.$model")
+      .error(v-if="!v.name.required") Name is required.
+      .error(v-if="!v.name.minLength")
+        | Name must have at least {{ v.name.$params.minLength.min }} letters.
     div
       button.button(@click="people.push({name: ''})") Add
       button.button(@click="people.pop()") Remove
@@ -38,7 +36,6 @@ export default {
     }
   },
   validations: {
-
     people: {
       required,
       minLength: minLength(3),

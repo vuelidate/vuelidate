@@ -64,5 +64,14 @@
           td.table__td: strong object
           td.table__td
             | Holds all validation models of collection validator. Always preserves
-            | the keys of original model, so it can be safely referenced in the <kbd>v-for</kbd>
-            | loop iterating over your data using the same index.
+            | the keys of original model, but also holds additional names for all associated validators
+            | and special values like <kbd>$invalid</kbd>. A special <kbd>$iter</kbd> fields
+            | is preferred for usage inside <kbd>v-for</kbd> directives.
+        tr.table__tr
+          td.table__td: kbd $iter
+          td.table__td: strong object
+          td.table__td
+            | Only present as direct child of <kbd>$each</kbd> objects.
+            | Holds all validation models of collection validator and nothing else.
+            | It can be safely referenced in the <kbd>v-for</kbd> loop iterating over all your model validators.
+            | <br>See <a href="#sub-collections-validation">Collections Validation</a> for usage example.

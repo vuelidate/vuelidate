@@ -754,6 +754,11 @@ describe('Validation plugin', () => {
       expect(vm.$v.list.$each[3].$invalid).to.be.true
       expect(vm.$v.list.$each[4].$invalid).to.be.false
     })
+    it('should have $iter key that iteates only over provided keys', () => {
+      const vm = new Vue(vmDef(isEven, 'value'))
+      expect(Object.keys(vm.$v.list.$each.$iter)).to.deep.equal(['0', '1'])
+      expect(vm.$v.list.$each.$iter[0]).to.deep.equal(vm.$v.list.$each[0])
+    })
   })
 
   describe('validating direct values with $each', () => {

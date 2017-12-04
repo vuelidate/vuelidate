@@ -48,7 +48,7 @@ new Vue({
 
       const found = this.allHeaders.findIndex(e => {
         const top = e.getBoundingClientRect().top
-        return top > 0
+        return top > 20
       })
 
       const head = found === -1 ? this.allHeaders.length - 1 : found - 1

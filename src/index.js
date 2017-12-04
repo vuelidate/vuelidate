@@ -155,6 +155,9 @@ const getComponent = (Vue) => {
         if (model) {
           return model[key]
         }
+      },
+      hasIter () {
+        return false
       }
     },
     computed: {
@@ -317,7 +320,18 @@ const getComponent = (Vue) => {
           get: () => this[key]
         }))
 
+        const iterDefs = this.hasIter() ? {
+          $iter: {
+            enumerable: true,
+            value: Object.defineProperties({}, {
+              ...keyDefs
+            })
+          }
+        } : {}
+
         return Object.defineProperties({}, {
+          ...keyDefs,
+          ...iterDefs,
           $model: {
             enumerable: true,
             get: () => {
@@ -336,7 +350,6 @@ const getComponent = (Vue) => {
               }
             }
           },
-          ...keyDefs,
           ...getterDefs,
           ...methodDefs
         })
@@ -417,6 +430,9 @@ const getComponent = (Vue) => {
       },
       getRef (key) {
         return this.refs[this.tracker(key)]
+      },
+      hasIter () {
+        return true
       }
     }
   })

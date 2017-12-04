@@ -1,14 +1,14 @@
 <template lang="pug">
   div
     .form-group(:class="{ 'form-group--error': $v.form.userName.$error }")
-      label.form__label Nested A
+      label.form__label Username
       input.form__input(v-model.trim="$v.form.userName.$model")
     .error(v-if="!$v.form.userName.required")
       | Field is required.
     .error(v-if="!$v.form.userName.minLength")
       | Field must have at least {{ $v.form.userName.$params.minLength.min }} characters.
     .form-group(:class="{ 'form-group--error': $v.form.password.$error }")
-      label.form__label Nested B
+      label.form__label Password
       input.form__input(v-model.trim="$v.form.password.$model" type="password")
     .error(v-if="!$v.form.password.required")
       | Field is required.
