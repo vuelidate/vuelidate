@@ -170,7 +170,7 @@ $input-addon-weight: 700
     padding-right: rem(20px)
     padding-left: rem(20px)
 
-.form-group__message
+.form-group__message, .error
   font-size: rem($input-message-font-size)
   line-height: 1
   display: none
@@ -216,7 +216,7 @@ $input-addon-weight: 700
   input:hover
     border-color: lighten($success-color, 20%)
 
-  & + .form-group__message
+  & + .form-group__message, & + .error
     display: block
     color: lighten($success-color, 15%)
 
@@ -235,7 +235,7 @@ $input-addon-weight: 700
   input:hover
     border-color: lighten($error-color, 20%)
 
-  & + .form-group__message
+  & + .form-group__message, & + .error
     display: block
     color: lighten($error-color, 15%)
 

@@ -13,6 +13,10 @@ describe('ipAddress validator', () => {
     expect(ipAddress('')).to.be.true
   })
 
+  it('should not validate number', () => {
+    expect(ipAddress(123123123123)).to.be.false
+  })
+
   it('should validate basic loopback', () => {
     expect(ipAddress('127.0.0.1')).to.be.true
   })

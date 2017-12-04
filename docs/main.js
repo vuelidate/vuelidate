@@ -51,8 +51,6 @@ new Vue({
         return top > 0
       })
 
-      console.log(this.allHeaders)
-
       const head = found === -1 ? this.allHeaders.length - 1 : found - 1
 
       if (head !== -1) {

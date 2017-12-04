@@ -572,6 +572,7 @@ describe('Validation plugin', () => {
 
     it('should allow changing the array to a non array value and back', () => {
       const vm = new Vue(vmDef(isEven))
+      expect(vm.$v.list.$invalid).to.be.true
       vm.list = undefined
       expect(vm.$v.list.$invalid).to.be.false
       vm.list = null
@@ -589,6 +590,7 @@ describe('Validation plugin', () => {
       expect(vm.$v.list.$each[0]).to.exist
       expect(vm.$v.list.$each[1]).to.not.exist
     })
+
     it('should allow parent object to be non object', function () {
       const vm = new Vue({
         data () {
@@ -786,6 +788,28 @@ describe('Validation plugin', () => {
       expect(vm.$v.list.$each[0].$dirty).to.be.true
       expect(vm.$v.list.$each[1].$dirty).to.be.false
       expect(vm.$v.list.$each[2].$dirty).to.be.false
+    })
+
+    it('should not leak indirect watcher on destroy', () => {
+      const vm = new Vue(vmDef(isEven))
+      expect(vm.$v.list.$each[0].$invalid).to.be.true
+      vm.$destroy()
+      // FIXME: how to test against memory leak?
+      // Now this just covers the teardown code in the report.
+    })
+
+    it('should not leak indirect watcher on destroy', () => {
+      const spy = sinon.spy(isEven)
+      const vm = new Vue(vmDef(spy))
+      expect(vm.$v.list.$each[0].$invalid).to.be.true
+      expect(spy).to.have.been.calledWith(1, vm.list)
+    })
+
+    it('should pass collection as second argument to validators', () => {
+      const spy = sinon.spy(isEven)
+      const vm = new Vue(vmDef(spy))
+      expect(vm.$v.list.$each[0].$invalid).to.be.true
+      expect(spy).to.have.been.calledWith(1, vm.list)
     })
 
     it('should revalidate only changed items', () => {
@@ -1012,6 +1036,135 @@ describe('Validation plugin', () => {
           { path: ['second', 'bar'], name: 'isEven', params: { type: 'isEven' } }
         ])
       })
+    })
+  })
+
+  describe('validation $model', () => {
+    const simple = {
+      ...base,
+      validations: {
+        value: { isEven }
+      }
+    }
+
+    const nested = {
+      ...baseGroup,
+      validations: {
+        group: ['nested.value1', 'nested.value2'],
+        nested: {
+          value1: { T },
+          value2: { T }
+        }
+      }
+    }
+
+    const each = {
+      data: {
+        array: [1, 2, 3]
+      },
+      validations: {
+        array: {
+          $each: { isOdd }
+        }
+      }
+    }
+
+    it('should give null for root object', () => {
+      const vm = new Vue(simple)
+      expect(vm.$v.$model).to.be.null
+    })
+
+    it('should give null for validation group', () => {
+      const vm = new Vue(nested)
+      expect(vm.$v.group.$model).to.be.null
+    })
+
+    it('should give original model reference for simple object', () => {
+      const vm = new Vue(simple)
+      expect(vm.$v.value.$model).to.be.equal(4)
+    })
+
+    it('should do nothing when setting root model', () => {
+      const vm = new Vue(simple)
+      vm.$v.$model = 'x'
+      expect(vm.$v.$model).to.be.null
+      expect(vm.$v.$dirty).to.be.false
+    })
+
+    it('should do nothing when setting validation group model', () => {
+      const vm = new Vue(nested)
+      vm.$v.group.$model = 'x'
+      expect(vm.$v.group.$model).to.be.null
+      expect(vm.$v.group.$dirty).to.be.false
+    })
+
+    it('should give original model reference for nested object', () => {
+      const vm = new Vue(nested)
+      const expected = {
+        value1: 'hello',
+        value2: 'world'
+      }
+      vm.nested = expected
+
+      expect(vm.$v.nested.$model).to.be.equal(expected)
+    })
+
+    it('should give original model references for nested object fields', () => {
+      const vm = new Vue(nested)
+      const expected = {
+        value1: { a: 1 },
+        value2: { b: 2 }
+      }
+      vm.nested = expected
+
+      expect(vm.$v.nested.value1.$model).to.be.equal(expected.value1)
+      expect(vm.$v.nested.value2.$model).to.be.equal(expected.value2)
+    })
+
+    it('should set $dirty on write for simple object', () => {
+      const vm = new Vue(simple)
+      vm.$v.value.$model = 5
+      expect(vm.$v.value.$dirty).to.be.true
+    })
+
+    it('should set $dirty on write for nested object', () => {
+      const vm = new Vue(nested)
+      const expected = {
+        value1: 'hello',
+        value2: 'world'
+      }
+      vm.$v.nested.$model = expected
+
+      expect(vm.$v.nested.$dirty).to.be.true
+      expect(vm.$v.nested.value1.$dirty).to.be.true
+      expect(vm.$v.nested.value2.$dirty).to.be.true
+    })
+
+    it('should not be present on $each', () => {
+      const vm = new Vue(each)
+      expect(vm.$v.array.$each.$model).to.not.be.defined
+    })
+
+    it('should reference array with defined $each', () => {
+      const vm = new Vue(each)
+      expect(vm.$v.array.$model).to.be.equal(vm.array)
+    })
+
+    it('should allow reading model on $each fields', () => {
+      const vm = new Vue(each)
+      expect(vm.$v.array.$each[0].$model).to.be.equal(vm.array[0])
+    })
+
+    it('should allow writing model on $each fields', () => {
+      const vm = new Vue(each)
+      vm.$v.array.$each[0].$model = 5
+      expect(vm.array[0]).to.be.equal(5)
+    })
+
+    it('should set $dirty on write through $each field', () => {
+      const vm = new Vue(each)
+      vm.$v.array.$each[0].$model = 5
+      expect(vm.$v.array.$each[0].$dirty).to.be.true
     })
   })
 })

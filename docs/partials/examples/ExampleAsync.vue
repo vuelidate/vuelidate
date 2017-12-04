@@ -1,12 +1,14 @@
 <template lang="pug">
   div
-    .form-group(v-bind:class="{ 'form-group--error': $v.username.$error, 'form-group--loading': $v.username.$pending }")
+    .form-group(:class="{ 'form-group--error': $v.username.$error, 'form-group--loading': $v.username.$pending }")
       label.form__label Username
-      input.form__input(v-model.trim="username" @input="$v.username.$touch()")
-    span.form-group__message(v-if="!$v.username.required") Username is required.
-    span.form-group__message(v-if="!$v.username.isUnique") This username is already registered.
+      input.form__input(v-model.trim="$v.username.$model")
+    .error(v-if="!$v.username.required")
+      | Username is required.
+    .error(v-if="!$v.username.isUnique")
+      | This username is already registered.
     pre
-      | username: {{ $v.username }}
+      | $v.username: {{ $v.username }}
 </template>
 
 <script>

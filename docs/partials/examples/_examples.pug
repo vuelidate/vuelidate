@@ -5,6 +5,15 @@
       | You can specify when input becomes dirty by using appropriate event on your input box.
     +example('ExampleBasic')
 
+  +subsection('Without v-model')
+    p.typo__p
+      | In case you don't want to modify your model directly,
+      | you can still use separate <kbd>:input</kbd> and <kbd>@event</kbd> bindings.
+      | This is especially useful if you are using data from external source, like Vuex store or props.
+      | In that case you have to manually take care of setting the <kbd>$dirty</kbd>
+      | by calling <kbd>$touch()</kbd> method when appropriate.
+    +example('ExampleEvent')
+
   +subsection('Contextified validators')
     p.typo__p
       | You can link related fields by contextified validators. An example of this being <kbd>sameAs</kbd> builtin validator.

@@ -13,6 +13,10 @@ describe('macAddress validator', () => {
     expect(macAddress()('')).to.be.true
   })
 
+  it('should not validate number', () => {
+    expect(macAddress()(112233445566)).to.be.false
+  })
+
   it('should validate zero mac', () => {
     expect(macAddress()('00:00:00:00:00:00')).to.be.true
     expect(macAddress()('00:00:00:00:00:00:00:00')).to.be.true
