@@ -186,6 +186,8 @@ const getComponent = (Vue) => {
     },
     methods: {
       runRule (parent) {
+        // Avoid using this.lazyParentModel to not get dependent on it.
+        // Passed as an argument for workaround
         const model = this.getModel()
         pushParams()
         const rawOutput = this.rule.call(this.rootModel, model, parent)

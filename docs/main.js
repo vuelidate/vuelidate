@@ -2,9 +2,10 @@ import Vue from 'vue'
 import Validation from '../src/index'
 
 import * as examples from './partials/examples'
+import TreeView from 'vue-json-tree-view'
 import LangSwitcher from './LangSwitcher'
-
 Vue.use(Validation)
+Vue.use(TreeView)
 
 import './docs.scss'
 

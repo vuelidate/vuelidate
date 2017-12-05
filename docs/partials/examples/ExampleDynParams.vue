@@ -10,8 +10,7 @@
       label.form__label Name
       input.form__input(v-model.trim="$v.name.$model")
     .error(v-if="!$v.name[valName]") Field is invalid
-    pre
-      | $v: {{ $v }}
+    tree-view(:data="$v", :options="{rootObjectKey: '$v', maxDepth: 2}")
 </template>
 
 <script>

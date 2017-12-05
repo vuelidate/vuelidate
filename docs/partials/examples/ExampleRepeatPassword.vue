@@ -11,9 +11,8 @@
       label.form__label Repeat password
       input.form__input(v-model.trim="$v.repeatPassword.$model")
     .error(v-if="!$v.repeatPassword.sameAsPassword") Passwords must be identical.
-    pre
-      | password: {{ $v.password }}
-      | repeatPassword: {{ $v.repeatPassword }}
+
+    tree-view(:data="$v", :options="{rootObjectKey: '$v', maxDepth: 2}")
 </template>
 
 <script>

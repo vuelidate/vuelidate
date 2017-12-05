@@ -17,9 +17,7 @@
     .error(v-else-if="$v.people.$error") List is invalid.
     button.button(@click="$v.people.$touch") $touch
     button.button(@click="$v.people.$reset") $reset
-
-    pre
-      | people: {{ $v.people }}
+    tree-view(:data="$v.people", :options="{rootObjectKey: '$v.people', maxDepth: 2}")
 </template>
 
 <script>

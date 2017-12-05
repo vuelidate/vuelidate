@@ -12,8 +12,7 @@
     .form-group(v-if="hasDescription", :class="{ 'form-group--error': $v.description.$error}")
       label.form__label Description
       input.form__input(v-model.trim="$v.description.$model")
-    pre
-      | $v: {{ $v }}
+    tree-view(:data="$v", :options="{rootObjectKey: '$v', maxDepth: 2}")
 </template>
 <script>
 import { required } from 'vuelidate/lib/validators'

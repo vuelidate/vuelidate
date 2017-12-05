@@ -7,8 +7,7 @@
       | Username is required.
     .error(v-if="!$v.username.isUnique")
       | This username is already registered.
-    pre
-      | $v.username: {{ $v.username }}
+    tree-view(:data="$v.username", :options="{rootObjectKey: '$v.username', maxDepth: 2}")
 </template>
 
 <script>

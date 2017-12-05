@@ -13,9 +13,6 @@
     "dev": "node build/dev-server.js",
     "bundle:web": "rimraf dist && cross-env BUILD=web webpack --config build/webpack.bundle.conf.js",
     "bundle:lib": "rimraf lib && cross-env BUILD=lib babel src --out-dir lib",
-    "plugins": [
-      "transform-inline-environment-variables"
-    ],
     "build": "npm run bundle:lib && npm run bundle:web",
     "docs": "rimraf gh-pages && mkdir gh-pages && node build/build.js",
     "unit": "karma start test/unit/karma.conf.js --watch",
@@ -84,6 +81,7 @@
     "sinon-chai": "^2.8.0",
     "url-loader": "^0.5.7",
     "vue": "^2.2.6",
+    "vue-json-tree-view": "^2.1.1",
     "vue-loader": "^10.0.0",
     "vue-server-renderer": "^2.2.6",
     "vue-style-loader": "^1.0.0",

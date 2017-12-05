@@ -12,7 +12,7 @@
     .form-group(:class="{ 'form-group--error': $v.form.$error }")
     .error(v-if="$v.form.$error") Form is invalid.
 
-    pre form: {{ $v.form }}
+    tree-view(:data="$v.form", :options="{rootObjectKey: '$v.form', maxDepth: 2}")
 </template>
 
 <script>

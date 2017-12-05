@@ -9,8 +9,7 @@
     .error(v-if="!$v.name.maxLength")
       | Name must have at most {{$v.name.$params.maxLength.max}} letters.
 
-    pre
-      | name: {{ $v.name }}
+    tree-view(:data="$v.name", :options="{rootObjectKey: '$v.name', maxDepth: 2}")
 </template>
 
 <script>

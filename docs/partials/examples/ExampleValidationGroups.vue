@@ -16,8 +16,7 @@
     .form-group(:class="{ 'form-group--error': $v.validationGroup.$error }")
     .error(v-if="$v.validationGroup.$error") Group is invalid.
 
-    pre
-      | validationGroup: {{ $v.validationGroup }}
+    tree-view(:data="$v.validationGroup", :options="{rootObjectKey: '$v.validationGroup', maxDepth: 2}")
 </template>
 
 <script>
