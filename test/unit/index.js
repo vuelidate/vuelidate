@@ -1,8 +1,3 @@
-// Polyfill fn.bind() for PhantomJS
-/* eslint-disable no-extend-native */
-Function.prototype.bind = require('function-bind')
-require('es6-promise').polyfill()
-
 import Vue from 'vue'
 import Validation from '../../src/index'
 Vue.use(Validation)
