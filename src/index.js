@@ -263,19 +263,19 @@ const getComponent = (Vue) => {
       proxy () {
         const keyDefs = buildFromKeys(this.keys, key => ({
           enumerable: true,
-          configurable: false,
+          configurable: true, // allow mocking lib calls
           get: () => this.refProxy(key)
         }))
 
         const getterDefs = buildFromKeys(getterNames, key => ({
           enumerable: true,
-          configurable: false,
+          configurable: true,
           get: () => this[key]
         }))
 
         const methodDefs = buildFromKeys(methodNames, key => ({
           enumerable: false,
-          configurable: false,
+          configurable: true,
           get: () => this[key]
         }))
 
