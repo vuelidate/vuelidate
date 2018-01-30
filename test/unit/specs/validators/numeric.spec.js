@@ -40,4 +40,17 @@ describe('numeric validator', () => {
   it('should not validate unicode', () => {
     expect(numeric('🎉')).to.be.false
   })
+
+  it('should validate negative numbers', () => {
+    expect(numeric('-123')).to.be.true
+  })
+
+  it('should validate decimal numbers', () => {
+    expect(numeric('0.1')).to.be.true
+    expect(numeric('1.0')).to.be.true
+  })
+
+  it('should validate negative decimal numbers', () => {
+    expect(numeric('-123.4')).to.be.true
+  })
 })
