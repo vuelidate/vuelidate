@@ -79,6 +79,10 @@ mixin validatorRow(validator, params)
               | Accepts only alphanumerics.
             +validatorRow('numeric')
               | Accepts only numerics.
+            +validatorRow('integer')
+              | Accepts positive and negative integers.
+            +validatorRow('decimal')
+              | Accepts positive and negative decimal numbers.
             +validatorRow('email')
               | Accepts valid email addresses. Keep in mind you still have to carefully verify it on your server,
               | as it is impossible to tell if the address is real without sending verification email.
