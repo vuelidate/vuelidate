@@ -1,2 +1,2 @@
 import { regex } from './common'
-export default regex('numeric', /^-?[0-9.]*$/)
+export default regex('decimal', /^[-]?\d*(\.\d+)?$/)

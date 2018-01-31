@@ -53,4 +53,17 @@ describe('decimal validator', () => {
   it('should validate negative decimal numbers', () => {
     expect(decimal('-123.4')).to.be.true
   })
+
+  it('should not validate multiple decimal points', () => {
+    expect(decimal('-123.4.')).to.be.false
+    expect(decimal('..')).to.be.false
+  })
+
+  it('should validate decimal numbers without leading digits', () => {
+    expect(decimal('.1')).to.be.true
+  })
+
+  it('should not validate decimal numbers without trailing digits', () => {
+    expect(decimal('1.')).to.be.false
+  })
 })
