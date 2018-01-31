@@ -30,7 +30,7 @@ describe('numeric validator', () => {
   })
 
   it('should not validate alphanum', () => {
-    expect(numeric('abc123')).to.be.falsesSt
+    expect(numeric('abc123')).to.be.false
   })
 
   it('should not validate padded letters', () => {
