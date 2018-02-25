@@ -458,7 +458,10 @@ const validationMixin = {
     const vals = options.validations
     if (!vals) return
     if (!options.computed) options.computed = {}
-    options.computed.$v = () => this._vuelidate.refs.$v.proxy
+    if (options.computed.$v) return
+    options.computed.$v = function () {
+      return this._vuelidate ? this._vuelidate.refs.$v.proxy : null
+    }
   },
   beforeDestroy () {
     if (this._vuelidate) {
