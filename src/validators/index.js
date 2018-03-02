@@ -16,6 +16,8 @@ import or from './or'
 import and from './and'
 import minValue from './minValue'
 import maxValue from './maxValue'
+import integer from './integer'
+import decimal from './decimal'
 
 export {
   alpha,
@@ -35,5 +37,7 @@ export {
   or,
   and,
   minValue,
-  maxValue
+  maxValue,
+  integer,
+  decimal
 }
