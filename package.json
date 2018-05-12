@@ -21,7 +21,9 @@
     "test-ssr": "cross-env BABEL_ENV=node mocha --require @babel/register test/ssr/index.js",
     "test": "npm run test-unit && npm run test-ssr",
     "lint": "eslint --ext .js,.vue src test/unit/specs",
-    "prepublishOnly": "npm run lint && npm test && npm run build"
+    "prepublishOnly": "npm run lint && npm test && npm run build",
+    "ts-build": "tsc --listFiles --listEmittedFiles -p types && echo \"No outputs in external lib mode.\"",
+    "ts-lint": "dtslint types"
   },
   "devDependencies": {
     "@babel/cli": "^7.0.0-beta.47",
@@ -36,6 +38,7 @@
     "copy-webpack-plugin": "^4.5.1",
     "cross-env": "^5.1.5",
     "css-loader": "^0.28.11",
+    "dtslint": "^0.3.0",
     "eslint": "^4.19.1",
     "eslint-config-prettier": "^2.9.0",
     "eslint-loader": "^2.0.0",
@@ -72,6 +75,7 @@
     "shelljs": "^0.8.2",
     "sinon": "^5.0.7",
     "sinon-chai": "^3.0.0",
+    "typescript": "^2.9.2",
     "url-loader": "^1.0.1",
     "vue": "^2.5.16",
     "vue-json-tree-view": "^2.1.4",
@@ -88,5 +92,5 @@
     "node": ">= 4.0.0",
     "npm": ">= 3.0.0"
   },
-  "dependencies": {}
+  "typings": "types/index.d.ts"
 }
