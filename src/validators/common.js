@@ -4,8 +4,12 @@ export { withParams }
 // "required" core, used in almost every validator to allow empty values
 export const req = value => {
   if (Array.isArray(value)) return !!value.length
-  if (value === undefined || value === null || value === false) {
+  if (value === undefined || value === null) {
     return false
+  }
+  
+  if (value === false) {
+    return true
   }
 
   if (value instanceof Date) {
