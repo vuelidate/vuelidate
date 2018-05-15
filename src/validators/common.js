@@ -7,7 +7,7 @@ export const req = value => {
   if (value === undefined || value === null) {
     return false
   }
-  
+
   if (value === false) {
     return true
   }
