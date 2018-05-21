@@ -11,20 +11,12 @@ var env = process.env.NODE_ENV === 'testing'
   : config.docs.env
 
 var webpackConfig = merge(baseWebpackConfig, {
-  module: {
-    loaders: utils.styleLoaders({ sourceMap: config.docs.productionSourceMap, extract: true })
-  },
+  mode: 'production',
   devtool: config.docs.productionSourceMap ? '#source-map' : false,
   output: {
     path: config.docs.assetsRoot,
     filename: utils.assetsPath('js/[name].[chunkhash].js'),
     chunkFilename: utils.assetsPath('js/[id].[chunkhash].js')
-  },
-  vue: {
-    loaders: utils.cssLoaders({
-      sourceMap: config.docs.productionSourceMap,
-      extract: true
-    })
   },
   plugins: [
     // http://vuejs.github.io/vue-loader/en/workflow/production.html

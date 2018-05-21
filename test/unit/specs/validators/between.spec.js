@@ -84,6 +84,7 @@ describe('between validator', () => {
   })
 
   it('should validate the invalid date value', () => {
-    expect(between(new Date(100), new Date(10000))(new Date(100000))).to.be.false
+    expect(between(new Date(100), new Date(10000))(new Date(100000))).to.be
+      .false
   })
 })

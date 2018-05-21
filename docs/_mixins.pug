@@ -6,6 +6,11 @@
 -   .replace(/(^-+|-+$)/g, '')
 -   .replace(/-{2,}/g, '-')
 - }
+- const templateCompiler = require('vue-template-compiler')
+- function parseExample (path) {
+-   const source = require('!!raw-loader!examples/' + path + '.vue')
+-   return templateCompiler.parseComponent(source)
+- }
 - const toc = [];
 
 mixin renderToc()
@@ -45,6 +50,7 @@ mixin subsection(name)
         block
 
 mixin example(path)
+  - var parsed = require('!!../build/parse-example-loader!examples/' + path + '.vue')
   .example
     if block
       block
@@ -54,15 +60,15 @@ mixin example(path)
       label.typo__label Code sample
       div
         pre(v-pre).language-javascript
-          code=require('!!raw!vue-loader/lib/selector?type=script!examples/' + path + '.vue').replace(/^[\/\n]*/m,'')
+          code=parsed.javascript
       lang-switcher(v-bind:langs="markupLangs" v-bind:current="markupLanguage" v-on:select="selectLanguage")
       div(v-show="markupLanguage === 'pug'")
         pre(v-pre).language-pug
-          code=require('!!raw!vue-loader/lib/selector?type=template!examples/' + path + '.vue')
+          code=parsed.pug
       div(v-show="markupLanguage === 'html'")
         pre(v-pre).language-html
-          code=require('!!pug?pretty!vue-loader/lib/selector?type=template!examples/' + path + '.vue')()
+          code=parsed.html
 
 mixin validatorCode(path)
   pre(v-pre).language-javascript
-    code=require('!!raw!src/validators/' + path + '.js')
+    code=require('!!raw-loader!src/validators/' + path + '.js')

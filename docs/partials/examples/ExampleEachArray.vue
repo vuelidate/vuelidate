@@ -24,13 +24,16 @@
 import { required, minLength } from 'vuelidate/lib/validators'
 
 export default {
-  data () {
+  data() {
     return {
-      people: [{
-        name: 'John'
-      }, {
-        name: ''
-      }]
+      people: [
+        {
+          name: 'John'
+        },
+        {
+          name: ''
+        }
+      ]
     }
   },
   validations: {
@@ -44,7 +47,6 @@ export default {
         }
       }
     }
-
   }
 }
 </script>

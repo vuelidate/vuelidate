@@ -5,10 +5,10 @@
 
 const root =
   typeof global !== 'undefined'
-  ? global
-  : typeof window !== 'undefined'
-    ? window
-    : {}
+    ? global
+    : typeof window !== 'undefined'
+      ? window
+      : {}
 
 /* istanbul ignore next */
 const fakeWithParams = (paramsOrClosure, maybeValidator) => {
@@ -18,4 +18,6 @@ const fakeWithParams = (paramsOrClosure, maybeValidator) => {
   return paramsOrClosure(() => {})
 }
 
-export const withParams = root.vuelidate ? root.vuelidate.withParams : fakeWithParams
+export const withParams = root.vuelidate
+  ? root.vuelidate.withParams
+  : fakeWithParams

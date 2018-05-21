@@ -13,10 +13,10 @@ describe('requiredUnless validator', () => {
   })
 
   it('should not validate empty string when prop condition is not met', () => {
-    expect(requiredUnless('prop')('', {prop: false})).to.be.false
+    expect(requiredUnless('prop')('', { prop: false })).to.be.false
   })
 
   it('should validate empty string when prop condition met', () => {
-    expect(requiredUnless('prop')('', {prop: true})).to.be.true
+    expect(requiredUnless('prop')('', { prop: true })).to.be.true
   })
 })

@@ -9,9 +9,18 @@
 
 <script>
 export default {
-  props: ['langs', 'current'],
+  props: {
+    langs: {
+      type: Array,
+      required: true
+    },
+    current: {
+      type: String,
+      required: true
+    }
+  },
   methods: {
-    select (lang) {
+    select(lang) {
       this.$emit('select', lang)
     }
   }

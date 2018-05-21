@@ -9,13 +9,13 @@ const isOdd = withParams({ type: 'isOdd' }, (v) => {
   return v % 2 === 1
 })
 
-const noUndef = withParams({type: 'noUndef'}, (v) => v !== undefined)
+const noUndef = withParams({ type: 'noUndef' }, (v) => v !== undefined)
 
 const T = () => true
 const F = () => false
 
 const base = {
-  data () {
+  data() {
     return {
       value: 4
     }
@@ -23,7 +23,7 @@ const base = {
 }
 
 const baseGroup = {
-  data () {
+  data() {
     return {
       value1: 1,
       value2: 2,
@@ -73,7 +73,7 @@ describe('Validation plugin', () => {
         value: { isEven }
       },
       watch: {
-        '$v.value.$invalid' (v, oldv) {
+        '$v.value.$invalid'(v, oldv) {
           expect(v).to.be.true
           expect(oldv).to.be.false
           done()
@@ -90,7 +90,7 @@ describe('Validation plugin', () => {
         value: { isEven }
       },
       computed: {
-        x () {
+        x() {
           return 1
         }
       }
@@ -102,7 +102,7 @@ describe('Validation plugin', () => {
   it('should have a $v key defined if used as function', () => {
     const vm = new Vue({
       ...base,
-      validations () {
+      validations() {
         return {
           value: { isEven }
         }
@@ -124,8 +124,8 @@ describe('Validation plugin', () => {
   })
 
   describe('Async', () => {
-    function setupAsync () {
-      let resolvePromise = {resolve: null, reject: null}
+    function setupAsync() {
+      let resolvePromise = { resolve: null, reject: null }
       const asyncVal = (val) => {
         if (val === '') return true
         return new Promise((resolve, reject) => {
@@ -224,7 +224,7 @@ describe('Validation plugin', () => {
           value: 1,
           value2: 2
         },
-        validations () {
+        validations() {
           return {
             value: { fn: this.out ? T : F },
             value2: { fn: this.out ? T : F }
@@ -394,7 +394,7 @@ describe('Validation plugin', () => {
       it('should have $invalid value set to true', () => {
         const vm = new Vue({
           ...base,
-          data () {
+          data() {
             return {
               value: 5
             }
@@ -408,7 +408,7 @@ describe('Validation plugin', () => {
       it('should have validator name value set to false', () => {
         const vm = new Vue({
           ...base,
-          data () {
+          data() {
             return {
               value: 5
             }
@@ -536,7 +536,13 @@ describe('Validation plugin', () => {
       const vm = new Vue({
         ...baseGroup,
         validations: {
-          group: ['value1', 'nested.value3', 'nested.value4', 'abc.def', 'abc.def.ghi'],
+          group: [
+            'value1',
+            'nested.value3',
+            'nested.value4',
+            'abc.def',
+            'abc.def.ghi'
+          ],
           value1: { isOdd },
           nested: {
             value4: { isEven }
@@ -549,13 +555,16 @@ describe('Validation plugin', () => {
   })
   describe('validating collections with $each', () => {
     const vmDef = (validator, tracker) => ({
-      data () {
+      data() {
         return {
-          list: [{
-            value: 1
-          }, {
-            value: 2
-          }]
+          list: [
+            {
+              value: 1
+            },
+            {
+              value: 2
+            }
+          ]
         }
       },
       validations: {
@@ -583,17 +592,17 @@ describe('Validation plugin', () => {
       expect(vm.$v.list.$invalid).to.be.false
       vm.list = 1
       expect(vm.$v.list.$invalid).to.be.false
-      vm.list = function () {}
+      vm.list = function() {}
       expect(vm.$v.list.$invalid).to.be.false
-      vm.list = [{value: 2}]
+      vm.list = [{ value: 2 }]
       expect(vm.$v.list.$invalid).to.be.false
       expect(vm.$v.list.$each[0]).to.exist
       expect(vm.$v.list.$each[1]).to.not.exist
     })
 
-    it('should allow parent object to be non object', function () {
+    it('should allow parent object to be non object', function() {
       const vm = new Vue({
-        data () {
+        data() {
           return {
             obj: {
               value: 1
@@ -618,13 +627,13 @@ describe('Validation plugin', () => {
       expect(vm.$v.obj.$invalid).to.be.true
       vm.obj = 'string'
       expect(vm.$v.obj.$invalid).to.be.true
-      vm.obj = function () {}
+      vm.obj = function() {}
       expect(vm.$v.obj.$invalid).to.be.true
       vm.obj = []
       expect(vm.$v.obj.$invalid).to.be.true
       vm.obj = {}
       expect(vm.$v.obj.$invalid).to.be.true
-      vm.obj = {value: 1}
+      vm.obj = { value: 1 }
       expect(vm.$v.obj.$invalid).to.be.false
     })
     it('should create validators for list items', () => {
@@ -648,8 +657,8 @@ describe('Validation plugin', () => {
     })
     it('should track additions and validate immediately', () => {
       const vm = new Vue(vmDef(isEven))
-      vm.list.push({value: 3})
-      vm.list.push({value: 4})
+      vm.list.push({ value: 3 })
+      vm.list.push({ value: 4 })
       expect(vm.$v.list.$each[0]).to.exist
       expect(vm.$v.list.$each[1]).to.exist
       expect(vm.$v.list.$each[2]).to.exist
@@ -663,7 +672,7 @@ describe('Validation plugin', () => {
     it('should not loose $dirty after insertion based by index', () => {
       const vm = new Vue(vmDef(isEven))
       vm.$v.list.$each[0].$touch()
-      vm.list.unshift({value: 0})
+      vm.list.unshift({ value: 0 })
       expect(vm.$v.list.$each[0].$dirty).to.be.true
       expect(vm.$v.list.$each[1].$dirty).to.be.false
       expect(vm.$v.list.$each[2].$dirty).to.be.false
@@ -671,26 +680,26 @@ describe('Validation plugin', () => {
     it('should not loose $dirty after insertion based by $trackBy', () => {
       const vm = new Vue(vmDef(isEven, 'value'))
       vm.$v.list.$each[0].$touch()
-      vm.list.unshift({value: 0})
+      vm.list.unshift({ value: 0 })
       expect(vm.$v.list.$each[0].$dirty).to.be.false
       expect(vm.$v.list.$each[1].$dirty).to.be.true
     })
     it('should share validators when $trackBy overlap', () => {
       const vm = new Vue(vmDef(isEven, 'value'))
-      vm.list.unshift({value: 1})
+      vm.list.unshift({ value: 1 })
       expect(vm.$v.list.$each[0]).to.be.equal(vm.$v.list.$each[1])
       expect(vm.$v.list.$each[0].$dirty).to.be.false
     })
     it('should share validators when functional $trackBy overlap', () => {
-      const vm = new Vue(vmDef(isEven, x => x.value))
-      vm.list.unshift({value: 1})
+      const vm = new Vue(vmDef(isEven, (x) => x.value))
+      vm.list.unshift({ value: 1 })
       expect(vm.$v.list.$each[0]).to.be.equal(vm.$v.list.$each[1])
       expect(vm.$v.list.$each[0].$dirty).to.be.false
     })
     it('should share validators when $trackBy overlap after initial get', () => {
       const vm = new Vue(vmDef(isEven, 'value'))
       vm.$v.list.$each[0].$touch()
-      vm.list.unshift({value: 1})
+      vm.list.unshift({ value: 1 })
       expect(vm.$v.list.$each[0]).to.be.equal(vm.$v.list.$each[1])
       expect(vm.$v.list.$each[0].$dirty).to.be.true
     })
@@ -718,11 +727,7 @@ describe('Validation plugin', () => {
     })
     it('should allow reordering with insertion children', () => {
       const vm = new Vue(vmDef(isEven, 'value'))
-      vm.list.push(
-        {value: 3},
-        {value: 4},
-        {value: 5}
-      )
+      vm.list.push({ value: 3 }, { value: 4 }, { value: 5 })
       expect(vm.$v.list.$each[0].$invalid).to.be.true
       expect(vm.$v.list.$each[4].$invalid).to.be.true
       vm.list[0].value = 1
@@ -736,12 +741,7 @@ describe('Validation plugin', () => {
     })
     it('should allow reordering with different beginning and ending', () => {
       const vm = new Vue(vmDef(isEven, 'value'))
-      vm.list.push(
-        {value: 3},
-        {value: 4},
-        {value: 5},
-        {value: 6}
-      )
+      vm.list.push({ value: 3 }, { value: 4 }, { value: 5 }, { value: 6 })
       vm.$v.list.$each[0]
       vm.list[0].value = 5
       vm.list[1].value = 6
@@ -763,7 +763,7 @@ describe('Validation plugin', () => {
 
   describe('validating direct values with $each', () => {
     const vmDef = (validator, tracker) => ({
-      data () {
+      data() {
         return {
           external: true,
           list: [1, 2, 3]
@@ -829,7 +829,7 @@ describe('Validation plugin', () => {
       expect(spy).to.have.been.calledWith(2)
       expect(spy).to.have.been.calledWith(3)
       expect(spy).to.have.been.calledThrice
-      spy.reset()
+      spy.resetHistory()
 
       vm.$set(vm.list, 1, 15)
       expect(vm.$v.list.$each[0].$invalid).to.be.true
@@ -840,7 +840,7 @@ describe('Validation plugin', () => {
     })
 
     it('should revalidate all items with updated dependency', () => {
-      const spy = sinon.spy(function (val, arr, rootVm) {
+      const spy = sinon.spy(function(val, arr, rootVm) {
         return val > 2 ? !isEven(val) : this.external
       })
       const vm = new Vue(vmDef(spy))
@@ -849,7 +849,7 @@ describe('Validation plugin', () => {
       expect(vm.$v.list.$each[1].$invalid).to.be.false
       expect(vm.$v.list.$each[2].$invalid).to.be.false
       expect(spy).to.have.been.calledThrice
-      spy.reset()
+      spy.resetHistory()
 
       vm.external = false
       expect(vm.$v.list.$each[0].$invalid).to.be.true
@@ -867,7 +867,7 @@ describe('Validation plugin', () => {
         ...base,
         validations: {
           value: {
-            isOdd (v) {
+            isOdd(v) {
               return v % 2 === 1
             }
           }
@@ -877,14 +877,14 @@ describe('Validation plugin', () => {
     })
 
     it('should pass $params from validation function', () => {
-      const fn = withParams({type: 'alwaysTrue'}, () => true)
+      const fn = withParams({ type: 'alwaysTrue' }, () => true)
       const vm = new Vue({
         ...base,
         validations: {
           value: { fn }
         }
       })
-      expect(vm.$v.value.$params.fn).to.deep.equal({type: 'alwaysTrue'})
+      expect(vm.$v.value.$params.fn).to.deep.equal({ type: 'alwaysTrue' })
     })
 
     it('should pass $params from validation object', () => {
@@ -892,13 +892,13 @@ describe('Validation plugin', () => {
         ...base,
         validations: {
           value: {
-            $params: {test: true},
+            $params: { test: true },
             T
           }
         }
       })
-      expect(vm.$v.$params.value).to.deep.equal({test: true})
-      expect(vm.$v.value.$params).to.deep.equal({T: null})
+      expect(vm.$v.$params.value).to.deep.equal({ test: true })
+      expect(vm.$v.value.$params).to.deep.equal({ T: null })
     })
 
     it('should default $params for nested validation object to set of nulls', () => {
@@ -911,13 +911,13 @@ describe('Validation plugin', () => {
           }
         }
       })
-      expect(vm.$v.nested.$params).to.be.eql({value3: null, value4: null})
+      expect(vm.$v.nested.$params).to.be.eql({ value3: null, value4: null })
     })
 
     it('should return $sub $params on combined validators', () => {
-      const tr = withParams({type: 'alwaysTrue'}, () => true)
-      const fl = withParams({type: 'alwaysFalse'}, () => false)
-      const combo = withParams({type: 'combo'}, v => tr(v) && fl(v))
+      const tr = withParams({ type: 'alwaysTrue' }, () => true)
+      const fl = withParams({ type: 'alwaysFalse' }, () => false)
+      const combo = withParams({ type: 'combo' }, (v) => tr(v) && fl(v))
       const vm = new Vue({
         ...baseGroup,
         validations: {
@@ -926,17 +926,14 @@ describe('Validation plugin', () => {
       })
       expect(vm.$v.value.$params.combo).to.be.eql({
         type: 'combo',
-        $sub: [
-          {type: 'alwaysTrue'},
-          {type: 'alwaysFalse'}
-        ]
+        $sub: [{ type: 'alwaysTrue' }, { type: 'alwaysFalse' }]
       })
     })
 
     it('should return $sub $params on multiple direct validators', () => {
-      const tr = withParams({type: 'alwaysTrue'}, () => true)
-      const fl = withParams({type: 'alwaysFalse'}, () => false)
-      const comboDirect = v => tr(v) && fl(v)
+      const tr = withParams({ type: 'alwaysTrue' }, () => true)
+      const fl = withParams({ type: 'alwaysFalse' }, () => false)
+      const comboDirect = (v) => tr(v) && fl(v)
       const vm = new Vue({
         ...baseGroup,
         validations: {
@@ -944,10 +941,7 @@ describe('Validation plugin', () => {
         }
       })
       expect(vm.$v.value.$params.comboDirect).to.be.eql({
-        $sub: [
-          {type: 'alwaysTrue'},
-          {type: 'alwaysFalse'}
-        ]
+        $sub: [{ type: 'alwaysTrue' }, { type: 'alwaysFalse' }]
       })
     })
   })
@@ -955,7 +949,7 @@ describe('Validation plugin', () => {
   describe('$v.$flattenParams', () => {
     const vm = new Vue({
       ...base,
-      data () {
+      data() {
         return {
           value: 5
         }
@@ -978,7 +972,7 @@ describe('Validation plugin', () => {
     describe('for no validators', () => {
       const vm = new Vue({
         ...base,
-        data () {
+        data() {
           return {
             value: 5
           }
@@ -996,7 +990,7 @@ describe('Validation plugin', () => {
     describe('for nested validators', () => {
       const vm = new Vue({
         ...base,
-        data () {
+        data() {
           return {
             first: {
               foo: 5,
@@ -1035,10 +1029,26 @@ describe('Validation plugin', () => {
 
       it('should flatten results from all children', () => {
         expect(vm.$v.$flattenParams()).to.be.deep.equal([
-          { path: ['first', 'foo'], name: 'isEven', params: { type: 'isEven' } },
-          { path: ['first', 'bar'], name: 'isEven', params: { type: 'isEven' } },
-          { path: ['second', 'foo'], name: 'isEven', params: { type: 'isEven' } },
-          { path: ['second', 'bar'], name: 'isEven', params: { type: 'isEven' } }
+          {
+            path: ['first', 'foo'],
+            name: 'isEven',
+            params: { type: 'isEven' }
+          },
+          {
+            path: ['first', 'bar'],
+            name: 'isEven',
+            params: { type: 'isEven' }
+          },
+          {
+            path: ['second', 'foo'],
+            name: 'isEven',
+            params: { type: 'isEven' }
+          },
+          {
+            path: ['second', 'bar'],
+            name: 'isEven',
+            params: { type: 'isEven' }
+          }
         ])
       })
     })
@@ -1147,7 +1157,7 @@ describe('Validation plugin', () => {
 
     it('should not be present on $each', () => {
       const vm = new Vue(each)
-      expect(vm.$v.array.$each.$model).to.not.be.defined
+      expect(vm.$v.array.$each.$model).to.be.undefined
     })
 
     it('should reference array with defined $each', () => {

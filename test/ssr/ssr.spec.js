@@ -7,18 +7,18 @@ const isEven = withParams({ type: 'isEven' }, (v) => {
   return v % 2 === 0
 })
 
-const mkVm = render =>
+const mkVm = (render) =>
   new Vue({
     data: { val: 0 },
     validations: { val: { isEven } },
-    render (h) {
+    render(h) {
       return render(h, this)
     }
   })
 
 describe('SSR', (done) => {
   const renderer = createRenderer()
-  const makeRenderTester = expStr => (vm, done) => {
+  const makeRenderTester = (expStr) => (vm, done) => {
     renderer.renderToString(vm, (err, str) => {
       expect(err).to.be.null
       expStr(str)
@@ -26,7 +26,7 @@ describe('SSR', (done) => {
     })
   }
 
-  const testString = makeRenderTester(str => expect(str).to.be.string)
+  const testString = makeRenderTester((str) => expect(str).to.be.string)
 
   it('Should not throw on render when plugin is loaded', (done) => {
     const vm = mkVm((h, vm) => h('div', 'hello'))

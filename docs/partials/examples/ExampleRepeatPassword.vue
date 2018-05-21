@@ -19,7 +19,7 @@
 import { required, sameAs, minLength } from 'vuelidate/lib/validators'
 
 export default {
-  data () {
+  data() {
     return {
       password: '',
       repeatPassword: ''

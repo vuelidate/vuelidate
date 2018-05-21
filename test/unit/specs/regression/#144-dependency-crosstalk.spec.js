@@ -3,10 +3,10 @@ import Vue from 'vue'
 const T = () => true
 
 describe('#144 Dependency crosstalk', () => {
-  it('should not generate crosstalk when validation function references it\'s validation object', () => {
-    const noCrosstalkSpy = sinon.spy(function () {
+  it("should not generate crosstalk when validation function references it's validation object", () => {
+    const noCrosstalkSpy = sinon.spy(function() {
       // call getter
-      return (this.$v.A, true)
+      return this.$v.A, true
     })
 
     const vm = new Vue({
@@ -16,7 +16,7 @@ describe('#144 Dependency crosstalk', () => {
       },
       validations: {
         A: {
-          noCrosstalk (v) {
+          noCrosstalk(v) {
             return noCrosstalkSpy.call(this, v)
           }
         },

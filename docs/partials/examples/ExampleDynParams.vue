@@ -17,14 +17,14 @@
 import { minLength } from 'vuelidate/lib/validators'
 
 export default {
-  data () {
+  data() {
     return {
       name: '',
       minLength: 3,
       valName: 'validatorName'
     }
   },
-  validations () {
+  validations() {
     return {
       name: {
         [this.valName]: minLength(this.minLength)

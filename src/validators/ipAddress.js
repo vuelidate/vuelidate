@@ -1,17 +1,16 @@
-import {req, withParams} from './common'
-export default withParams(
-  { type: 'ipAddress' }, value => {
-    if (!req(value)) {
-      return true
-    }
+import { req, withParams } from './common'
+export default withParams({ type: 'ipAddress' }, (value) => {
+  if (!req(value)) {
+    return true
+  }
 
-    if (typeof value !== 'string') {
-      return false
-    }
+  if (typeof value !== 'string') {
+    return false
+  }
 
-    const nibbles = value.split('.')
-    return nibbles.length === 4 && nibbles.every(nibbleValid)
-  })
+  const nibbles = value.split('.')
+  return nibbles.length === 4 && nibbles.every(nibbleValid)
+})
 
 const nibbleValid = (nibble) => {
   if (nibble.length > 3 || nibble.length === 0) {

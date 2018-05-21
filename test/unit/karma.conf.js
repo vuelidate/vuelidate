@@ -11,15 +11,27 @@ var webpack = require('webpack')
 var projectRoot = path.resolve(__dirname, '../../')
 
 var webpackConfig = merge(baseConfig, {
+  mode: 'development',
   // use inline sourcemap for karma-sourcemap-loader
   module: {
     loaders: utils.styleLoaders()
   },
   devtool: '#inline-source-map',
-  vue: {
-    loaders: {
-      js: 'isparta'
-    }
+  module: {
+    rules: [
+      // instrument only testing sources with Istanbul
+      {
+        test: /\.js$/,
+        use: {
+          loader: 'istanbul-instrumenter-loader',
+          options: {
+            esModules: true
+          }
+        },
+        enforce: 'post',
+        include: path.resolve('src')
+      }
+    ]
   },
   plugins: [
     new webpack.DefinePlugin({
@@ -31,25 +43,9 @@ var webpackConfig = merge(baseConfig, {
 // no need for app entry during tests
 delete webpackConfig.entry
 
-// make sure isparta loader is applied before eslint
-webpackConfig.module.preLoaders = webpackConfig.module.preLoaders || []
-webpackConfig.module.preLoaders.unshift({
-  test: /\.js$/,
-  loader: 'isparta',
-  include: path.resolve(projectRoot, 'src')
-})
-
-// only apply babel for test files when using isparta
-webpackConfig.module.loaders.some(function (loader, i) {
-  if (loader.loader === 'babel') {
-    loader.include = path.resolve(projectRoot, 'test/unit')
-    return true
-  }
-})
-
 process.env.CHROME_BIN = require('puppeteer').executablePath()
 
-module.exports = function (config) {
+module.exports = function(config) {
   config.set({
     // to run in additional browsers:
     // 1. install corresponding karma launcher
@@ -57,7 +53,7 @@ module.exports = function (config) {
     // 2. add it to the `browsers` array below.
     browsers: ['ChromeHeadless'],
     frameworks: ['mocha', 'sinon-chai'],
-    reporters: ['spec', 'coverage'],
+    reporters: ['spec', 'coverage-istanbul'],
     files: ['./index.js'],
     preprocessors: {
       './index.js': ['webpack', 'sourcemap']
@@ -66,12 +62,9 @@ module.exports = function (config) {
     webpackMiddleware: {
       noInfo: true
     },
-    coverageReporter: {
+    coverageIstanbulReporter: {
       dir: './coverage',
-      reporters: [
-        { type: 'lcov', subdir: '.' },
-        { type: 'text-summary' }
-      ],
+      reporters: [{ type: 'lcov', subdir: '.' }, { type: 'text-summary' }],
       instrumenterOptions: {
         istanbul: { noCompact: true }
       }

@@ -29,6 +29,6 @@ describe('sameAs validator', () => {
   })
 
   it('should allow function expression', () => {
-    expect(sameAs(p => p.first)('hello', parentVm)).to.be.true
+    expect(sameAs((p) => p.first)('hello', parentVm)).to.be.true
   })
 })

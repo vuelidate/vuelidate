@@ -19,7 +19,7 @@
 import { required } from 'vuelidate/lib/validators'
 
 export default {
-  data () {
+  data() {
     return {
       form: {
         nestedA: '',

@@ -14,7 +14,7 @@
 import { required } from 'vuelidate/lib/validators'
 
 export default {
-  data () {
+  data() {
     return {
       username: ''
     }
@@ -22,7 +22,7 @@ export default {
   validations: {
     username: {
       required,
-      isUnique (value) {
+      isUnique(value) {
         // standalone validator ideally should not assume a field is required
         if (value === '') return true
 

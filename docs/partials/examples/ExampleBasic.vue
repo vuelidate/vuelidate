@@ -22,7 +22,7 @@
 import { required, minLength, between } from 'vuelidate/lib/validators'
 
 export default {
-  data () {
+  data() {
     return {
       name: '',
       age: 0
