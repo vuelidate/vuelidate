@@ -10,8 +10,8 @@ const merge = require('webpack-merge')
 base.mode = 'production'
 
 base.entry = {
-  'vuelidate': './src/index.js',
-  'validators': './src/validators/index.js'
+  vuelidate: './src/index.js',
+  validators: './src/validators/index.js'
 }
 
 base.output = {

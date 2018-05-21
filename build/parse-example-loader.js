@@ -9,7 +9,7 @@ module.exports = function(source) {
   const slices = {
     javascript: parsed.script.content,
     html,
-    pug,
+    pug
   }
 
   return `module.exports = ${JSON.stringify(slices)}`

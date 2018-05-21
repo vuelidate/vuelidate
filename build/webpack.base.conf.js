@@ -6,8 +6,8 @@ var VueLoaderPlugin = require('vue-loader/lib/plugin')
 var env = process.env.NODE_ENV
 // check env & config/index.js to decide weither to enable CSS Sourcemaps for the
 // various preprocessor loaders added to vue-loader at the end of this file
-var cssSourceMapDev = (env === 'development' && config.dev.cssSourceMap)
-var cssSourceMapProd = (env === 'production' && config.docs.productionSourceMap)
+var cssSourceMapDev = env === 'development' && config.dev.cssSourceMap
+var cssSourceMapProd = env === 'production' && config.docs.productionSourceMap
 var useCssSourceMap = cssSourceMapDev || cssSourceMapProd
 
 module.exports = {
@@ -16,23 +16,24 @@ module.exports = {
   },
   output: {
     path: config.docs.assetsRoot,
-    publicPath: process.env.NODE_ENV === 'production' ? config.docs.assetsPublicPath : config.dev.assetsPublicPath,
+    publicPath:
+      process.env.NODE_ENV === 'production'
+        ? config.docs.assetsPublicPath
+        : config.dev.assetsPublicPath,
     filename: '[name].js'
   },
   resolve: {
     extensions: ['.js', '.vue'],
     alias: {
-      'vue$': 'vue/dist/vue',
+      vue$: 'vue/dist/vue',
       'vuelidate/lib/validators': path.resolve(__dirname, '../src/validators'), // for consistent docs
-      'src': path.resolve(__dirname, '../src'),
-      'assets': path.resolve(__dirname, '../docs/assets'),
-      'examples': path.resolve(__dirname, '../docs/partials/examples'),
-      'components': path.resolve(__dirname, '../src/components')
+      src: path.resolve(__dirname, '../src'),
+      assets: path.resolve(__dirname, '../docs/assets'),
+      examples: path.resolve(__dirname, '../docs/partials/examples'),
+      components: path.resolve(__dirname, '../src/components')
     }
   },
-  plugins: [
-    new VueLoaderPlugin()
-  ],
+  plugins: [new VueLoaderPlugin()],
   module: {
     rules: [
       {
