@@ -82,8 +82,21 @@ const validationGetters = {
 
     return this.nestedKeys.every((key) => this.refProxy(key).$dirty)
   },
+  $anyDirty() {
+    if (this.dirty) {
+      return true
+    }
+    if (this.nestedKeys.length === 0) {
+      return false
+    }
+
+    return this.nestedKeys.some((key) => this.refProxy(key).$anyDirty)
+  },
   $error() {
     return this.$dirty && !this.$pending && this.$invalid
+  },
+  $anyError() {
+    return this.$anyDirty && !this.$pending && this.$invalid
   },
   $pending() {
     return (

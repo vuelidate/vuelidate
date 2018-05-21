@@ -54,7 +54,7 @@ new Vue({
       const navTop = $nav.getBoundingClientRect().top
       this.isNavSticky = navTop < 0
 
-      const found = this.allHeaders.findIndex(e => {
+      const found = this.allHeaders.findIndex((e) => {
         const top = e.getBoundingClientRect().top
         return top > 20
       })
