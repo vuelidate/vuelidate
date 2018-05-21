@@ -14,6 +14,12 @@
       | by calling <kbd>$touch()</kbd> method when appropriate.
     +example('ExampleEvent')
 
+  +subsection('Form submission')
+    p.typo__p
+      | A common thing to do with validated forms is to check their validity before submission. You can accomplish this
+      | easily by checking for <kbd>$invalid</kbd> state before sending any requests.
+    +example('ExampleSubmit')
+
   +subsection('Contextified validators')
     p.typo__p
       | You can link related fields by contextified validators. An example of this being <kbd>sameAs</kbd> builtin validator.
