@@ -18,6 +18,7 @@ import minValue from './minValue'
 import maxValue from './maxValue'
 import integer from './integer'
 import decimal from './decimal'
+import * as helpers from './common'
 
 export {
   alpha,
@@ -39,5 +40,6 @@ export {
   minValue,
   maxValue,
   integer,
-  decimal
+  decimal,
+  helpers
 }
