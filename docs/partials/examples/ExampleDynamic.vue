@@ -18,14 +18,14 @@
 import { required } from 'vuelidate/lib/validators'
 
 export default {
-  data () {
+  data() {
     return {
       hasDescription: false,
       name: '',
       description: ''
     }
   },
-  validations () {
+  validations() {
     if (!this.hasDescription) {
       return {
         name: {

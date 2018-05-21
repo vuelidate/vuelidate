@@ -1,21 +1,22 @@
-import {h, patchChildren} from './vval'
+import { h, patchChildren } from './vval'
 
 const NIL = () => null
 
-const buildFromKeys = (keys, fn, keyFn) => keys.reduce((build, key) => {
-  build[keyFn ? keyFn(key) : key] = fn(key)
-  return build
-}, {})
+const buildFromKeys = (keys, fn, keyFn) =>
+  keys.reduce((build, key) => {
+    build[keyFn ? keyFn(key) : key] = fn(key)
+    return build
+  }, {})
 
-function isFunction (val) {
+function isFunction(val) {
   return typeof val === 'function'
 }
 
-function isObject (val) {
+function isObject(val) {
   return val !== null && (typeof val === 'object' || isFunction(val))
 }
 
-function isPromise (object) {
+function isPromise(object) {
   return isObject(object) && isFunction(object.then)
 }
 
@@ -36,10 +37,10 @@ const getPath = (ctx, obj, path, fallback) => {
   return typeof obj === 'undefined' ? fallback : obj
 }
 
-import {withParams, pushParams, popParams} from './params'
+import { withParams, pushParams, popParams } from './params'
 
 const __isVuelidateAsyncVm = '__isVuelidateAsyncVm'
-function makePendingAsyncVm (Vue, promise) {
+function makePendingAsyncVm(Vue, promise) {
   const asyncVm = new Vue({
     data: {
       p: true, // pending
@@ -47,27 +48,31 @@ function makePendingAsyncVm (Vue, promise) {
     }
   })
 
-  promise
-    .then(value => {
+  promise.then(
+    (value) => {
       asyncVm.p = false
       asyncVm.v = value
-    }, error => {
+    },
+    (error) => {
       asyncVm.p = false
       asyncVm.v = false
       throw error
-    })
+    }
+  )
 
   asyncVm[__isVuelidateAsyncVm] = true
   return asyncVm
 }
 
 const validationGetters = {
-  $invalid () {
+  $invalid() {
     const proxy = this.proxy
-    return this.nestedKeys.some(nested => this.refProxy(nested).$invalid) ||
-      this.ruleKeys.some(rule => !proxy[rule])
+    return (
+      this.nestedKeys.some((nested) => this.refProxy(nested).$invalid) ||
+      this.ruleKeys.some((rule) => !proxy[rule])
+    )
   },
-  $dirty () {
+  $dirty() {
     if (this.dirty) {
       return true
     }
@@ -75,41 +80,46 @@ const validationGetters = {
       return false
     }
 
-    return this.nestedKeys.every(key => this.refProxy(key).$dirty)
+    return this.nestedKeys.every((key) => this.refProxy(key).$dirty)
   },
-  $error () {
+  $error() {
     return this.$dirty && !this.$pending && this.$invalid
   },
-  $pending () {
-    return this.ruleKeys.some(key => this.getRef(key).$pending) ||
-           this.nestedKeys.some(key => this.refProxy(key).$pending)
+  $pending() {
+    return (
+      this.ruleKeys.some((key) => this.getRef(key).$pending) ||
+      this.nestedKeys.some((key) => this.refProxy(key).$pending)
+    )
   },
-  $params () {
+  $params() {
     const vals = this.validations
     return {
-      ...buildFromKeys(this.nestedKeys, key => vals[key] && vals[key].$params || null),
-      ...buildFromKeys(this.ruleKeys, key => this.getRef(key).$params)
+      ...buildFromKeys(
+        this.nestedKeys,
+        (key) => (vals[key] && vals[key].$params) || null
+      ),
+      ...buildFromKeys(this.ruleKeys, (key) => this.getRef(key).$params)
     }
   }
 }
 
-function setDirtyRecursive (newState) {
+function setDirtyRecursive(newState) {
   this.dirty = newState
   const proxy = this.proxy
   const method = newState ? '$touch' : '$reset'
-  this.nestedKeys.forEach(key => {
+  this.nestedKeys.forEach((key) => {
     proxy[key][method]()
   })
 }
 
 const validationMethods = {
-  $touch () {
+  $touch() {
     setDirtyRecursive.call(this, true)
   },
-  $reset () {
+  $reset() {
     setDirtyRecursive.call(this, false)
   },
-  $flattenParams () {
+  $flattenParams() {
     const proxy = this.proxy
     let params = []
     for (const key in this.$params) {
@@ -137,45 +147,46 @@ const getComponent = (Vue) => {
   }
 
   const VBase = Vue.extend({
-    beforeCreate () {
+    computed: {
+      refs() {
+        const oldVval = this._vval
+        // eslint-disable-next-line vue/no-side-effects-in-computed-properties
+        this._vval = this.children
+        patchChildren(oldVval, this._vval)
+        const refs = {}
+        this._vval.forEach((c) => {
+          refs[c.key] = c.vm
+        })
+        return refs
+      }
+    },
+    beforeCreate() {
       this._vval = null
     },
-    beforeDestroy () {
+    beforeDestroy() {
       if (this._vval) {
         patchChildren(this._vval)
         this._vval = null
       }
     },
     methods: {
-      getModel () {
+      getModel() {
         return this.lazyModel ? this.lazyModel(this.prop) : this.model
       },
-      getModelKey (key) {
+      getModelKey(key) {
         var model = this.getModel()
         if (model) {
           return model[key]
         }
       },
-      hasIter () {
+      hasIter() {
         return false
-      }
-    },
-    computed: {
-      refs () {
-        const oldVval = this._vval
-        this._vval = this.children
-        patchChildren(oldVval, this._vval)
-        const refs = {}
-        this._vval.forEach(c => {
-          refs[c.key] = c.vm
-        })
-        return refs
       }
     }
   })
 
   const ValidationRule = VBase.extend({
-    data () {
+    data() {
       return {
         rule: null,
         lazyModel: null,
@@ -185,7 +196,7 @@ const getComponent = (Vue) => {
       }
     },
     methods: {
-      runRule (parent) {
+      runRule(parent) {
         // Avoid using this.lazyParentModel to not get dependent on it.
         // Passed as an argument for workaround
         const model = this.getModel()
@@ -196,21 +207,20 @@ const getComponent = (Vue) => {
           : rawOutput
 
         const rawParams = popParams()
-        const params = rawParams && rawParams.$sub
-          ? rawParams.$sub.length > 1
-            ? rawParams
-            : rawParams.$sub[0]
-          : null
+        const params =
+          rawParams && rawParams.$sub
+            ? rawParams.$sub.length > 1
+              ? rawParams
+              : rawParams.$sub[0]
+            : null
 
         return { output, params }
       }
     },
     computed: {
-      run () {
+      run() {
         const parent = this.lazyParentModel()
-        const isArrayDependant =
-          Array.isArray(parent) &&
-          parent.__ob__
+        const isArrayDependant = Array.isArray(parent) && parent.__ob__
 
         if (isArrayDependant) {
           // force depend on the array
@@ -221,7 +231,12 @@ const getComponent = (Vue) => {
 
           if (!this._indirectWatcher) {
             const Watcher = target.constructor
-            this._indirectWatcher = new Watcher(this, () => this.runRule(parent), null, { lazy: true })
+            this._indirectWatcher = new Watcher(
+              this,
+              () => this.runRule(parent),
+              null,
+              { lazy: true }
+            )
           }
 
           // if the update cause is only the array update
@@ -240,19 +255,21 @@ const getComponent = (Vue) => {
           this._indirectWatcher.teardown()
           this._indirectWatcher = null
         }
-        return this._indirectWatcher ? this._indirectWatcher.value : this.runRule(parent)
+        return this._indirectWatcher
+          ? this._indirectWatcher.value
+          : this.runRule(parent)
       },
-      $params () {
+      $params() {
         return this.run.params
       },
-      proxy () {
+      proxy() {
         const output = this.run.output
         if (output[__isVuelidateAsyncVm]) {
           return !!output.v
         }
         return !!output
       },
-      $pending () {
+      $pending() {
         const output = this.run.output
         if (output[__isVuelidateAsyncVm]) {
           return output.p
@@ -260,7 +277,7 @@ const getComponent = (Vue) => {
         return false
       }
     },
-    destroyed () {
+    destroyed() {
       if (this._indirectWatcher) {
         this._indirectWatcher.teardown()
         this._indirectWatcher = null
@@ -269,7 +286,7 @@ const getComponent = (Vue) => {
   })
 
   const Validation = VBase.extend({
-    data () {
+    data() {
       return {
         dirty: false,
         validations: null,
@@ -282,84 +299,92 @@ const getComponent = (Vue) => {
     },
     methods: {
       ...validationMethods,
-      refProxy (key) {
+      refProxy(key) {
         return this.getRef(key).proxy
       },
-      getRef (key) {
+      getRef(key) {
         return this.refs[key]
       },
-      isNested (key) {
+      isNested(key) {
         return typeof this.validations[key] !== 'function'
       }
     },
     computed: {
       ...validationGetters,
-      nestedKeys () {
+      nestedKeys() {
         return this.keys.filter(this.isNested)
       },
-      ruleKeys () {
-        return this.keys.filter(k => !this.isNested(k))
+      ruleKeys() {
+        return this.keys.filter((k) => !this.isNested(k))
       },
-      keys () {
-        return Object.keys(this.validations).filter(k => k !== '$params')
+      keys() {
+        return Object.keys(this.validations).filter((k) => k !== '$params')
       },
-      proxy () {
-        const keyDefs = buildFromKeys(this.keys, key => ({
+      proxy() {
+        const keyDefs = buildFromKeys(this.keys, (key) => ({
           enumerable: true,
           configurable: true, // allow mocking lib calls
           get: () => this.refProxy(key)
         }))
 
-        const getterDefs = buildFromKeys(getterNames, key => ({
+        const getterDefs = buildFromKeys(getterNames, (key) => ({
           enumerable: true,
           configurable: true,
           get: () => this[key]
         }))
 
-        const methodDefs = buildFromKeys(methodNames, key => ({
+        const methodDefs = buildFromKeys(methodNames, (key) => ({
           enumerable: false,
           configurable: true,
           get: () => this[key]
         }))
 
-        const iterDefs = this.hasIter() ? {
-          $iter: {
-            enumerable: true,
-            value: Object.defineProperties({}, {
-              ...keyDefs
-            })
-          }
-        } : {}
-
-        return Object.defineProperties({}, {
-          ...keyDefs,
-          ...iterDefs,
-          $model: {
-            enumerable: true,
-            get: () => {
-              const parent = this.lazyParentModel()
-              if (parent != null) {
-                return parent[this.prop]
-              } else {
-                return null
-              }
-            },
-            set: (value) => {
-              const parent = this.lazyParentModel()
-              if (parent != null) {
-                parent[this.prop] = value
-                this.$touch()
+        const iterDefs = this.hasIter()
+          ? {
+              $iter: {
+                enumerable: true,
+                value: Object.defineProperties(
+                  {},
+                  {
+                    ...keyDefs
+                  }
+                )
               }
             }
-          },
-          ...getterDefs,
-          ...methodDefs
-        })
+          : {}
+
+        return Object.defineProperties(
+          {},
+          {
+            ...keyDefs,
+            ...iterDefs,
+            $model: {
+              enumerable: true,
+              get: () => {
+                const parent = this.lazyParentModel()
+                if (parent != null) {
+                  return parent[this.prop]
+                } else {
+                  return null
+                }
+              },
+              set: (value) => {
+                const parent = this.lazyParentModel()
+                if (parent != null) {
+                  parent[this.prop] = value
+                  this.$touch()
+                }
+              }
+            },
+            ...getterDefs,
+            ...methodDefs
+          }
+        )
       },
-      children () {
+      children() {
         return [
-          ...this.nestedKeys.map(key => renderNested(this, key)),
-          ...this.ruleKeys.map(key => renderRule(this, key))
+          ...this.nestedKeys.map((key) => renderNested(this, key)),
+          ...this.ruleKeys.map((key) => renderRule(this, key))
         ].filter(Boolean)
       }
     }
@@ -367,13 +392,13 @@ const getComponent = (Vue) => {
 
   const GroupValidation = Validation.extend({
     methods: {
-      isNested (key) {
+      isNested(key) {
         return typeof this.validations[key]() !== 'undefined'
       },
-      getRef (key) {
+      getRef(key) {
         const vm = this
         return {
-          get proxy () {
+          get proxy() {
             // default to invalid
             return vm.validations[key]() || false
           }
@@ -384,7 +409,7 @@ const getComponent = (Vue) => {
 
   const EachValidation = Validation.extend({
     computed: {
-      keys () {
+      keys() {
         var model = this.getModel()
         if (isObject(model)) {
           return Object.keys(model)
@@ -392,16 +417,17 @@ const getComponent = (Vue) => {
           return []
         }
       },
-      tracker () {
+      tracker() {
         const trackBy = this.validations.$trackBy
         return trackBy
-            ? key => `${getPath(this.rootModel, this.getModelKey(key), trackBy)}`
-            : x => `${x}`
+          ? (key) =>
+              `${getPath(this.rootModel, this.getModelKey(key), trackBy)}`
+          : (x) => `${x}`
       },
-      getModelLazy () {
+      getModelLazy() {
         return () => this.getModel()
       },
-      children () {
+      children() {
         const def = this.validations
         const model = this.getModel()
 
@@ -410,30 +436,32 @@ const getComponent = (Vue) => {
 
         let usedTracks = {}
 
-        return this.keys.map(key => {
-          const track = this.tracker(key)
-          if (usedTracks.hasOwnProperty(track)) {
-            return null
-          }
-          usedTracks[track] = true
-          return h(Validation, track, {
-            validations,
-            prop: key,
-            lazyParentModel: this.getModelLazy,
-            model: model[key],
-            rootModel: this.rootModel
+        return this.keys
+          .map((key) => {
+            const track = this.tracker(key)
+            if (usedTracks.hasOwnProperty(track)) {
+              return null
+            }
+            usedTracks[track] = true
+            return h(Validation, track, {
+              validations,
+              prop: key,
+              lazyParentModel: this.getModelLazy,
+              model: model[key],
+              rootModel: this.rootModel
+            })
           })
-        }).filter(Boolean)
+          .filter(Boolean)
       }
     },
     methods: {
-      isNested () {
+      isNested() {
         return true
       },
-      getRef (key) {
+      getRef(key) {
         return this.refs[this.tracker(key)]
       },
-      hasIter () {
+      hasIter() {
         return true
       }
     }
@@ -454,8 +482,11 @@ const getComponent = (Vue) => {
       const root = vm.rootModel
       const refVals = buildFromKeys(
         validations,
-        path => function () { return getPath(root, root.$v, path) },
-        v => Array.isArray(v) ? v.join('.') : v
+        (path) =>
+          function() {
+            return getPath(root, root.$v, path)
+          },
+        (v) => (Array.isArray(v) ? v.join('.') : v)
       )
       return h(GroupValidation, key, {
         validations: refVals,
@@ -483,12 +514,12 @@ const getComponent = (Vue) => {
     })
   }
 
-  _cachedComponent = {VBase, Validation}
+  _cachedComponent = { VBase, Validation }
   return _cachedComponent
 }
 
 let _cachedVue = null
-function getVue (rootVm) {
+function getVue(rootVm) {
   if (_cachedVue) return _cachedVue
   let Vue = rootVm.constructor
   /* istanbul ignore next */
@@ -499,21 +530,24 @@ function getVue (rootVm) {
 
 const validateModel = (model, validations) => {
   const Vue = getVue(model)
-  const {Validation, VBase} = getComponent(Vue)
+  const { Validation, VBase } = getComponent(Vue)
   const root = new VBase({
     computed: {
-      children () {
-        const vals = typeof validations === 'function'
-          ? validations.call(model)
-          : validations
+      children() {
+        const vals =
+          typeof validations === 'function'
+            ? validations.call(model)
+            : validations
 
-        return [h(Validation, '$v', {
-          validations: vals,
-          lazyParentModel: NIL,
-          prop: '$v',
-          model,
-          rootModel: model
-        })]
+        return [
+          h(Validation, '$v', {
+            validations: vals,
+            lazyParentModel: NIL,
+            prop: '$v',
+            model,
+            rootModel: model
+          })
+        ]
       }
     }
   })
@@ -521,24 +555,24 @@ const validateModel = (model, validations) => {
 }
 
 const validationMixin = {
-  data () {
+  data() {
     const vals = this.$options.validations
     if (vals) {
       this._vuelidate = validateModel(this, vals)
     }
     return {}
   },
-  beforeCreate () {
+  beforeCreate() {
     const options = this.$options
     const vals = options.validations
     if (!vals) return
     if (!options.computed) options.computed = {}
     if (options.computed.$v) return
-    options.computed.$v = function () {
+    options.computed.$v = function() {
       return this._vuelidate ? this._vuelidate.refs.$v.proxy : null
     }
   },
-  beforeDestroy () {
+  beforeDestroy() {
     if (this._vuelidate) {
       this._vuelidate.$destroy()
       this._vuelidate = null
@@ -546,7 +580,7 @@ const validationMixin = {
   }
 }
 
-function Vuelidate (Vue) {
+function Vuelidate(Vue) {
   Vue.mixin(validationMixin)
 }
 

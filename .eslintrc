@@ -1,0 +1,14 @@
+{
+  "root": true,
+  "parserOptions": {
+    "sourceType": "module",
+    "ecmaVersion": 6,
+    "ecmaFeatures": {
+      "experimentalObjectRestSpread": true
+    }
+  },
+  "extends": [
+    "plugin:vue/recommended",
+    "plugin:prettier/recommended"
+  ]
+}

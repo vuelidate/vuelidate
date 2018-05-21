@@ -3,7 +3,6 @@
   "description": "Simple, lightweight model-based validation for Vue.js",
   "main": "lib/index.js",
   "authors": [
-    "Damian Dulisz <damian.dulisz@monterail.com>",
     "Paweł Grabarz <pawel.grabarz@monterail.com>"
   ],
   "license": "MIT",

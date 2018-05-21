@@ -19,7 +19,7 @@
 import { required, minLength, between } from 'vuelidate/lib/validators'
 
 export default {
-  data () {
+  data() {
     return {
       name: '',
       age: 0
@@ -36,11 +36,11 @@ export default {
   },
 
   methods: {
-    setName (value) {
+    setName(value) {
       this.name = value
       this.$v.name.$touch()
     },
-    setAge (value) {
+    setAge(value) {
       this.age = value
       this.$v.age.$touch()
     }

@@ -2,7 +2,7 @@ import withParams from '../withParams'
 export { withParams }
 
 // "required" core, used in almost every validator to allow empty values
-export const req = value => {
+export const req = (value) => {
   if (Array.isArray(value)) return !!value.length
   if (value === undefined || value === null) {
     return false
@@ -26,7 +26,7 @@ export const req = value => {
 }
 
 // get length in type-agnostic way
-export const len = value => {
+export const len = (value) => {
   if (Array.isArray(value)) return value.length
   if (typeof value === 'object') {
     return Object.keys(value).length
@@ -42,4 +42,4 @@ export const ref = (reference, vm, parentVm) =>
 
 // regex based validator template
 export const regex = (type, expr) =>
-  withParams({ type }, value => !req(value) || expr.test(value))
+  withParams({ type }, (value) => !req(value) || expr.test(value))

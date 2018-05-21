@@ -86,13 +86,13 @@ describe('url validator', () => {
     'http://10.1.1.254'
   ]
 
-  correctUrls.forEach(urlString => {
+  correctUrls.forEach((urlString) => {
     it(`should validate correct url ${urlString}`, () => {
       expect(url(urlString)).to.be.true
     })
   })
 
-  incorrectUrls.forEach(urlString => {
+  incorrectUrls.forEach((urlString) => {
     it(`should not validate incorrect url ${urlString}`, () => {
       expect(url(urlString)).to.be.false
     })

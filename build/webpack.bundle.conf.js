@@ -2,9 +2,12 @@ const webpack = require('webpack')
 const CopyWebpackPlugin = require('copy-webpack-plugin')
 const base = require('./webpack.base.conf')
 const config = require('../config')
+const merge = require('webpack-merge')
 
 // this is used only for umd browser bundle,
 // refer to .babelrc for lib configuration
+
+base.mode = 'production'
 
 base.entry = {
   'vuelidate': './src/index.js',
@@ -19,22 +22,20 @@ base.output = {
   library: '[name]'
 }
 
-base.alias = {
-  'vuelidate/withParams': '../withParamsBrowser'
-}
-
-var webpackConfig = Object.assign({}, base)
-
-webpackConfig.plugins = (webpackConfig.plugins || []).concat([
-  new webpack.DefinePlugin({
-    'process.env': {
-      NODE_ENV: '"production"'
+module.exports = merge(base, {
+  resolve: {
+    alias: {
+      'vuelidate/withParams': '../withParamsBrowser'
     }
-  }),
-  new webpack.optimize.UglifyJsPlugin({
-    compress: { warnings: false }
-  }),
-  new webpack.optimize.OccurenceOrderPlugin()
-])
-
-module.exports = webpackConfig
+  },
+  plugins: [
+    new webpack.DefinePlugin({
+      'process.env': {
+        NODE_ENV: '"production"'
+      }
+    })
+  ],
+  optimization: {
+    minimize: true
+  }
+})

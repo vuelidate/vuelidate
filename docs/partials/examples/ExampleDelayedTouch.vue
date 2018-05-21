@@ -18,7 +18,7 @@ import { required, minLength, maxLength } from 'vuelidate/lib/validators'
 const touchMap = new WeakMap()
 
 export default {
-  data () {
+  data() {
     return {
       name: ''
     }
@@ -31,7 +31,7 @@ export default {
     }
   },
   methods: {
-    delayTouch ($v) {
+    delayTouch($v) {
       $v.$reset()
       if (touchMap.has($v)) {
         clearTimeout(touchMap.get($v))

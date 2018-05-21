@@ -18,7 +18,7 @@ new Vue({
     LangSwitcher,
     ...examples
   },
-  data () {
+  data() {
     return {
       isNavSticky: false,
       firstColor: Math.floor(Math.random() * 255),
@@ -29,20 +29,27 @@ new Vue({
     }
   },
   computed: {
-    gradient () {
+    gradient() {
       return {
-        background: `linear-gradient(to left bottom, hsl(${this.firstColor + SL}) 0%, hsl(${this.secondColor + SL}) 100%)`
+        background: `linear-gradient(to left bottom, hsl(${this.firstColor +
+          SL}) 0%, hsl(${this.secondColor + SL}) 100%)`
       }
     },
-    allHeaders () {
-      return [].slice.call(document.querySelectorAll('section[id], .typo__h2[id]'))
+    allHeaders() {
+      return [].slice.call(
+        document.querySelectorAll('section[id], .typo__h2[id]')
+      )
     }
   },
+  mounted() {
+    this.adjustNav()
+    window.addEventListener('scroll', this.requestFrame)
+  },
   methods: {
-    selectLanguage (lang) {
+    selectLanguage(lang) {
       this.markupLanguage = lang
     },
-    adjustNav () {
+    adjustNav() {
       const $nav = document.getElementById('main-nav')
       const navTop = $nav.getBoundingClientRect().top
       this.isNavSticky = navTop < 0
@@ -65,7 +72,7 @@ new Vue({
         }
       }
     },
-    requestFrame () {
+    requestFrame() {
       if (!this._frameRequested) {
         this._frameRequested = true
         window.requestAnimationFrame(() => {
@@ -74,9 +81,5 @@ new Vue({
         })
       }
     }
-  },
-  mounted () {
-    this.adjustNav()
-    window.addEventListener('scroll', this.requestFrame)
   }
 })

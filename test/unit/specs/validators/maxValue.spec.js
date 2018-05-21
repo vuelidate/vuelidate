@@ -18,7 +18,7 @@ describe('maxValue validator', () => {
   })
 
   it('should validate the object value', () => {
-    expect(maxValue(5)({hello: 'world'})).to.be.false
+    expect(maxValue(5)({ hello: 'world' })).to.be.false
   })
 
   it('should validate the max date value', () => {

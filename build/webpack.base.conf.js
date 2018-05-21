@@ -2,7 +2,7 @@ var path = require('path')
 var config = require('../config')
 var utils = require('./utils')
 var projectRoot = path.resolve(__dirname, '../')
-
+var VueLoaderPlugin = require('vue-loader/lib/plugin')
 var env = process.env.NODE_ENV
 // check env & config/index.js to decide weither to enable CSS Sourcemaps for the
 // various preprocessor loaders added to vue-loader at the end of this file
@@ -20,8 +20,7 @@ module.exports = {
     filename: '[name].js'
   },
   resolve: {
-    extensions: ['', '.js', '.vue'],
-    fallback: [path.join(__dirname, '../node_modules')],
+    extensions: ['.js', '.vue'],
     alias: {
       'vue$': 'vue/dist/vue',
       'vuelidate/lib/validators': path.resolve(__dirname, '../src/validators'), // for consistent docs
@@ -31,70 +30,67 @@ module.exports = {
       'components': path.resolve(__dirname, '../src/components')
     }
   },
-  resolveLoader: {
-    fallback: [path.join(__dirname, '../node_modules')]
-  },
+  plugins: [
+    new VueLoaderPlugin()
+  ],
   module: {
-    preLoaders: [
+    rules: [
       {
-        test: /\.vue$/,
-        loader: 'eslint',
-        include: projectRoot,
-        exclude: /node_modules/
-      },
-      {
-        test: /\.js$/,
-        loader: 'eslint',
+        enforce: 'pre',
+        test: /\.(vue|js)$/,
+        loader: 'eslint-loader',
         include: projectRoot,
         exclude: [/node_modules/, /docs[\\\/]assets/]
-      }
-    ],
-    loaders: [
-      {
-        test: /\.vue$/,
-        loader: 'vue'
       },
       {
-        test: /\.js$/,
-        loader: 'babel',
+        test: /\.vue$/,
+        loader: 'vue-loader',
         include: projectRoot,
         exclude: /node_modules/
       },
       {
-        test: /\.json$/,
-        loader: 'json'
+        test: /\.(sass|scss)$/,
+        use: ['vue-style-loader', 'css-loader', 'sass-loader'],
+        include: projectRoot,
+        exclude: /node_modules/
       },
       {
         test: /\.pug$/,
-        loader: 'pug'
+        oneOf: [
+          {
+            exclude: /\.vue/,
+            use: ['pug-loader']
+          },
+          // this applies to <template lang="pug"> in Vue components
+          {
+            use: ['pug-plain-loader']
+          }
+        ],
+        include: projectRoot,
+        exclude: /node_modules/
+      },
+      {
+        test: /\.js$/,
+        loader: 'babel-loader',
+        include: projectRoot,
+        exclude: /node_modules/
       },
       {
         test: /\.(png|jpe?g|gif|svg)(\?.*)?$/,
-        loader: 'url',
-        query: {
+        loader: 'url-loader',
+        options: {
           limit: 10000,
           name: utils.assetsPath('img/[name].[hash:7].[ext]')
         }
       },
       {
         test: /\.(woff2?|eot|ttf|otf)(\?.*)?$/,
-        loader: 'url',
-        query: {
+        loader: 'url-loader',
+        options: {
           limit: 10000,
           name: utils.assetsPath('fonts/[name].[hash:7].[ext]')
         }
       }
-    ]
-  },
-  eslint: {
-    formatter: require('eslint-friendly-formatter')
-  },
-  vue: {
-    loaders: utils.cssLoaders({ sourceMap: useCssSourceMap }),
-    postcss: [
-      require('autoprefixer')({
-        browsers: ['last 2 versions']
-      })
     ]
   }
 }

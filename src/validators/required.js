@@ -1,2 +1,2 @@
-import {withParams, req} from './common'
-export default withParams({type: 'required'}, req)
+import { withParams, req } from './common'
+export default withParams({ type: 'required' }, req)

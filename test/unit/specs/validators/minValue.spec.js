@@ -18,7 +18,7 @@ describe('minValue validator', () => {
   })
 
   it('should validate the object value', () => {
-    expect(minValue(5)({hello: 'world'})).to.be.false
+    expect(minValue(5)({ hello: 'world' })).to.be.false
   })
 
   it('should validate the minimum date value', () => {
