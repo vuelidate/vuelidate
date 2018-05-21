@@ -1,19 +1,18 @@
 <template lang="pug">
   div
-    .form-group(v-bind:class="{ 'form-group--error': $v.name.$error}")
+    .form-group(:class="{ 'form-group--error': $v.name.$error}")
       label.form__label Name
-      input.form__input(v-model.trim="name" @input="$v.name.$touch()")
+      input.form__input(v-model.trim="$v.name.$model")
     .form-group
       label(for="hasDesc").form__label Has description?
       .toggle
         input#hasDesc(type="checkbox", v-model="hasDescription")
         label(for="hasDesc")
           .toggle__switch
-    .form-group(v-if="hasDescription" v-bind:class="{ 'form-group--error': $v.description.$error}")
+    .form-group(v-if="hasDescription", :class="{ 'form-group--error': $v.description.$error}")
       label.form__label Description
-      input.form__input(v-model.trim="description" @input="$v.description.$touch()")
-    pre
-      | $v: {{ $v }}
+      input.form__input(v-model.trim="$v.description.$model")
+    tree-view(:data="$v", :options="{rootObjectKey: '$v', maxDepth: 2}")
 </template>
 <script>
 import { required } from 'vuelidate/lib/validators'

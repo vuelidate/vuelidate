@@ -2,9 +2,10 @@ import Vue from 'vue'
 import Validation from '../src/index'
 
 import * as examples from './partials/examples'
+import TreeView from 'vue-json-tree-view'
 import LangSwitcher from './LangSwitcher'
-
 Vue.use(Validation)
+Vue.use(TreeView)
 
 import './docs.scss'
 
@@ -48,10 +49,8 @@ new Vue({
 
       const found = this.allHeaders.findIndex(e => {
         const top = e.getBoundingClientRect().top
-        return top > 0
+        return top > 20
       })
-
-      console.log(this.allHeaders)
 
       const head = found === -1 ? this.allHeaders.length - 1 : found - 1
 

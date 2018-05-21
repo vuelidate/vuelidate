@@ -1,6 +1,6 @@
 import {h, patchChildren} from './vval'
 
-const NUL = () => null
+const NIL = () => null
 
 const buildFromKeys = (keys, fn, keyFn) => keys.reduce((build, key) => {
   build[keyFn ? keyFn(key) : key] = fn(key)
@@ -143,6 +143,7 @@ const getComponent = (Vue) => {
     beforeDestroy () {
       if (this._vval) {
         patchChildren(this._vval)
+        this._vval = null
       }
     },
     methods: {
@@ -154,6 +155,9 @@ const getComponent = (Vue) => {
         if (model) {
           return model[key]
         }
+      },
+      hasIter () {
+        return false
       }
     },
     computed: {
@@ -203,7 +207,40 @@ const getComponent = (Vue) => {
     },
     computed: {
       run () {
-        return this.runRule(this.lazyParentModel())
+        const parent = this.lazyParentModel()
+        const isArrayDependant =
+          Array.isArray(parent) &&
+          parent.__ob__
+
+        if (isArrayDependant) {
+          // force depend on the array
+          const arrayDep = parent.__ob__.dep
+          arrayDep.depend()
+
+          const target = arrayDep.constructor.target
+
+          if (!this._indirectWatcher) {
+            const Watcher = target.constructor
+            this._indirectWatcher = new Watcher(this, () => this.runRule(parent), null, { lazy: true })
+          }
+
+          // if the update cause is only the array update
+          // and value stays the same, don't recalculate
+          const model = this.getModel()
+          if (!this._indirectWatcher.dirty && this._lastModel === model) {
+            this._indirectWatcher.depend()
+            return target.value
+          }
+
+          this._lastModel = model
+          this._indirectWatcher.evaluate()
+          this._indirectWatcher.depend()
+        } else if (this._indirectWatcher) {
+          // array was replaced with different type at runtime
+          this._indirectWatcher.teardown()
+          this._indirectWatcher = null
+        }
+        return this._indirectWatcher ? this._indirectWatcher.value : this.runRule(parent)
       },
       $params () {
         return this.run.params
@@ -221,6 +258,12 @@ const getComponent = (Vue) => {
           return output.p
         }
         return false
+      }
+    },
+    destroyed () {
+      if (this._indirectWatcher) {
+        this._indirectWatcher.teardown()
+        this._indirectWatcher = null
       }
     }
   })
@@ -279,8 +322,38 @@ const getComponent = (Vue) => {
           get: () => this[key]
         }))
 
+        const iterDefs = this.hasIter() ? {
+          $iter: {
+            enumerable: true,
+            value: Object.defineProperties({}, {
+              ...keyDefs
+            })
+          }
+        } : {}
+
         return Object.defineProperties({}, {
-          ...keyDefs, ...getterDefs, ...methodDefs
+          ...keyDefs,
+          ...iterDefs,
+          $model: {
+            enumerable: true,
+            get: () => {
+              const parent = this.lazyParentModel()
+              if (parent != null) {
+                return parent[this.prop]
+              } else {
+                return null
+              }
+            },
+            set: (value) => {
+              const parent = this.lazyParentModel()
+              if (parent != null) {
+                parent[this.prop] = value
+                this.$touch()
+              }
+            }
+          },
+          ...getterDefs,
+          ...methodDefs
         })
       },
       children () {
@@ -325,9 +398,8 @@ const getComponent = (Vue) => {
             ? key => `${getPath(this.rootModel, this.getModelKey(key), trackBy)}`
             : x => `${x}`
       },
-      eagerParentModel () {
-        const parent = this.lazyParentModel()
-        return () => parent
+      getModelLazy () {
+        return () => this.getModel()
       },
       children () {
         const def = this.validations
@@ -347,7 +419,7 @@ const getComponent = (Vue) => {
           return h(Validation, track, {
             validations,
             prop: key,
-            lazyParentModel: this.eagerParentModel,
+            lazyParentModel: this.getModelLazy,
             model: model[key],
             rootModel: this.rootModel
           })
@@ -360,6 +432,9 @@ const getComponent = (Vue) => {
       },
       getRef (key) {
         return this.refs[this.tracker(key)]
+      },
+      hasIter () {
+        return true
       }
     }
   })
@@ -384,9 +459,9 @@ const getComponent = (Vue) => {
       )
       return h(GroupValidation, key, {
         validations: refVals,
-        lazyParentModel: NUL,
+        lazyParentModel: NIL,
         prop: key,
-        lazyModel: NUL,
+        lazyModel: NIL,
         rootModel: root
       })
     }
@@ -434,7 +509,7 @@ const validateModel = (model, validations) => {
 
         return [h(Validation, '$v', {
           validations: vals,
-          lazyParentModel: NUL,
+          lazyParentModel: NIL,
           prop: '$v',
           model,
           rootModel: model
