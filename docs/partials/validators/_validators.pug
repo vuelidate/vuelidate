@@ -101,7 +101,7 @@ mixin validatorRow(validator, params)
             +validatorRow('and', ['validators...'])
               | Passes when all of provided validators passes.
             +validatorRow('withParams', ['$params', 'validator'])
-              | Not really a validator, but a validator modifier. Adds a `$params` object to the
+              | Not really a validator, but a validator modifier. Adds a <kbd>$params</kbd> object to the
               | provided validator. Can be used on validation functions or even entire nested
               | field validation objects. Useful for creating your own custom validators.
     p.typo__p
@@ -158,22 +158,179 @@ mixin validatorRow(validator, params)
       | 5 and 10. Calling <kbd>$flattenParams</kbd> returns the following array.
     code
       | [{ path: [], name: 'between', params: { type: 'between', min: 5, max: 10 } }]
-  +subsection('Custom validators')
+
++section('Custom Validators')
+  p.typo__p
+    | You can easily write custom validators and combine them with builtin ones,
+    | as those are just a simple predicate functions.
+  +subsection('Simplest example')
     p.typo__p
-      | You can easily write custom validators and combine them with builtin ones,
-      | as those are just a simple predicate functions.
+      | Suppose You want a validator that checks if strings contains <em>cool</em> substring in it.
+      | The way to approach this is to use normal javascript function that checks that.
+    pre(v-pre).language-javascript
+      code.
+        const mustBeCool = (value) => value.indexOf('cool') >= 0
+
     p.typo__p
-      | Let's take a simple <kbd>required</kbd> as an example.
-      | It uses `withParams` to save its own type so that it can be later accessed.
-      | Besides the use of `withParams`, it's simply just a function that,
-      | given it's input value, returns if the data is valid or not.
-    +validatorCode('required')
+      | The second part is actually applying your validator. You can do it exactly the same way as with builtin ones.
+    pre(v-pre).language-javascript
+      code.
+        validations: {
+          myField: {
+            required,
+            mustBeCool
+          }
+        }
+
+  +subsection('Optional validator')
     p.typo__p
-      | If your validator needs extra parameters, you can simply create a
-      | higher order function that returns the actual predicate, like in <kbd>between</kbd>.
-    +validatorCode('between')
+      | Pattern presented above is often good enough, but this validator will always return <kbd>false</kbd> for empty input.
+      | This is not correct when your input is considered optional. For this reason, there exist a <kbd>req</kbd> helper,
+      | which is kinda strippe-down version of required validator. You can use it to make your validator
+      | behave well in presense of optional fields, that is the ones without <kbd>required</kbd> validator.
+    pre(v-pre).language-javascript
+      code.
+        import { helpers } from 'vuelidate/lib/validators'
+        const mustBeCool = (value) => !helpers.req(value) || value.indexOf('cool') >= 0
+
+        // ...
+
+        validations: {
+          myField: {
+            mustBeCool
+          }
+        }
+
+  +subsection('Extra parameters')
+    p.typo__p
+      | If your validator needs to provide parameters, you can simply create a
+      | higher order function that returns the actual validator, like in <kbd>between</kbd> builtin validator.
+    pre(v-pre).language-javascript
+      code.
+        import { helpers } from 'vuelidate/lib/validators'
+        const contains = (param) =>
+          (value) => !helpers.req(value) || value.indexOf(param) >= 0
+
+        // ...
+
+        validations: {
+          myField: {
+            mustBeCool: contains('cool')
+          }
+        }
+
+  +subsection('$props support')
+    p.typo__p
+      | This is all fine if you are not using the feature of <kbd>$props</kbd> property, for example in your translation system.
+      | To make your validator also generate some useful <kbd>$props</kbd>, you can use <kbd>withParams</kbd> helper.
+      | The easiest case is to simply add <kbd>type</kbd> metadata, which might be useful in choosing
+      | correct translation string later on.
+    pre(v-pre).language-javascript
+      code.
+        import { helpers } from 'vuelidate/lib/validators'
+        const mustBeCool = helpers.withParams(
+          { type: 'mustBeCool' },
+          (value) => !helpers.req(value) || value.indexOf('cool') >= 0
+        )
+
+        // ...
+
+        console.log(this.$v.myField.$params.mustBeCool)
+        // -> { type: 'mustBeCool' }
+
+    p.typo__p
+      | The same behaviour extends to higher order validators, ones with extra parameters. You just must be careful to
+      | wrap the <strong>inner</strong> function with <kbd>withParams</kbd> call, as follows.
+    pre(v-pre).language-javascript
+      code.
+        import { helpers } from 'vuelidate/lib/validators'
+        const contains = (param) =>
+          helpers.withParams(
+            { type: 'contains', value: param },
+            (value) => !helpers.req(value) || value.indexOf(param) >= 0
+          )
+
+        // ...
+        validations: {
+          myField: {
+            mustBeCool: contains('cool')
+          }
+        }
+
+        // ...
+        console.log(this.$v.myField.$params.mustBeCool)
+        // -> { type: 'contains', value: 'cool' }
+
+
+  +subsection('accessing component')
     p.typo__p
       | In more complex cases when access to the whole model is necessary, like <kbd>sameAs</kbd>,
       | make use of the function context (<kbd>this</kbd>) to access any value on your component
       | or use provided <kbd>parentVm</kbd> to access sibling properties.
+    pre(v-pre).language-javascript
+      code.
+        // both equivalent
+        const otherFieldContainsMe =
+          (value, vm) => vm.other.nested.field.contains(value)
+
+        function otherFieldContainsMe (value) {
+          return this.other.nested.field.contains(value)
+        }
+
+  +subsection('regex based validator')
+    p.typo__p
+      | Some validators can be easily expressed as regex. You can use a <kbd>regex</kbd> helper to quickly define full-fledged validator of this kind.
+      | This already includes handling optional fields and <kbd>$params</kbd>.
+    pre(v-pre).language-javascript
+      code.
+        import { helpers } from 'vuelidate/lib/validators'
+        const alpha = helpers.regex('alpha', /^[a-zA-Z]*$/)
+
+  +subsection('locator based validator')
+    p.typo__p
+      | If you want to use locator strategy, exactly the same one as in <kbd>sameAs</kbd> or <kbd>requiredIf</kbd>
+      | builtin validators, you can use <kbd>ref</kbd> helper to accomplish that, in exactly the same way
+      | how it is used inside those two validators.
     +validatorCode('sameAs')
+    +validatorCode('requiredIf')
+    p.typo__p
+      | Note that imports are slightly different, as this is how the code looks like from library source point of view.
+      | This style is the correct one if you are willing to <a href="https://github.com/monterail/vuelidate#fork-destination-box">contribute your own validators to vuelidate</a>.
+      | You should still use <kbd>helpers</kbd> export inside your own code (as presented in previous examples).
+
+  +subsection('List of helpers')
+    p.typo__p
+      | This table contains all helpers that can be used to help you with writing your own validators.
+      | You can import them from validators library
+    pre(v-pre).language-javascript
+      code.
+        import { helpers } from 'vuelidate/lib/validators'
+
+    .table__container
+      table.table.table--full-size.table--fixed
+        thead
+          tr.table__tr
+            th.table__th(width="130") Helper
+            th.table__th Description
+        tbody
+          tr.table__tr
+            td.table__td: kbd withParams
+            td.table__td
+              | Allows adding <kbd>$params</kbd> metadata to your validation function.
+          tr.table__tr
+            td.table__td: kbd req
+            td.table__td
+              | Minimal version of <kbd>required</kbd> validator. Use it to make your validator accept optional fields
+          tr.table__tr
+            td.table__td: kbd ref
+            td.table__td
+              | A locator helper. This allows for convinient referencing of other fields in the model.
+          tr.table__tr
+            td.table__td: kbd len
+            td.table__td
+              | Get length of any kind value, whatever makes sense in the context. This can mean array length,
+              | string length, or number of keys on the object
+          tr.table__tr
+            td.table__td: kbd regex
+            td.table__td
+              | Useful for quick creation of regex based validators.
