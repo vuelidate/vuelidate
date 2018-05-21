@@ -100,6 +100,8 @@ mixin validatorRow(validator, params)
               | Passes when at least one of provided validators passes.
             +validatorRow('and', ['validators...'])
               | Passes when all of provided validators passes.
+            +validatorRow('not', ['validator'])
+              | Passes when provided validator would not pass, fails otherwise. Can be chained with other validators like <kbd>not(sameAs('field'))</kbd>.
             +validatorRow('withParams', ['$params', 'validator'])
               | Not really a validator, but a validator modifier. Adds a <kbd>$params</kbd> object to the
               | provided validator. Can be used on validation functions or even entire nested

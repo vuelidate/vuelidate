@@ -14,6 +14,7 @@ import sameAs from './sameAs'
 import url from './url'
 import or from './or'
 import and from './and'
+import not from './not'
 import minValue from './minValue'
 import maxValue from './maxValue'
 import integer from './integer'
@@ -37,6 +38,7 @@ export {
   url,
   or,
   and,
+  not,
   minValue,
   maxValue,
   integer,
