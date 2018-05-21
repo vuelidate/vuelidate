@@ -29,8 +29,8 @@ describe('required validator', () => {
     expect(required(null)).to.be.false
   })
 
-  it('should not validate false', () => {
-    expect(required(false)).to.be.false
+  it('should validate false', () => {
+    expect(required(false)).to.be.true
   })
 
   it('should validate true', () => {
