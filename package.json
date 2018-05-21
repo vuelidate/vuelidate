@@ -1,6 +1,9 @@
 {
   "name": "vuelidate",
-  "sideEffects": false,
+  "sideEffects": [
+    "*.sass",
+    "*.scss"
+  ],
   "version": "0.7.1",
   "description": "Simple, lightweight model-based validation for Vue.js",
   "author": "Paweł Grabarz <pawel.grabarz@monterail.com>",
@@ -39,7 +42,6 @@
     "eslint-plugin-prettier": "^2.6.0",
     "eslint-plugin-vue": "^4.5.0",
     "express": "^4.16.3",
-    "extract-text-webpack-plugin": "^3.0.2",
     "file-loader": "^1.1.11",
     "html-webpack-plugin": "^3.2.0",
     "http-proxy-middleware": "^0.18.0",
@@ -54,6 +56,7 @@
     "karma-spec-reporter": "0.0.32",
     "karma-webpack": "^3.0.0",
     "lolex": "^2.6.0",
+    "mini-css-extract-plugin": "^0.4.0",
     "mocha": "^5.2.0",
     "node-sass": "^4.9.0",
     "opn": "^5.3.0",

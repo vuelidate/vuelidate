@@ -50,12 +50,6 @@ module.exports = {
         exclude: /node_modules/
       },
       {
-        test: /\.(sass|scss)$/,
-        use: ['vue-style-loader', 'css-loader', 'sass-loader'],
-        include: projectRoot,
-        exclude: /node_modules/
-      },
-      {
         test: /\.pug$/,
         oneOf: [
           {
