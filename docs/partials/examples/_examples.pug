@@ -22,9 +22,18 @@
   +subsection('Data nesting')
     p.typo__p
       | You can nest validators to match your data as deep as you want.
-      | Parent validator errors out when any of its children reports an error.
+      | Parent validator is <kbd>$invalid</kbd> when any of its children validators reports an <kbd>$invalid</kbd> state.
       | This might be very useful for overall form validation.
     +example('ExampleNested')
+
+  +subsection('$error vs $anyError')
+    p.typo__p
+      | There are two common ways of considering if an error should be displayed. It is important to understand which one
+      | suits your use case better. You can use either <kbd>$error</kbd> or <kbd>$anyError</kbd> validation property,
+      | or by extension, the low-level variants: <kbd>$dirty</kbd> or <kbd>$anyDirty</kbd>.
+      | Note that this documentation uses mainly <kbd>$error</kbd> variant in it's examples, but the choice is yours to make.
+
+    +example('ExampleAnyDirty')
 
   +subsection('Validation Groups')
     p.typo__p

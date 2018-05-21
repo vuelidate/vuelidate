@@ -217,6 +217,16 @@ describe('Validation plugin', () => {
       expect(vm.$v.value.$dirty).to.be.false
     })
 
+    it('should have a $anyDirty set to false on initialization', () => {
+      const vm = new Vue({
+        ...base,
+        validations: {
+          value: { isEven }
+        }
+      })
+      expect(vm.$v.value.$anyDirty).to.be.false
+    })
+
     it('should preserve $dirty flag on validation recomputation', () => {
       const vm = new Vue({
         data: {
@@ -238,6 +248,27 @@ describe('Validation plugin', () => {
       expect(vm.$v.value2.$dirty).to.be.false
     })
 
+    it('should preserve $anyDirty flag on validation recomputation', () => {
+      const vm = new Vue({
+        data: {
+          out: false,
+          value: 1,
+          value2: 2
+        },
+        validations() {
+          return {
+            value: { fn: this.out ? T : F },
+            value2: { fn: this.out ? T : F }
+          }
+        }
+      })
+
+      vm.$v.value.$touch()
+      vm.out = true
+      expect(vm.$v.value.$anyDirty).to.be.true
+      expect(vm.$v.value2.$anyDirty).to.be.false
+    })
+
     it('should have a $error set to false on initialization', () => {
       const vm = new Vue({
         ...base,
@@ -246,6 +277,15 @@ describe('Validation plugin', () => {
         }
       })
       expect(vm.$v.value.$error).to.be.false
+    })
+    it('should have a $anyError set to false on initialization', () => {
+      const vm = new Vue({
+        ...base,
+        validations: {
+          value: { isEven }
+        }
+      })
+      expect(vm.$v.value.$anyError).to.be.false
     })
     it('should have a $error false on dirty valid', () => {
       const vm = new Vue({
@@ -257,6 +297,16 @@ describe('Validation plugin', () => {
       vm.$v.value.$touch()
       expect(vm.$v.value.$error).to.be.false
     })
+    it('should have a $anyError false on dirty valid', () => {
+      const vm = new Vue({
+        ...base,
+        validations: {
+          value: { isEven }
+        }
+      })
+      vm.$v.value.$touch()
+      expect(vm.$v.value.$anyError).to.be.false
+    })
     it('should have a $error true on dirty invalid', () => {
       const vm = new Vue({
         ...base,
@@ -266,6 +316,16 @@ describe('Validation plugin', () => {
       })
       vm.$v.value.$touch()
       expect(vm.$v.value.$error).to.be.true
+    })
+    it('should have a $anyError true on dirty invalid', () => {
+      const vm = new Vue({
+        ...base,
+        validations: {
+          value: { isOdd }
+        }
+      })
+      vm.$v.value.$touch()
+      expect(vm.$v.value.$anyError).to.be.true
     })
     it('should have a $error false on clean invalid', () => {
       const vm = new Vue({
@@ -286,6 +346,16 @@ describe('Validation plugin', () => {
       vm.$v.value.$touch()
       expect(vm.$v.value.$dirty).to.be.true
     })
+    it('should have a $anyDirty set to true after $touch', () => {
+      const vm = new Vue({
+        ...base,
+        validations: {
+          value: { isEven }
+        }
+      })
+      vm.$v.value.$touch()
+      expect(vm.$v.value.$anyDirty).to.be.true
+    })
     it('should have a $dirty set to false after $reset', () => {
       const vm = new Vue({
         ...base,
@@ -296,6 +366,17 @@ describe('Validation plugin', () => {
       vm.$v.value.$touch()
       vm.$v.value.$reset()
       expect(vm.$v.value.$dirty).to.be.false
+    })
+    it('should have a $anyDirty set to false after $reset', () => {
+      const vm = new Vue({
+        ...base,
+        validations: {
+          value: { isEven }
+        }
+      })
+      vm.$v.value.$touch()
+      vm.$v.value.$reset()
+      expect(vm.$v.value.$anyDirty).to.be.false
     })
     describe('for nested validators', () => {
       it('should have nested $dirty false on initialization', () => {
@@ -323,6 +404,19 @@ describe('Validation plugin', () => {
         vm.$v.nested.value1.$touch()
         expect(vm.$v.nested.$dirty).to.be.false
       })
+      it('should have nested.$anyDirty true when only one value is $dirty', () => {
+        const vm = new Vue({
+          ...baseGroup,
+          validations: {
+            nested: {
+              value1: { T },
+              value2: { T }
+            }
+          }
+        })
+        vm.$v.nested.value1.$touch()
+        expect(vm.$v.nested.$anyDirty).to.be.true
+      })
       it('should have nested.$dirty true when all values are $dirty', () => {
         const vm = new Vue({
           ...baseGroup,
@@ -337,7 +431,7 @@ describe('Validation plugin', () => {
         vm.$v.nested.value2.$touch()
         expect(vm.$v.nested.$dirty).to.be.true
       })
-      it('should propagate nested.$touch to all nested values', () => {
+      it('should have nested.$dirty true when all values are $dirty', () => {
         const vm = new Vue({
           ...baseGroup,
           validations: {
@@ -347,9 +441,49 @@ describe('Validation plugin', () => {
             }
           }
         })
-        vm.$v.nested.$touch()
-        expect(vm.$v.nested.value1.$dirty).to.be.true
-        expect(vm.$v.nested.value2.$dirty).to.be.true
+        vm.$v.nested.value1.$touch()
+        vm.$v.nested.value2.$touch()
+        expect(vm.$v.nested.$dirty).to.be.true
+      })
+      it('should have nested.$anyDirty true when all values are $anyDirty', () => {
+        const vm = new Vue({
+          ...baseGroup,
+          validations: {
+            nested: {
+              value1: { T },
+              value2: { T }
+            }
+          }
+        })
+        vm.$v.nested.value1.$touch()
+        vm.$v.nested.value2.$touch()
+        expect(vm.$v.nested.$anyDirty).to.be.true
+      })
+      it('should have $error false when not all nested values are $dirty and $invalid', () => {
+        const vm = new Vue({
+          ...baseGroup,
+          validations: {
+            nested: {
+              value1: { F },
+              value2: { T }
+            }
+          }
+        })
+        vm.$v.nested.value1.$touch()
+        expect(vm.$v.nested.$error).to.be.false
+      })
+      it('should have $anyError true when not all nested values are $dirty and $invalid', () => {
+        const vm = new Vue({
+          ...baseGroup,
+          validations: {
+            nested: {
+              value1: { F },
+              value2: { T }
+            }
+          }
+        })
+        vm.$v.nested.value1.$touch()
+        expect(vm.$v.nested.$anyError).to.be.true
       })
       it('should propagate nested.$reset to all nested values', () => {
         const vm = new Vue({
@@ -365,6 +499,8 @@ describe('Validation plugin', () => {
         vm.$v.nested.$reset()
         expect(vm.$v.nested.value1.$dirty).to.be.false
         expect(vm.$v.nested.value2.$dirty).to.be.false
+        expect(vm.$v.nested.value1.$anyDirty).to.be.false
+        expect(vm.$v.nested.value2.$anyDirty).to.be.false
       })
     })
   })
