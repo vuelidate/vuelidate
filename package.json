@@ -1,7 +1,7 @@
 {
   "name": "vuelidate",
   "sideEffects": false,
-  "version": "0.7.0",
+  "version": "0.7.1",
   "description": "Simple, lightweight model-based validation for Vue.js",
   "author": "Paweł Grabarz <pawel.grabarz@monterail.com>",
   "license": "MIT",
