@@ -75,7 +75,7 @@ const validationGetters = {
       return false
     }
 
-    return this.nestedKeys.every(key => this.refProxy(key).$dirty)
+    return this.nestedKeys.some(key => this.refProxy(key).$dirty)
   },
   $error () {
     return this.$dirty && !this.$pending && this.$invalid
