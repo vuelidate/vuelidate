@@ -1,3 +1,5 @@
+"use strict";
+
 var _self = "undefined" != typeof window ? window : "undefined" != typeof WorkerGlobalScope && self instanceof WorkerGlobalScope ? self : {},
     Prism = function () {
   var e = /\blang(?:uage)?-(?!\*)(\w+)\b/i,
@@ -16,9 +18,7 @@ var _self = "undefined" != typeof window ? window : "undefined" != typeof Worker
           case "Object":
             var a = {};
 
-            for (var r in e) {
-              e.hasOwnProperty(r) && (a[r] = t.util.clone(e[r]));
-            }
+            for (var r in e) e.hasOwnProperty(r) && (a[r] = t.util.clone(e[r]));
 
             return a;
 
@@ -35,9 +35,7 @@ var _self = "undefined" != typeof window ? window : "undefined" != typeof Worker
       extend: function extend(e, n) {
         var a = t.util.clone(t.languages[e]);
 
-        for (var r in n) {
-          a[r] = n[r];
-        }
+        for (var r in n) a[r] = n[r];
 
         return a;
       },
@@ -48,22 +46,16 @@ var _self = "undefined" != typeof window ? window : "undefined" != typeof Worker
         if (2 == arguments.length) {
           a = arguments[1];
 
-          for (var i in a) {
-            a.hasOwnProperty(i) && (l[i] = a[i]);
-          }
+          for (var i in a) a.hasOwnProperty(i) && (l[i] = a[i]);
 
           return l;
         }
 
         var o = {};
 
-        for (var s in l) {
-          if (l.hasOwnProperty(s)) {
-            if (s == n) for (var i in a) {
-              a.hasOwnProperty(i) && (o[i] = a[i]);
-            }
-            o[s] = l[s];
-          }
+        for (var s in l) if (l.hasOwnProperty(s)) {
+          if (s == n) for (var i in a) a.hasOwnProperty(i) && (o[i] = a[i]);
+          o[s] = l[s];
         }
 
         return t.languages.DFS(t.languages, function (t, n) {
@@ -71,21 +63,15 @@ var _self = "undefined" != typeof window ? window : "undefined" != typeof Worker
         }), r[e] = o;
       },
       DFS: function DFS(e, n, a) {
-        for (var r in e) {
-          e.hasOwnProperty(r) && (n.call(e, r, e[r], a || r), "Object" === t.util.type(e[r]) ? t.languages.DFS(e[r], n) : "Array" === t.util.type(e[r]) && t.languages.DFS(e[r], n, r));
-        }
+        for (var r in e) e.hasOwnProperty(r) && (n.call(e, r, e[r], a || r), "Object" === t.util.type(e[r]) ? t.languages.DFS(e[r], n) : "Array" === t.util.type(e[r]) && t.languages.DFS(e[r], n, r));
       }
     },
     plugins: {},
     highlightAll: function highlightAll(e, n) {
-      for (var a, r = document.querySelectorAll('code[class*="language-"], [class*="language-"] code, code[class*="lang-"], [class*="lang-"] code'), l = 0; a = r[l++];) {
-        t.highlightElement(a, e === !0, n);
-      }
+      for (var a, r = document.querySelectorAll('code[class*="language-"], [class*="language-"] code, code[class*="lang-"], [class*="lang-"] code'), l = 0; a = r[l++];) t.highlightElement(a, e === !0, n);
     },
     highlightElement: function highlightElement(n, a, r) {
-      for (var l, i, o = n; o && !e.test(o.className);) {
-        o = o.parentNode;
-      }
+      for (var l, i, o = n; o && !e.test(o.className);) o = o.parentNode;
 
       o && (l = (o.className.match(e) || [, ""])[1], i = t.languages[l]), n.className = n.className.replace(e, "").replace(/\s+/g, " ") + " language-" + l, o = n.parentNode, /pre/i.test(o.nodeName) && (o.className = o.className.replace(e, "").replace(/\s+/g, " ") + " language-" + l);
       var s = n.textContent,
@@ -118,47 +104,43 @@ var _self = "undefined" != typeof window ? window : "undefined" != typeof Worker
           l = n.rest;
 
       if (l) {
-        for (var i in l) {
-          n[i] = l[i];
-        }
+        for (var i in l) n[i] = l[i];
 
         delete n.rest;
       }
 
-      e: for (var i in n) {
-        if (n.hasOwnProperty(i) && n[i]) {
-          var o = n[i];
-          o = "Array" === t.util.type(o) ? o : [o];
+      e: for (var i in n) if (n.hasOwnProperty(i) && n[i]) {
+        var o = n[i];
+        o = "Array" === t.util.type(o) ? o : [o];
 
-          for (var s = 0; s < o.length; ++s) {
-            var u = o[s],
-                g = u.inside,
-                c = !!u.lookbehind,
-                f = 0,
-                h = u.alias;
-            u = u.pattern || u;
+        for (var s = 0; s < o.length; ++s) {
+          var u = o[s],
+              g = u.inside,
+              c = !!u.lookbehind,
+              f = 0,
+              h = u.alias;
+          u = u.pattern || u;
 
-            for (var p = 0; p < r.length; p++) {
-              var d = r[p];
-              if (r.length > e.length) break e;
+          for (var p = 0; p < r.length; p++) {
+            var d = r[p];
+            if (r.length > e.length) break e;
 
-              if (!(d instanceof a)) {
-                u.lastIndex = 0;
-                var m = u.exec(d);
+            if (!(d instanceof a)) {
+              u.lastIndex = 0;
+              var m = u.exec(d);
 
-                if (m) {
-                  c && (f = m[1].length);
-                  var y = m.index - 1 + f,
-                      m = m[0].slice(f),
-                      v = m.length,
-                      k = y + v,
-                      b = d.slice(0, y + 1),
-                      w = d.slice(k + 1),
-                      P = [p, 1];
-                  b && P.push(b);
-                  var A = new a(i, g ? t.tokenize(m, g) : m, h);
-                  P.push(A), w && P.push(w), Array.prototype.splice.apply(r, P);
-                }
+              if (m) {
+                c && (f = m[1].length);
+                var y = m.index - 1 + f,
+                    m = m[0].slice(f),
+                    v = m.length,
+                    k = y + v,
+                    b = d.slice(0, y + 1),
+                    w = d.slice(k + 1),
+                    P = [p, 1];
+                b && P.push(b);
+                var A = new a(i, g ? t.tokenize(m, g) : m, h);
+                P.push(A), w && P.push(w), Array.prototype.splice.apply(r, P);
               }
             }
           }
@@ -175,9 +157,7 @@ var _self = "undefined" != typeof window ? window : "undefined" != typeof Worker
       },
       run: function run(e, n) {
         var a = t.hooks.all[e];
-        if (a && a.length) for (var r, l = 0; r = a[l++];) {
-          r(n);
-        }
+        if (a && a.length) for (var r, l = 0; r = a[l++];) r(n);
       }
     }
   },
@@ -208,9 +188,7 @@ var _self = "undefined" != typeof window ? window : "undefined" != typeof Worker
     t.hooks.run("wrap", l);
     var o = "";
 
-    for (var s in l.attributes) {
-      o += (o ? " " : "") + s + '="' + (l.attributes[s] || "") + '"';
-    }
+    for (var s in l.attributes) o += (o ? " " : "") + s + '="' + (l.attributes[s] || "") + '"';
 
     return "<" + l.tag + ' class="' + l.classes.join(" ") + '" ' + o + ">" + l.content + "</" + l.tag + ">";
   }, !_self.document) return _self.addEventListener ? (_self.addEventListener("message", function (e) {
