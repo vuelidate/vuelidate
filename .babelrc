@@ -1,21 +1,14 @@
 {
   "presets": [
     ["@babel/preset-env", {
-      "modules": false
+      "targets": {
+        "node": "6"
+      }
     }]
   ],
   "plugins": [
     "@babel/plugin-proposal-object-rest-spread",
     "@babel/plugin-proposal-export-default-from"
   ],
-  "comments": false,
-  "env": {
-    "node": {
-      "presets": [
-        ["@babel/preset-env", {
-          "modules": "commonjs"
-        }]
-      ]
-    }
-  }
+  "comments": false
 }
