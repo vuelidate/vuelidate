@@ -19,7 +19,8 @@ module.exports = merge(baseWebpackConfig, {
   devtool: '#eval',
   plugins: [
     new webpack.DefinePlugin({
-      'process.env': config.dev.env
+      'process.env': config.dev.env,
+      'process.env.BUILD': '"dev"'
     }),
     new webpack.HotModuleReplacementPlugin(),
     new HtmlWebpackPlugin({

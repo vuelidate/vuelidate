@@ -23,7 +23,8 @@ var webpackConfig = merge(baseWebpackConfig, {
   plugins: [
     // http://vuejs.github.io/vue-loader/en/workflow/production.html
     new webpack.DefinePlugin({
-      'process.env': env
+      'process.env.NODE_ENV': env.NODE_ENV,
+      'process.env.BUILD': '"docs"'
     }),
     // extract css into its own file
     new MiniCssExtractPlugin({
