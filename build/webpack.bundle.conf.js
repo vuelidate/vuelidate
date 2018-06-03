@@ -10,8 +10,8 @@ const merge = require('webpack-merge')
 base.mode = 'production'
 
 base.entry = {
-  vuelidate: './src/index.js',
-  validators: './src/validators/index.js'
+  'vuelidate': './src/index.js',
+  'validators': './src/validators/index.js'
 }
 
 base.output = {
@@ -31,8 +31,7 @@ module.exports = merge(base, {
   plugins: [
     new webpack.DefinePlugin({
       'process.env': {
-        NODE_ENV: '"production"',
-        BUILD: '"web"'
+        NODE_ENV: '"production"'
       }
     })
   ],

@@ -4,10 +4,10 @@
 // fallback to stubbed WithParams on failure.
 
 const root =
-  typeof window !== 'undefined'
-    ? window
-    : typeof global !== 'undefined'
-      ? global
+  typeof global !== 'undefined'
+    ? global
+    : typeof window !== 'undefined'
+      ? window
       : {}
 
 /* istanbul ignore next */

@@ -102,6 +102,18 @@ mixin validatorRow(validator, params)
               | Passes when all of provided validators passes.
             +validatorRow('not', ['validator'])
               | Passes when provided validator would not pass, fails otherwise. Can be chained with other validators like <kbd>not(sameAs('field'))</kbd>.
+            +validatorRow('array')
+              | Accepts only array.
+            +validatorRow('boolean')
+              | Accepts only boolean.
+            +validatorRow('greater', ['locator *'])
+              | Checks for greater than a given integer property.
+            +validatorRow('greaterEqual', ['locator *'])
+              | Checks for greater than or equal a given integer property.
+            +validatorRow('less', ['locator *'])
+              | Checks for less than a given integer property.
+            +validatorRow('lessEqual', ['locator *'])
+              | Checks for less than or equal a given integer property.
             +validatorRow('withParams', ['$params', 'validator'])
               | Not really a validator, but a validator modifier. Adds a <kbd>$params</kbd> object to the
               | provided validator. Can be used on validation functions or even entire nested

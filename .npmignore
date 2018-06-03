@@ -1,8 +1,6 @@
 gh-pages
 static
 
-bower.json
-coverage
 test
 build
 config

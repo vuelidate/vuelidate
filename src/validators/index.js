@@ -19,6 +19,12 @@ import minValue from './minValue'
 import maxValue from './maxValue'
 import integer from './integer'
 import decimal from './decimal'
+import array from './array'
+import boolean from './boolean'
+import greater from './greater'
+import greaterEqual from './greaterEqual'
+import less from './less'
+import lessEqual from './lessEqual'
 import * as helpers from './common'
 
 export {
@@ -43,5 +49,11 @@ export {
   maxValue,
   integer,
   decimal,
-  helpers
+  helpers,
+  array,
+  boolean,
+  greater,
+  greaterEqual,
+  less,
+  lessEqual
 }
