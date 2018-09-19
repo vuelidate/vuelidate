@@ -60,8 +60,8 @@
           td.table__td: strong boolean
           td.table__td
             | Convenience flag to easily decide if a message should be displayed. A variant that considers
-            | error to be displayed when <strong>any</strong> of it's children are <kbd>$anyDirty</kbd>.
-            | Equivalent to <kbd>this.$anyDirty && !this.$pending && this.$invalid</kbd>.
+            | error to be displayed when itself or <strong>at least one</strong> of its children has <kbd>$error</kbd>
+            | equal to <kbd>true</kbd>.
         tr.table__tr
           td.table__td: kbd $pending
           td.table__td: strong boolean
