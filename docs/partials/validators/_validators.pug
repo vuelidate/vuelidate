@@ -279,6 +279,17 @@ mixin validatorRow(validator, params)
           return this.other.nested.field.contains(value)
         }
 
+  +subsection('cursor of validated value')
+    p.typo__p
+      | If the custom validator process needs cursor of currently validated <kbd>$v</kbd> model,
+      | it is possible to get from the third argument.
+    pre(v-pre).language-javascript
+      code.
+        function someValidator (value, vm, cursor) {
+          if (this.activeElement !== cursor) return true
+          return value.includes('cool')
+        }
+
   +subsection('regex based validator')
     p.typo__p
       | Some validators can be easily expressed as regex. You can use a <kbd>regex</kbd> helper to quickly define full-fledged validator of this kind.
