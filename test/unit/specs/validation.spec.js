@@ -14,10 +14,11 @@ const noUndef = withParams({ type: 'noUndef' }, (v) => v !== undefined)
 const T = () => true
 const F = () => false
 
+const BASE_VALUE = 4
 const base = {
   data() {
     return {
-      value: 4
+      value: BASE_VALUE
     }
   }
 }
@@ -1187,6 +1188,83 @@ describe('Validation plugin', () => {
           }
         ])
       })
+    })
+  })
+
+  describe('validator keyPath', () => {
+    const spyValidator = sinon.spy(T)
+
+    const simple = {
+      ...base,
+      validations: {
+        value: { spyValidator }
+      }
+    }
+
+    const nested = {
+      ...baseGroup,
+      validations: {
+        group: ['value1', 'nested.value4'],
+        value1: { spyValidator },
+        nested: {
+          value4: { spyValidator }
+        }
+      }
+    }
+
+    const each = {
+      data: {
+        array: [1, 2, 3]
+      },
+      validations: {
+        array: {
+          $each: { spyValidator }
+        }
+      }
+    }
+
+    afterEach(() => {
+      spyValidator.resetHistory()
+    })
+
+    it('should give correct keyPath for root object', () => {
+      const vm = new Vue(simple)
+      expect(vm.$v.value.$invalid).to.be.false
+      expect(spyValidator).to.have.been.calledWith(BASE_VALUE, vm, '$v.value')
+    })
+
+    it('should give correct keyPath for nested object', () => {
+      const vm = new Vue(nested)
+      expect(vm.$v.value1.$invalid).to.be.false
+      expect(vm.$v.nested.value4.$invalid).to.be.false
+      expect(spyValidator.firstCall).to.have.been.calledWith(1, vm, '$v.value1')
+      expect(spyValidator.secondCall).to.have.been.calledWith(
+        4,
+        vm.nested,
+        '$v.nested.value4'
+      )
+    })
+
+    it('should give correct keyPath for list', () => {
+      const vm = new Vue(each)
+      expect(vm.$v.array.$each[0].$invalid).to.be.false
+      expect(vm.$v.array.$each[1].$invalid).to.be.false
+      expect(vm.$v.array.$each[2].$invalid).to.be.false
+      expect(spyValidator.firstCall).to.have.been.calledWith(
+        1,
+        vm.array,
+        '$v.array.$each.0'
+      )
+      expect(spyValidator.secondCall).to.have.been.calledWith(
+        2,
+        vm.array,
+        '$v.array.$each.1'
+      )
+      expect(spyValidator.thirdCall).to.have.been.calledWith(
+        3,
+        vm.array,
+        '$v.array.$each.2'
+      )
     })
   })
 
