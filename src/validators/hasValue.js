@@ -1,7 +1,6 @@
-import {withParams, req, ref} from './common'
-export default equalTo => withParams(
-  { type: 'hasValue', value: equalTo },
-  value => {
+import { withParams, req, ref } from './common'
+export default (equalTo) =>
+  withParams({ type: 'hasValue', value: equalTo }, (value) => {
     if (!req(equalTo) || !req(value)) return false
 
     if (Array.isArray(value)) {
@@ -25,5 +24,4 @@ export default equalTo => withParams(
     }
 
     return value === equalTo
-  }
-)
+  })

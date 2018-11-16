@@ -1,7 +1,6 @@
 import hasValue from 'src/validators/hasValue'
 
 describe('hasValue validator', () => {
-
   it('should not validate empty values', () => {
     expect(hasValue(null)(null)).to.be.false
     expect(hasValue(undefined)(undefined)).to.be.false
@@ -23,7 +22,7 @@ describe('hasValue validator', () => {
   })
 
   it('should validate value in object', () => {
-    expect(hasValue(2)({key1: 1, key2: 2})).to.be.true
+    expect(hasValue(2)({ key1: 1, key2: 2 })).to.be.true
   })
 
   it('should validate checked value', () => {
@@ -41,5 +40,4 @@ describe('hasValue validator', () => {
   it('should validate string value', () => {
     expect(hasValue('abcd')('abcd')).to.be.true
   })
-
 })
