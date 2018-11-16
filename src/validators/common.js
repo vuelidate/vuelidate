@@ -35,9 +35,9 @@ export const len = (value) => {
 }
 
 // resolve referenced value
-export const ref = (reference, vm, parentVm) =>
+export const ref = (reference, vm, parentVm, key) =>
   typeof reference === 'function'
-    ? reference.call(vm, parentVm)
+    ? reference.call(vm, parentVm, key)
     : parentVm[reference]
 
 // regex based validator template
