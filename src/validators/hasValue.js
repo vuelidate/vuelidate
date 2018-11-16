@@ -1,6 +1,6 @@
 import {withParams, req, ref} from './common'
 export default equalTo => withParams(
-  { type: 'includes', value: equalTo },
+  { type: 'hasValue', value: equalTo },
   value => {
     if (!req(equalTo) || !req(value)) return false
 
