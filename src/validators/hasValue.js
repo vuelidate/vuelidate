@@ -22,7 +22,6 @@ export default equalTo => withParams(
           return true
         }
       }
-      return false
     }
 
     return value === equalTo
