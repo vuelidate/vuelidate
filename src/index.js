@@ -72,6 +72,9 @@ const validationGetters = {
       this.ruleKeys.some((rule) => !proxy[rule])
     )
   },
+  $valid() {
+    return !this.$invalid
+  },
   $dirty() {
     if (this.dirty) {
       return true

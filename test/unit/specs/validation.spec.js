@@ -514,6 +514,7 @@ describe('Validation plugin', () => {
             value: { isEven }
           }
         })
+        expect(vm.$v.value.$valid).to.be.true
         expect(vm.$v.value.$invalid).to.be.false
       })
       it('should have validator name value set to true', () => {
@@ -539,6 +540,7 @@ describe('Validation plugin', () => {
             value: { isEven }
           }
         })
+        expect(vm.$v.value.$valid).to.be.false
         expect(vm.$v.value.$invalid).to.be.true
       })
       it('should have validator name value set to false', () => {
