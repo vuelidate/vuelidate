@@ -95,6 +95,10 @@ const validationGetters = {
   $error() {
     return this.$dirty && !this.$pending && this.$invalid
   },
+  $errors() {
+    const proxy = this.proxy
+    return this.ruleKeys.filter((rule) => !proxy[rule])
+  },
   $anyError() {
     if (this.$error) return true
 
