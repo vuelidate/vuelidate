@@ -1,2 +1,2 @@
 import { regex } from './common'
-export default regex('alphaNum', /^[a-zA-Z0-9]*$/)
+export default regex('alphaNum', /^[a-zA-Zა-ჰ0-9]*$/)
