@@ -1,6 +1,6 @@
 # vuelidate
-[![codecov](https://codecov.io/gh/monterail/vuelidate/branch/master/graph/badge.svg)](https://codecov.io/gh/monterail/vuelidate)
-![gzip size](http://img.badgesize.io/monterail/vuelidate/master/dist/vuelidate.min.js.svg?compression=gzip)
+[![codecov](https://codecov.io/gh/vuelidate/vuelidate/branch/master/graph/badge.svg)](https://codecov.io/gh/vuelidate/vuelidate)
+![gzip size](http://img.badgesize.io/vuelidate/vuelidate/master/dist/vuelidate.min.js.svg?compression=gzip)
 
 > Simple, lightweight model-based validation for Vue.js
 
@@ -104,7 +104,7 @@ $v: {
 }
 ```
 
-Checkout the docs for more examples: [https://monterail.github.io/vuelidate/](https://monterail.github.io/vuelidate/)
+Checkout the docs for more examples: [https://vuelidate.netlify.com/](https://vuelidate.netlify.com/)
 
 ## Contributing
 
