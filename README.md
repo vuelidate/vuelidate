@@ -130,8 +130,22 @@ npm test
 
 For detailed explanation on how things work, checkout the [guide](http://vuejs-templates.github.io/webpack/) and [docs for vue-loader](http://vuejs.github.io/vue-loader).
 
+## Contributors
+
+### Current
+
+- [Damian Dulisz](https://github.com/shentao)
+- [Natalia Tepluhina](https://github.com/NataliaTepluhina)
+- [Dobromir Hristov](https://github.com/dobromir-hristov)
+- [Ben Hong](https://github.com/bencodezen)
+
+### Emeriti
+
+Here we honor past contributors who have been a major part on this project.
+
+- [Monterail](https://github.com/monterail)
+- [Paweł Grabarz](https://github.com/Frizi)
+
 ## License
 
 [MIT](http://opensource.org/licenses/MIT)
-
-Copyright (c) 2016 Paweł Grabarz & Damian Dulisz
