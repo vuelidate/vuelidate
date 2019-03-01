@@ -17,7 +17,7 @@
 
 ## Demo & docs
 
-[http://monterail.github.io/vuelidate/](http://monterail.github.io/vuelidate/)
+[https://vuelidate.netlify.com/](https://vuelidate.netlify.com/)
 
 ## Installation
 
