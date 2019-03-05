@@ -1,7 +1,0 @@
-machine:
-  node:
-    version: 7.2.1
-test:
-  post:
-    - bash <(curl -s https://codecov.io/bash)
-
