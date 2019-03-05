@@ -4,5 +4,4 @@ lib/
 npm-debug.log
 coverage
 gh-pages
-yarn.lock
 *.tgz
