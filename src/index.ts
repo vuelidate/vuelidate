@@ -2,7 +2,7 @@ import Vue from 'vue';
 import { PluginFunction } from 'vue';
 
 interface Rules {
-  [key: string]: Function;
+  [key: string]: () => void;
 }
 
 interface Declarations {
@@ -23,25 +23,26 @@ declare module 'vue/types/vue' {
 }
 
 interface Computed {
-  dynamicKeys: [string];
-  dirty: boolean;
+  dynamicKeys?: [string];
+  dirty?: boolean;
   $invalid: () => boolean;
   $dirty: () => boolean;
   $error: () => boolean;
+  [key: string]: any;
 }
 
 const defaultComputed: Computed = {
   $invalid(): boolean {
     return this.dynamicKeys.some((ruleOrNested: string) => {
-      const val = this[ruleOrNested];
+      const val = this[ruleOrNested as keyof Computed];
       return typeof val === 'object' ? val.$invalid : !val;
     });
   },
   $dirty(): boolean {
     return (
       this.dirty ||
-      this.dynamicKeys.some(ruleOrNested => {
-        const val = this[ruleOrNested];
+      this.dynamicKeys.some((ruleOrNested: string) => {
+        const val = this[ruleOrNested as keyof Computed]];
         return typeof val === 'object' ? val.$dirty : false;
       })
     );
