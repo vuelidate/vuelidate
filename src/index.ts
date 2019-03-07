@@ -42,7 +42,7 @@ const defaultComputed: Computed = {
     return (
       this.dirty ||
       this.dynamicKeys.some((ruleOrNested: string) => {
-        const val = this[ruleOrNested as keyof Computed]];
+        const val = this[ruleOrNested as keyof Computed];
         return typeof val === 'object' ? val.$dirty : false;
       })
     );
