@@ -1,12 +1,12 @@
 <template>
   <div id="app">
-    <div class="">
+    <div class>
       <label>Name:</label>
       <input type="text" v-model="name">
       <p v-if="!$v.name.required">Name is required</p>
       <p v-if="!$v.name.minLength">Name must be at least 4 characters long</p>
     </div>
-    <div class="">
+    <div class>
       <label>Age:</label>
       <input type="number" v-model="age">
       <p v-if="!$v.age.between">Must be between 20 and 30</p>
@@ -15,17 +15,17 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
-import { required, minLength, between } from '../src/validators'
-import Vuelidate from '../src/index.ts'
+import Vue from "vue";
+import { required, minLength, between } from "../src/validators";
+import Vuelidate from "../src/index";
 
-Vue.use(Vuelidate)
+Vue.use(Vuelidate);
 
 export default Vue.extend({
-  data () {
+  data() {
     return {
-      name: '',
-      age: 0,
+      name: "",
+      age: 0
       // email: '',
       // password: '',
       // repeatPassword: '',
@@ -38,7 +38,7 @@ export default Vue.extend({
       // forGroup: {
       //   nested: ''
       // }
-    }
+    };
   },
   validations: {
     name: {
@@ -47,7 +47,7 @@ export default Vue.extend({
     },
     age: {
       between: between(20, 30)
-    },
+    }
     // password: {
     //   required,
     //   minLength: minLength(6)
@@ -76,7 +76,7 @@ export default Vue.extend({
 
 <style>
 #app {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
+  font-family: "Avenir", Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
