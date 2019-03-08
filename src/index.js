@@ -97,7 +97,7 @@ const validationGetters = {
   },
   $anyError() {
     if (this.$error) return true
-    
+
     return this.nestedKeys.some((key) => this.refProxy(key).$anyError)
   },
   $pending() {

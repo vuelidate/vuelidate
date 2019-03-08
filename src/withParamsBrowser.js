@@ -7,8 +7,8 @@ const root =
   typeof window !== 'undefined'
     ? window
     : typeof global !== 'undefined'
-      ? global
-      : {}
+    ? global
+    : {}
 
 /* istanbul ignore next */
 const fakeWithParams = (paramsOrClosure, maybeValidator) => {
