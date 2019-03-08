@@ -1,35 +1,5 @@
 import Vue from 'vue';
-import { PluginFunction } from 'vue';
-
-interface Rules {
-  [key: string]: () => void;
-}
-
-interface Declarations {
-  [key: string]: Rules;
-}
-
-interface Results {
-  $invalid: boolean;
-  [key: string]: boolean | Results;
-}
-
-declare module 'vue/types/vue' {
-  // 3. Declare augmentation for Vue
-  interface Vue {
-    $v: object;
-    [key: string]: any;
-  }
-}
-
-interface Computed {
-  dynamicKeys?: [string];
-  dirty?: boolean;
-  $invalid: () => boolean;
-  $dirty: () => boolean;
-  $error: () => boolean;
-  [key: string]: any;
-}
+import { Computed, Declarations, Rules, Results } from './types';
 
 const defaultComputed: Computed = {
   $invalid(): boolean {
@@ -171,7 +141,7 @@ function validateModel(rules: Rules, value: any): Results {
   );
 }
 
-function isSingleRule(ruleset: Function) {
+function isSingleRule(ruleset: Function | Rules) {
   return typeof ruleset === 'function';
 }
 
