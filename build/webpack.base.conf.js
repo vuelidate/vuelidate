@@ -12,7 +12,7 @@ var useCssSourceMap = cssSourceMapDev || cssSourceMapProd
 
 module.exports = {
   entry: {
-    app: './docs/main.js'
+    app: './docs-v1/main.js'
   },
   output: {
     path: config.docs.assetsRoot,
@@ -28,8 +28,8 @@ module.exports = {
       vue$: 'vue/dist/vue',
       'vuelidate/lib/validators': path.resolve(__dirname, '../src/validators'), // for consistent docs
       src: path.resolve(__dirname, '../src'),
-      assets: path.resolve(__dirname, '../docs/assets'),
-      examples: path.resolve(__dirname, '../docs/partials/examples'),
+      assets: path.resolve(__dirname, '../docs-v1/assets'),
+      examples: path.resolve(__dirname, '../docs-v1/partials/examples'),
       components: path.resolve(__dirname, '../src/components')
     }
   },
@@ -41,7 +41,7 @@ module.exports = {
         test: /\.(vue|js)$/,
         loader: 'eslint-loader',
         include: projectRoot,
-        exclude: [/node_modules/, /docs[\\\/]assets/]
+        exclude: [/node_modules/, /docs-v1[\\\/]assets/]
       },
       {
         test: /\.vue$/,

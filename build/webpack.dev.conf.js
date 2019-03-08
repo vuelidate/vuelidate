@@ -25,7 +25,7 @@ module.exports = merge(baseWebpackConfig, {
     new webpack.HotModuleReplacementPlugin(),
     new HtmlWebpackPlugin({
       filename: 'index.html',
-      template: 'docs/index.pug',
+      template: 'docs-v1/index.pug',
       inject: true
     })
   ],
