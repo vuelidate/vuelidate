@@ -10,6 +10,10 @@ module.exports = {
     [ 'meta', { name: "theme-color", content: "#ffffff" }]
   ],
   themeConfig: {
-    logo: 'logo.png'
+    logo: 'logo.png',
+    sidebar: [
+      '/',
+      'getting_started'
+    ]
   }
 }
