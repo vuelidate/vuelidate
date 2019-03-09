@@ -13,7 +13,8 @@ module.exports = {
     logo: 'logo.png',
     sidebar: [
       '/',
-      'getting_started'
+      'getting_started',
+      'examples'
     ]
   }
 }
