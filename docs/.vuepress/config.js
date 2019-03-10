@@ -16,7 +16,8 @@ module.exports = {
       'getting_started',
       'examples',
       'api',
-      'validators'
+      'validators',
+      'custom_validators'
     ]
   }
 }
