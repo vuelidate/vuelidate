@@ -14,7 +14,8 @@ module.exports = {
     sidebar: [
       '/',
       'getting_started',
-      'examples'
+      'examples',
+      'api'
     ]
   }
 }
