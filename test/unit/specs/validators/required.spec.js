@@ -38,7 +38,7 @@ describe('required validator', () => {
   })
 
   it('should validate string only with spaces', () => {
-    expect(required('  ')).to.be.true
+    expect(required('  ')).to.be.false
   })
 
   it('should validate english words', () => {
