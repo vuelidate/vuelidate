@@ -40,11 +40,11 @@ describe('integer validator', () => {
   it('should not validate unicode', () => {
     expect(integer('🎉')).to.be.false
   })
-  
+
   it('should not validate minus sign', () => {
     expect(integer('-')).to.be.false
-})
-  
+  })
+
   it('should validate negative numbers', () => {
     expect(integer('-123')).to.be.true
   })
