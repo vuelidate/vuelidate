@@ -3,6 +3,9 @@
     p.typo__p
       | For each value you want to validate, you have to create a key inside <kbd>validations</kbd> options.
       | You can specify when input becomes dirty by using appropriate event on your input box.
+    p.typo__p
+      | Note that in this example, the red border, red text, and error message visibility are driven by the presence or absence of the <kbd>form-group--error</kbd> class on the surrounding <kbd>div</kbd>. 
+      | Any markup relating to validation errors will show on initial load unless using a method like this, or by using validations without v-model (next section).
     +example('ExampleBasic')
 
   +subsection('Without v-model')
