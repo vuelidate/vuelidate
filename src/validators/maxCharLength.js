@@ -1,4 +1,4 @@
-import { req, len, withParams } from './common'
+import { req, withParams } from './common'
 export default (length) =>
   withParams(
     { type: 'maxLength', max: length },
