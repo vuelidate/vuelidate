@@ -1,4 +1,40 @@
-import { regex } from './common'
-const urlRegex = /^(?:(?:https?|ftp):\/\/)(?:\S+(?::\S*)?@)?(?:(?!(?:10|127)(?:\.\d{1,3}){3})(?!(?:169\.254|192\.168)(?:\.\d{1,3}){2})(?!172\.(?:1[6-9]|2\d|3[0-1])(?:\.\d{1,3}){2})(?:[1-9]\d?|1\d\d|2[01]\d|22[0-3])(?:\.(?:1?\d{1,2}|2[0-4]\d|25[0-5])){2}(?:\.(?:[1-9]\d?|1\d\d|2[0-4]\d|25[0-4]))|(?:(?:[a-z\u00a1-\uffff0-9]-*)*[a-z\u00a1-\uffff0-9]+)(?:\.(?:[a-z\u00a1-\uffff0-9]-*)*[a-z\u00a1-\uffff0-9]+)*(?:\.(?:[a-z\u00a1-\uffff]{2,})))(?::\d{2,5})?(?:[/?#]\S*)?$/i
+import isURL from 'validator/lib/isURL'
+import { withParams, req } from './common'
+import { merge } from '../lib'
 
-export default regex('url', urlRegex)
+/**
+ * Check if the string is an URL
+ *
+ * @param {Object} [options] - The options
+ * @param {string[]} [options.protocols=['http', 'https', 'ftp']]
+ * @param {boolean} [options.require_tld=true]
+ * @param {boolean} [options.require_protocol=false]
+ * @param {boolean} [options.require_host=true]
+ * @param {boolean} [options.require_valid_protocol=true]
+ * @param {boolean} [options.allow_underscores=false]
+ * @param {boolean} [options.host_whitelist=false]
+ * @param {boolean} [options.host_blacklist=false]
+ * @param {boolean} [options.allow_trailing_dot=false]
+ * @param {boolean} [options.allow_protocol_relative_urls=false]
+ * @param {boolean} [options.disallow_auth=false]
+ */
+export default (options) => {
+  options = merge(options, {
+    protocols: ['http', 'https', 'ftp'],
+    require_tld: true,
+    require_protocol: false,
+    require_host: true,
+    require_valid_protocol: true,
+    allow_underscores: false,
+    host_whitelist: false,
+    host_blacklist: false,
+    allow_trailing_dot: false,
+    allow_protocol_relative_urls: false,
+    disallow_auth: false
+  })
+
+  return withParams(
+    { type: 'url', options },
+    (value) => !req(value) || isURL(value, options)
+  )
+}

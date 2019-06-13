@@ -1,4 +1,18 @@
-import { regex } from './common'
-// ^[0-9]*$ - for empty string and positive integer
-// ^-[0-9]+$ - only for negative integer (minus sign without at least 1 digit is not a number)
-export default regex('integer', /(^[0-9]*$)|(^-[0-9]+$)/)
+import isInt from 'validator/lib/isInt'
+import { withParams, req } from './common'
+
+/**
+ * Accepts positive and negative integers
+ *
+ * @param {Object} [options] - The options
+ * @param {number} [options.min]
+ * @param {number} [options.max]
+ * @param {number} [options.gt]
+ * @param {number} [options.lt]
+ * @param {boolean} [options.allow_leading_zeroes]
+ */
+export default (options) =>
+  withParams(
+    { type: 'integer', options },
+    (value) => !req(value) || isInt(value, options)
+  )

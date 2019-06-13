@@ -1,30 +1,13 @@
-import { req, withParams } from './common'
-export default withParams({ type: 'ipAddress' }, (value) => {
-  if (!req(value)) {
-    return true
-  }
+import isIP from 'validator/lib/isIP'
+import { withParams, req } from './common'
 
-  if (typeof value !== 'string') {
-    return false
-  }
-
-  const nibbles = value.split('.')
-  return nibbles.length === 4 && nibbles.every(nibbleValid)
-})
-
-const nibbleValid = (nibble) => {
-  if (nibble.length > 3 || nibble.length === 0) {
-    return false
-  }
-
-  if (nibble[0] === '0' && nibble !== '0') {
-    return false
-  }
-
-  if (!nibble.match(/^\d+$/)) {
-    return false
-  }
-
-  const numeric = +nibble | 0
-  return numeric >= 0 && numeric <= 255
-}
+/**
+ * Accepts valid IPv4/IPv6 addresses in dotted decimal notation like 127.0.0.1.
+ *
+ * @param {4 | 6} [version] - The version of ip
+ */
+export default (version) =>
+  withParams(
+    { type: 'ipAddress', version },
+    (value) => !req(value) || isIP(value, version)
+  )
