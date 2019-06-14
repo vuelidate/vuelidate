@@ -21,7 +21,7 @@ import hash from './hash'
 import hexadecimal from './hexadecimal'
 import hexColor from './hexColor'
 import identityCard from './identityCard'
-import in from './in'
+import inArray from './inArray'
 import integer from './integer'
 import ipAddress from './ipAddress'
 import isbn from './isbn'
@@ -76,7 +76,7 @@ export {
   hexadecimal,
   hexColor,
   identityCard,
-  in,
+  inArray,
   integer,
   ipAddress,
   isbn,

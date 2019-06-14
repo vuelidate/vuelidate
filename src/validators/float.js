@@ -9,7 +9,7 @@ import { withParams, req } from './common'
  * @param {number} [options.max] - The max value
  * @param {number} [options.gt] - The min value
  * @param {number} [options.lt] - The max value
- * @param {number} [options.locale] - The locale
+ * @param {Locales} [options.locale] - The locale
  */
 export default (options) =>
   withParams(

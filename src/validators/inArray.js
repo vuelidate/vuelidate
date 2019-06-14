@@ -8,6 +8,6 @@ import { withParams, req } from './common'
  */
 export default (values) =>
   withParams(
-    { type: 'in', values },
+    { type: 'inArray', values },
     (value) => !req(value) || isIn(value, values)
   )

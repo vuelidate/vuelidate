@@ -1,6 +1,5 @@
 import isEmpty from 'validator/lib/isEmpty'
 import { withParams, req } from './common'
-import { merge } from '../lib'
 
 /**
  * Check if the string has a length of zero

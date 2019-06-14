@@ -3,6 +3,8 @@ import { withParams, req } from './common'
 
 /**
  * Check if the string is a number that's divisible by another
+ *
+ * @param {number} number - The number
  */
 export default (number) =>
   withParams(
