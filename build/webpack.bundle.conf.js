@@ -1,5 +1,4 @@
 const webpack = require('webpack')
-const CopyWebpackPlugin = require('copy-webpack-plugin')
 const base = require('./webpack.base.conf')
 const config = require('../config')
 const merge = require('webpack-merge')
