@@ -8,7 +8,13 @@ import { req, withParams } from './common'
  * @param {boolean} [no_colons=false] - If no_colons is true, the validator will allow MAC addresses without the colons
  */
 export default (no_colons = false) =>
-  withParams(
-    { type: 'macAddress' },
-    (value) => !req(value) || isMACAddress(value, { no_colons })
-  )
+  withParams({ type: 'macAddress' }, (value) => {
+    if (!req(value)) {
+      return true
+    }
+    if (!isNaN(value)) {
+      return false
+    }
+
+    return isMACAddress(value, { no_colons })
+  })

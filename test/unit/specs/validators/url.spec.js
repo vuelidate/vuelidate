@@ -1,8 +1,13 @@
 import url from 'src/validators/url'
 
+let tryUrl
 describe('url validator', () => {
+  before(() => {
+    tryUrl = url()
+  })
+
   it('should validate empty string', () => {
-    expect(url('')).to.be.true
+    expect(tryUrl('')).to.be.true
   })
 
   const correctUrls = [
@@ -40,10 +45,15 @@ describe('url validator', () => {
     'http://مثال.إختبار',
     'http://例子.测试',
     'http://उदाहरण.परीक्षा',
-    "http://-.~_!$&'()*+,;=:%40:80%2f::::::@example.com",
     'http://1337.net',
     'http://a.b-c.de',
-    'http://223.255.255.254'
+    'http://223.255.255.254',
+    'http://10.1.1.1',
+    'http://10.1.1.254',
+    'http://224.1.1.1',
+    'http://10.1.1.255',
+    'http://0.0.0.0',
+    'foo.com'
   ]
   const incorrectUrls = [
     'http://',
@@ -62,7 +72,6 @@ describe('url validator', () => {
     '///a',
     '///',
     'http:///a',
-    'foo.com',
     'rdar://1234',
     'h://test',
     'http:// shouldfail.com',
@@ -72,29 +81,24 @@ describe('url validator', () => {
     'http://-error-.invalid/',
     'http://-a.b.co',
     'http://a.b-.co',
-    'http://0.0.0.0',
-    'http://10.1.1.0',
-    'http://10.1.1.255',
-    'http://224.1.1.1',
     'http://1.1.1.1.1',
     'http://123.123.123',
     'http://3628126748',
     'http://.www.foo.bar/',
     'http://www.foo.bar./',
     'http://.www.foo.bar./',
-    'http://10.1.1.1',
-    'http://10.1.1.254'
+    "http://-.~_!$&'()*+,;=:%40:80%2f::::::@example.com"
   ]
 
   correctUrls.forEach((urlString) => {
     it(`should validate correct url ${urlString}`, () => {
-      expect(url(urlString)).to.be.true
+      expect(tryUrl(urlString)).to.be.true
     })
   })
 
   incorrectUrls.forEach((urlString) => {
     it(`should not validate incorrect url ${urlString}`, () => {
-      expect(url(urlString)).to.be.false
+      expect(tryUrl(urlString)).to.be.false
     })
   })
 })

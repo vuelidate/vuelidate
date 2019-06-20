@@ -8,6 +8,6 @@ import { withParams, req } from './common'
  */
 export default (no_symbols = false) =>
   withParams(
-    { type: 'numeric', options },
+    { type: 'numeric', no_symbols },
     (value) => !req(value) || isNumeric(value, { no_symbols })
   )

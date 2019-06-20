@@ -7,7 +7,13 @@ import { withParams, req } from './common'
  * @param {4 | 6} [version] - The version of ip
  */
 export default (version) =>
-  withParams(
-    { type: 'ipAddress', version },
-    (value) => !req(value) || isIP(value, version)
-  )
+  withParams({ type: 'ipAddress', version }, (value) => {
+    if (!req(value)) {
+      return true
+    }
+    if (!isNaN(value)) {
+      return false
+    }
+
+    return isIP(value, version)
+  })

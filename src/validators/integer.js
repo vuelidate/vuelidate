@@ -11,7 +11,7 @@ import { withParams, req } from './common'
  * @param {number} [options.lt]
  * @param {boolean} [options.allow_leading_zeroes]
  */
-export default (options) =>
+export default (options = {}) =>
   withParams(
     { type: 'integer', options },
     (value) => !req(value) || isInt(value, options)
