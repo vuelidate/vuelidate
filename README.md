@@ -6,10 +6,6 @@
 
 ## Sponsors
 
-<a href="https://github.com/users/shentao/sponsorship" target="_blank">
-  <img src="https://cdn.discordapp.com/attachments/491313387129667594/602524047145828380/68747470733a2f2f6665726f73732e6f72672f696d616765732f737570706f72746572732f67697468756273706f6e736f72.png" alt="NativeScript" width="240px">
-</a>
-
 ### Silver
 
 <p align="center">
