@@ -19,4 +19,12 @@ describe('requiredIf validator', () => {
   it('should validate empty string when prop condition not met', () => {
     expect(requiredIf('prop')('', { prop: false })).to.be.true
   })
+
+  it('should not validate empty string when nested prop condition is met', () => {
+    expect(requiredIf('prop.foo')('', { prop: { foo: true } })).to.be.false
+  })
+
+  it('should validate empty string when nested prop condition not met', () => {
+    expect(requiredIf('prop.foo')('', { prop: { foo: false } })).to.be.true
+  })
 })
