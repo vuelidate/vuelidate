@@ -9,7 +9,7 @@
     .form-group(:class="{ 'form-group--error': $v.fieldB.$error }")
       label.form__label Field B
       input.form__input(v-model.trim="$v.fieldB.$model")
-    .error(v-if="!$v.fieldB.required") Field A is required.
+    .error(v-if="!$v.fieldB.required") Field B is required.
     .error(v-if="!$v.fieldB.minLength")
       | Field B must have at least {{$v.fieldB.$params.minLength.min}} letters.
 
