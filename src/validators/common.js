@@ -38,7 +38,7 @@ export const len = (value) => {
 export const ref = (reference, vm, parentVm) =>
   typeof reference === 'function'
     ? reference.call(vm, parentVm)
-    : reference.split('.').reduce((parent, prop) => parent[prop], parentVm);
+    : reference.split('.').reduce((parent, prop) => parent === void 0 ? void 0 : parent[prop], parentVm);
 
 // regex based validator template
 export const regex = (type, expr) =>
