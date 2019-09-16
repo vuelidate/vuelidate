@@ -64,7 +64,7 @@ mixin validatorRow(validator, params)
             +validatorRow('requiredUnless', ['locator *'])
               | Requires non-empty data only if provided property or predicate is false.
             +validatorRow('minLength', ['min length'])
-              | Requires the input to have a minimum specified length, inclusive. Works with arrays.
+              | Requires the input to have a minimum specified length, inclusive. Works with arrays. For minLength(1) use required instead.
             +validatorRow('maxLength', ['max length'])
               | Requires the input to have a maximum specified length, inclusive. Works with arrays.
             +validatorRow('minValue', ['min'])
