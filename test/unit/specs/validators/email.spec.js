@@ -38,6 +38,13 @@ describe('email validator', () => {
     expect(email('someone@g~mail.com')).to.be.false
     expect(email('someone@g=ail.com')).to.be.false
     expect(email('"someone@gmail.com')).to.be.false
+    expect(email('someone@-gmail.com')).to.be.false
+    expect(email('someone@gmail-.com')).to.be.false
+  })
+
+  it('should not validate addresses that contain only one character for the domain name', () => {
+    expect(email('someone@g.accountants')).to.be.false
+    expect(email('someone@g.cn')).to.be.false
   })
 
   it('should not validate addresses that contain spaces', () => {
@@ -52,8 +59,6 @@ describe('email validator', () => {
     expect(email('some!one@gmail.com')).to.be.true
     expect(email('soMe12_one@gmail.com')).to.be.true
     expect(email('someone@gmail.co')).to.be.true
-    expect(email('someone@g.cn')).to.be.true
-    expect(email('someone@g.accountants')).to.be.true
     expect(email('"some@one"@gmail.com')).to.be.true
     expect(email('"some one"@gmail.com')).to.be.true
   })
