@@ -1,6 +1,8 @@
 ---
 name: Request For Comment
 about: Use this if you would like to submit an RFC for the new Vueldiate version.
+labels: RFC
+assignees: dobromir-hristov
 
 ---
 
