@@ -1,3 +1,9 @@
+---
+name: Request For Comment
+about: Use this if you would like to submit an RFC for the new Vueldiate version.
+
+---
+
 - Start Date: (YYYY-MM-DD)
 - Reference Issues: (fill in existing related issues, if any)
 - Implementation PR: (leave this empty)
