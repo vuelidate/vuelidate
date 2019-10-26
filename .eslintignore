@@ -1,3 +1,2 @@
 dist/*.js
-config/*.js
-*.pug
+packages/*/dist/
