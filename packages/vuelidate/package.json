@@ -10,6 +10,9 @@
     "build": "bili src --format esm",
     "test:unit": "jest"
   },
+  "dependencies": {
+    "@vuelidate/validators": "^1.0.0"
+  },
   "devDependencies": {
     "bili": "^4.8.1",
     "jest": "^24.9.0"
