@@ -1,6 +1,7 @@
-import { req, len, withParams } from './common'
-export default (length) =>
-  withParams(
-    { type: 'minLength', min: length },
-    (value) => !req(value) || len(value) >= length
-  )
+import minLength from './raw/minLength'
+
+export default length => ({
+  $validator: minLength,
+  $message: ({ $params }) => `This field should be at least ${$params.length} long.`,
+  $params: { length }
+})

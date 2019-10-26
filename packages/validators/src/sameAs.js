@@ -1,5 +1,7 @@
-import { ref, withParams } from './common'
-export default (equalTo) =>
-  withParams({ type: 'sameAs', eq: equalTo }, function(value, parentVm) {
-    return value === ref(equalTo, this, parentVm)
-  })
+import sameAs from './raw/sameAs'
+
+export default equalTo => ({
+  $validator: sameAs,
+  $message: 'This field should be equal as the other field.',
+  $params: { equalTo }
+})

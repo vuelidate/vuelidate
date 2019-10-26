@@ -1,8 +1,3 @@
-import withParams from './utils/withParams'
-import withMessage from './utils/withMessage'
-
-export { withParams, withMessage }
-
 // "required" core, used in almost every validator to allow empty values
 export const req = (value) => {
   if (Array.isArray(value)) return !!value.length
@@ -36,6 +31,7 @@ export const len = (value) => {
   return String(value).length
 }
 
-// regex based validator template
-export const regex = (type, expr) =>
-  withParams({ type }, (value) => !req(value) || expr.test(value))
+// TODO: Solve this
+// // regex based validator template
+// export const regex = (type, expr) =>
+//   withParams({ type }, (value) => !req(value) || expr.test(value))
