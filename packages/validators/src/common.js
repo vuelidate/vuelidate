@@ -1,5 +1,7 @@
-import withParams from '@vuelidate/core/src/withParams'
-export { withParams }
+import withParams from './utils/withParams'
+import withMessage from './utils/withMessage'
+
+export { withParams, withMessage }
 
 // "required" core, used in almost every validator to allow empty values
 export const req = (value) => {
