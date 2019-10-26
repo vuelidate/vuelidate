@@ -12,5 +12,10 @@
   },
   "dependencies": {
     "lern": "^1.0.0"
+  },
+  "scripts": {
+    "lerna:publish": "lerna publish --conventional-commits",
+    "lerna:changed": "lerna changed",
+    "lerna:build": "lerna run build --parallel"
   }
 }
