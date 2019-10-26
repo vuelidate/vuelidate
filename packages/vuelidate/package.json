@@ -1,0 +1,17 @@
+{
+  "name": "@vuelidate/core",
+  "description": "Simple, lightweight model-based validation for Vue.js",
+  "version": "1.0.0",
+  "main": "dist/index.js",
+  "module": "index.esm.js",
+  "repository": "https://github.com/vuelidate/vuelidate",
+  "license": "MIT",
+  "scripts": {
+    "build": "bili src --format esm",
+    "test:unit": "jest"
+  },
+  "devDependencies": {
+    "bili": "^4.8.1",
+    "jest": "^24.9.0"
+  }
+}

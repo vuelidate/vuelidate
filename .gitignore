@@ -6,3 +6,4 @@ coverage
 gh-pages
 yarn.lock
 *.tgz
+/packages/*/dist/

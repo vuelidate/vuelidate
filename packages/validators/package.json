@@ -1,0 +1,16 @@
+{
+  "name": "@vuelidate/validators",
+  "version": "1.0.0",
+  "description": "Validators for Vuelidate",
+  "main": "dist/index.js",
+  "module": "dist/index.esm.js",
+  "repository": "https://github.com/vuelidate/vuelidate",
+  "license": "MIT",
+  "scripts": {
+    "build": "bili src --format esm --format cjs"
+  },
+  "devDependencies": {
+    "bili": "^4.8.1",
+    "jest": "^24.9.0"
+  }
+}

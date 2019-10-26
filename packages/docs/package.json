@@ -1,0 +1,8 @@
+{
+  "name": "@vuelidate/docs",
+  "version": "1.0.0",
+  "description": "Vuelidate documentation",
+  "main": "index.js",
+  "repository": "https://github.com/vuelidate/vuelidate",
+  "license": "MIT"
+}

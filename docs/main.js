@@ -1,5 +1,5 @@
 import Vue from 'vue'
-import Validation from '../src/index'
+import Validation from '../packages/vuelidate/src/index'
 
 import * as examples from './partials/examples'
 import TreeView from 'vue-json-tree-view'
