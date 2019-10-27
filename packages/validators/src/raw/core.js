@@ -1,4 +1,6 @@
 // "required" core, used in almost every validator to allow empty values
+import withParams from '../utils/withParams'
+
 export const req = (value) => {
   if (Array.isArray(value)) return !!value.length
   if (value === undefined || value === null) {
@@ -31,7 +33,6 @@ export const len = (value) => {
   return String(value).length
 }
 
-// TODO: Solve this
-// // regex based validator template
-// export const regex = (type, expr) =>
-//   withParams({ type }, (value) => !req(value) || expr.test(value))
+// regex based validator template
+export const regex = (type, expr) =>
+  withParams({ type }, (value) => !req(value) || expr.test(value))
