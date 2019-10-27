@@ -4,7 +4,6 @@ lib/
 npm-debug.log
 coverage
 gh-pages
-yarn.lock
 *.tgz
-docs/.vuepress/dist
+packages/docs/src/.vuepress/dist
 /packages/*/dist/

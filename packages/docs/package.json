@@ -4,5 +4,12 @@
   "description": "Vuelidate documentation",
   "main": "index.js",
   "repository": "https://github.com/vuelidate/vuelidate",
-  "license": "MIT"
+  "license": "MIT",
+  "scripts": {
+    "build": "vuepress build src",
+    "dev": "vuepress dev src"
+  },
+  "devDependencies": {
+    "vuepress": "^1.2.0"
+  }
 }

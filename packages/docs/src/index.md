@@ -1,1 +1,0 @@
-Base of the docs
