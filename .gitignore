@@ -6,4 +6,5 @@ coverage
 gh-pages
 yarn.lock
 *.tgz
+docs/.vuepress/dist
 /packages/*/dist/
