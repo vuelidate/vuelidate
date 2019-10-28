@@ -1,4 +1,4 @@
-import decimal from 'packages/validators/src/decimal'
+import decimal from '@vuelidate/validators/src/raw/decimal'
 
 describe('decimal validator', () => {
   it('should validate undefined', () => {

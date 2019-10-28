@@ -1,7 +1,7 @@
-import minLength from './raw/minLength'
+import minLength from '../raw/minLength'
 
 export default length => ({
-  $validator: minLength,
+  $validator: minLength(length),
   $message: ({ $params }) => `This field should be at least ${$params.length} long.`,
   $params: { length }
 })

@@ -1,4 +1,4 @@
-import alpha from 'packages/validators/src/alpha'
+import alpha from '@vuelidate/validators/src/raw/alpha'
 
 describe('alpha validator', () => {
   it('should validate undefined', () => {

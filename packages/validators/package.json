@@ -7,7 +7,7 @@
   "repository": "https://github.com/vuelidate/vuelidate",
   "license": "MIT",
   "scripts": {
-    "build": "bili src --format esm --format cjs"
+    "build": "bili src src/raw --format esm --format cjs"
   },
   "devDependencies": {
     "bili": "^4.8.1",
