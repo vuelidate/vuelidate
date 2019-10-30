@@ -62,7 +62,7 @@
     "opn": "^5.3.0",
     "ora": "^2.1.0",
     "prettier": "^1.12.1",
-    "pug": "2.0.3",
+    "pug": "2.0.4",
     "pug-loader": "^2.4.0",
     "pug-plain-loader": "^1.0.0",
     "puppeteer": "^1.4.0",
