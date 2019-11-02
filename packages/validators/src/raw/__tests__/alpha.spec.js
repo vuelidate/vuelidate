@@ -2,19 +2,19 @@ import alpha from '@vuelidate/validators/src/raw/alpha'
 
 describe('alpha validator', () => {
   it('should validate undefined', () => {
-    expect(alpha(undefined)).to.be.true
+    expect(alpha(undefined)).toBe(true)
   })
 
   it('should validate null', () => {
-    expect(alpha(null)).to.be.true
+    expect(alpha(null)).toBe(true)
   })
 
   it('should validate empty string', () => {
-    expect(alpha('')).to.be.true
+    expect(alpha('')).toBe(true)
   })
 
   it('should not validate numbers', () => {
-    expect(alpha('1234')).to.be.false
+    expect(alpha('1234')).toBe(false)
   })
 
   it('should not validate space', () => {

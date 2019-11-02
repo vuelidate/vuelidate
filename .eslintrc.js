@@ -1,3 +1,4 @@
+const jestConfig = require('eslint-plugin-jest')
 module.exports = {
   env: {
     browser: true,
@@ -14,5 +15,12 @@ module.exports = {
     sourceType: 'module'
   },
   plugins: [],
-  rules: {}
+  rules: {},
+  overrides: [
+    Object.assign({}, jestConfig.configs.recommended, {
+      files: ['packages/**/*.spec.js'],
+      globals: jestConfig.environments.globals.globals,
+      env: undefined
+    })
+  ]
 }
