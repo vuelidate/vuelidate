@@ -18,26 +18,26 @@ describe('alpha validator', () => {
   })
 
   it('should not validate space', () => {
-    expect(alpha(' ')).to.be.false
+    expect(alpha(' ')).toBe(false)
   })
 
   it('should validate english letters', () => {
-    expect(alpha('abcdefghijklmnopqrstuvwxyz')).to.be.true
+    expect(alpha('abcdefghijklmnopqrstuvwxyz')).toBe(true)
   })
 
   it('should validate english letters uppercase', () => {
-    expect(alpha('ABCDEFGHIJKLMNOPQRSTUVWXYZ')).to.be.true
+    expect(alpha('ABCDEFGHIJKLMNOPQRSTUVWXYZ')).toBe(true)
   })
 
   it('should not validate alphanum', () => {
-    expect(alpha('abc123')).to.be.false
+    expect(alpha('abc123')).toBe(false)
   })
 
   it('should not validate padded letters', () => {
-    expect(alpha(' abc ')).to.be.false
+    expect(alpha(' abc ')).toBe(false)
   })
 
   it('should not validate unicode', () => {
-    expect(alpha('🎉')).to.be.false
+    expect(alpha('🎉')).toBe(false)
   })
 })

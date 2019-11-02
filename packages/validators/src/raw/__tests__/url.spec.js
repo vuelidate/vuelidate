@@ -1,8 +1,8 @@
-import url from 'packages/validators/src/url'
+import url from '../url'
 
 describe('url validator', () => {
   it('should validate empty string', () => {
-    expect(url('')).to.be.true
+    expect(url('')).toBe(true)
   })
 
   const correctUrls = [
@@ -88,13 +88,13 @@ describe('url validator', () => {
 
   correctUrls.forEach((urlString) => {
     it(`should validate correct url ${urlString}`, () => {
-      expect(url(urlString)).to.be.true
+      expect(url(urlString)).toBe(true)
     })
   })
 
   incorrectUrls.forEach((urlString) => {
     it(`should not validate incorrect url ${urlString}`, () => {
-      expect(url(urlString)).to.be.false
+      expect(url(urlString)).toBe(false)
     })
   })
 })

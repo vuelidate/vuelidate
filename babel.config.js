@@ -7,5 +7,12 @@ module.exports = {
   'plugins': [
     '@babel/plugin-proposal-object-rest-spread'
   ],
-  'comments': false
+  'comments': false,
+  env: {
+    test: {
+      'presets': [
+        ['@babel/preset-env']
+      ]
+    }
+  }
 }

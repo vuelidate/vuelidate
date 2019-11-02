@@ -1,4 +1,4 @@
-import sameAs from 'packages/validators/src/sameAs'
+import sameAs from '../sameAs'
 
 describe('sameAs validator', () => {
   const parentVm = {
@@ -10,25 +10,25 @@ describe('sameAs validator', () => {
   }
 
   it('should not validate different values', () => {
-    expect(sameAs('first')('world', parentVm)).to.be.false
-    expect(sameAs('second')('hello', parentVm)).to.be.false
-    expect(sameAs('first')(undefined, parentVm)).to.be.false
-    expect(sameAs('first')(null, parentVm)).to.be.false
-    expect(sameAs('first')('', parentVm)).to.be.false
-    expect(sameAs('undef')('any', parentVm)).to.be.false
-    expect(sameAs('nil')('any', parentVm)).to.be.false
-    expect(sameAs('empty')('any', parentVm)).to.be.false
+    expect(sameAs('first')('world', parentVm)).toBe(false)
+    expect(sameAs('second')('hello', parentVm)).toBe(false)
+    expect(sameAs('first')(undefined, parentVm)).toBe(false)
+    expect(sameAs('first')(null, parentVm)).toBe(false)
+    expect(sameAs('first')('', parentVm)).toBe(false)
+    expect(sameAs('undef')('any', parentVm)).toBe(false)
+    expect(sameAs('nil')('any', parentVm)).toBe(false)
+    expect(sameAs('empty')('any', parentVm)).toBe(false)
   })
 
   it('should validate identical values', () => {
-    expect(sameAs('first')('hello', parentVm)).to.be.true
-    expect(sameAs('second')('world', parentVm)).to.be.true
-    expect(sameAs('undef')(undefined, parentVm)).to.be.true
-    expect(sameAs('nil')(null, parentVm)).to.be.true
-    expect(sameAs('empty')('', parentVm)).to.be.true
+    expect(sameAs('first')('hello', parentVm)).toBe(true)
+    expect(sameAs('second')('world', parentVm)).toBe(true)
+    expect(sameAs('undef')(undefined, parentVm)).toBe(true)
+    expect(sameAs('nil')(null, parentVm)).toBe(true)
+    expect(sameAs('empty')('', parentVm)).toBe(true)
   })
 
   it('should allow function expression', () => {
-    expect(sameAs((p) => p.first)('hello', parentVm)).to.be.true
+    expect(sameAs((p) => p.first)('hello', parentVm)).toBe(true)
   })
 })
