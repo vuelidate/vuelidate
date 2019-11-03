@@ -1,7 +1,13 @@
 import Vue from 'vue'
-import { withParams } from '../../src'
+import { VuelidatePlugin } from '../../src'
+import { helpers } from '@vuelidate/validators'
 import { createRenderer } from 'vue-server-renderer'
-import { expect } from 'chai'
+import VueCompositionApi from '@vue/composition-api'
+
+Vue.use(VueCompositionApi)
+Vue.use(VuelidatePlugin)
+
+const { withParams } = helpers
 
 const isEven = withParams({ type: 'isEven' }, (v) => {
   return v % 2 === 0
@@ -11,35 +17,37 @@ const mkVm = (render) =>
   new Vue({
     data: { val: 0 },
     validations: { val: { isEven } },
-    render(h) {
+    render (h) {
       return render(h, this)
     }
   })
 
-describe('SSR', (done) => {
+describe('SSR', () => {
   const renderer = createRenderer()
-  const makeRenderTester = (expStr) => (vm, done) => {
+
+  const makeAsyncRenderTester = (vm) => new Promise((resolve, reject) => {
     renderer.renderToString(vm, (err, str) => {
-      expect(err).to.be.null
-      expStr(str)
-      done()
+      if (err) reject(str)
+      else resolve(str)
     })
-  }
+  })
 
-  const testString = makeRenderTester((str) => expect(str).to.be.string)
-
-  it('Should not throw on render when plugin is loaded', (done) => {
+  it('Should not throw on render when plugin is loaded', async () => {
     const vm = mkVm((h, vm) => h('div', 'hello'))
-    testString(vm, done)
+    const rendered = await makeAsyncRenderTester(vm)
+    expect(rendered).toStrictEqual(expect.any(String))
   })
 
-  it('Should not throw on render when referencing $v', (done) => {
+  it('Should not throw on render when referencing $v', async () => {
     const vm = mkVm((h, vm) => h('div', vm._s(vm.$v)))
-    testString(vm, done)
+    const rendered = await makeAsyncRenderTester(vm)
+    expect(rendered).toStrictEqual(expect.any(String))
   })
 
-  it('Should not throw on render when referencing $v.val.isEven', (done) => {
-    const vm = mkVm((h, vm) => h('div', vm._s(vm.$v.val.isEven)))
-    testString(vm, done)
+  // TODO: Devise a better test
+  it('Should not throw on render when referencing $v.val.isEven', async () => {
+    const vm = mkVm((h, vm) => h('div', vm._s(vm.$v.val.isEven.$invalid)))
+    const rendered = await makeAsyncRenderTester(vm)
+    expect(rendered).toMatchSnapshot()
   })
 })

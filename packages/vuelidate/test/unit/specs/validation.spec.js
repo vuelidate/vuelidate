@@ -1,5 +1,7 @@
 import Vue from 'vue'
-import { withParams } from 'packages/vuelidate/src'
+import { helpers } from '@vuelidate/validators'
+
+const { withParams } = helpers
 
 const isEven = withParams({ type: 'isEven' }, (v) => {
   return v % 2 === 0
@@ -15,7 +17,7 @@ const T = () => true
 const F = () => false
 
 const base = {
-  data() {
+  data () {
     return {
       value: 4
     }
@@ -23,7 +25,7 @@ const base = {
 }
 
 const baseGroup = {
-  data() {
+  data () {
     return {
       value1: 1,
       value2: 2,
@@ -73,7 +75,7 @@ describe('Validation plugin', () => {
         value: { isEven }
       },
       watch: {
-        '$v.value.$invalid'(v, oldv) {
+        '$v.value.$invalid' (v, oldv) {
           expect(v).to.be.true
           expect(oldv).to.be.false
           done()
@@ -90,7 +92,7 @@ describe('Validation plugin', () => {
         value: { isEven }
       },
       computed: {
-        x() {
+        x () {
           return 1
         }
       }
@@ -102,7 +104,7 @@ describe('Validation plugin', () => {
   it('should have a $v key defined if used as function', () => {
     const vm = new Vue({
       ...base,
-      validations() {
+      validations () {
         return {
           value: { isEven }
         }
@@ -124,7 +126,7 @@ describe('Validation plugin', () => {
   })
 
   describe('Async', () => {
-    function setupAsync() {
+    function setupAsync () {
       let resolvePromise = { resolve: null, reject: null }
       const asyncVal = (val) => {
         if (val === '') return true
@@ -234,7 +236,7 @@ describe('Validation plugin', () => {
           value: 1,
           value2: 2
         },
-        validations() {
+        validations () {
           return {
             value: { fn: this.out ? T : F },
             value2: { fn: this.out ? T : F }
@@ -255,7 +257,7 @@ describe('Validation plugin', () => {
           value: 1,
           value2: 2
         },
-        validations() {
+        validations () {
           return {
             value: { fn: this.out ? T : F },
             value2: { fn: this.out ? T : F }
@@ -530,7 +532,7 @@ describe('Validation plugin', () => {
       it('should have $invalid value set to true', () => {
         const vm = new Vue({
           ...base,
-          data() {
+          data () {
             return {
               value: 5
             }
@@ -544,7 +546,7 @@ describe('Validation plugin', () => {
       it('should have validator name value set to false', () => {
         const vm = new Vue({
           ...base,
-          data() {
+          data () {
             return {
               value: 5
             }
@@ -691,7 +693,7 @@ describe('Validation plugin', () => {
   })
   describe('validating collections with $each', () => {
     const vmDef = (validator, tracker) => ({
-      data() {
+      data () {
         return {
           list: [
             {
@@ -728,7 +730,7 @@ describe('Validation plugin', () => {
       expect(vm.$v.list.$invalid).to.be.false
       vm.list = 1
       expect(vm.$v.list.$invalid).to.be.false
-      vm.list = function() {}
+      vm.list = function () {}
       expect(vm.$v.list.$invalid).to.be.false
       vm.list = [{ value: 2 }]
       expect(vm.$v.list.$invalid).to.be.false
@@ -736,9 +738,9 @@ describe('Validation plugin', () => {
       expect(vm.$v.list.$each[1]).to.not.exist
     })
 
-    it('should allow parent object to be non object', function() {
+    it('should allow parent object to be non object', function () {
       const vm = new Vue({
-        data() {
+        data () {
           return {
             obj: {
               value: 1
@@ -763,7 +765,7 @@ describe('Validation plugin', () => {
       expect(vm.$v.obj.$invalid).to.be.true
       vm.obj = 'string'
       expect(vm.$v.obj.$invalid).to.be.true
-      vm.obj = function() {}
+      vm.obj = function () {}
       expect(vm.$v.obj.$invalid).to.be.true
       vm.obj = []
       expect(vm.$v.obj.$invalid).to.be.true
@@ -899,7 +901,7 @@ describe('Validation plugin', () => {
 
   describe('validating direct values with $each', () => {
     const vmDef = (validator, tracker) => ({
-      data() {
+      data () {
         return {
           external: true,
           list: [1, 2, 3]
@@ -976,7 +978,7 @@ describe('Validation plugin', () => {
     })
 
     it('should revalidate all items with updated dependency', () => {
-      const spy = sinon.spy(function(val, arr, rootVm) {
+      const spy = sinon.spy(function (val, arr, rootVm) {
         return val > 2 ? !isEven(val) : this.external
       })
       const vm = new Vue(vmDef(spy))
@@ -1003,7 +1005,7 @@ describe('Validation plugin', () => {
         ...base,
         validations: {
           value: {
-            isOdd(v) {
+            isOdd (v) {
               return v % 2 === 1
             }
           }
@@ -1085,7 +1087,7 @@ describe('Validation plugin', () => {
   describe('$v.$flattenParams', () => {
     const vm = new Vue({
       ...base,
-      data() {
+      data () {
         return {
           value: 5
         }
@@ -1108,7 +1110,7 @@ describe('Validation plugin', () => {
     describe('for no validators', () => {
       const vm = new Vue({
         ...base,
-        data() {
+        data () {
           return {
             value: 5
           }
@@ -1126,7 +1128,7 @@ describe('Validation plugin', () => {
     describe('for nested validators', () => {
       const vm = new Vue({
         ...base,
-        data() {
+        data () {
           return {
             first: {
               foo: 5,

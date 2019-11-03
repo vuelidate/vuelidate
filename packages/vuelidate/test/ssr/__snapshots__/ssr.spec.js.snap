@@ -1,0 +1,3 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`SSR Should not throw on render when referencing $v.val.isEven 1`] = `<div>false</div>`;

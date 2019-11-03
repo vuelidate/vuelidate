@@ -5,5 +5,8 @@ module.exports = {
   rootDir: '.',
   transform: {
     '^.+\\.js$': [dir('node_modules/babel-jest'), { cwd: __dirname }]
-  }
+  },
+  'snapshotSerializers': [
+    dir('node_modules/jest-serializer-vue')
+  ]
 }
