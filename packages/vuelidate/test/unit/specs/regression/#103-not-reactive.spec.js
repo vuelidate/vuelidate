@@ -24,12 +24,12 @@ describe('#103 validation status is sometimes not evaluated', () => {
       }
     })
 
-    expect(vm.$v.$invalid).to.be.true
+    expect(vm.$v.$invalid).toBe(true)
 
     vm.identifier = 'test'
     vm.password = 'test'
     vm.repeatPassword = 'test'
 
-    expect(vm.$v.$invalid).to.be.false
+    expect(vm.$v.$invalid).toBe(false)
   })
 })

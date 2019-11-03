@@ -6,7 +6,7 @@ describe('Virtual validation', () => {
     const mk = (k) => h(Vue, '' + k, {})
     const vdom = [1, 2, 3, 4, 5].map(mk)
     patchChildren(vdom, vdom)
-    expect(vdom[0].vm).to.not.exist
+    expect(vdom[0].vm).toBeFalsy()
   })
 
   it('should do nothing when same vdom element passed', () => {
@@ -17,11 +17,11 @@ describe('Virtual validation', () => {
     patchChildren(null, vdom1)
     vdom2[1].vm = null
     patchChildren(vdom1, vdom2)
-    expect(vdom2[1].vm).to.not.exist
+    expect(vdom2[1].vm).toBeFalsy()
   })
 
   it('should not crash when two nulls passed', () => {
-    expect(() => patchChildren(null, null)).not.to.throw()
+    expect(() => patchChildren(null, null)).not.toThrowError()
   })
 
   it('should allow left move', () => {
@@ -67,8 +67,8 @@ describe('Virtual validation', () => {
     patchChildren(null, vdom1)
     spy.resetHistory()
     patchChildren(vdom1, vdom2)
-    expect(vdom2[1].vm).to.exist
-    expect(vdom2[1].vm.k).to.equal(6)
+    expect(vdom2[1].vm).toBeDefined()
+    expect(vdom2[1].vm.k).toBe(6)
     expect(spy).to.have.been.calledWith(6)
   })
 

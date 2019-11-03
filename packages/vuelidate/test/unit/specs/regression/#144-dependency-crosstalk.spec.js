@@ -23,10 +23,10 @@ describe('#144 Dependency crosstalk', () => {
         B: { T }
       }
     })
-    expect(vm.$v.A.noCrosstalk).to.be.true
+    expect(vm.$v.A.noCrosstalk).toBe(true)
     expect(noCrosstalkSpy).to.be.calledOnce
     vm.B = 'newB'
-    expect(vm.$v.A.noCrosstalk).to.be.true
+    expect(vm.$v.A.noCrosstalk).toBe(true)
     expect(noCrosstalkSpy).to.be.calledOnce
   })
 })

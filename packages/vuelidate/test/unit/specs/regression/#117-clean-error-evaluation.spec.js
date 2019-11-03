@@ -12,7 +12,7 @@ describe('#117 too eager evaluation', () => {
       }
     })
 
-    expect(vm.$v.test.$error).to.be.false
+    expect(vm.$v.test.$error).toBe(false)
     expect(spy).to.not.have.been.called
   })
 
@@ -28,7 +28,7 @@ describe('#117 too eager evaluation', () => {
     })
 
     vm.$v.test.$touch()
-    expect(vm.$v.test.$error).to.be.false
+    expect(vm.$v.test.$error).toBe(false)
     expect(spy).to.have.been.calledOnce
   })
 })
