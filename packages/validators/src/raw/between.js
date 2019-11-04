@@ -7,4 +7,3 @@ export default (min, max) =>
     ((!/\s/.test(value) || value instanceof Date) &&
       +unwrap(min) <= +value &&
       +unwrap(max) >= +value)
-

@@ -7,11 +7,15 @@
   "repository": "https://github.com/vuelidate/vuelidate",
   "license": "MIT",
   "scripts": {
-    "build": "bili src src/raw --format esm --format cjs"
+    "build": "bili src src/raw --format esm --format cjs",
+    "lint": "eslint src"
   },
   "devDependencies": {
     "bili": "^4.8.1",
     "eslint-plugin-jest": "^23.0.2",
     "jest": "^24.9.0"
-  }
+  },
+  "sideEffects": [
+    "./src/utils/common.js"
+  ]
 }

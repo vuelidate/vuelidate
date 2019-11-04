@@ -29,8 +29,8 @@ describe('or validator', () => {
   })
 
   it('should pass values or model to function', () => {
-    const spy = sinon.spy()
+    const spy = jest.fn()
     or(spy)(1, 2)
-    expect(spy).to.have.been.calledWith(1, 2)
+    expect(spy).toHaveBeenCalledWith(1, 2)
   })
 })
