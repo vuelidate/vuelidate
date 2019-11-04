@@ -25,6 +25,7 @@
     "lerna:build": "lerna run build --parallel",
     "lerna:version": "lerna version --conventional-commits",
     "release": "yarn lerna:build && yarn lerna:publish",
+    "release:dry": "yarn lerna:build && yarn lerna:version --no-push --no-git-tag-version",
     "test:unit": "jest"
   }
 }
