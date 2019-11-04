@@ -6,9 +6,13 @@
   "module": "index.esm.js",
   "repository": "https://github.com/vuelidate/vuelidate",
   "license": "MIT",
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "build": "bili",
-    "test:unit": "jest"
+    "test:unit": "jest",
+    "lint": "eslint src test"
   },
   "dependencies": {
     "@vuelidate/validators": "^1.0.0"
