@@ -40,38 +40,37 @@
 ## Installation
 
 ```bash
-npm install vuelidate --save
+npm install @vuelidate/core @vuelidate/validators @vue/composition-api --save
+```
+or
+```bash
+yarn add @vuelidate/core @vuelidate/validators @vue/composition-api
 ```
 
-You can import the library and use as a Vue plugin to enable the functionality globally on all components containing validation configuration.
+First you need to install `@vue/composition-api`, Vuelidate uses it extensively under the hood.
+
+To enable the functionality globally on all components containing validation configuration, you can import the library and use as a Vue plugin.
 
 ```javascript
 import Vue from 'vue'
-import Vuelidate from 'vuelidate'
-Vue.use(Vuelidate)
+import VueCompositionApi from '@vue/composition-api'
+import { VuelidatePlugin } from '@vuelidate/core'
+
+Vue.use(VueCompositionApi)
+Vue.use(VuelidatePlugin)
 ```
 
 Alternatively it is possible to import a mixin directly to components in which it will be used.
 
-```javascript
-import { validationMixin } from 'vuelidate'
-
-var Component = Vue.extend({
-  mixins: [validationMixin],
-  validations: { ... }
-})
-```
-
-The browser-ready bundle is also provided in the package.
-
 ```html
-<script src="vuelidate/dist/vuelidate.min.js"></script>
-<!-- The builtin validators is added by adding the following line. -->
-<script src="vuelidate/dist/validators.min.js"></script>
-```
-
-```javascript
-Vue.use(window.vuelidate.default)
+<script>
+import { VuelidateMixin } from '@vuelidate/core'
+  
+export default {
+  mixins: [VuelidateMixin],
+  validations: {...}
+}
+</script>
 ```
 
 ## Basic usage
@@ -79,7 +78,7 @@ Vue.use(window.vuelidate.default)
 For each value you want to validate, you have to create a key inside validations options. You can specify when input becomes dirty by using appropriate event on your input box.
 
 ```javascript
-import { required, minLength, between } from 'vuelidate/lib/validators'
+import { required, minLength, between } from '@vuelidate/validators'
 
 export default {
   data () {
@@ -102,9 +101,9 @@ export default {
 
 This will result in a validation object:
 
-```javascript
-$v: {
-  name: {
+```json
+{
+  "name": {
     "required": false,
     "minLength": false,
     "$invalid": true,
@@ -112,7 +111,7 @@ $v: {
     "$error": false,
     "$pending": false
   },
-  age: {
+  "age": {
     "between": false
     "$invalid": true,
     "$dirty": false,
@@ -128,25 +127,19 @@ Checkout the docs for more examples: [https://vuelidate.netlify.com/](https://vu
 
 ``` bash
 # install dependencies
-npm install
+yarn install
 
-# serve with hot reload at localhost:8080
-npm run dev
+# create bundles.
+yarn build
 
-# create UMD bundle.
-npm run build
+# Create docs inside /docs package
+yarn dev
 
-# Create docs inside /gh-pages ready to be published
-npm run docs
+# run unit tests for entire monorepo
+yarn test:unit
 
-# run unit tests
-npm run unit
-
-# run all tests
-npm test
+# You can also run for same command per package
 ```
-
-For detailed explanation on how things work, checkout the [guide](http://vuejs-templates.github.io/webpack/) and [docs for vue-loader](http://vuejs.github.io/vue-loader).
 
 ## Contributors
 
