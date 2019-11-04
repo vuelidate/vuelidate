@@ -7,11 +7,10 @@
   "repository": "https://github.com/vuelidate/vuelidate",
   "license": "MIT",
   "scripts": {
-    "build": "bili src --format esm",
+    "build": "bili",
     "test:unit": "jest"
   },
   "dependencies": {
-    "@vue/composition-api": "^0.3.2",
     "@vuelidate/validators": "^1.0.0"
   },
   "devDependencies": {
@@ -22,6 +21,7 @@
     "vue-server-renderer": "^2.6.10"
   },
   "peerDependencies": {
+    "@vue/composition-api": "^0.3.2",
     "vue": "^2.6.10"
   }
 }
