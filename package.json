@@ -3,7 +3,6 @@
   "version": "1.0.0",
   "private": true,
   "description": "Simple, lightweight model-based validation for Vue.js",
-  "author": "Paweł Grabarz <pawel.grabarz@monterail.com>",
   "workspaces": [
     "packages/*"
   ],
@@ -21,8 +20,10 @@
     "lern": "^1.0.0"
   },
   "scripts": {
-    "lerna:publish": "lerna publish --conventional-commits",
+    "lerna:publish": "lerna publish --conventional-commits --conventional-prerelease",
     "lerna:changed": "lerna changed",
-    "lerna:build": "lerna run build --parallel"
+    "lerna:build": "lerna run build --parallel",
+    "lerna:version": "lerna version --conventional-commits --conventional-prerelease",
+    "test:unit": "jest"
   }
 }
