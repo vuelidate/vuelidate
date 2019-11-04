@@ -20,10 +20,11 @@
     "lern": "^1.0.0"
   },
   "scripts": {
-    "lerna:publish": "lerna publish --conventional-commits --conventional-prerelease",
+    "lerna:publish": "lerna publish --conventional-commits",
     "lerna:changed": "lerna changed",
     "lerna:build": "lerna run build --parallel",
-    "lerna:version": "lerna version --conventional-commits --conventional-prerelease",
+    "lerna:version": "lerna version --conventional-commits",
+    "release": "yarn lerna:build && yarn lerna:publish",
     "test:unit": "jest"
   }
 }
