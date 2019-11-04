@@ -4,5 +4,10 @@
     "packages/*"
   ],
   "version": "independent",
+  "command": {
+    "version": {
+      "message": "chore(release): publish %s"
+    }
+  },
   "useWorkspaces": true
 }
