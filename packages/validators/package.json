@@ -17,5 +17,8 @@
   },
   "sideEffects": [
     "./src/utils/common.js"
-  ]
+  ],
+  "publishConfig": {
+    "access": "public"
+  }
 }
