@@ -1,6 +1,6 @@
 {
   "name": "@vuelidate/validators",
-  "version": "1.0.0-alpha.1",
+  "version": "1.0.0-alpha.2",
   "description": "Validators for Vuelidate",
   "main": "dist/index.js",
   "module": "dist/index.esm.js",
