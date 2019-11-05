@@ -1,5 +1,6 @@
 {
   "name": "@vuelidate/docs",
+  "version": "1.0.0",
   "private": true,
   "description": "Vuelidate documentation",
   "main": "index.js",
