@@ -13,6 +13,17 @@ yarn add @vuelidate/core @vuelidate/validators
 ```
 
 ## Development
+To test the package run
+
+```bash
+yarn test:unit
+```
+
+To link the package run
+
+```bash
+yarn link
+```
 
 To build run the package, run: 
 
