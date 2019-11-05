@@ -9,7 +9,9 @@
     "build": "vuepress build src",
     "dev": "vuepress dev src"
   },
-  "devDependencies": {
+  "dependencies": {
+    "@vue/composition-api": "^0.3.2",
+    "vue": "^2.6.10",
     "vuepress": "^1.2.0"
   }
 }
