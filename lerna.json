@@ -6,7 +6,7 @@
   "version": "independent",
   "command": {
     "version": {
-      "message": "chore(release): publish %s"
+      "message": "chore(release): publish"
     }
   },
   "useWorkspaces": true
