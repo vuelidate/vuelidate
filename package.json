@@ -15,7 +15,7 @@
     "bundle:web": "rimraf dist && cross-env BUILD=web node build/build-bundle.js",
     "bundle:lib": "rimraf lib && cross-env BUILD=lib babel src --out-dir lib",
     "build": "npm run bundle:lib && npm run bundle:web",
-    "docs": "rimraf gh-pages && mkdir gh-pages && node build/build-docs.js",
+    "docs": "rimraf gh-pages && mkdir gh-pages && cp docs/_redirects gh-pages && node build/build-docs.js",
     "unit": "karma start test/unit/karma.conf.js --watch",
     "test-unit": "karma start test/unit/karma.conf.js --single-run",
     "test-ssr": "cross-env BABEL_ENV=node mocha --require @babel/register test/ssr/index.js",
