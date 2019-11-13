@@ -57,7 +57,7 @@
     "karma-webpack": "^3.0.0",
     "lolex": "^2.6.0",
     "mini-css-extract-plugin": "^0.4.0",
-    "mocha": "^5.2.0",
+    "mocha": "^6.2.2",
     "node-sass": "^4.9.0",
     "opn": "^5.3.0",
     "ora": "^2.1.0",
