@@ -1,6 +1,9 @@
 // "required" core, used in almost every validator to allow empty values
 
+import { unwrap } from '../utils/common'
+
 export const req = (value) => {
+  value = unwrap(value)
   if (Array.isArray(value)) return !!value.length
   if (value === undefined || value === null) {
     return false
@@ -29,6 +32,7 @@ export const req = (value) => {
  * @return {number}
  */
 export const len = (value) => {
+  value = unwrap(value)
   if (Array.isArray(value)) return value.length
   if (typeof value === 'object') {
     return Object.keys(value).length
@@ -41,4 +45,7 @@ export const len = (value) => {
  * @param {RegExp} expr
  * @return {function(*=): boolean}
  */
-export const regex = expr => value => !req(value) || expr.test(value)
+export const regex = expr => value => {
+  value = unwrap(value)
+  return !req(value) || expr.test(value)
+}
