@@ -29,8 +29,8 @@ describe('and validator', () => {
   })
 
   it('should pass values and model to function', () => {
-    const spy = sinon.spy()
+    const spy = jest.fn()
     and(spy)(1, 2)
-    expect(spy).to.have.been.calledWith(1, 2)
+    expect(spy).toHaveBeenCalledWith(1, 2)
   })
 })

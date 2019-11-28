@@ -12,11 +12,11 @@ describe('requiredIf validator', () => {
     expect(requiredIf(F)('')).toBe(true)
   })
 
-  it('should not validate empty string when prop condition is met', () => {
-    expect(requiredIf('prop')('', { prop: true })).toBe(false)
+  it('should not validate empty string when simple boolean condition is met', () => {
+    expect(requiredIf('prop')('')).toBe(false)
   })
 
-  it('should validate empty string when prop condition not met', () => {
-    expect(requiredIf('prop')('', { prop: false })).toBe(true)
+  it('should validate empty string when simple boolean condition not met', () => {
+    expect(requiredIf('')('')).toBe(true)
   })
 })
