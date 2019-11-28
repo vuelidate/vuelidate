@@ -33,3 +33,8 @@ export function getValidatorObj (validator) {
       $validator: validator
     }
 }
+
+export function isTruthy (prop) {
+  prop = unwrap(prop)
+  return Boolean(isFunction(prop) ? prop() : prop)
+}
