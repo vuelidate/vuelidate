@@ -183,7 +183,7 @@ function createValidatorResult (rule, model) {
 /**
  * @typedef ErrorObject
  * @property {Ref<String>} $message - Reactive error message
- * @property {Ref<Object>} $params - Params passed from withWrapper
+ * @property {Ref<Object>} $params - Params passed from withParams
  * @property {Ref<Boolean>} $pending - If validation is pending
  * @property {String} $property - Dot notation path to state
  * @property {String} $validator - Validator name
