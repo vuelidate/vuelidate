@@ -29,7 +29,7 @@
     "@babel/plugin-proposal-export-default-from": "^7.0.0-beta.47",
     "@babel/preset-env": "^7.0.0-beta.47",
     "@babel/register": "^7.0.0-beta.47",
-    "autoprefixer": "^8.5.0",
+    "autoprefixer": "^9.7.3",
     "babel-loader": "^8.0.0-beta.3",
     "chai": "^4.1.2",
     "connect-history-api-fallback": "^1.5.0",
