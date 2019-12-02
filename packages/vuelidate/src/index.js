@@ -48,7 +48,7 @@ export default function useVuelidate (validationsArg, state, registerAs) {
 /**
  * Vuelidate mixin, used to attach Vuelidate only to specified components
  * Relies on `validations` option to be defined on component instance
- * @type {{beforeCreate: Function }}
+ * @type {ComponentOptions}
  */
 export const VuelidateMixin = {
   beforeCreate () {
