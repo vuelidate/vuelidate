@@ -192,12 +192,12 @@ function createValidatorResult (rule, model) {
 /**
  * @typedef ValidationResult
  * @property {Ref<Boolean>} $pending
- * @property {Function} $touch
  * @property {Ref<Boolean>} $dirty
- * @property {Function} $reset
  * @property {Ref<Boolean>} $invalid
  * @property {Ref<Boolean>} $error
- * @property {Ref<[ErrorObject]>} $errors
+ * @property {Function} $touch
+ * @property {Function} $reset
+ * @property {Ref<ErrorObject[]>} $errors
  */
 
 /**
@@ -284,9 +284,9 @@ function collectNestedValidationResults (validations, state, key) {
 
 /**
  * Generates the Meta fields from the results
- * @param {Object} results
- * @param {Object} nestedResults
- * @return {{$anyDirty: *, $error: *, $invalid: *, $errors: *, $dirty: *}}
+ * @param {ValidationResult|{}} results
+ * @param {Object<ValidationResult>} nestedResults
+ * @return {{$anyDirty: Ref<Boolean>, $error: Ref<Boolean>, $invalid: Ref<Boolean>, $errors: Ref<ErrorObject[]>, $dirty: Ref<Boolean>}}
  */
 function createMetaFields (results, nestedResults) {
   const $dirty = ref(false)
@@ -330,7 +330,7 @@ function createMetaFields (results, nestedResults) {
  * @property {Boolean} $error
  * @property {Boolean} $pending
  * @property {Boolean} $invalid
- * @property {*} $errors
+ * @property {ErrorObject[]} $errors
  * @property {*} [$model]
  * @property {Function} $touch
  * @property {Boolean} $dirty
