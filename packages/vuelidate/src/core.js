@@ -4,7 +4,7 @@ import { computed, reactive, ref, watch } from '@vue/composition-api'
 /**
  * @typedef NormalizedValidator
  * @property {Validator} $validator
- * @property {Ref<String>} $message
+ * @property {Ref<String> | Function} $message
  * @property {Ref<Object>} $params
  */
 
@@ -134,6 +134,7 @@ function createAsyncResult (rule, model, initResult, $pending) {
           $invalid.value = true
         })
     },
+    // we set lazy: true to stop watcher eager invocation
     { lazy: true }
   )
 
@@ -141,10 +142,11 @@ function createAsyncResult (rule, model, initResult, $pending) {
 }
 
 /**
- *
+ * Returns the validation result.
+ * Detects async and sync validators.
  * @param {NormalizedValidator} rule
  * @param {*} model
- * @return {{$params: *, $message: *, $pending: *, $invalid: *}}
+ * @return {{$params: *, $message: Ref<String>, $pending: Ref<Boolean>, $invalid: Ref<Boolean>}}
  */
 function createValidatorResult (rule, model) {
   const ruleResult = callRule(rule.$validator, model)
@@ -385,6 +387,7 @@ export function setValidations ({ validations, state, key, parentKey, childResul
     watch(
       state[key],
       () => { $dirty.value = true },
+      // we set lazy: true to stop watcher eager invocation
       { lazy: true }
     )
   }
