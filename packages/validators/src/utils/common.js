@@ -34,6 +34,11 @@ export function getValidatorObj (validator) {
     }
 }
 
+/**
+ * Returns whether a value is truthy ot not.
+ * @param {Function|*} prop
+ * @return {boolean}
+ */
 export function isTruthy (prop) {
   prop = unwrap(prop)
   return Boolean(isFunction(prop) ? prop() : prop)
