@@ -1,7 +1,6 @@
 import { req } from '../common'
+import { isTruthy } from '../utils/common'
 
-// TODO: double check
-export default (prop) =>
-  function (value) {
-    return !req(prop) ? req(value) : true
-  }
+export default (validateAgainst) => (value) => {
+  return !isTruthy(validateAgainst) ? req(value) : true
+}

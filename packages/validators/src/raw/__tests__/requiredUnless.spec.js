@@ -4,19 +4,13 @@ const T = () => true
 const F = () => false
 
 describe('requiredUnless validator', () => {
-  it('should not validate empty string when functional condition is not met', () => {
+  it('should not validate if prop is falsy', () => {
     expect(requiredUnless(F)('')).toBe(false)
+    expect(requiredUnless(F)('truthy value')).toBe(true)
   })
 
-  it('should validate empty string when functional condition met', () => {
+  it('should not validate when prop condition is truthy', () => {
     expect(requiredUnless(T)('')).toBe(true)
-  })
-
-  it('should not validate empty string when prop condition is not met', () => {
-    expect(requiredUnless('prop')('', { prop: false })).toBe(false)
-  })
-
-  it('should validate empty string when prop condition met', () => {
-    expect(requiredUnless('prop')('', { prop: true })).toBe(true)
+    expect(requiredUnless(T)('truthy value')).toBe(true)
   })
 })
