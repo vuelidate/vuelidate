@@ -1,9 +1,10 @@
 import Vue from 'vue'
-
+import flushPromises from 'flush-promises'
 import { helpers } from '@vuelidate/validators/src'
 import VueCompositionApi from '@vue/composition-api'
 import { VuelidatePlugin } from '../../../src'
 
+Vue.config.productionTip = false
 Vue.use(VuelidatePlugin)
 Vue.use(VueCompositionApi)
 
@@ -160,7 +161,13 @@ describe('Validation plugin', () => {
       expect(vm.$v.value.$pending).toBe(false)
     })
 
-    it('$pending should be true immediately after value change', () => {
+    it('$pending should be true immediately after value change on the validator itself', () => {
+      const { vm } = setupAsync()
+      vm.value = 'x1'
+      expect(vm.$v.value.asyncVal.$pending).toBe(true)
+    })
+
+    it('$pending should cascade to state property', async () => {
       const { vm } = setupAsync()
       vm.value = 'x1'
       expect(vm.$v.value.$pending).toBe(true)
@@ -178,15 +185,12 @@ describe('Validation plugin', () => {
       expect(resolvePromise.resolve).toBeNull()
     })
 
-    it('$pending should be false tick after promise resolve', (done) => {
+    it('$pending should be false tick after promise resolve', async () => {
       const { resolvePromise, vm } = setupAsync()
       vm.value = 'x1'
-      vm.$v.value.asyncVal // execute getter
       resolvePromise.resolve(true)
-      Promise.resolve().then(() => {
-        expect(vm.$v.value.$pending).toBe(false)
-        done()
-      })
+      await flushPromises()
+      expect(vm.$v.value.$pending).toBe(false)
     })
 
     it('asyncVal value should be false just after value change', () => {

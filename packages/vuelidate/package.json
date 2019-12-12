@@ -3,7 +3,7 @@
   "description": "Simple, lightweight model-based validation for Vue.js",
   "version": "2.0.0-alpha.0",
   "main": "dist/index.js",
-  "module": "index.esm.js",
+  "module": "dist/index.esm.js",
   "repository": "https://github.com/vuelidate/vuelidate",
   "license": "MIT",
   "files": [
