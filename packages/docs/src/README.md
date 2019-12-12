@@ -3,7 +3,7 @@
 
 Vuelidate 2 is a simple, but powerful, lightweight model-based validation for Vue.js.
 
-It supports Vue 3 
+It supports Vue 3
 
 ## Installation
 
