@@ -103,7 +103,7 @@ function createComputedResult (rule, model) {
  * @param {Function} rule
  * @param {Ref<*>} model
  * @param {Promise<Boolean>} initResult
- * @param $pending
+ * @param {Ref<Boolean>} $pending
  * @return {Ref<Boolean>}
  */
 function createAsyncResult (rule, model, initResult, $pending) {
@@ -152,7 +152,7 @@ function createValidatorResult (rule, model) {
   const ruleResult = callRule(rule.$validator, model)
 
   const $pending = ref(false)
-  const $params = rule.$params
+  const $params = rule.$params || {}
   const $invalid = isPromise(ruleResult)
     ? createAsyncResult(
       rule.$validator,
@@ -219,8 +219,7 @@ function createValidationResults (rules, state, key, parentKey) {
   let result = {
     $dirty,
     $touch: () => { $dirty.value = true },
-    $reset: () => { $dirty.value = false },
-    $pending: ref(false)
+    $reset: () => { $dirty.value = false }
   }
 
   ruleKeys.forEach(ruleKey => {
@@ -232,6 +231,10 @@ function createValidationResults (rules, state, key, parentKey) {
 
   result.$invalid = computed(() =>
     ruleKeys.some(ruleKey => result[ruleKey].$invalid)
+  )
+
+  result.$pending = computed(() =>
+    ruleKeys.some(ruleKey => result[ruleKey].$pending)
   )
 
   result.$error = computed(() =>
@@ -311,6 +314,12 @@ function createMetaFields (results, nestedResults) {
     false
   )
 
+  const $pending = computed(() =>
+    Object.values(nestedResults).some(r => r.$pending) ||
+    unwrap(results.$pending) ||
+    false
+  )
+
   const $anyDirty = computed(() =>
     Object.values(nestedResults).some(r => r.$dirty)
   )
@@ -322,7 +331,8 @@ function createMetaFields (results, nestedResults) {
     $errors,
     $invalid,
     $anyDirty,
-    $error
+    $error,
+    $pending
   }
 }
 
@@ -360,7 +370,6 @@ export function setValidations ({ validations, state, key, parentKey, childResul
 
   // Use rules for the current state fragment and validate it
   const results = createValidationResults(rules, state, key, parentKey)
-
   // Use nested keys to repeat the process
   // *WARN*: This is recursive
   const nestedResults = collectNestedValidationResults(nestedValidators, state, key)
@@ -372,7 +381,8 @@ export function setValidations ({ validations, state, key, parentKey, childResul
     $errors,
     $invalid,
     $anyDirty,
-    $error
+    $error,
+    $pending
   } = createMetaFields(results, nestedResults)
 
   const $model = computed({
@@ -403,6 +413,7 @@ export function setValidations ({ validations, state, key, parentKey, childResul
     $errors,
     $invalid,
     $anyDirty,
+    $pending,
     ...nestedResults
   })
 }
