@@ -12,7 +12,8 @@
   "scripts": {
     "build": "bili",
     "test:unit": "jest",
-    "lint": "eslint src test"
+    "lint": "eslint src test",
+    "dev": "yarn build --watch"
   },
   "devDependencies": {
     "@babel/plugin-transform-runtime": "^7.6.2",

@@ -8,6 +8,7 @@
   "license": "MIT",
   "scripts": {
     "build": "bili src src/raw --format esm --format cjs",
+    "dev": "yarn build --watch",
     "test:unit": "jest",
     "lint": "eslint src"
   },
