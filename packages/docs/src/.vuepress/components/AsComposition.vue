@@ -6,7 +6,7 @@
     <input type="number" v-model.number="minimumLength">
     <hr />
     <label>Password: </label>
-    <input type="text" v-model="password" >
+    <input type="text" v-model="password">
     <br>
     <label>Repeat Password: </label>
     <input type="text" v-model="repeatPassword">
@@ -16,9 +16,9 @@
       :style="error.$pending ? 'color: blue;' : 'color: red;'"
     >
       <strong>{{ error.$validator }}</strong>
-      <small style="color: black"> on property </small>
+      <small style="color: black"> on property</small>
       <strong>{{ error.$property }}</strong>
-      <small style="color: black"> says: </small>
+      <small style="color: black"> says:</small>
       <strong>{{ error.$message }}</strong>
     </p>
     <pre>{{ $v }}</pre>
@@ -30,13 +30,12 @@
 </template>
 
 <script>
-import useVuelidate from '../index'
-import { required, minLength, sameAs } from '../validators'
-import {
-  ref,
-  reactive
-} from '@vue/composition-api'
-import { withMessage, withParams, unwrap } from '@/utils'
+import { ref, reactive } from '@vue/composition-api'
+
+import useVuelidate from '@vuelidate/core'
+import { required, minLength, sameAs, helpers } from '@vuelidate/validators/dist/raw'
+
+const { withMessage, withParams, unwrap } = helpers
 
 function $t (key, params) {
   return {
@@ -58,22 +57,22 @@ function usePassword ({ minimumLength }) {
 
   const rules = {
     password: {
-      required: withMessage(required, 'This field is required'),
+      required: withMessage('This field is required', required),
       minLength: withMessage(
         minLength(minimumLength),
         ({ $params }) => `Has to be at least ${$params.length} characters long`
       ),
       asyncValidator: withMessage(
-        asyncValidator,
-        ({ $pending, $model }) => $pending ? 'Checking!' : `Error! ${$model} Isn’t "aaaa"`
+        ({ $pending, $model }) => $pending ? 'Checking!' : `Error! ${$model} Isn’t "aaaa"`,
+        asyncValidator
       ),
       $autoDirty: true
     },
     repeatPassword: {
       required,
       sameAs: withMessage(
-        sameAs(password),
-        ({ $params }) => $t('errors.sameAs', $params.equalTo)
+        ({ $params }) => $t('errors.sameAs', $params.equalTo),
+        sameAs(password)
       ),
       $autoDirty: true
     }
@@ -91,8 +90,8 @@ function usePassword ({ minimumLength }) {
   }
 }
 
-const hasKeys = l => v => Object.keys(v).length === unwrap(l)
-const hasKeysWithParams = keys => withParams(hasKeys(keys), { keys })
+const hasKeys = keyLength => value => Object.keys(value).length === unwrap(keyLength)
+const hasKeysWithParams = keys => withParams({ keys }, hasKeys(keys))
 
 export default {
   setup () {
@@ -106,8 +105,8 @@ export default {
     })
     const userRules = {
       hasKeys: withMessage(
-        hasKeysWithParams(keyLength),
-        ({ $params }) => `Should have exactly ${$params.keys} keys.`
+        ({ $params }) => `Should have exactly ${$params.keys} keys.`,
+        hasKeysWithParams(keyLength)
       ),
       firstName: { required },
       lastName: { required }
