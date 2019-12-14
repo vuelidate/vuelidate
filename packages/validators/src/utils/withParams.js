@@ -1,4 +1,4 @@
-import { getValidatorObj } from './common'
+import { getValidatorObj, isObject } from './common'
 
 /**
  * Allows attaching parameters to a validator
@@ -7,6 +7,8 @@ import { getValidatorObj } from './common'
  * @return {ValidatorObject}
  */
 export default function withParams ($params, $validator) {
+  if (!isObject($params)) throw new Error(`[@vuelidate/validators]: First parameter to "withParams" should be an object, provided ${typeof $params}`)
+
   const validatorObj = getValidatorObj($validator)
 
   validatorObj.$params = {

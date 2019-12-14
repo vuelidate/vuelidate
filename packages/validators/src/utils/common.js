@@ -4,6 +4,10 @@ export function isFunction (val) {
   return typeof val === 'function'
 }
 
+export function isObject (val) {
+  return val !== null && (typeof val === 'object' || isFunction(val))
+}
+
 /**
  * Unwraps a ref, returning its value
  * @param val

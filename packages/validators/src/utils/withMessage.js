@@ -8,10 +8,10 @@ import { getValidatorObj } from './common'
 
 /**
  * Attaches a message to a validator
- * @param {Function | Object} $validator
- * @param {(MessageCallback | String)} $message
+ * @param {MessageCallback | String} $message
+ * @param {ValidatorObject|Function} $validator
  */
-export default function withMessage ($validator, $message) {
+export default function withMessage ($message, $validator) {
   const validatorObj = getValidatorObj($validator)
   validatorObj.$message = $message
 
