@@ -1,4 +1,4 @@
-import alphaNum from '@vuelidate/validators/src/raw/alphaNum'
+import alphaNum from '../alphaNum'
 
 describe('alphaNum validator', () => {
   it('should validate undefined', () => {
