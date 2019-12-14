@@ -17,7 +17,8 @@ module.exports = {
       'examples',
       'api',
       'validators',
-      'custom_validators'
+      'custom_validators',
+      'test'
     ]
   }
 }
