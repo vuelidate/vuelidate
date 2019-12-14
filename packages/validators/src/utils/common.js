@@ -4,8 +4,8 @@ export function isFunction (val) {
   return typeof val === 'function'
 }
 
-export function isObject (val) {
-  return val !== null && (typeof val === 'object' || isFunction(val))
+export function isObject (o) {
+  return o !== null && typeof o === 'object' && !Array.isArray(o)
 }
 
 /**
@@ -18,19 +18,12 @@ export function unwrap (val) {
 }
 
 /**
- * @typedef ValidatorObject
- * @property {Function} $validator
- * @property {Function|String} $message
- * @property {Object|Array} $params
- */
-
-/**
  * Returns a standard ValidatorObject
  * Wraps a plain function into a ValidatorObject
- * @param {ValidatorObject|Function} validator
- * @return {ValidatorObject}
+ * @param {NormalizedValidator|Function} validator
+ * @return {NormalizedValidator}
  */
-export function getValidatorObj (validator) {
+export function normalizeValidatorObject (validator) {
   return isFunction(validator.$validator)
     ? validator
     : {

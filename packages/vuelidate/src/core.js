@@ -4,8 +4,8 @@ import { computed, reactive, ref, watch } from '@vue/composition-api'
 /**
  * @typedef NormalizedValidator
  * @property {Validator} $validator
- * @property {Ref<String> | Function} $message
- * @property {Ref<Object>} $params
+ * @property {String | Ref<String> | function(*): string} [$message]
+ * @property {Ref<Object>} [$params]
  */
 
 /**
@@ -17,7 +17,7 @@ import { computed, reactive, ref, watch } from '@vue/composition-api'
 /**
  * Raw validator function, before being normalized
  * Can return a Promise or a {@see ValidatorResponse}
- * @typedef {function(model): ((Promise<ValidatorResponse> | ValidatorResponse))} Validator
+ * @typedef {function(*): ((Promise<ValidatorResponse> | ValidatorResponse))} Validator
  */
 
 /**
