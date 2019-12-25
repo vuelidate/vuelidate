@@ -67,7 +67,7 @@
     "pug-plain-loader": "^1.0.0",
     "puppeteer": "^1.4.0",
     "raw-loader": "^0.5.1",
-    "rimraf": "^2.6.2",
+    "rimraf": "^3.0.0",
     "sass-loader": "^7.0.1",
     "shelljs": "^0.8.2",
     "sinon": "^5.0.7",
