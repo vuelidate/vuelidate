@@ -40,3 +40,7 @@ export function isTruthy (prop) {
   prop = unwrap(prop)
   return Boolean(isFunction(prop) ? prop() : prop)
 }
+
+export function isPromise (object) {
+  return isObject(object) && isFunction(object.then)
+}
