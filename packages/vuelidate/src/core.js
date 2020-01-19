@@ -187,7 +187,8 @@ function createValidatorResult (rule, model) {
  * @property {Ref<String>} $message - Reactive error message
  * @property {Ref<Object>} $params - Params passed from withParams
  * @property {Ref<Boolean>} $pending - If validation is pending
- * @property {String} $property - Dot notation path to state
+ * @property {String} $property - State key
+ * @property {String} $propertyPath - Dot notation path to state
  * @property {String} $validator - Validator name
  */
 
@@ -204,6 +205,7 @@ function createValidatorResult (rule, model) {
 
 /**
  * Creates the main Validation Results object for a state tree
+ * Walks the tree's top level branches
  * @param {Object<NormalizedValidator>} rules - Rules for the current state tree
  * @param {Object} state - Current state tree
  * @param {String} key - Key for the current state tree
@@ -211,6 +213,7 @@ function createValidatorResult (rule, model) {
  * @return {ValidationResult | {}}
  */
 function createValidationResults (rules, state, key, parentKey) {
+  // collect the property keys
   const ruleKeys = Object.keys(rules)
   if (!ruleKeys.length) return {}
 
@@ -246,7 +249,8 @@ function createValidationResults (rules, state, key, parentKey) {
     .map(ruleKey => {
       const res = result[ruleKey]
       return {
-        $property: parentKey ? `${parentKey}.${key}` : key,
+        $propertyPath: parentKey ? `${parentKey}.${key}` : key,
+        $property: key,
         $validator: ruleKey,
         $message: res.$message,
         $params: res.$params,
@@ -297,25 +301,32 @@ function createMetaFields (results, nestedResults) {
   const $dirty = ref(false)
 
   const $errors = computed(() => {
+    // current state level errors
     const modelErrors = unwrap(results.$errors) || []
 
+    // collect all nested state `$errors`
     const nestedErrors = Object.values(nestedResults)
       .filter(result => result.$errors.length)
       .reduce((errors, result) => {
         return errors.concat(...result.$errors)
       }, [])
 
+    // merge the $errors
     return modelErrors.concat(nestedErrors)
   })
 
   const $invalid = computed(() =>
+    // if any of the nested values is invalid
     Object.values(nestedResults).some(r => r.$invalid) ||
+    // or if the current state is invalid
     unwrap(results.$invalid) ||
     false
   )
 
   const $pending = computed(() =>
+    // if any of the nested values is pending
     Object.values(nestedResults).some(r => r.$pending) ||
+    // if any of the current state validators is pending
     unwrap(results.$pending) ||
     false
   )
@@ -385,7 +396,11 @@ export function setValidations ({ validations, state, key, parentKey, childResul
     $pending
   } = createMetaFields(results, nestedResults)
 
-  const $model = computed({
+  /**
+   * If we have no `key`, this is the top level state
+   * We dont need `$model` there.
+   */
+  let $model = key ? '' : computed({
     get: () => unwrap(state[key]),
     set: val => {
       $dirty.value = true
