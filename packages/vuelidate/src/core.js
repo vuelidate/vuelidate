@@ -215,7 +215,6 @@ function createValidatorResult (rule, model) {
 function createValidationResults (rules, state, key, parentKey) {
   // collect the property keys
   const ruleKeys = Object.keys(rules)
-  if (!ruleKeys.length) return {}
 
   const $dirty = ref(false)
 
@@ -224,6 +223,8 @@ function createValidationResults (rules, state, key, parentKey) {
     $touch: () => { $dirty.value = true },
     $reset: () => { $dirty.value = false }
   }
+
+  if (!ruleKeys.length) return result
 
   ruleKeys.forEach(ruleKey => {
     result[ruleKey] = createValidatorResult(
@@ -332,10 +333,17 @@ function createMetaFields (results, nestedResults) {
   )
 
   const $anyDirty = computed(() =>
-    Object.values(nestedResults).some(r => r.$dirty)
+    Object.values(nestedResults).some(r => r.$dirty.value)
   )
 
   const $error = computed(() => ($invalid.value && $dirty.value) || false)
+
+  const $touch = () => {
+    results.$touch()
+    Object.values(nestedResults).forEach((result) => {
+      result.$touch()
+    })
+  }
 
   return {
     $dirty,
@@ -343,7 +351,8 @@ function createMetaFields (results, nestedResults) {
     $invalid,
     $anyDirty,
     $error,
-    $pending
+    $pending,
+    $touch
   }
 }
 
@@ -393,7 +402,8 @@ export function setValidations ({ validations, state, key, parentKey, childResul
     $invalid,
     $anyDirty,
     $error,
-    $pending
+    $pending,
+    $touch
   } = createMetaFields(results, nestedResults)
 
   /**
@@ -429,6 +439,8 @@ export function setValidations ({ validations, state, key, parentKey, childResul
     $invalid,
     $anyDirty,
     $pending,
+    $touch,
+    // add each nested property's state
     ...nestedResults
   })
 }
