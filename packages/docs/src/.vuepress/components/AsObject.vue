@@ -1,7 +1,5 @@
 <template>
   <div>
-    <h2>As Object</h2>
-    <hr />
     <label>Minimal password length</label>
     <input type="number" v-model.number="minimumLength">
     <hr />
@@ -25,7 +23,7 @@
 </template>
 
 <script>
-import { required, minLength, sameAs, helpers } from '@vuelidate/validators/dist/raw.esm'
+import { required, minLength, sameAs, helpers } from '@vuelidate/validators/src/withMessages'
 
 const { withMessage, withParams, unwrap } = helpers
 

@@ -1,15 +1,17 @@
 <template>
-  <div>
-    <h2>As Composition</h2>
-    <hr />
-    <label>Minimal password length</label>
-    <input type="number" v-model.number="minimumLength">
-    <hr />
-    <label>Password: </label>
-    <input type="text" v-model="password">
-    <br>
-    <label>Repeat Password: </label>
-    <input type="text" v-model="repeatPassword">
+  <div style="padding-top: 2rem;">
+    <div style="margin-bottom: 20px">
+      <label>Minimal password length</label>
+      <input type="number" v-model.number="minimumLength">
+    </div>
+    <div style="margin-bottom: 10px">
+      <label>Password: </label>
+      <input type="text" v-model="password">
+    </div>
+    <div style="margin-bottom: 10px">
+      <label>Repeat Password: </label>
+      <input type="text" v-model="repeatPassword">
+    </div>
     <p
       v-for="(error, index) of $v.$errors"
       :key="index"
@@ -21,19 +23,14 @@
       <small style="color: black"> says:</small>
       <strong>{{ error.$message }}</strong>
     </p>
-    <pre>{{ $v }}</pre>
-    <hr />
-    <label>User required key length: </label>
-    <input type="number" v-model.number="keyLength">
-    <pre>{{ $vUser }}</pre>
+    <pre style="background-color: white;">{{ $v.$errors }}</pre>
   </div>
 </template>
 
 <script>
 import { ref, reactive } from '@vue/composition-api'
-
 import useVuelidate from '@vuelidate/core'
-import { required, minLength, sameAs, helpers } from '@vuelidate/validators/dist/raw'
+import { required, minLength, sameAs, helpers } from '@vuelidate/validators/src/withMessages'
 
 const { withMessage, withParams, unwrap } = helpers
 
@@ -59,8 +56,8 @@ function usePassword ({ minimumLength }) {
     password: {
       required: withMessage('This field is required', required),
       minLength: withMessage(
-        minLength(minimumLength),
-        ({ $params }) => `Has to be at least ${$params.length} characters long`
+        ({ $params }) => `Has to be at least ${$params.length} characters long`,
+        minLength(minimumLength)
       ),
       asyncValidator: withMessage(
         ({ $pending, $model }) => $pending ? 'Checking!' : `Error! ${$model} Isn’t "aaaa"`,
@@ -98,23 +95,7 @@ export default {
     const minimumLength = ref(7)
     const { password, repeatPassword, $v } = usePassword({ minimumLength })
 
-    const keyLength = ref(3)
-    const user = reactive({
-      firstName: '',
-      lastName: ''
-    })
-    const userRules = {
-      hasKeys: withMessage(
-        ({ $params }) => `Should have exactly ${$params.keys} keys.`,
-        hasKeysWithParams(keyLength)
-      ),
-      firstName: { required },
-      lastName: { required }
-    }
-
-    const $vUser = useVuelidate({ user: userRules }, { user }, 'useUser')
-
-    return { password, repeatPassword, $v, minimumLength, $vUser, keyLength }
+    return { password, repeatPassword, $v, minimumLength }
   }
 }
 </script>
