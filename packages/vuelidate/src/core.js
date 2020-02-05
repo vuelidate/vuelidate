@@ -295,11 +295,12 @@ function collectNestedValidationResults (validations, state, key) {
 /**
  * Generates the Meta fields from the results
  * @param {ValidationResult|{}} results
- * @param {Object<ValidationResult>} nestedResults
- * @return {{$anyDirty: Ref<Boolean>, $error: Ref<Boolean>, $invalid: Ref<Boolean>, $errors: Ref<ErrorObject[]>, $dirty: Ref<Boolean>}}
+ * @param {Object<ValidationResult>[]} otherResults
+ * @return {{$anyDirty: Ref<Boolean>, $error: Ref<Boolean>, $invalid: Ref<Boolean>, $errors: Ref<ErrorObject[]>, $dirty: Ref<Boolean>, $touch: Function, $reset: Function }}
  */
 function createMetaFields (results, ...otherResults) {
-  const $dirty = ref(false)
+  // use the $dirty property from the root level results
+  const $dirty = results.$dirty
   const allResults = computed(() => otherResults
     .filter(res => res)
     .reduce((allRes, res) => {
@@ -345,9 +346,20 @@ function createMetaFields (results, ...otherResults) {
   const $error = computed(() => ($invalid.value && $dirty.value) || false)
 
   const $touch = () => {
+    // call the root $touch
     results.$touch()
-    Object.values(allResults).forEach((result) => {
+    // call all nested level $touch
+    Object.values(allResults.value).forEach((result) => {
       result.$touch()
+    })
+  }
+
+  const $reset = () => {
+    // reset the root $dirty state
+    results.$reset()
+    // reset all the children $dirty states
+    Object.values(allResults.value).forEach((result) => {
+      result.$reset()
     })
   }
 
@@ -358,7 +370,8 @@ function createMetaFields (results, ...otherResults) {
     $anyDirty,
     $error,
     $pending,
-    $touch
+    $touch,
+    $reset
   }
 }
 
@@ -409,7 +422,8 @@ export function setValidations ({ validations, state, key, parentKey, childResul
     $anyDirty,
     $error,
     $pending,
-    $touch
+    $touch,
+    $reset
   } = createMetaFields(results, nestedResults, childResults)
 
   /**
@@ -446,6 +460,7 @@ export function setValidations ({ validations, state, key, parentKey, childResul
     $anyDirty,
     $pending,
     $touch,
+    $reset,
     // add each nested property's state
     ...nestedResults
   })
