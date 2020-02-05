@@ -1,7 +1,10 @@
 # Live test components
 
-## As Object
-<as-object></as-object>
+## Nested Validators
+<nested-validations/>
 
+## As Object
+<as-object/>
 
 ## As Composition
+<as-composition/>

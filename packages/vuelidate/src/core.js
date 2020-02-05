@@ -298,15 +298,21 @@ function collectNestedValidationResults (validations, state, key) {
  * @param {Object<ValidationResult>} nestedResults
  * @return {{$anyDirty: Ref<Boolean>, $error: Ref<Boolean>, $invalid: Ref<Boolean>, $errors: Ref<ErrorObject[]>, $dirty: Ref<Boolean>}}
  */
-function createMetaFields (results, nestedResults) {
+function createMetaFields (results, ...otherResults) {
   const $dirty = ref(false)
+  const allResults = computed(() => otherResults
+    .filter(res => res)
+    .reduce((allRes, res) => {
+      return allRes.concat(Object.values(unwrap(res)))
+    }, [])
+  )
 
   const $errors = computed(() => {
     // current state level errors
     const modelErrors = unwrap(results.$errors) || []
 
-    // collect all nested state `$errors`
-    const nestedErrors = Object.values(nestedResults)
+    // collect all nested and child $errors
+    const nestedErrors = allResults.value
       .filter(result => result.$errors.length)
       .reduce((errors, result) => {
         return errors.concat(...result.$errors)
@@ -317,30 +323,30 @@ function createMetaFields (results, nestedResults) {
   })
 
   const $invalid = computed(() =>
-    // if any of the nested values is invalid
-    Object.values(nestedResults).some(r => r.$invalid) ||
     // or if the current state is invalid
+    // if any of the nested values is invalid
+    allResults.value.some(r => r.$invalid) ||
     unwrap(results.$invalid) ||
     false
   )
 
   const $pending = computed(() =>
     // if any of the nested values is pending
-    Object.values(nestedResults).some(r => r.$pending) ||
     // if any of the current state validators is pending
+    allResults.value.some(r => r.$pending) ||
     unwrap(results.$pending) ||
     false
   )
 
   const $anyDirty = computed(() =>
-    Object.values(nestedResults).some(r => r.$dirty.value)
+    allResults.value.some(r => r.$dirty)
   )
 
   const $error = computed(() => ($invalid.value && $dirty.value) || false)
 
   const $touch = () => {
     results.$touch()
-    Object.values(nestedResults).forEach((result) => {
+    Object.values(allResults).forEach((result) => {
       result.$touch()
     })
   }
@@ -404,7 +410,7 @@ export function setValidations ({ validations, state, key, parentKey, childResul
     $error,
     $pending,
     $touch
-  } = createMetaFields(results, nestedResults)
+  } = createMetaFields(results, nestedResults, childResults)
 
   /**
    * If we have no `key`, this is the top level state

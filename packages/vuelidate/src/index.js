@@ -1,7 +1,8 @@
+import { provide, inject, ref, computed } from '@vue/composition-api'
 import { unwrap, isFunction } from './utils'
 import { setValidations } from './core'
 
-// const VuelidateSymbol = Symbol('vuelidate')
+const VuelidateSymbol = Symbol('vuelidate')
 
 /**
  * Composition API compatible Vuelidate
@@ -13,36 +14,42 @@ import { setValidations } from './core'
  */
 export default function useVuelidate (validationsArg, state, registerAs) {
   const validations = unwrap(validationsArg)
-  //
-  // const childResults = ref({})
-  //
-  // const injectToParent = inject(VuelidateSymbol, () => {})
-  // // const childResults = computed(() => {
-  // //   return childValidationsKeys.value.reduce((res, key, index) => {
-  // //     res[key] = childValidationsResults.value[index]
-  // //     console.log('res', res)
-  // //     return res
-  // //   }, {})
-  // // })
-  //
-  // function injectChildResults (results, key) {
-  //   childResults.value[key] = results
-  //   console.log('saving', key)
-  // }
-  //
-  // provide(VuelidateSymbol, injectChildResults)
+
+  const childResultsRaw = {}
+  const childResultsKeys = ref([])
+  const childResults = computed(() => childResultsKeys.value.reduce((results, key) => {
+    results[key] = childResultsRaw[key]
+    return results
+  }, {}))
+  const injectToParent = inject(VuelidateSymbol, () => {})
+  provide(VuelidateSymbol, injectChildResults)
+
+  function injectChildResults (results, key) {
+    childResultsRaw[key] = results
+    childResultsKeys.value.push(key)
+    injectToParent(results, key)
+  }
 
   const validationResults = setValidations({
     validations,
-    state
-    // childResults
+    state,
+    childResults
   })
 
-  // if (registerAs) {
-  //   injectToParent(validationResults, registerAs)
-  // }
+  if (registerAs) {
+    injectToParent(validationResults, registerAs)
+  }
 
-  return validationResults
+  return computed(() => {
+    if (registerAs && !childResultsKeys.value.length) {
+      return validationResults
+    } else {
+      return {
+        ...validationResults,
+        ...childResults.value
+      }
+    }
+  })
 }
 
 /**
