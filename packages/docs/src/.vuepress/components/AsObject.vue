@@ -60,10 +60,10 @@ export default {
           ({ $params }) => `Has to be at least ${$params.count} characters long`,
           withParams({ count: this.minimumLength }, minLength(this.minimumLength))
         ),
-        // asyncValidator: withMessage(
-        //   ({ $pending, $model }) => $pending ? 'Checking!' : `Error! ${$model} Isn’t "aaaa"`,
-        //   asyncValidator
-        // ),
+        asyncValidator: withMessage(
+          ({ $pending, $model }) => $pending ? 'Checking!' : `Error! ${$model} Isn’t "aaaa"`,
+          asyncValidator
+        ),
         $autoDirty: true
       },
       repeatPassword: {

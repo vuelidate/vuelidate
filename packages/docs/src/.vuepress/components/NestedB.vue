@@ -11,7 +11,7 @@
 
 <script>
 import { ref, reactive } from '@vue/composition-api'
-import useVuelidate from '@vuelidate/core'
+import useVuelidate from '@vuelidate/core/src'
 import { required, maxValue, minValue } from '@vuelidate/validators/src/withMessages'
 
 export default {
