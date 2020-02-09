@@ -256,14 +256,14 @@ function createValidationResults (rules, state, key, parentKey) {
     .filter(ruleKey => result[ruleKey].$invalid.value)
     .map(ruleKey => {
       const res = result[ruleKey]
-      return {
+      return reactive({
         $propertyPath: parentKey ? `${parentKey}.${key}` : key,
         $property: key,
         $validator: ruleKey,
         $message: res.$message,
         $params: res.$params,
         $pending: res.$pending
-      }
+      })
     })
   )
 
