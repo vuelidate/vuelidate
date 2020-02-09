@@ -1,5 +1,5 @@
 import { isFunction, isPromise, unwrap, unwrapObj } from './utils'
-import { computed, reactive, ref, watch } from '@vue/composition-api'
+import { computed, reactive, ref, watch } from 'vue'
 
 /**
  * @typedef NormalizedValidator
@@ -145,10 +145,12 @@ function createAsyncResult (rule, model, initResult, $pending) {
  * Returns the validation result.
  * Detects async and sync validators.
  * @param {NormalizedValidator} rule
- * @param {*} model
+ * @param {Object} state
+ * @param {String} key
  * @return {{$params: *, $message: Ref<String>, $pending: Ref<Boolean>, $invalid: Ref<Boolean>}}
  */
-function createValidatorResult (rule, model) {
+function createValidatorResult (rule, state, key) {
+  const model = computed(() => state[key].value)
   const ruleResult = callRule(rule.$validator, model)
 
   const $pending = ref(false)
@@ -233,16 +235,17 @@ function createValidationResults (rules, state, key, parentKey) {
   ruleKeys.forEach(ruleKey => {
     result[ruleKey] = createValidatorResult(
       rules[ruleKey],
-      state[key]
+      state,
+      key
     )
   })
 
   result.$invalid = computed(() =>
-    ruleKeys.some(ruleKey => result[ruleKey].$invalid)
+    ruleKeys.some(ruleKey => result[ruleKey].$invalid.value)
   )
 
   result.$pending = computed(() =>
-    ruleKeys.some(ruleKey => result[ruleKey].$pending)
+    ruleKeys.some(ruleKey => result[ruleKey].$pending.value)
   )
 
   result.$error = computed(() =>
@@ -250,7 +253,7 @@ function createValidationResults (rules, state, key, parentKey) {
   )
 
   result.$errors = computed(() => ruleKeys
-    .filter(ruleKey => unwrap(result[ruleKey]).$invalid)
+    .filter(ruleKey => result[ruleKey].$invalid.value)
     .map(ruleKey => {
       const res = result[ruleKey]
       return {
