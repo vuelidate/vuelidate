@@ -3,9 +3,12 @@
   "version": "1.0.0",
   "private": true,
   "description": "Simple, lightweight model-based validation for Vue.js",
-  "workspaces": [
-    "packages/*"
-  ],
+  "workspaces": {
+    "packages": [
+      "packages/*"
+    ],
+    "nohoist": ["@vuelidate/docs/**"]
+  },
   "devDependencies": {
     "@babel/core": "^7.8.4",
     "@commitlint/cli": "^8.3.5",
