@@ -440,13 +440,13 @@ export function setValidations ({ validations, state, key, parentKey, childResul
    * If we have no `key`, this is the top level state
    * We dont need `$model` there.
    */
-  let $model = key ? '' : computed({
+  let $model = key ? computed({
     get: () => unwrap(state[key]),
     set: val => {
       $dirty.value = true
       state[key].value = val
     }
-  })
+  }) : null
 
   if (config.$autoDirty) {
     watch(
@@ -462,7 +462,7 @@ export function setValidations ({ validations, state, key, parentKey, childResul
     // NOTE: The order here is very important, since we want to override
     // some of the *results* meta fields with the collective version of it
     // that includes the results of nested state validation results
-    ...(key ? { $model } : {}),
+    $model,
     $dirty,
     $error,
     $errors,
