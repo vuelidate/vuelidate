@@ -18,9 +18,12 @@ import useVuelidate from '@vuelidate/core/src'
 import { required, maxValue, minValue } from '@vuelidate/validators/src/withMessages'
 
 export default {
-  setup () {
+  props: {
+    max: { type: Number, required: true }
+  },
+  setup (props) {
     const numberB = ref(8)
-    const rules = { numberB: { required, maxValue: maxValue(5), minValue: minValue(3) } }
+    const rules = { numberB: { required, maxValue: maxValue(props.max), minValue: minValue(3) } }
     const $v = useVuelidate(rules, { numberB }, 'NestedB')
 
     return { numberB, $v }
