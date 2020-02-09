@@ -224,6 +224,10 @@ function createValidationResults (rules, state, key, parentKey) {
     $reset: () => { $dirty.value = false }
   }
 
+  /**
+   * If there are no validation rules, it is most likely
+   * a top level state, aka root
+   */
   if (!ruleKeys.length) return result
 
   ruleKeys.forEach(ruleKey => {
@@ -301,6 +305,7 @@ function collectNestedValidationResults (validations, state, key) {
 function createMetaFields (results, ...otherResults) {
   // use the $dirty property from the root level results
   const $dirty = results.$dirty
+
   const allResults = computed(() => otherResults
     .filter(res => res)
     .reduce((allRes, res) => {
@@ -309,7 +314,7 @@ function createMetaFields (results, ...otherResults) {
   )
 
   const $errors = computed(() => {
-    // current state level errors
+    // current state level errors, fallback to empty array if root
     const modelErrors = unwrap(results.$errors) || []
 
     // collect all nested and child $errors
@@ -324,18 +329,20 @@ function createMetaFields (results, ...otherResults) {
   })
 
   const $invalid = computed(() =>
-    // or if the current state is invalid
     // if any of the nested values is invalid
     allResults.value.some(r => r.$invalid) ||
+    // or if the current state is invalid
     unwrap(results.$invalid) ||
+    // fallback to false if is root
     false
   )
 
   const $pending = computed(() =>
     // if any of the nested values is pending
-    // if any of the current state validators is pending
     allResults.value.some(r => r.$pending) ||
+    // if any of the current state validators is pending
     unwrap(results.$pending) ||
+    // fallback to false if is root
     false
   )
 
