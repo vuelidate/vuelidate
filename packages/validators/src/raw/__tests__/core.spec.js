@@ -1,8 +1,5 @@
 import { len, regex, req } from '../core'
-import CompositionApi, { ref } from '@vue/composition-api'
-import Vue from 'vue'
-
-Vue.use(CompositionApi)
+import { ref } from 'vue'
 
 describe('core', () => {
   describe('test the req helper for "required"', () => {

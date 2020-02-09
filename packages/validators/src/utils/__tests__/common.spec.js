@@ -1,8 +1,5 @@
-import Vue from 'vue'
-import Plugin, { ref } from '@vue/composition-api'
+import { ref } from 'vue'
 import { normalizeValidatorObject, isTruthy, unwrap, isObject, isFunction } from '../common'
-
-Vue.use(Plugin)
 
 describe('common', () => {
   describe('isFunction', () => {
