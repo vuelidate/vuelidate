@@ -166,14 +166,15 @@ function createValidatorResult (rule, state, key) {
 
   const message = rule.$message
   const $message = isFunction(message)
-    ? computed(() => message(
-      unwrapObj({
-        $pending,
-        $invalid,
-        $params,
-        $model: model
-      })
-    ))
+    ? computed(() =>
+      message(
+        unwrapObj({
+          $pending,
+          $invalid,
+          $params: unwrapObj($params), // $params can hold refs, so we unwrap them for easy access
+          $model: model
+        })
+      ))
     : message
 
   return {
