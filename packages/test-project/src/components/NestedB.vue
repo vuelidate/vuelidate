@@ -13,17 +13,15 @@
 </template>
 
 <script>
-import { ref } from 'vue'
+import { ref, toRefs } from 'vue'
 import useVuelidate from '@vuelidate/core/src'
 import { required, maxValue, minValue } from '@vuelidate/validators/src/withMessages'
 
 export default {
-  props: {
-    max: { type: Number, required: true }
-  },
   setup (props) {
+    const { max, min } = toRefs(props)
     const numberB = ref(8)
-    const rules = { numberB: { required, maxValue: maxValue(props.max), minValue: minValue(3) } }
+    const rules = { numberB: { required, maxValue: maxValue(max), minValue: minValue(min) } }
     const $v = useVuelidate(rules, { numberB }, 'NestedB')
 
     return { numberB, $v }

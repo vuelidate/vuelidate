@@ -12,8 +12,17 @@
           type="number"
         >
       </label>
+      <label>Min
+        <input
+          v-model.number="min"
+          type="number"
+        >
+      </label>
     </div>
-    <NestedB :max="max" />
+    <NestedB
+      :max="max"
+      :min="min"
+    />
     <!-- <pre style="background-color: white;">{{ $v.$errors }}</pre> -->
   </div>
 </template>
@@ -26,8 +35,14 @@ import NestedB from './NestedB'
 
 export default {
   components: { NestedB },
+  data () {
+    return {
+      min: 4
+    }
+  },
   setup () {
     const numberA = ref(8)
+
     const max = ref(5)
     const rules = { numberA: { required, maxValue: maxValue(max) } }
     const $v = useVuelidate(rules, { numberA }, 'NestedA')

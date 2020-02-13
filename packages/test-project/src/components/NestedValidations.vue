@@ -1,9 +1,7 @@
 <template>
   <div style="padding-top: 2rem;">
     <div style="float: right">
-      <pre style="background-color: white;">
-      {{ vuelidate }}
-    </pre>
+      <pre>{{ vuelidate }}</pre>
     </div>
     <div style="margin-bottom: 20px">
       <label>Number X</label>
@@ -17,7 +15,7 @@
 </template>
 
 <script>
-import { ref, reactive } from 'vue'
+import { ref, computed } from 'vue'
 import useVuelidate from '@vuelidate/core/src'
 import { required, minValue } from '@vuelidate/validators/src/withMessages'
 import NestedA from './NestedA'
@@ -26,17 +24,22 @@ export default {
   components: { NestedA },
   setup () {
     const numberX = ref(0)
+    const conditionalParam = ref('')
 
-    const state = reactive({
-      b: 'b'
+    const validations = computed(() => {
+      const v = { numberX: { required, minValue: minValue(3) } }
+      if (numberX.value > 5) {
+        v.conditionalParam = { required }
+      }
+      return v
     })
 
     let vuelidate = useVuelidate(
-      { numberX: { required, minValue: minValue(3) } },
-      { numberX }
+      validations,
+      { numberX, conditionalParam }
     )
 
-    return { vuelidate, numberX, state }
+    return { vuelidate, numberX, conditionalParam }
   }
 }
 </script>
