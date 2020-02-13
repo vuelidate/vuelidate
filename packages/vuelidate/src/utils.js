@@ -1,4 +1,4 @@
-import { isRef } from 'vue'
+import { isRef, computed, ref } from 'vue'
 
 export function unwrap (val) {
   return isRef(val)
@@ -24,4 +24,14 @@ export function isObject (val) {
 
 export function isPromise (object) {
   return isObject(object) && isFunction(object.then)
+}
+
+export function paramToRef (param) {
+  if (isRef(param)) {
+    return param
+  } else if (typeof param === 'function') {
+    return computed(param)
+  } else {
+    return ref(param)
+  }
 }

@@ -404,11 +404,12 @@ function createMetaFields (results, ...otherResults) {
  * Main Vuelidate bootstrap function.
  * Used both for Composition API in `setup` and for Global App usage.
  * Used to collect validation state, when walking recursively down the state tree
- * @param {Object<NormalizedValidator|Function>} validations
- * @param {Object} state
- * @param {String} [key] - Current state property key. Used when being called on nested items
- * @param {String} [parentKey] - Parent state property key. Used when being called recursively
- * @param {Object} [childResults] - Used to collect child results. TBD
+ * @param {Object} params
+ * @param {Object<NormalizedValidator|Function>} params.validations
+ * @param {Object} params.state
+ * @param {String} [params.key] - Current state property key. Used when being called on nested items
+ * @param {String} [params.parentKey] - Parent state property key. Used when being called recursively
+ * @param {Object} [params.childResults] - Used to collect child results. TBD
  * @return {UnwrapRef<VuelidateState>}
  */
 export function setValidations ({ validations, state, key, parentKey, childResults }) {
