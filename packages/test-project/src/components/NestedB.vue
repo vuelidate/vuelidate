@@ -18,13 +18,14 @@ import useVuelidate from '@vuelidate/core/src'
 import { required, maxValue, minValue } from '@vuelidate/validators/src/withMessages'
 
 export default {
+  name: 'NestedB',
   setup (props) {
     const { max, min } = toRefs(props)
     const numberB = ref(8)
     const rules = { numberB: { required, maxValue: maxValue(max), minValue: minValue(min) } }
-    const $v = useVuelidate(rules, { numberB }, 'NestedB')
+    const v = useVuelidate(rules, { numberB }, 'NestedB')
 
-    return { numberB, $v }
+    return { numberB, v }
   }
 }
 </script>

@@ -34,6 +34,7 @@ import { required, maxValue } from '@vuelidate/validators/src/withMessages'
 import NestedB from './NestedB'
 
 export default {
+  name: 'NestedA',
   components: { NestedB },
   data () {
     return {
