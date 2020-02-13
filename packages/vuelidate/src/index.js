@@ -1,5 +1,5 @@
 import { provide, inject, ref, computed, reactive } from 'vue'
-import { unwrap, isFunction } from './utils'
+import { unwrap, isFunction, paramToRef } from './utils'
 import { setValidations } from './core'
 
 const VuelidateSymbol = Symbol('vuelidate')
@@ -7,14 +7,12 @@ const VuelidateSymbol = Symbol('vuelidate')
 /**
  * Composition API compatible Vuelidate
  * Use inside the `setup` lifecycle hook
- * @param {Object} validationsArg - Validations Object
+ * @param {Object} validations - Validations Object
  * @param {Object} state - State object
  * @param {String} registerAs
  * @return {UnwrapRef<*>}
  */
-export default function useVuelidate (validationsArg, state, registerAs) {
-  const validations = unwrap(validationsArg)
-
+export default function useVuelidate (validations, state, registerAs) {
   const childResultsRaw = {}
   const childResultsKeys = ref([])
   const childResults = computed(() => childResultsKeys.value.reduce((results, key) => {
@@ -30,7 +28,7 @@ export default function useVuelidate (validationsArg, state, registerAs) {
   }
 
   const validationResults = setValidations({
-    validations,
+    validations: paramToRef(validations),
     state,
     childResults
   })

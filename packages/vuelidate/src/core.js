@@ -1,4 +1,4 @@
-import { isFunction, isPromise, unwrap, unwrapObj } from './utils'
+import { isFunction, isPromise, paramToRef, unwrap, unwrapObj } from './utils'
 import { computed, reactive, ref, watch } from 'vue'
 
 /**
@@ -26,15 +26,13 @@ import { computed, reactive, ref, watch } from 'vue'
  * @return {{ rules: Object<NormalizedValidator>, nestedValidators: Object, config: Object }}
  */
 function sortValidations (validations) {
-  const validationKeys = Object.keys(validations)
+  const validationKeys = Object.entries(unwrap(validations))
 
   let rules = {}
   let nestedValidators = {}
   let config = {}
 
-  validationKeys.forEach(key => {
-    const v = validations[key]
-
+  validationKeys.forEach(([key, v]) => {
     switch (true) {
       // If it is already normalized, use it
       case isFunction(v.$validator):

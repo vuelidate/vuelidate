@@ -9,7 +9,9 @@ module.exports = {
     'standard'
   ],
   plugins: [],
-  rules: {},
+  rules: {
+    'no-unused-vars': 0
+  },
   overrides: [
     Object.assign({}, jestConfig.configs.recommended, {
       files: ['packages/**/*.spec.js'],

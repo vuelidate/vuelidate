@@ -27,7 +27,10 @@ export default {
     const conditionalParam = ref('')
 
     const validations = computed(() => {
-      const v = { numberX: { required, minValue: minValue(3) } }
+      const v = {
+        numberX: { required, minValue: minValue(3) },
+        conditionalParam: {}
+      }
       if (numberX.value > 5) {
         v.conditionalParam = { required }
       }
