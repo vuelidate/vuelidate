@@ -4,7 +4,7 @@ const dir = (p) => path.resolve(__dirname, p)
 module.exports = {
   rootDir: '.',
   transform: {
-    '^.+\\.js$': [dir('node_modules/babel-jest'), { cwd: __dirname }]
+    '^.+\\.js$': ['babel-jest', { cwd: __dirname }]
   },
   'snapshotSerializers': [
     dir('node_modules/jest-serializer-vue')

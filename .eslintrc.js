@@ -1,19 +1,13 @@
 const jestConfig = require('eslint-plugin-jest')
 module.exports = {
+  root: true,
   env: {
-    browser: true,
-    es6: true,
     node: true
   },
   extends: [
-    // 'plugin:vue/essential', // is this required?
+    'plugin:vue/recommended',
     'standard'
   ],
-  globals: {},
-  parserOptions: {
-    ecmaVersion: 2018,
-    sourceType: 'module'
-  },
   plugins: [],
   rules: {},
   overrides: [

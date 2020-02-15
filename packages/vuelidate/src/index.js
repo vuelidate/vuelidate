@@ -1,4 +1,4 @@
-import { provide, inject, ref, computed } from '@vue/composition-api'
+import { provide, inject, ref, computed, reactive } from 'vue'
 import { unwrap, isFunction } from './utils'
 import { setValidations } from './core'
 
@@ -27,7 +27,6 @@ export default function useVuelidate (validationsArg, state, registerAs) {
   function injectChildResults (results, key) {
     childResultsRaw[key] = results
     childResultsKeys.value.push(key)
-    injectToParent(results, key)
   }
 
   const validationResults = setValidations({
@@ -40,16 +39,14 @@ export default function useVuelidate (validationsArg, state, registerAs) {
     injectToParent(validationResults, registerAs)
   }
 
-  return computed(() => {
-    if (registerAs && !childResultsKeys.value.length) {
-      return validationResults
-    } else {
-      return {
-        ...validationResults,
-        ...childResults.value
-      }
-    }
-  })
+  if (registerAs && childResultsKeys.value.length) {
+    return reactive({
+      ...validationResults,
+      ...childResults
+    })
+  } else {
+    return validationResults
+  }
 }
 
 /**

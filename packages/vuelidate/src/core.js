@@ -1,5 +1,5 @@
 import { isFunction, isPromise, unwrap, unwrapObj } from './utils'
-import { computed, reactive, ref, watch } from '@vue/composition-api'
+import { computed, reactive, ref, watch } from 'vue'
 
 /**
  * @typedef NormalizedValidator
@@ -145,10 +145,12 @@ function createAsyncResult (rule, model, initResult, $pending) {
  * Returns the validation result.
  * Detects async and sync validators.
  * @param {NormalizedValidator} rule
- * @param {*} model
+ * @param {Object} state
+ * @param {String} key
  * @return {{$params: *, $message: Ref<String>, $pending: Ref<Boolean>, $invalid: Ref<Boolean>}}
  */
-function createValidatorResult (rule, model) {
+function createValidatorResult (rule, state, key) {
+  const model = computed(() => state[key].value)
   const ruleResult = callRule(rule.$validator, model)
 
   const $pending = ref(false)
@@ -164,14 +166,15 @@ function createValidatorResult (rule, model) {
 
   const message = rule.$message
   const $message = isFunction(message)
-    ? computed(() => message(
-      unwrapObj({
-        $pending,
-        $invalid,
-        $params,
-        $model: model
-      })
-    ))
+    ? computed(() =>
+      message(
+        unwrapObj({
+          $pending,
+          $invalid,
+          $params: unwrapObj($params), // $params can hold refs, so we unwrap them for easy access
+          $model: model
+        })
+      ))
     : message
 
   return {
@@ -233,16 +236,17 @@ function createValidationResults (rules, state, key, parentKey) {
   ruleKeys.forEach(ruleKey => {
     result[ruleKey] = createValidatorResult(
       rules[ruleKey],
-      state[key]
+      state,
+      key
     )
   })
 
   result.$invalid = computed(() =>
-    ruleKeys.some(ruleKey => result[ruleKey].$invalid)
+    ruleKeys.some(ruleKey => result[ruleKey].$invalid.value)
   )
 
   result.$pending = computed(() =>
-    ruleKeys.some(ruleKey => result[ruleKey].$pending)
+    ruleKeys.some(ruleKey => result[ruleKey].$pending.value)
   )
 
   result.$error = computed(() =>
@@ -250,17 +254,17 @@ function createValidationResults (rules, state, key, parentKey) {
   )
 
   result.$errors = computed(() => ruleKeys
-    .filter(ruleKey => unwrap(result[ruleKey]).$invalid)
+    .filter(ruleKey => result[ruleKey].$invalid.value)
     .map(ruleKey => {
       const res = result[ruleKey]
-      return {
+      return reactive({
         $propertyPath: parentKey ? `${parentKey}.${key}` : key,
         $property: key,
         $validator: ruleKey,
         $message: res.$message,
         $params: res.$params,
         $pending: res.$pending
-      }
+      })
     })
   )
 
@@ -400,11 +404,12 @@ function createMetaFields (results, ...otherResults) {
  * Main Vuelidate bootstrap function.
  * Used both for Composition API in `setup` and for Global App usage.
  * Used to collect validation state, when walking recursively down the state tree
- * @param {Object<NormalizedValidator|Function>} validations
- * @param {Object} state
- * @param {String} [key] - Current state property key. Used when being called on nested items
- * @param {String} [parentKey] - Parent state property key. Used when being called recursively
- * @param {Object} [childResults] - Used to collect child results. TBD
+ * @param {Object} params
+ * @param {Object<NormalizedValidator|Function>} params.validations
+ * @param {Object} params.state
+ * @param {String} [params.key] - Current state property key. Used when being called on nested items
+ * @param {String} [params.parentKey] - Parent state property key. Used when being called recursively
+ * @param {Object} [params.childResults] - Used to collect child results. TBD
  * @return {UnwrapRef<VuelidateState>}
  */
 export function setValidations ({ validations, state, key, parentKey, childResults }) {
@@ -437,13 +442,13 @@ export function setValidations ({ validations, state, key, parentKey, childResul
    * If we have no `key`, this is the top level state
    * We dont need `$model` there.
    */
-  let $model = key ? '' : computed({
+  let $model = key ? computed({
     get: () => unwrap(state[key]),
     set: val => {
       $dirty.value = true
       state[key].value = val
     }
-  })
+  }) : null
 
   if (config.$autoDirty) {
     watch(
@@ -459,7 +464,7 @@ export function setValidations ({ validations, state, key, parentKey, childResul
     // NOTE: The order here is very important, since we want to override
     // some of the *results* meta fields with the collective version of it
     // that includes the results of nested state validation results
-    ...(key ? { $model } : {}),
+    $model,
     $dirty,
     $error,
     $errors,
