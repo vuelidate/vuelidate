@@ -57,7 +57,6 @@ function sortValidations (validations) {
  * @param {Ref} value
  * @return {Promise<ValidatorResponse> | ValidatorResponse}
  */
-let count = 0
 
 function callRule (rule, value) {
   const v = unwrap(value)
