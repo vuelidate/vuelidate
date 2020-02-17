@@ -1,5 +1,5 @@
-import { provide, inject, ref, computed, reactive } from 'vue'
-import { unwrap, isFunction, paramToRef } from './utils'
+import { provide, inject, ref, computed, reactive, watch } from 'vue'
+import { isFunction } from './utils'
 import { setValidations } from './core'
 
 const VuelidateSymbol = Symbol('vuelidate')
@@ -28,7 +28,7 @@ export default function useVuelidate (validations, state, registerAs) {
   }
 
   const validationResults = setValidations({
-    validations: paramToRef(validations),
+    validations,
     state,
     childResults
   })
@@ -43,7 +43,7 @@ export default function useVuelidate (validations, state, registerAs) {
       ...childResults
     })
   } else {
-    return validationResults
+    return reactive(validationResults)
   }
 }
 
