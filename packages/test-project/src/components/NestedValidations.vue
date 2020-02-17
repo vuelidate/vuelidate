@@ -4,45 +4,54 @@
       <pre>{{ vuelidate }}</pre>
     </div>
     <div style="margin-bottom: 20px">
-      <label>Number X</label>
-      <input
-        v-model.number="vuelidate.numberX.$model"
+      <label>Number X <input
+        v-model.number="numberX"
         type="number"
-      >
+      ></label>
+      <label>
+        Validate Conditional
+        <input
+          v-model="validateConditional"
+          type="checkbox"
+        >
+      </label>
     </div>
-    <NestedA />
+    <button @click="vuelidate.$touch()">Touch</button>
+    <button @click="vuelidate.$reset()">Reset</button>
+    <!--    <NestedA />-->
   </div>
 </template>
 
 <script>
-import { ref, computed } from 'vue'
+import { ref, computed, watch } from 'vue'
 import useVuelidate from '@vuelidate/core/src'
 import { required, minValue } from '@vuelidate/validators/src/withMessages'
-import NestedA from './NestedA'
+// import NestedA from './NestedA'
 
 export default {
-  components: { NestedA },
+  // components: { NestedA },
   setup () {
     const numberX = ref(0)
+    const validateConditional = ref(false)
     const conditionalParam = ref('')
 
-    const validations = computed(() => {
-      const v = {
-        numberX: { required, minValue: minValue(3) },
-        conditionalParam: {}
-      }
-      if (numberX.value > 5) {
-        v.conditionalParam = { required }
-      }
-      return v
-    })
+    const validations = {
+      numberX: { required, minValue: minValue(3) },
+      conditionalParam: computed(() => {
+        if (validateConditional.value) {
+          return { required }
+        } else {
+          return {}
+        }
+      })
+    }
 
     let vuelidate = useVuelidate(
       validations,
       { numberX, conditionalParam }
     )
 
-    return { vuelidate, numberX, conditionalParam }
+    return { vuelidate, numberX, conditionalParam, validateConditional }
   }
 }
 </script>
