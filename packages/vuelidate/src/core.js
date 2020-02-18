@@ -1,5 +1,5 @@
-import { isFunction, isPromise, paramToRef, unwrap, unwrapObj } from './utils'
-import { computed, reactive, ref, watch, toRefs } from 'vue'
+import { isFunction, isPromise, isUndefined, objectToRefs, paramToRef, unwrap, unwrapObj } from './utils'
+import { computed, reactive, ref, watch, toRefs, isRef, getCurrentInstance } from 'vue'
 
 /**
  * @typedef NormalizedValidator
@@ -60,7 +60,7 @@ function sortValidations (validations) {
 
 function callRule (rule, value) {
   const v = unwrap(value)
-  return rule(v)
+  return rule.call(getCurrentInstance(), v)
 }
 
 /**
@@ -218,12 +218,11 @@ function createValidationResults (rules, state, key, parentKey) {
   }
 
   watch(rules, (changedRules) => {
+    const ruleKeys = Object.keys(changedRules)
     /**
      * If there are no validation rules, it is most likely
      * a top level state, aka root
      */
-    const ruleKeys = Object.keys(changedRules)
-    // if (!ruleKeys.length) return result
     ruleKeys.forEach(ruleKey => {
       results[ruleKey] = createValidatorResult(
         changedRules[ruleKey],
@@ -231,7 +230,6 @@ function createValidationResults (rules, state, key, parentKey) {
         key
       )
     })
-
     results.$invalid = computed(() =>
       ruleKeys.some(ruleKey => results[ruleKey].$invalid.value)
     )
@@ -278,7 +276,7 @@ function collectNestedValidationResults (validations, state, key) {
     collected.value = nestedValidationKeys.reduce((results, nestedKey) => {
       // if we have a key, use the nested state
       // else use top level state
-      const nestedState = key ? state[key] : state
+      const nestedState = !isUndefined(key) ? state[key] : state
       // build validation results for nested state
       results[nestedKey] = setValidations({
         validations: changedValidations[nestedKey],
@@ -312,22 +310,20 @@ function createMetaFields (results, ...otherResults) {
 
   const $errors = computed(() => {
     // current state level errors, fallback to empty array if root
-    const modelErrors = unwrap(results.$errors) || []
-
     // collect all nested and child $errors
     const nestedErrors = allResults.value
-      .filter(result => result.$errors.value.length)
+      .filter(result => result.$errors.length)
       .reduce((errors, result) => {
-        return errors.concat(...result.$errors.value)
+        return errors.concat(result.$errors)
       }, [])
 
     // merge the $errors
-    return modelErrors.concat(nestedErrors)
+    return results.$errors.value.concat(nestedErrors)
   })
 
   const $invalid = computed(() =>
     // if any of the nested values is invalid
-    allResults.value.some(r => r.$invalid.value) ||
+    allResults.value.some(r => r.$invalid) ||
     // or if the current state is invalid
     unwrap(results.$invalid) ||
     // fallback to false if is root
@@ -336,7 +332,7 @@ function createMetaFields (results, ...otherResults) {
 
   const $pending = computed(() =>
     // if any of the nested values is pending
-    allResults.value.some(r => r.$pending.value) ||
+    allResults.value.some(r => r.$pending) ||
     // if any of the current state validators is pending
     unwrap(results.$pending) ||
     // fallback to false if is root
@@ -344,7 +340,7 @@ function createMetaFields (results, ...otherResults) {
   )
 
   const $anyDirty = computed(() =>
-    allResults.value.some(r => r.$dirty.value)
+    allResults.value.some(r => r.$dirty)
   )
 
   const $error = computed(() => ($invalid.value && $dirty.value) || false)
@@ -413,7 +409,7 @@ export function setValidations ({ validations, state, key, parentKey, childResul
   const { rules, nestedValidators, config } = sortValidations(paramToRef(validations))
 
   // Use rules for the current state fragment and validate it
-  const results = createValidationResults(rules, state, key, parentKey)
+  const results = createValidationResults(rules, objectToRefs(state), key, parentKey)
   // Use nested keys to repeat the process
   // *WARN*: This is recursive
   const nestedResults = collectNestedValidationResults(nestedValidators, state, key)
@@ -438,7 +434,9 @@ export function setValidations ({ validations, state, key, parentKey, childResul
     get: () => unwrap(state[key]),
     set: val => {
       $dirty.value = true
-      state[key].value = val
+      isRef(state[key])
+        ? state[key].value = val
+        : state[key] = val
     }
   }) : null
 
@@ -451,7 +449,7 @@ export function setValidations ({ validations, state, key, parentKey, childResul
     )
   }
 
-  return computed(() => Object.assign({}, results, {
+  return Object.assign({}, results, {
     // NOTE: The order here is very important, since we want to override
     // some of the *results* meta fields with the collective version of it
     // that includes the results of nested state validation results
@@ -465,5 +463,5 @@ export function setValidations ({ validations, state, key, parentKey, childResul
     $touch,
     $reset
     // add each nested property's state
-  }, nestedResults.value))
+  }, nestedResults.value)
 }

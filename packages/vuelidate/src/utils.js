@@ -1,4 +1,4 @@
-import { isRef, computed, ref } from 'vue'
+import { isRef, computed, ref, toRefs, isReactive, reactive } from 'vue'
 
 export function unwrap (val) {
   return isRef(val)
@@ -34,4 +34,20 @@ export function paramToRef (param) {
   } else {
     return ref(param)
   }
+}
+
+export function objectToRefs (param) {
+  if (isReactive(param)) {
+    return toRefs(param)
+  } else if (isRef(param)) {
+    return param
+  } else if (typeof param === 'function') {
+    throw Error('[Vuelidate]: Parameter should be Object, Reactive or a Ref, Function given')
+  } else {
+    return toRefs(reactive(param))
+  }
+}
+
+export function isUndefined (param) {
+  return typeof param === 'undefined'
 }
