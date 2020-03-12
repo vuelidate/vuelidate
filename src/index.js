@@ -386,7 +386,11 @@ const getComponent = (Vue) => {
               set: (value) => {
                 const parent = this.lazyParentModel()
                 if (parent != null) {
-                  parent[this.prop] = value
+                  if (Array.isArray(parent)) {
+                    this.$set(parent, this.prop, value)
+                  } else {
+                    parent[this.prop] = value
+                  }
                   this.$touch()
                 }
               }
