@@ -8,6 +8,7 @@ var merge = require('webpack-merge')
 var baseConfig = require('../../build/webpack.base.conf')
 var utils = require('../../build/utils')
 var webpack = require('webpack')
+var env = require('process').env
 
 var webpackConfig = merge(baseConfig, {
   mode: 'development',
@@ -47,7 +48,13 @@ module.exports = function(config) {
     // 1. install corresponding karma launcher
     //    http://karma-runner.github.io/0.13/config/browsers.html
     // 2. add it to the `browsers` array below.
-    browsers: ['ChromeHeadless'],
+    browsers: env.BROWSER ? env.BROWSER.split(',') : ['ChromeHeadless'],
+    customLaunchers: {
+      Chrome_Without_Sandbox: {
+        base: 'Chrome',
+        flags: ['--no-sandbox', '--disable-setuid-sandbox'],
+      },
+    },
     frameworks: ['mocha', 'sinon-chai'],
     reporters: ['spec', 'coverage-istanbul'],
     files: ['./index.js'],

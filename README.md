@@ -1,6 +1,7 @@
 # vuelidate
 [![codecov](https://codecov.io/gh/vuelidate/vuelidate/branch/master/graph/badge.svg)](https://codecov.io/gh/vuelidate/vuelidate)
 ![gzip size](http://img.badgesize.io/vuelidate/vuelidate/master/dist/vuelidate.min.js.svg?compression=gzip)
+[![Gitpod Ready-to-Code](https://img.shields.io/badge/Gitpod-Ready--to--Code-blue?logo=gitpod)](https://gitpod.io/#https://github.com/vuelidate/vuelidate)
 
 > Simple, lightweight model-based validation for Vue.js
 
@@ -131,6 +132,18 @@ $v: {
 Checkout the docs for more examples: [https://vuelidate.netlify.com/](https://vuelidate.netlify.com/)
 
 ## Contributing
+
+### Contribute using one-click oneline setup
+
+You can use gitpod (a free online VS Code like IDE) for contributing. With a single click it will launch a workspace and automatically:
+
+- clone the vuelidate repo.
+- install the dependencies.
+- start npm run dev.
+
+so that you can start coding straight away.
+
+[![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/from-referrer/)
 
 ``` bash
 # install dependencies
