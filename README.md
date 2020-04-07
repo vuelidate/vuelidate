@@ -9,9 +9,6 @@
 ### Gold
 
 <p align="center">
-  <a href="https://us.vuejs.org/?utm_campaign=Vue.js%20News&utm_medium=email&utm_source=Revue%20newsletter" target="_blank">
-    <img src="https://cdn.discordapp.com/attachments/560524372897562636/636900780481445888/ef278f141a55e3f44f50b8dbc1f9ca17.png" alt="VueConf.us" width="260px">
-  </a>
   <a href="https://vueschool.io?utm_source=dmd&utm_medium=link&friend=vuenews" target="_blank">
     <img src="https://cdn.discordapp.com/attachments/491313387129667594/678936303089483786/vueschool.png" alt="Vue School" width="320px">
   </a>
