@@ -46,7 +46,7 @@
 
 ## Demo & docs
 
-[https://vuelidate.netlify.com/](https://vuelidate.netlify.com/)
+[https://vuelidate.js.org/](https://vuelidate.js.org/)
 
 ## Installation
 
@@ -133,7 +133,7 @@ $v: {
 }
 ```
 
-Checkout the docs for more examples: [https://vuelidate.netlify.com/](https://vuelidate.netlify.com/)
+Checkout the docs for more examples: [https://vuelidate.js.org/](https://vuelidate.js.org/)
 
 ## Contributing
 
