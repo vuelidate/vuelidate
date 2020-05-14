@@ -459,6 +459,17 @@ export function setValidations ({ validations, state, key, parentKey, childResul
     )
   }
 
+  let $validate = function $validate () {
+    return new Promise((resolve) => {
+      if (!$dirty.value) $touch()
+      if (!$pending.value) return resolve($invalid.value)
+      const unwatch = watch($pending, () => {
+        resolve($invalid.value)
+        unwatch()
+      })
+    })
+  }
+
   return reactive({
     ...results,
     // NOTE: The order here is very important, since we want to override
@@ -473,6 +484,7 @@ export function setValidations ({ validations, state, key, parentKey, childResul
     $pending,
     $touch,
     $reset,
+    $validate,
     // add each nested property's state
     ...nestedResults
   })
