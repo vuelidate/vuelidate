@@ -19,7 +19,7 @@
     "bili": "^4.8.1",
     "jest": "^24.9.0",
     "jest-serializer-vue": "^2.0.2",
-    "vue": "^3.0.0-alpha.4"
+    "vue": "^3.0.0-beta.12"
   },
   "publishConfig": {
     "access": "public"

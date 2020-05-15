@@ -4,19 +4,18 @@
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",
-    "build": "vue-cli-service build",
+    "build:frontend": "vue-cli-service build",
     "lint": "vue-cli-service lint"
   },
   "dependencies": {
-    "vue": "^3.0.0-alpha.4"
+    "vue": "^3.0.0-beta.12"
   },
   "devDependencies": {
-    "@vue/cli-plugin-babel": "^4.2.0",
-    "@vue/cli-plugin-eslint": "^4.2.0",
-    "@vue/cli-service": "^4.2.0",
-    "@vue/compiler-sfc": "^3.0.0-alpha.4",
-    "core-js": "^3.6.4",
-    "vue-cli-plugin-vue-next": "0.0.4"
+    "@vue/cli-plugin-babel": "^4.3.1",
+    "@vue/cli-service": "^4.3.1",
+    "@vue/compiler-sfc": "^3.0.0-beta.12",
+    "core-js": "^3.6.5",
+    "vue-cli-plugin-vue-next": "^0.1.2"
   },
   "browserslist": [
     "> 1%",

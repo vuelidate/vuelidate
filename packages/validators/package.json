@@ -15,15 +15,13 @@
   "devDependencies": {
     "bili": "^4.8.1",
     "eslint-plugin-jest": "^23.0.2",
-    "jest": "^24.9.0"
+    "jest": "^24.9.0",
+    "flush-promises": "^1.0.2"
   },
   "sideEffects": [
     "./src/utils/common.js"
   ],
   "publishConfig": {
     "access": "public"
-  },
-  "dependencies": {
-    "flush-promises": "^1.0.2"
   }
 }
