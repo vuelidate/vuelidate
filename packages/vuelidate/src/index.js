@@ -1,4 +1,4 @@
-import { provide, inject, ref, computed, reactive } from 'vue'
+import { toRefs, provide, inject, ref, computed, reactive, getCurrentInstance, onBeforeMount } from 'vue'
 import { unwrap, isFunction } from './utils'
 import { setValidations } from './core'
 
@@ -50,33 +50,26 @@ export default function useVuelidate (validationsArg, state, registerAs) {
 }
 
 /**
- * Vuelidate mixin, used to attach Vuelidate only to specified components
- * Relies on `validations` option to be defined on component instance
- * @type {ComponentOptions}
+ * Use old Options API syntax to get the validation Rules and State
  */
-export const VuelidateMixin = {
-  beforeCreate () {
-    const options = this.$options
-    if (!options.validations) return
+export function useVuelidateOptions () {
+  const vm = getCurrentInstance()
+  const options = vm.type
+  const validations = isFunction(options.validations)
+    ? options.validations.call(vm)
+    : options.validations
 
-    const validations = isFunction(options.validations)
-      ? options.validations.call(this)
-      : options.validations
+  let isComponentDataAvailable = ref(false)
 
-    if (!options.computed) options.computed = {}
-    if (options.computed.$v) return
+  onBeforeMount(() => {
+    isComponentDataAvailable.value = true
+  })
 
-    options.computed.$v = () => setValidations({
-      validations,
-      state: this
-    })
-  }
-}
+  const v$ = computed(() => {
+    return isComponentDataAvailable.value
+      ? useVuelidate(validations, { ...toRefs(vm.data), ...vm.renderContext })
+      : {}
+  })
 
-/**
- * Default way to install Vuelidate globally for entire app.
- * @param {Vue} app
- */
-export function VuelidatePlugin (app) {
-  app.mixin(VuelidateMixin)
+  return reactive(v$)
 }
