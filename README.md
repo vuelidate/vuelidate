@@ -6,14 +6,6 @@
 
 ## Sponsors
 
-### Gold
-
-<p align="center">
-  <a href="https://vueschool.io?utm_source=dmd&utm_medium=link&friend=vuenews" target="_blank">
-    <img src="https://cdn.discordapp.com/attachments/491313387129667594/678936303089483786/vueschool.png" alt="Vue School" width="320px">
-  </a>
-</p>
-
 ### Silver
 
 <p align="center">
@@ -166,7 +158,7 @@ For detailed explanation on how things work, checkout the [guide](http://vuejs-t
 - [Damian Dulisz](https://github.com/shentao)
 - [Natalia Tepluhina](https://github.com/NataliaTepluhina)
 - [Dobromir Hristov](https://github.com/dobromir-hristov)
-- [Ben Hong](https://github.com/bencodezen)
+- [Marina Mosti](https://github.com/marina-mosti)
 
 ### Emeriti
 
