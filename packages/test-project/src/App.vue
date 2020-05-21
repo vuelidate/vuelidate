@@ -1,16 +1,19 @@
 <template>
   <div id="app">
-    <nested-validations />
+    <!--    <nested-validations />-->
+    <simple-form />
   </div>
 </template>
 
 <script>
-import NestedValidations from '@/components/NestedValidations'
+// import NestedValidations from '@/components/NestedValidations'
+import SimpleForm from './components/SimpleForm'
 
 export default {
   name: 'App',
   components: {
-    NestedValidations
+    SimpleForm,
+    // NestedValidations
   }
 }
 </script>
