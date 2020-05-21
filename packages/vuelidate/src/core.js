@@ -341,7 +341,7 @@ function createMetaFields (results, ...otherResults) {
 
   const $pending = computed(() =>
     // if any of the nested values is pending
-    allResults.value.some(r => r.$pending) ||
+    allResults.value.some(r => unwrap(r.$pending)) ||
     // if any of the current state validators is pending
     unwrap(results.$pending) ||
     // fallback to false if is root
@@ -458,9 +458,11 @@ export function setValidations ({ validations, state, key, parentKey, childResul
   let $validate = function $validate () {
     return new Promise((resolve) => {
       if (!$dirty.value) $touch()
-      if (!$pending.value) return resolve($invalid.value)
+      // return whether it is valid or not
+      if (!$pending.value) return resolve(!$error.value)
       const unwatch = watch($pending, () => {
-        resolve($invalid.value)
+        console.log('watched')
+        resolve(!$error.value)
         unwatch()
       })
     })
