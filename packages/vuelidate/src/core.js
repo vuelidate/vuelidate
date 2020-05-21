@@ -466,7 +466,6 @@ export function setValidations ({ validations, state, key, parentKey, childResul
       // return whether it is valid or not
       if (!$pending.value) return resolve(!$error.value)
       const unwatch = watch($pending, () => {
-        console.log('watched')
         resolve(!$error.value)
         unwatch()
       })
