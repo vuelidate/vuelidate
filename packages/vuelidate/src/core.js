@@ -1,4 +1,4 @@
-import { isFunction, isPromise, unwrap, unwrapObj } from './utils'
+import { isFunction, unwrap, unwrapObj } from './utils'
 import { computed, reactive, ref, watch } from 'vue'
 
 /**
@@ -28,9 +28,9 @@ import { computed, reactive, ref, watch } from 'vue'
 function sortValidations (validations) {
   const validationKeys = Object.keys(validations)
 
-  let rules = {}
-  let nestedValidators = {}
-  let config = {}
+  const rules = {}
+  const nestedValidators = {}
+  const config = {}
 
   validationKeys.forEach(key => {
     const v = validations[key]
@@ -91,8 +91,9 @@ function normalizeValidatorResponse (result) {
  * @param {Ref<*>} model
  * @return {Ref<Boolean>}
  */
-function createComputedResult (rule, model) {
+function createComputedResult (rule, model, $dirty) {
   return computed(() => {
+    if (!$dirty.value) return false
     const result = callRule(rule, model)
     return normalizeValidatorResponse(result)
   })
@@ -106,31 +107,31 @@ function createComputedResult (rule, model) {
  * @param {Ref<Boolean>} $pending
  * @return {Ref<Boolean>}
  */
-function createAsyncResult (rule, model, initResult, $pending) {
-  const $invalid = ref(true)
+function createAsyncResult (rule, model, $pending, $dirty) {
+  const $invalid = ref(!!$dirty.value)
+  const $pendingCounter = ref(0)
 
-  $pending.value = true
-
-  initResult.then(data => {
-    $pending.value = false
-    $invalid.value = normalizeValidatorResponse(data)
-  })
+  $pending.value = false
 
   watch(
-    model,
+    [model, $dirty],
     modelValue => {
-      const ruleResult = callRule(rule, modelValue)
+      if (!$dirty.value) return false
+      const ruleResult = callRule(rule, model)
 
-      $pending.value = true
+      $pendingCounter.value++
+      $pending.value = !!$pendingCounter.value
       $invalid.value = true
 
       ruleResult
         .then(data => {
-          $pending.value = false
+          $pendingCounter.value--
+          $pending.value = !!$pendingCounter.value
           $invalid.value = !data
         })
         .catch(() => {
-          $pending.value = false
+          $pendingCounter.value--
+          $pending.value = !!$pendingCounter.value
           $invalid.value = true
         })
     }
@@ -147,20 +148,19 @@ function createAsyncResult (rule, model, initResult, $pending) {
  * @param {String} key
  * @return {{$params: *, $message: Ref<String>, $pending: Ref<Boolean>, $invalid: Ref<Boolean>}}
  */
-function createValidatorResult (rule, state, key) {
-  const model = computed(() => state[key].value)
-  const ruleResult = callRule(rule.$validator, model)
+function createValidatorResult (rule, state, key, $dirty) {
+  const model = computed(() => unwrap(unwrap(state)[key]))
 
   const $pending = ref(false)
   const $params = rule.$params || {}
-  const $invalid = isPromise(ruleResult)
+  const $invalid = rule.$async
     ? createAsyncResult(
       rule.$validator,
       model,
-      ruleResult,
-      $pending
+      $pending,
+      $dirty
     )
-    : createComputedResult(rule.$validator, model)
+    : createComputedResult(rule.$validator, model, $dirty)
 
   const message = rule.$message
   const $message = isFunction(message)
@@ -219,10 +219,10 @@ function createValidationResults (rules, state, key, parentKey) {
 
   const $dirty = ref(false)
 
-  let result = {
+  const result = {
     $dirty,
-    $touch: () => { $dirty.value = true },
-    $reset: () => { $dirty.value = false }
+    $touch: () => { if (!$dirty.value) $dirty.value = true },
+    $reset: () => { if ($dirty.value) $dirty.value = false }
   }
 
   /**
@@ -235,7 +235,8 @@ function createValidationResults (rules, state, key, parentKey) {
     result[ruleKey] = createValidatorResult(
       rules[ruleKey],
       state,
-      key
+      key,
+      $dirty
     )
   })
 
@@ -440,7 +441,7 @@ export function setValidations ({ validations, state, key, parentKey, childResul
    * If we have no `key`, this is the top level state
    * We dont need `$model` there.
    */
-  let $model = key ? computed({
+  const $model = key ? computed({
     get: () => unwrap(state[key]),
     set: val => {
       $dirty.value = true
@@ -449,10 +450,9 @@ export function setValidations ({ validations, state, key, parentKey, childResul
   }) : null
 
   if (config.$autoDirty) {
-    watch(
-      state[key],
-      () => { $dirty.value = true }
-    )
+    watch(state[key], () => {
+      if (!$dirty.value) $touch()
+    })
   }
 
   let $validate = function $validate () {
