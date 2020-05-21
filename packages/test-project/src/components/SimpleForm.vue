@@ -12,9 +12,11 @@
 <script>
 import { ref } from 'vue'
 import useVuelidate from '@vuelidate/core'
-import { required } from '@vuelidate/validators'
+import { required, helpers } from '@vuelidate/validators'
 
-function asyncValidator (v) {
+const { withAsync } = helpers
+
+const asyncValidator = withAsync((v) => {
   return new Promise(resolve => {
     console.log('called')
     setTimeout(() => {
@@ -22,7 +24,7 @@ function asyncValidator (v) {
       resolve(v === 'aaaa')
     }, 2000)
   })
-}
+})
 
 export default {
   name: 'SimpleForm',
@@ -38,7 +40,7 @@ export default {
   methods: {
     validate () {
       this.v$.$validate().then((result) => {
-        console.log(result)
+        console.log('Result is', result)
       })
     }
   }
