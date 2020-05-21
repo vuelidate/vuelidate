@@ -138,7 +138,8 @@ function createAsyncResult (rule, model, $pending, $dirty) {
           $pending.value = !!$pendingCounter.value
           $invalid.value = true
         })
-    }
+    },
+    { flush: 'sync' }
   )
 
   return $invalid
