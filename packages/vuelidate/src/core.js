@@ -1,4 +1,4 @@
-import { isFunction, unwrap, unwrapObj } from './utils'
+import { isFunction, isPromise, unwrap, unwrapObj } from './utils'
 import { computed, reactive, ref, watch } from 'vue'
 
 /**
@@ -94,7 +94,11 @@ function normalizeValidatorResponse (result) {
 function createComputedResult (rule, model, $dirty) {
   return computed(() => {
     if (!$dirty.value) return false
-    const result = callRule(rule, model)
+    let result = callRule(rule, model)
+    if (isPromise(result)) {
+      result = false
+      console.error('Async validators must have the $async property')
+    }
     return normalizeValidatorResponse(result)
   })
 }
