@@ -133,9 +133,7 @@ function createAsyncResult (rule, model, initResult, $pending) {
           $pending.value = false
           $invalid.value = true
         })
-    },
-    // we set lazy: true to stop watcher eager invocation
-    { lazy: true }
+    }
   )
 
   return $invalid
@@ -453,9 +451,7 @@ export function setValidations ({ validations, state, key, parentKey, childResul
   if (config.$autoDirty) {
     watch(
       state[key],
-      () => { $dirty.value = true },
-      // we set lazy: true to stop watcher eager invocation
-      { lazy: true }
+      () => { $dirty.value = true }
     )
   }
 
