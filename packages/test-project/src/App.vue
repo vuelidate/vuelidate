@@ -5,7 +5,7 @@
 </template>
 
 <script>
-import NestedValidations from '@/components/NestedValidations'
+import NestedValidations from './components/NestedValidations.vue'
 
 export default {
   name: 'App',

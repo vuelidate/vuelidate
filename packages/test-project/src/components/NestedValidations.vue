@@ -16,9 +16,9 @@
 
 <script>
 import { ref, computed } from 'vue'
-import useVuelidate from '@vuelidate/core/src'
-import { required, minValue } from '@vuelidate/validators/src/withMessages'
-import NestedA from './NestedA'
+import useVuelidate from '@vuelidate/core'
+import { required, minValue } from '@vuelidate/validators'
+import NestedA from './NestedA.vue'
 
 export default {
   components: { NestedA },

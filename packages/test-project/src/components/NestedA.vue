@@ -1,4 +1,4 @@
-<template lang="html">
+<template>
   <div class="">
     <div style="margin-bottom: 20px">
       <label>Number A</label>
@@ -29,9 +29,9 @@
 
 <script>
 import { ref } from 'vue'
-import useVuelidate from '@vuelidate/core/src'
-import { required, maxValue } from '@vuelidate/validators/src/withMessages'
-import NestedB from './NestedB'
+import useVuelidate from '@vuelidate/core'
+import { required, maxValue } from '@vuelidate/validators'
+import NestedB from './NestedB.vue'
 
 export default {
   name: 'NestedA',
