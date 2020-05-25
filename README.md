@@ -155,10 +155,38 @@ For detailed explanation on how things work, checkout the [guide](http://vuejs-t
 
 ### Current
 
-- [Damian Dulisz](https://github.com/shentao)
-- [Natalia Tepluhina](https://github.com/NataliaTepluhina)
-- [Dobromir Hristov](https://github.com/dobromir-hristov)
-- [Marina Mosti](https://github.com/marina-mosti)
+<table>
+  <tr>
+    <td align="center">
+      <a href="https://github.com/shentao">
+        <img src="https://avatars3.githubusercontent.com/u/3737591?s=460&u=6ef86c71bbbb74efae3c6224390ce9a8cba82272&v=4" width="120px;" alt="Damian Dulisz"/>
+        <br />
+        <sub><b>Damian Dulisz</b></sub>
+      </a>
+    </td>
+    <td align="center">
+      <a href="https://github.com/NataliaTepluhina">
+        <img src="https://avatars0.githubusercontent.com/u/18719025?s=460&u=2375ee8b609cb39d681cb318ed138b2f7ffe020e&v=4" width="120px;" alt="Natalia Tepluhina"/>
+        <br />
+        <sub><b>Natalia Tepluhina</b></sub>
+      </a>
+    </td>
+    <td align="center">
+      <a href="https://github.com/dobromir-hristov">
+        <img src="https://avatars3.githubusercontent.com/u/9863944?s=460&u=55b074c1589d69d17bb78322dd6900d63b186a34&v=4" width="120px;" alt="Natalia Tepluhina"/>
+        <br />
+        <sub><b>Dobromir Hristov</b></sub>
+      </a>
+    </td>
+    <td align="center">
+      <a href="https://github.com/marina-mosti">
+        <img src="https://avatars2.githubusercontent.com/u/14843771?s=460&u=1d11d62c22d38c01d73e6c92587bd567f4e51d27&v=4" width="120px;" alt="Marina Mosti"/>
+        <br />
+        <sub><b>Marina Mosti</b></sub>
+      </a>
+    </td>
+  </tr>
+</table>
 
 ### Emeriti
 
