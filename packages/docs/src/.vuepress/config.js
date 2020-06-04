@@ -15,6 +15,7 @@ module.exports = {
     sidebar: [
       '/',
       'examples',
+      'advanced_usage',
       'api',
       'validators',
       'custom_validators',

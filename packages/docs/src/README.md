@@ -1,58 +1,56 @@
 # Getting started
 
+**Vuelidate 2** is a simple, but powerful, lightweight model-based validation for Vue.js 3.
 
-Vuelidate 2 is a simple, but powerful, lightweight model-based validation for Vue.js.
+Vuelidate is considered _model-based_ because the validation rules are defined next to your data, and the validation tree structure matches the data model structure.
 
-It supports Vue 3
+_If you are looking for Vuelidate that supports Vue 2, use [Vuelidate 1](https://github.com/vuelidate/vuelidate/tree/v1)._
 
 ## Installation
 
-Package is installable via npm
+You can install via npm
 
 ```bash
-npm install vuelidate --save
+npm install @vuelidate/core @vuelidate/validators --save
 ```
 
-## Basic usage
+## Getting Started
 
-You can import the library and `use` as a Vue plugin to enable the functionality globally on all components containing validation configuration.
+You can import the library and use it as a Vue plugin to enable the functionality globally on all components containing validation configuration.
 
 ```js
 import Vue from 'vue'
-import Vuelidate from 'vuelidate'
-Vue.use(Vuelidate)
+import Vuelidate from '@vuelidate/core'
+
+const app = Vue.createApp(App)
+app.use(Vuelidate)
 ```
 
-Alternatively it is possible to import a mixin directly to components in which it will be used.
+Then in your component you can create a `validations` method.
 
-```vue
-<script>
-import { validationMixin } from 'vuelidate'
-
+```js
+import { required } from '@vuelidate/validators'
 export default {
-  mixins: [validationMixin],
-  validations: { ... }
+  data() {
+    return {
+      name: ''
+    }
+  },
+  validations() {
+    return {
+      name: { required }
+    }
+  }
 }
-</script>
 ```
 
-If you prefer using `require`, it can be used instead of `import` statements. This works especially great with destructuring syntax.
+You now have a `v$` object available in your component's `this` context, that you can check for validation statuses:
 
 ```js
-const { validationMixin, default: Vuelidate } = require('vuelidate')
-const { required, minLength } = require('vuelidate/lib/validators')
+{
+  $invalid: true,
+  $error: false,
+}
 ```
 
-The browser-ready bundle is also provided in the package.
-
-```html
-<script src="vuelidate/dist/vuelidate.min.js"></script>
-```
-```js
-// global
-Vue.use(window.vuelidate.default)
-
-// local mixin
-var validationMixin = window.vuelidate.validationMixin
-```
-Check out the [JSFiddle example](https://jsfiddle.net/Frizi/b5v4faqf/) which uses this setup.
+There, you are all set. Lets go to the [Examples](./examples.md) page, to see what you can do with Vuelidate.
