@@ -1,4 +1,4 @@
-import { isFunction, unwrap, unwrapObj } from './utils'
+import { isFunction, isPromise, unwrap, unwrapObj } from './utils'
 import { computed, reactive, ref, watch } from 'vue'
 
 /**
@@ -89,12 +89,19 @@ function normalizeValidatorResponse (result) {
  * TODO: This allows a validator to return $invalid, probably along with other parameters. We do not utilize them ATM.
  * @param {Validator} rule
  * @param {Ref<*>} model
+ * @param {Ref<boolean>} $dirty
  * @return {Ref<Boolean>}
  */
 function createComputedResult (rule, model, $dirty) {
   return computed(() => {
+    // if $dirty is false, we dont validate at all.
+    // TODO: Make this optional, this is a huge breaking change
     if (!$dirty.value) return false
-    const result = callRule(rule, model)
+    let result = callRule(rule, model)
+    // if it returns a promise directly, error out
+    if (isPromise(result)) {
+      throw Error('[vuelidate] detected a raw async validator. Please wrap any async validators in the `withAsync` helper.')
+    }
     return normalizeValidatorResponse(result)
   })
 }
@@ -103,8 +110,8 @@ function createComputedResult (rule, model, $dirty) {
  * Returns the result of an async validator.
  * @param {Function} rule
  * @param {Ref<*>} model
- * @param {Promise<Boolean>} initResult
  * @param {Ref<Boolean>} $pending
+ * @param {Ref<Boolean>} $dirty
  * @return {Ref<Boolean>}
  */
 function createAsyncResult (rule, model, $pending, $dirty) {
@@ -134,7 +141,8 @@ function createAsyncResult (rule, model, $pending, $dirty) {
           $pending.value = !!$pendingCounter.value
           $invalid.value = true
         })
-    }
+    },
+    { flush: 'sync' }
   )
 
   return $invalid
@@ -342,7 +350,7 @@ function createMetaFields (results, ...otherResults) {
 
   const $pending = computed(() =>
     // if any of the nested values is pending
-    allResults.value.some(r => r.$pending) ||
+    allResults.value.some(r => unwrap(r.$pending)) ||
     // if any of the current state validators is pending
     unwrap(results.$pending) ||
     // fallback to false if is root
@@ -455,6 +463,18 @@ export function setValidations ({ validations, state, key, parentKey, childResul
     })
   }
 
+  let $validate = function $validate () {
+    return new Promise((resolve) => {
+      if (!$dirty.value) $touch()
+      // return whether it is valid or not
+      if (!$pending.value) return resolve(!$error.value)
+      const unwatch = watch($pending, () => {
+        resolve(!$error.value)
+        unwatch()
+      })
+    })
+  }
+
   return reactive({
     ...results,
     // NOTE: The order here is very important, since we want to override
@@ -469,6 +489,7 @@ export function setValidations ({ validations, state, key, parentKey, childResul
     $pending,
     $touch,
     $reset,
+    $validate,
     // add each nested property's state
     ...nestedResults
   })
