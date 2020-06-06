@@ -8,7 +8,7 @@
 
 <script>
 // import OldApiExample from '@/components/OldApiExample'
-// import NestedValidations from '@/components/NestedValidations'
+// import NestedValidations from './components/NestedValidations.vue'
 import SimpleForm from './components/SimpleForm'
 
 export default {

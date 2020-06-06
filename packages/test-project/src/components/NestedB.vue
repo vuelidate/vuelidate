@@ -1,4 +1,4 @@
-<template lang="html">
+<template>
   <div class="">
     <div style="margin-bottom: 20px">
       <label>Number B</label>
@@ -14,8 +14,8 @@
 
 <script>
 import { ref, toRefs } from 'vue'
-import useVuelidate from '@vuelidate/core/src'
-import { required, maxValue, minValue } from '@vuelidate/validators/src/withMessages'
+import useVuelidate from '@vuelidate/core'
+import { required, maxValue, minValue } from '@vuelidate/validators'
 
 export default {
   name: 'NestedB',

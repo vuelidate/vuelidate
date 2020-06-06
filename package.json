@@ -15,10 +15,7 @@
     "@babel/core": "^7.8.4",
     "@commitlint/cli": "^8.3.5",
     "@commitlint/config-conventional": "^8.3.4",
-    "@vue/cli-plugin-babel": "^4.2.0",
-    "@vue/cli-plugin-eslint": "^4.2.0",
-    "@vue/cli-service": "^4.2.0",
-    "@vue/compiler-sfc": "^3.0.0-beta.12",
+    "@vue/compiler-sfc": "^3.0.0-beta.14",
     "babel-eslint": "^10.0.3",
     "core-js": "^3.6.4",
     "cz-conventional-changelog": "^3.1.0",
@@ -32,8 +29,7 @@
     "husky": "^3.1.0",
     "lerna": "^3.18.3",
     "standard-version": "^7.0.1",
-    "vue": "^3.0.0-beta.12",
-    "vue-cli-plugin-vue-next": "^0.1.2"
+    "vue": "^3.0.0-beta.14"
   },
   "dependencies": {
     "lern": "^1.0.0"
