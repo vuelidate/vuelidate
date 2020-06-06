@@ -89,15 +89,18 @@ function normalizeValidatorResponse (result) {
  * TODO: This allows a validator to return $invalid, probably along with other parameters. We do not utilize them ATM.
  * @param {Validator} rule
  * @param {Ref<*>} model
+ * @param {Ref<boolean>} $dirty
  * @return {Ref<Boolean>}
  */
 function createComputedResult (rule, model, $dirty) {
   return computed(() => {
+    // if $dirty is false, we dont validate at all.
+    // TODO: Make this optional, this is a huge breaking change
     if (!$dirty.value) return false
     let result = callRule(rule, model)
+    // if it returns a promise directly, error out
     if (isPromise(result)) {
-      result = false
-      console.error('Async validators must have the $async property')
+      throw Error('[vuelidate] detected a raw async validator. Please wrap any async validators in the `withAsync` helper.')
     }
     return normalizeValidatorResponse(result)
   })
@@ -107,8 +110,8 @@ function createComputedResult (rule, model, $dirty) {
  * Returns the result of an async validator.
  * @param {Function} rule
  * @param {Ref<*>} model
- * @param {Promise<Boolean>} initResult
  * @param {Ref<Boolean>} $pending
+ * @param {Ref<Boolean>} $dirty
  * @return {Ref<Boolean>}
  */
 function createAsyncResult (rule, model, $pending, $dirty) {
