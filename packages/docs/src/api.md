@@ -5,7 +5,7 @@ There are two distinct structures present in _vuelidate_:
 * `validations` component option - the definition of your validation
 * `$v structure` - an object in your viewmodel that holds the validation state
 
-## $v values
+## Validation State Values
 
 `$v` model represents the current state of validation. It does so by defining a set of properties which hold the output of user defined validation functions, following the `validations` option structure. The presence of those special reserved keywords means that you cannot specify your own validators with that name.
 

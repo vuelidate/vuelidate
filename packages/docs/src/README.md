@@ -26,7 +26,7 @@ const app = Vue.createApp(App)
 app.use(Vuelidate)
 ```
 
-Then in your component you can create a `validations` method.
+Then in your component you can create a `validations` method and define your validation rules.
 
 ```js
 import { required } from '@vuelidate/validators'
@@ -44,13 +44,15 @@ export default {
 }
 ```
 
-You now have a `v$` object available in your component's `this` context, that you can check for validation statuses:
+Now in your templates you can check for errors like this:
 
-```js
-{
-  $invalid: true,
-  $error: false,
-}
+```vue
+<div :class="{ error: v$.name.$error }">
+  <input v-model="name">
+  <div v-if="v$.name.$error">
+    <div v-if="v$.name.required">The Name field is required</div>
+  </div>
+</div>
 ```
 
-There, you are all set. Lets go to the [Examples](./examples.md) page, to see what you can do with Vuelidate.
+There, you are all set. Head over to the [Guide](./guide.md) page, to for a more detailed guide on how to use Vuelidate.

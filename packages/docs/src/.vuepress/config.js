@@ -14,8 +14,9 @@ module.exports = {
     logo: 'logo.png',
     sidebar: [
       '/',
-      'examples',
+      'guide',
       'advanced_usage',
+      'examples',
       'api',
       'validators',
       'custom_validators',
