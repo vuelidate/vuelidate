@@ -15,17 +15,17 @@
     <p>X + Y = {{ xPlusY }}</p>
     <div style="background: rgba(219, 53, 53, 0.62); color: #ff9090; padding: 10px 15px">
       <p
-        v-for="error of v$.$errors"
-        :key="error.$propertyPath"
+        v-for="(error, index) of $v.$errors"
+        :key="index"
         style="padding: 0; margin: 5px 0"
       >
         {{ error.$message }}
       </p>
     </div>
-    <button @click="v$.$touch">
+    <button @click="$v.$touch()">
       $touch!
     </button>
-    <pre style="color: white">{{ v$ }}</pre>
+    <pre style="color: white">{{ $v }}</pre>
   </div>
 </template>
 
@@ -43,7 +43,7 @@ export default {
   },
   data () {
     return {
-      y: 1
+      y: 3
     }
   },
   computed: {
@@ -52,34 +52,27 @@ export default {
     }
   },
   validations () {
+    console.log(this.y)
     return {
       x: {
-        minValue: minValue(2),
+        // $autoDirty: true,
+        minValue: minValue(this.y),
         isEven: {
-          $validator: (v) => {
-            console.log('isEven', 'x', v)
-            return v % 2 === 0
-          },
-          $message: 'Sum must be an even number'
+          $validator: (v) => v % 2 === 0,
+          $message: 'X must be an even number'
         }
       },
       y: {
         minValue: minValue(4),
         isEven: {
-          $validator: (v) => {
-            console.log('isEven', 'y', v)
-            return v % 2 === 0
-          },
-          $message: 'Sum must be an even number'
+          $validator: (v) => v % 2 === 0,
+          $message: 'Y must be an even number'
         }
       },
       xPlusY: {
         minValue: minValue(6),
         isEven: {
-          $validator: (v) => {
-            console.log('isEven', 'xPlusY', v)
-            return v % 2 === 0
-          },
+          $validator: (v) => v % 2 === 0,
           $message: 'Sum must be an even number'
         }
       }
