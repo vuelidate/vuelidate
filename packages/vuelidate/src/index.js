@@ -65,9 +65,9 @@ export const VuelidateMixin = {
       : options.validations
 
     if (!options.computed) options.computed = {}
-    if (options.computed.v$) return
+    if (options.computed.$v) return
 
-    options.computed.v$ = function () {
+    options.computed.$v = function () {
       return setValidations({
         validations,
         state: this
