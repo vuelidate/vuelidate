@@ -134,7 +134,7 @@ function createAsyncResult (rule, model, $pending, $dirty) {
         .then(data => {
           $pendingCounter.value--
           $pending.value = !!$pendingCounter.value
-          $invalid.value = !data
+          $invalid.value = normalizeValidatorResponse(data)
         })
         .catch(() => {
           $pendingCounter.value--
