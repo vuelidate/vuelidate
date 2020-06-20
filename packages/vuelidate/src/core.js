@@ -1,5 +1,5 @@
 import { isFunction, isPromise, unwrap, unwrapObj } from './utils'
-import { computed, reactive, ref, watch } from 'vue'
+import { computed, reactive, ref, watch, isRef, toRef } from 'vue'
 
 /**
  * @typedef NormalizedValidator
@@ -28,9 +28,9 @@ import { computed, reactive, ref, watch } from 'vue'
 function sortValidations (validations) {
   const validationKeys = Object.keys(validations)
 
-  let rules = {}
-  let nestedValidators = {}
-  let config = {}
+  const rules = {}
+  const nestedValidators = {}
+  const config = {}
 
   validationKeys.forEach(key => {
     const v = validations[key]
@@ -89,11 +89,19 @@ function normalizeValidatorResponse (result) {
  * TODO: This allows a validator to return $invalid, probably along with other parameters. We do not utilize them ATM.
  * @param {Validator} rule
  * @param {Ref<*>} model
+ * @param {Ref<boolean>} $dirty
  * @return {Ref<Boolean>}
  */
-function createComputedResult (rule, model) {
+function createComputedResult (rule, model, $dirty) {
   return computed(() => {
-    const result = callRule(rule, model)
+    // if $dirty is false, we dont validate at all.
+    // TODO: Make this optional, this is a huge breaking change
+    if (!$dirty.value) return false
+    let result = callRule(rule, model)
+    // if it returns a promise directly, error out
+    if (isPromise(result)) {
+      throw Error('[vuelidate] detected a raw async validator. Please wrap any async validators in the `withAsync` helper.')
+    }
     return normalizeValidatorResponse(result)
   })
 }
@@ -102,38 +110,39 @@ function createComputedResult (rule, model) {
  * Returns the result of an async validator.
  * @param {Function} rule
  * @param {Ref<*>} model
- * @param {Promise<Boolean>} initResult
  * @param {Ref<Boolean>} $pending
+ * @param {Ref<Boolean>} $dirty
  * @return {Ref<Boolean>}
  */
-function createAsyncResult (rule, model, initResult, $pending) {
-  const $invalid = ref(true)
+function createAsyncResult (rule, model, $pending, $dirty) {
+  const $invalid = ref(!!$dirty.value)
+  const $pendingCounter = ref(0)
 
-  $pending.value = true
-
-  initResult.then(data => {
-    $pending.value = false
-    $invalid.value = normalizeValidatorResponse(data)
-  })
+  $pending.value = false
 
   watch(
-    model,
+    [model, $dirty],
     modelValue => {
-      const ruleResult = callRule(rule, modelValue)
+      if (!$dirty.value) return false
+      const ruleResult = callRule(rule, model)
 
-      $pending.value = true
+      $pendingCounter.value++
+      $pending.value = !!$pendingCounter.value
       $invalid.value = true
 
       ruleResult
         .then(data => {
-          $pending.value = false
-          $invalid.value = !data
+          $pendingCounter.value--
+          $pending.value = !!$pendingCounter.value
+          $invalid.value = normalizeValidatorResponse(data)
         })
         .catch(() => {
-          $pending.value = false
+          $pendingCounter.value--
+          $pending.value = !!$pendingCounter.value
           $invalid.value = true
         })
-    }
+    },
+    { flush: 'sync' }
   )
 
   return $invalid
@@ -147,20 +156,19 @@ function createAsyncResult (rule, model, initResult, $pending) {
  * @param {String} key
  * @return {{$params: *, $message: Ref<String>, $pending: Ref<Boolean>, $invalid: Ref<Boolean>}}
  */
-function createValidatorResult (rule, state, key) {
-  const model = computed(() => state[key].value)
-  const ruleResult = callRule(rule.$validator, model)
+function createValidatorResult (rule, state, key, $dirty) {
+  const model = computed(() => unwrap(state)[key])
 
   const $pending = ref(false)
   const $params = rule.$params || {}
-  const $invalid = isPromise(ruleResult)
+  const $invalid = rule.$async
     ? createAsyncResult(
       rule.$validator,
       model,
-      ruleResult,
-      $pending
+      $pending,
+      $dirty
     )
-    : createComputedResult(rule.$validator, model)
+    : createComputedResult(rule.$validator, model, $dirty)
 
   const message = rule.$message
   const $message = isFunction(message)
@@ -219,10 +227,10 @@ function createValidationResults (rules, state, key, parentKey) {
 
   const $dirty = ref(false)
 
-  let result = {
+  const result = {
     $dirty,
-    $touch: () => { $dirty.value = true },
-    $reset: () => { $dirty.value = false }
+    $touch: () => { if (!$dirty.value) $dirty.value = true },
+    $reset: () => { if ($dirty.value) $dirty.value = false }
   }
 
   /**
@@ -235,7 +243,8 @@ function createValidationResults (rules, state, key, parentKey) {
     result[ruleKey] = createValidatorResult(
       rules[ruleKey],
       state,
-      key
+      key,
+      $dirty
     )
   })
 
@@ -341,7 +350,7 @@ function createMetaFields (results, ...otherResults) {
 
   const $pending = computed(() =>
     // if any of the nested values is pending
-    allResults.value.some(r => r.$pending) ||
+    allResults.value.some(r => unwrap(r.$pending)) ||
     // if any of the current state validators is pending
     unwrap(results.$pending) ||
     // fallback to false if is root
@@ -440,19 +449,35 @@ export function setValidations ({ validations, state, key, parentKey, childResul
    * If we have no `key`, this is the top level state
    * We dont need `$model` there.
    */
-  let $model = key ? computed({
+  const $model = key ? computed({
     get: () => unwrap(state[key]),
     set: val => {
       $dirty.value = true
-      state[key].value = val
+      if (isRef(state[key])) {
+        state[key].value = val
+      } else {
+        state[key] = val
+      }
     }
   }) : null
 
   if (config.$autoDirty) {
-    watch(
-      state[key],
-      () => { $dirty.value = true }
-    )
+    const watchTarget = isRef(state[key]) ? state[key] : toRef(state, key)
+    watch(watchTarget, () => {
+      if (!$dirty.value) $touch()
+    })
+  }
+
+  let $validate = function $validate () {
+    return new Promise((resolve) => {
+      if (!$dirty.value) $touch()
+      // return whether it is valid or not
+      if (!$pending.value) return resolve(!$error.value)
+      const unwatch = watch($pending, () => {
+        resolve(!$error.value)
+        unwatch()
+      })
+    })
   }
 
   return reactive({
@@ -469,6 +494,7 @@ export function setValidations ({ validations, state, key, parentKey, childResul
     $pending,
     $touch,
     $reset,
+    $validate,
     // add each nested property's state
     ...nestedResults
   })

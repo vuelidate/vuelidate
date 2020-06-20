@@ -54,22 +54,29 @@ export default function useVuelidate (validationsArg, state, registerAs) {
  * Relies on `validations` option to be defined on component instance
  * @type {ComponentOptions}
  */
+
 export const VuelidateMixin = {
   beforeCreate () {
     const options = this.$options
     if (!options.validations) return
 
-    const validations = isFunction(options.validations)
-      ? options.validations.call(this)
-      : options.validations
-
     if (!options.computed) options.computed = {}
     if (options.computed.$v) return
 
-    options.computed.$v = () => setValidations({
-      validations,
-      state: this
-    })
+    const validations = computed(() => isFunction(options.validations)
+      ? options.validations.call(this)
+      : options.validations
+    )
+    let $v
+
+    options.computed.$v = function () {
+      if ($v) {
+        return $v
+      } else {
+        $v = setValidations({ validations, state: this })
+        return $v
+      }
+    }
   }
 }
 
