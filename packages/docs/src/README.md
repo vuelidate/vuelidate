@@ -8,7 +8,7 @@ _If you are looking for Vuelidate that supports Vue 2, use [Vuelidate 1](https:/
 
 ## Installation
 
-Installing Vuelidate is easy, and can be done with your package manager of choice.
+Installing Vuelidate is straightforward, and can be done with your package manager of choice.
 
 ```bash
 npm install @vuelidate/core @vuelidate/validators --save
