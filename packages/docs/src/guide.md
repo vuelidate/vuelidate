@@ -45,10 +45,6 @@ but with some extra validity related properties.
 
 `v$` is also reactive - meaning it changes as the user types.
 
-::: tip
-Note that Vuelidate 2 uses `v$` with the $ sign after the v. This change was necessary due to the migration to Vue 3.
-:::
-
 Building up on our form example above, to check whether name is valid we can now check to see if the `name.$error` property is `true` or `false`, and display an error for our users.
 
 ```html
