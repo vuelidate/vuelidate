@@ -93,7 +93,7 @@ An example of our `name` property being in an error state due to it being requir
 {
   "$property": "name",
   "$validator": "required",
-  "$message": "The value is",
+  "$message": "The value is required",
   [...]
 }
 ```
