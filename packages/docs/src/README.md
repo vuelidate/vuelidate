@@ -60,15 +60,28 @@ export default {
 
 Now that validations are set up, we can check inside our template for errors by looking at the `name` property inside of the `v$` Vuelidate object. It will hold all the information and state of our `name` state's validation.
 
-If _any_ error is present, the `$error` property inside of `$v.name` will be true.
+If _any_ error is present, the `$errors` array property inside of `$v.name` will contain an object that describes each error for us to loop through.
 
-To check in more detail if the `required` property was the one that had the problem, and display an error for our user, we will check the `required` property inside of `v$.name`
+Each object inside the `$errors` array will contain a few properties that allows us to dynamically build our error message.
+
+An example of our `name` property being in an error state due to it being required would be:
+
+```js
+{
+  "$property": "name",
+  "$validator": "required",
+  "$message": "The value is",
+  [...]
+}
+```
+
+Now that we understand the basic content of the error objects, we can build our error messages in the template. This approach will dynamically cover any number of validators that were applied to our input.
 
 ```vue
-<div :class="{ error: v$.name.$error }">
+<div :class="{ error: v$.name.$errors.length }">
   <input v-model="name">
-  <div v-if="v$.name.$error">
-    <div v-if="v$.name.required">The Name field is required</div>
+  <div class="input-errors" v-for="(error, index) of v$.name.$errors">
+    <div class="error-msg">{{ error.$message }}</div>
   </div>
 </div>
 ```
