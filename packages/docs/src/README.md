@@ -38,9 +38,32 @@ First, import the validators that you want to use from `@vuelidate/validators`.
 import { required } from '@vuelidate/validators'
 ```
 
-Next, add the `validations` method, it should return an object that matches the structure of your state. In this example, we have a field `name`, which is declared inside of the component's `data()`.
+Next, add the `validations` function, it should return an object that matches the structure of your state. In this example, we have a field `name`, which is declared inside of the component's `data()`.
 
-Notice that in the `validations` method we declare the same structure, and the `name` property specifies the validators that we want to apply to it - in this case, a `required` validation.
+Notice that in the `validations` function we declare the same structure, and the `name` property specifies the validators that we want to apply to it - in this case, a `required` validation.
+
+Below you can find a visual example of the relation between the component internal state in `data` and the `validations` object. Notice the structure matches exactly.
+
+```js
+data () {
+  return {
+    firstName: '',
+    lastName: '',
+    contact: {
+      email: ''
+    }
+  }
+},
+validations () {
+  return {
+    firstName: { required }, // Matches this.firstName
+    lastName: { required }, // Matches this.lastName
+    contact: {
+      email: { required, email } // Matches this.contact.email
+    }
+  }
+}
+```
 
 ```js
 import { required } from '@vuelidate/validators'
