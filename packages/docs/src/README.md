@@ -30,7 +30,7 @@ const app = Vue.createApp(App)
 app.use(Vuelidate)
 ```
 
-Now that Vuelidate is registered as a global plugin, create a `validations` method inside your component and define your validation rules.
+Now that Vuelidate is registered as a global plugin, create a `validations` function inside your component and define your validation rules.
 
 First, import the validators that you want to use from `@vuelidate/validators`.
 
