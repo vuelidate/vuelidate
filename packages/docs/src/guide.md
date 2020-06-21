@@ -121,7 +121,11 @@ export default {
 
 In the above example, we no longer need to call `$touch` manually every time the input is updated.
 
-Additionally, Vuelidate will take of updating the state of the component for you. In the above example, whenever the `input` element changes, `v$.name.$touch()` will be called, updating the state of the validation - and the `name` state will be updated.
+Additionally, Vuelidate will take of updating the state of the component for you.
+
+In the above example, whenever the `input` element changes, `v$.name.$touch()` will be called, updating the state of the validation - and the `name` state will be updated.
+
+This binding is accomplished internally through a getter/setter that reads and updates the original state. When the setter is called, it also triggers `$touch()` for that property.
 
 #### Setting dirty state with $autoDirty
 
