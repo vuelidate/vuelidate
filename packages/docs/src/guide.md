@@ -1,7 +1,7 @@
 # Guide
 
 ## Basics
-As we mentioned in the [getting started quick guide](#getting-started-2), validation rules are set inside an object, that is returned by the `validations` method. We will refer to those as just _validations_ from now on.
+As we mentioned in the [getting started quick guide](/#getting-started-2), validation rules are set inside an object, that is returned by the `validations` method. We will refer to those as just _validations_ from now on.
 
 You can access the component's instance and it's properties via `this` when writing more complicated validation rules.
 
@@ -95,12 +95,33 @@ methods: {
 
 #### Using the $model property
 
-If you want to make things a bit cleaner, you can use the `$model`, available for each field data property.
-This is a special property that points to your validator's bound model data, and calls `touch` when you augment that field's data.
+A less verbose way to ensure that your validations are ran whenever your input's state changes is to directly bind your input's `v-model` declaration into the `$model` of that field's validation object.
+
+This is a special property that points to your validator's bound model data, and calls `touch` when you update or modify that field's data.
 
 ```html
-<input v-model="v$.name.$model">
+<template>
+  <input v-model="v$.name.$model">
+</template>
+
+<script>
+import { required } from '@vuelidate/validators'
+export default {
+  data() {
+    return {
+      name: ''
+    }
+  },
+  validations: {
+    name: { required }
+  }
+}
+</script>
 ```
+
+In the above example, we no longer need to call `$touch` manually every time the input is updated.
+
+Additionally, Vuelidate will take of updating the state of the component for you. In the above example, whenever the `input` element changes, `v$.name.$touch()` will be called, updating the state of the validation - and the `name` state will be updated.
 
 #### Setting dirty state with $autoDirty
 
