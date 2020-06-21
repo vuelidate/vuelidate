@@ -1,7 +1,7 @@
 # Guide
 
 ## Basics
-As we mentioned in the [getting started quick guide](/#getting-started-2), validation rules are set inside an object, that is returned by the `validations` method. We will refer to those as just _validations_ from now on.
+As we mentioned in the [getting started quick guide](/#getting-started-2), validation rules are defined inside the object returned by the `validations` method. We will refer to those as just _validations_ from now on.
 
 You can access the component's instance and it's properties via `this` when writing more complicated validation rules.
 
