@@ -1,5 +1,5 @@
 import { isFunction, isPromise, unwrap, unwrapObj } from './utils'
-import { computed, reactive, ref, watch } from 'vue'
+import { computed, reactive, ref, watch, isRef, toRef } from 'vue'
 
 /**
  * @typedef NormalizedValidator
@@ -134,7 +134,7 @@ function createAsyncResult (rule, model, $pending, $dirty) {
         .then(data => {
           $pendingCounter.value--
           $pending.value = !!$pendingCounter.value
-          $invalid.value = !data
+          $invalid.value = normalizeValidatorResponse(data)
         })
         .catch(() => {
           $pendingCounter.value--
@@ -157,7 +157,7 @@ function createAsyncResult (rule, model, $pending, $dirty) {
  * @return {{$params: *, $message: Ref<String>, $pending: Ref<Boolean>, $invalid: Ref<Boolean>}}
  */
 function createValidatorResult (rule, state, key, $dirty) {
-  const model = computed(() => unwrap(unwrap(state)[key]))
+  const model = computed(() => unwrap(state)[key])
 
   const $pending = ref(false)
   const $params = rule.$params || {}
@@ -453,12 +453,17 @@ export function setValidations ({ validations, state, key, parentKey, childResul
     get: () => unwrap(state[key]),
     set: val => {
       $dirty.value = true
-      state[key].value = val
+      if (isRef(state[key])) {
+        state[key].value = val
+      } else {
+        state[key] = val
+      }
     }
   }) : null
 
   if (config.$autoDirty) {
-    watch(state[key], () => {
+    const watchTarget = isRef(state[key]) ? state[key] : toRef(state, key)
+    watch(watchTarget, () => {
       if (!$dirty.value) $touch()
     })
   }
