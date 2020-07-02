@@ -1,27 +1,23 @@
 <template>
   <div id="app">
-    <OldApiExample />
-    <!-- <nested-validations />
-    <simple-form /> -->
+    <div class="navigation">
+      <ul>
+        <li><router-link to="/">Simple Form</router-link></li>
+        <li><router-link to="/old-api">Old api</router-link></li>
+        <li><router-link to="/nested-validations">Nested Validations</router-link></li>
+      </ul>
+    </div>
+    <router-view />
   </div>
 </template>
 
 <script>
-import OldApiExample from './components/OldApiExample.vue'
-import NestedValidations from './components/NestedValidations.vue'
-import SimpleForm from './components/SimpleForm.vue'
-
 export default {
-  name: 'App',
-  components: {
-    SimpleForm,
-    NestedValidations,
-    OldApiExample
-  }
+  name: 'App'
 }
 </script>
 
-<style>
+<style lang="scss">
 body {
   background: #203041;
   color: #f6f6f6;
@@ -36,5 +32,26 @@ pre {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   margin-top: 60px;
+}
+
+ul {
+  list-style-type: none;
+  display: flex;
+  border-radius: 5px;
+  background: #1b2637;
+  padding: 8px 10px;
+
+  li {
+    margin: 0 5px;
+
+    a {
+      color: white;
+      text-decoration: none;
+
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+  }
 }
 </style>

@@ -31,8 +31,8 @@
 
 <script>
 import { ref } from 'vue'
-import { VuelidateMixin } from '@vuelidate/core/src'
-import { minValue } from '@vuelidate/validators/src/withMessages'
+import { VuelidateMixin } from '@vuelidate/core'
+import { minValue } from '@vuelidate/validators'
 
 export default {
   mixins: [VuelidateMixin],
