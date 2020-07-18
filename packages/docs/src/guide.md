@@ -199,6 +199,62 @@ The root properties like, `$dirty`, `$error` and `$invalid` are all collective c
 
 ### Displaying error messages
 
-### Submitting forms
+The validation state holds data like the invalid state of each validator of a property, along with extra properties, like an error message or extra parameters.
+
+The easiest way to display errors is to use the form's top level `$errors` property. It is an array of validation objects, that you can iterate over.
+
+```vue
+<p
+  v-for="(error, index) of $v.$errors"
+  :key="index"
+>
+  <strong>{{ error.$validator }}</strong>
+  <small> on property</small>
+  <strong>{{ error.$property }}</strong>
+  <small> says:</small>
+  <strong>{{ error.$message }}</strong>
+</p>
+```
+
+You can also check for errors on each form property:
+
+```vue
+<p
+  v-for="(error, index) of $v.name.$errors"
+  :key="index"
+>
+  <!-- Same as above -->
+</p>
+```
+
+### Validating forms before submitting
+
+To submit a form, you often need to validate it first. In most cases, you can just check for the `$error` status of the form. It is a good practice to `$touch` the form first, so all validators initiate.
+
+```js
+export default {
+  methods: {
+    submitForm() {
+      this.$v.$touch()
+      if(this.$v.$error) return
+      // do stuff
+    }
+  }
+}
+```
+
+This is good for the general case, but what if you have async validators? You can use the `$validate` method, which returns a promise. That promise resolves with a boolean,
+depending on what the validation status is.
+
+```js
+export default {
+  methods: {
+    async submitForm() {
+      if(! await this.$v.$validate()) return
+      // do stuff
+    }
+  }
+}
+```
 
 ## Validating collections
