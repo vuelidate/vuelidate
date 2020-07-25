@@ -1,4 +1,4 @@
-import { provide, inject, ref, computed, reactive } from 'vue'
+import { provide, inject, ref, computed } from 'vue'
 import { unwrap, isFunction } from './utils'
 import { setValidations } from './core'
 
@@ -12,8 +12,8 @@ const VuelidateSymbol = Symbol('vuelidate')
  * @param {String} registerAs
  * @return {UnwrapRef<*>}
  */
-export default function useVuelidate (validationsArg, state, registerAs) {
-  const validations = unwrap(validationsArg)
+export function useVuelidate (validations, state, registerAs) {
+  const resultsCache = new Map()
 
   const childResultsRaw = {}
   const childResultsKeys = ref([])
@@ -29,21 +29,23 @@ export default function useVuelidate (validationsArg, state, registerAs) {
     childResultsKeys.value.push(key)
   }
 
-  const validationResults = setValidations({
-    validations,
+  const validationResults = computed(() => setValidations({
+    validations: unwrap(validations),
     state,
-    childResults
-  })
+    childResults,
+    resultsCache
+  }))
 
   if (registerAs) {
     injectToParent(validationResults, registerAs)
   }
 
   if (registerAs && childResultsKeys.value.length) {
-    return reactive({
-      ...validationResults,
+    // TODO: Change into reactive + watch
+    return computed(() => ({
+      ...validationResults.value,
       ...childResults
-    })
+    }))
   } else {
     return validationResults
   }
@@ -57,6 +59,7 @@ export default function useVuelidate (validationsArg, state, registerAs) {
 
 export const VuelidateMixin = {
   beforeCreate () {
+    const resultsCache = new Map()
     const options = this.$options
     if (!options.validations) return
 
@@ -71,10 +74,10 @@ export const VuelidateMixin = {
 
     options.computed.$v = function () {
       if ($v) {
-        return $v
+        return $v.value
       } else {
-        $v = setValidations({ validations, state: this })
-        return $v
+        $v = computed(() => setValidations({ validations, state: this, resultsCache }))
+        return $v.value
       }
     }
   }
@@ -87,3 +90,5 @@ export const VuelidateMixin = {
 export function VuelidatePlugin (app) {
   app.mixin(VuelidateMixin)
 }
+
+export default useVuelidate

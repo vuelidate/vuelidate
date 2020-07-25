@@ -1,4 +1,4 @@
-import { isRef } from 'vue'
+import { unref } from 'vue'
 
 export function isFunction (val) {
   return typeof val === 'function'
@@ -14,7 +14,7 @@ export function isObject (o) {
  * @return {*}
  */
 export function unwrap (val) {
-  return isRef(val) ? val.value : val
+  return unref(val)
 }
 
 /**
