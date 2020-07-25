@@ -225,11 +225,11 @@ function createValidatorResult (rule, state, key, $dirty) {
  * @param {String} [parentKey] - Parent key of the state. Optional
  * @return {ValidationResult | {}}
  */
-function createValidationResults (rules, state, key, parentKey, resultsStorage, path) {
+function createValidationResults (rules, state, key, parentKey, resultsCache, path) {
   // collect the property keys
   const ruleKeys = Object.keys(rules)
 
-  const cachedResult = resultsStorage.get(path)
+  const cachedResult = resultsCache.get(path)
 
   const $dirty = ref(false)
 
@@ -282,7 +282,7 @@ function createValidationResults (rules, state, key, parentKey, resultsStorage, 
     })
   )
 
-  resultsStorage.set(path, result)
+  resultsCache.set(path, result)
 
   return result
 }
@@ -294,7 +294,7 @@ function createValidationResults (rules, state, key, parentKey, resultsStorage, 
  * @param {String} [key] - Parent level state key
  * @return {{}}
  */
-function collectNestedValidationResults (validations, state, key, path, resultsStorage) {
+function collectNestedValidationResults (validations, state, key, path, resultsCache) {
   const nestedValidationKeys = Object.keys(validations)
 
   // if we have no state, return empty object
@@ -311,7 +311,7 @@ function collectNestedValidationResults (validations, state, key, path, resultsS
       state: nestedState,
       key: nestedKey,
       parentKey: key,
-      resultsStorage
+      resultsCache
     })
     return results
   }, {})
@@ -435,7 +435,7 @@ export function setValidations ({
   key,
   parentKey,
   childResults,
-  resultsStorage
+  resultsCache
 }) {
   const path = parentKey ? `${parentKey}.${key}` : key
   // Sort out the validation object into:
@@ -445,10 +445,10 @@ export function setValidations ({
   const { rules, nestedValidators, config } = sortValidations(validations)
 
   // Use rules for the current state fragment and validate it
-  const results = createValidationResults(rules, state, key, parentKey, resultsStorage, path)
+  const results = createValidationResults(rules, state, key, parentKey, resultsCache, path)
   // Use nested keys to repeat the process
   // *WARN*: This is recursive
-  const nestedResults = collectNestedValidationResults(nestedValidators, state, key, path, resultsStorage)
+  const nestedResults = collectNestedValidationResults(nestedValidators, state, key, path, resultsCache)
 
   // Collect and merge this level validation results
   // with all nested validation results

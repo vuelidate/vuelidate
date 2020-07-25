@@ -13,7 +13,7 @@ const VuelidateSymbol = Symbol('vuelidate')
  * @return {UnwrapRef<*>}
  */
 export function useVuelidate (validations, state, registerAs) {
-  const resultsStorage = new Map()
+  const resultsCache = new Map()
 
   const childResultsRaw = {}
   const childResultsKeys = ref([])
@@ -33,7 +33,7 @@ export function useVuelidate (validations, state, registerAs) {
     validations: unwrap(validations),
     state,
     childResults,
-    resultsStorage
+    resultsCache
   }))
 
   if (registerAs) {
@@ -41,6 +41,7 @@ export function useVuelidate (validations, state, registerAs) {
   }
 
   if (registerAs && childResultsKeys.value.length) {
+    // TODO: Change into reactive + watch
     return computed(() => ({
       ...validationResults.value,
       ...childResults
@@ -58,7 +59,7 @@ export function useVuelidate (validations, state, registerAs) {
 
 export const VuelidateMixin = {
   beforeCreate () {
-    const resultsStorage = new Map()
+    const resultsCache = new Map()
     const options = this.$options
     if (!options.validations) return
 
@@ -75,7 +76,7 @@ export const VuelidateMixin = {
       if ($v) {
         return $v.value
       } else {
-        $v = computed(() => setValidations({ validations, state: this, resultsStorage }))
+        $v = computed(() => setValidations({ validations, state: this, resultsCache }))
         return $v.value
       }
     }
