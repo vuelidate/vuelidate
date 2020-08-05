@@ -40,17 +40,17 @@ Vuelidate also supports writing your own custom validators, you can learn more a
 
 Now that we have our validation rules set up, we can start checking for errors.
 
-Vuelidate builds a validation state, that can be accessed via the `v$` property. It is a nested object that follows your `validations` structure,
+Vuelidate builds a validation state, that can be accessed via the `$v` property. It is a nested object that follows your `validations` structure,
 but with some extra validity related properties.
 
-`v$` is also reactive - meaning it changes as the user types.
+`$v` is also reactive - meaning it changes as the user types.
 
 Building up on our form example above, to check whether name is valid we can now check to see if the `name.$error` property is `true` or `false`, and display an error for our users.
 
 ```html
 <label>
   <input v-model="name">
-  <div v-if="v$.name.$error">Name field has an error.</div>
+  <div v-if="$v.name.$error">Name field has an error.</div>
 </label>
 ```
 
@@ -78,7 +78,7 @@ This can come in handy to determine when to show error messages, or compare data
 If you ever need to programmatically change the  `$dirty` state on a field to `true` - as if the user of your form had manipulated it, you can use the handy `$touch()` method, attached to an `input` event.
 
 ```html
-<input v-model="name" @input="v$.name.$touch">
+<input v-model="name" @input="$v.name.$touch">
 ```
 
 This will ensure that the field is "touched" every time you input something.
@@ -101,7 +101,7 @@ This is a special property that points to your validator's bound model data, and
 
 ```html
 <template>
-  <input v-model="v$.name.$model">
+  <input v-model="$v.name.$model">
 </template>
 
 <script>
@@ -123,7 +123,7 @@ In the above example, we no longer need to call `$touch` manually every time the
 
 Additionally, Vuelidate will take of updating the state of the component for you.
 
-In the above example, whenever the `input` element changes, `v$.name.$touch()` will be called, updating the state of the validation - and the `name` state will be updated.
+In the above example, whenever the `input` element changes, `$v.name.$touch()` will be called, updating the state of the validation - and the `name` state will be updated.
 
 This binding is accomplished internally through a getter/setter that reads and updates the original state. When the setter is called, it also triggers `$touch()` for that property.
 
@@ -143,7 +143,7 @@ export default {
 
 It will ensure the validator tracks it's bound data, and sets the dirty state accordingly.
 
-You can then change your field's `v-model` to:
+You can then change your field's `v-model` expression to just the data property:
 
 ```html
 <input v-model="name">
@@ -151,14 +151,17 @@ You can then change your field's `v-model` to:
 
 #### Lazy validations by default
 
-Validation in Vuelidate 2 is by default lazy, meaning validators are only called, after a field is dirty, ie `touche()` is called.
+Validation in Vuelidate 2 is by default `lazy`, meaning validators are only called, after a field is dirty, so after `touch()` is called or by using `$model`.
+
+This saves extra invocations for async validators as well as makes the initial validation setup a bit more performant.
 
 #### Resetting dirty state
 
-If you wish to reset a form's `$dirty` state, you can do so by using the appropriately named `$reset` method. For example when closing a modal, you dont want the validation to stay.
+If you wish to reset a form's `$dirty` state, you can do so by using the appropriately named `$reset` method.
+For example when closing a create/edit modal, you dont want the validation state to persist.
 
 ```html
-<app-modal @closed="v$.$reset()">
+<app-modal @closed="$v.$reset()">
   <!-- some inputs  -->
 </app-modal>
 ```
@@ -199,7 +202,9 @@ The root properties like, `$dirty`, `$error` and `$invalid` are all collective c
 
 ### Displaying error messages
 
-The validation state holds data like the invalid state of each validator of a property, along with extra properties, like an error message or extra parameters.
+The validation state holds useful data, like the invalid state of each property validator, along with extra properties, like an error message or extra parameters.
+
+Error messages come out of the box with the bundled validators in `@vuelidate/validators` package. You can check how change those them over at the [Custom Validators page](./custom_validators.md)
 
 The easiest way to display errors is to use the form's top level `$errors` property. It is an array of validation objects, that you can iterate over.
 
@@ -256,5 +261,3 @@ export default {
   }
 }
 ```
-
-## Validating collections

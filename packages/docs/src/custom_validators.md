@@ -4,35 +4,40 @@ You can easily write custom validators and combine them with builtin ones, as th
 
 ## Simplest example
 
-Suppose You want a validator that checks if strings contains cool substring in it. The way to approach this is to use normal javascript function that checks that.
+Suppose you want a validator that checks if a string contains the word `cool` in it. You can write a plain JavaScript function to check that:
 
 ```js
-const mustBeCool = (value) => value.indexOf('cool') >= 0
+const mustBeCool = (value) => value.includes('cool')
 ```
 
 The second part is actually applying your validator. You can do it exactly the same way as with builtin ones.
 
 ```js
-validations: {
-  myField: {
-    required, mustBeCool
+validations() {
+  return {
+    myField: {
+      required, mustBeCool
+    }
   }
 }
 ```
 
 ## Optional validator
 
-Pattern presented above is often good enough, but this validator will always return `false` for empty input. This is not correct when your input is considered optional. For this reason, there exist a `req` helper, which is kinda strippe-down version of `required` validator. You can use it to make your validator behave well in presense of optional fields, that is the ones without `required` validator.
+The pattern presented above is often good enough, but this validator will always return `false` for empty inputs.
+This is not correct when your input is considered optional. For this reason, there exist a `req` helper, which is kinda stripped-down version of `required` validator.
+You can use it to make your validator behave well in presence of optional fields.
 
 ```js
-import { helpers } from 'vuelidate/lib/validators'
-const mustBeCool = (value) => !helpers.req(value) || value.indexOf('cool') >= 0
+import { helpers } from '@vuelidate/validators'
+const mustBeCool = (value) => !helpers.req(value) || value.includes('cool')
 
 // ...
-
-validations: {
-  myField: {
-    mustBeCool
+validations() {
+  return {
+    myField: {
+      mustBeCool
+    }
   }
 }
 ```
@@ -42,59 +47,66 @@ validations: {
 If your validator needs to provide parameters, you can simply create a higher order function that returns the actual validator, like in `between` builtin validator.
 
 ```js
-import { helpers } from 'vuelidate/lib/validators'
+import { helpers } from '@vuelidate/validators'
 const contains = (param) => (value) =>
-  !helpers.req(value) || value.indexOf(param) >= 0
+  !helpers.req(value) || value.includes(param)
 
 // ...
 
-validations: {
-  myField: {
-    mustBeCool: contains('cool')
+validations() {
+  return {
+    myField: {
+      mustBeCool: contains('cool')
+    }
   }
 }
 ```
 
-## \$props support
+## Passing extra properties to validators
 
-This is all fine if you are not using the feature of `$props` property, for example in your translation system. To make your validator also generate some useful `$props`, you can use `withParams` helper. The easiest case is to simply add `type` metadata, which might be useful in choosing correct translation string later on.
+If you need to attach extra properties to your validation result, to display in error messages for example, you can use the `withParams` helper and look into the `$props` attribute on your validation result.
+Lets attach a `type` property, so that we can later retrieve it.
+
+**Note:** `$props` is reactive, which means you could add `computed` properties, `ref` or other, and they will update accordingly.
 
 ```js
-import { helpers } from 'vuelidate/lib/validators'
+import { helpers } from '@vuelidate/validators'
 const mustBeCool = helpers.withParams(
   { type: 'mustBeCool' },
-  (value) => !helpers.req(value) || value.indexOf('cool') >= 0
+  (value) => !helpers.req(value) || value.includes('cool')
 )
 
 // ...
 
-console.log(this.$v.myField.$params.mustBeCool)
+console.log(this.$v.myField.mustBeCool.$params)
 // -> { type: 'mustBeCool' }
 ```
 
 The same behaviour extends to higher order validators, ones with extra parameters. You just must be careful to wrap the **inner** function with `withParams` call, as follows.
 
 ```js
-import { helpers } from 'vuelidate/lib/validators'
+import { helpers } from '@vuelidate/validators'
 const contains = (param) =>
   helpers.withParams(
     { type: 'contains', value: param },
-    (value) => !helpers.req(value) || value.indexOf(param) >= 0
+    (value) => !helpers.req(value) || value.includes('cool')
   )
 
 // ...
-validations: {
-  myField: {
-    mustBeCool: contains('cool')
+validations() {
+  return {
+    myField: {
+      mustBeCool: contains('cool')
+    }
   }
 }
 
 // ...
-console.log(this.$v.myField.$params.mustBeCool)
+console.log(this.$v.myField.mustBeCool.$params)
 // -> { type: 'contains', value: 'cool' }
 ```
 
-## accessing component
+## Accessing component
 
 In more complex cases when access to the whole model is necessary, like `sameAs`, make use of the function context (`this`) to access any value on your component or use provided `parentVm` to access sibling properties.
 
