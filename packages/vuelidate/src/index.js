@@ -18,7 +18,7 @@ export function useVuelidate (validations, state, registerAs) {
   const childResultsRaw = {}
   const childResultsKeys = ref([])
   const childResults = computed(() => childResultsKeys.value.reduce((results, key) => {
-    results[key] = childResultsRaw[key]
+    results[key] = unwrap(childResultsRaw[key])
     return results
   }, {}))
   const injectToParent = inject(VuelidateSymbol, () => {})
@@ -40,15 +40,13 @@ export function useVuelidate (validations, state, registerAs) {
     injectToParent(validationResults, registerAs)
   }
 
-  if (registerAs && childResultsKeys.value.length) {
-    // TODO: Change into reactive + watch
-    return computed(() => ({
+  // TODO: Change into reactive + watch
+  return computed(() => {
+    return {
       ...validationResults.value,
-      ...childResults
-    }))
-  } else {
-    return validationResults
-  }
+      ...childResults.value
+    }
+  })
 }
 
 /**
