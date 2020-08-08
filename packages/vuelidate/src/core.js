@@ -160,7 +160,7 @@ function createAsyncResult (rule, model, $pending, $dirty) {
 function createValidatorResult (rule, state, key, $dirty) {
   const model = computed(() => {
     const s = unwrap(state)
-    return s ? s[key] : null
+    return s ? unwrap(s[key]) : null
   })
 
   const $pending = ref(false)
