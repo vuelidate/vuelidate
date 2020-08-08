@@ -3,7 +3,7 @@
     <div style="margin-bottom: 20px">
       <label>Number A</label>
       <input
-        v-model.number="numberA"
+        v-model.number="$v.numberA.$model"
         type="number"
       >
       <label>Max
@@ -43,9 +43,13 @@ export default {
   },
   setup () {
     const numberA = ref(8)
-
     const max = ref(5)
-    const rules = { numberA: { required, maxValue: maxValue(max) } }
+
+    const rules = {
+      numberA: {
+        required, maxValue: maxValue(max), $autoDirty: true
+      }
+    }
     const $v = useVuelidate(rules, { numberA }, 'NestedA')
 
     return { numberA, $v, max }

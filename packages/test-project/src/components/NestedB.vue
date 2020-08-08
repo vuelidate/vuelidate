@@ -7,8 +7,7 @@
         type="number"
       >
     </div>
-    <!-- <NestedA /> -->
-    <!-- <pre style="background-color: white;">{{ $v.$errors }}</pre> -->
+    <pre>{{ $v.$errors }}</pre>
   </div>
 </template>
 
@@ -19,13 +18,30 @@ import { required, maxValue, minValue } from '@vuelidate/validators'
 
 export default {
   name: 'NestedB',
+  props: {
+    min: {
+      type: Number,
+      default: 0
+    },
+    max: {
+      type: Number,
+      default: 10
+    }
+  },
   setup (props) {
     const { max, min } = toRefs(props)
     const numberB = ref(8)
-    const rules = { numberB: { required, maxValue: maxValue(max), minValue: minValue(min) } }
-    const v = useVuelidate(rules, { numberB }, 'NestedB')
+    const rules = {
+      numberB: {
+        required,
+        maxValue: maxValue(max),
+        minValue: minValue(min),
+        $autoDirty: true
+      }
+    }
+    const $v = useVuelidate(rules, { numberB }, 'NestedB')
 
-    return { numberB, v }
+    return { numberB, $v }
   }
 }
 </script>

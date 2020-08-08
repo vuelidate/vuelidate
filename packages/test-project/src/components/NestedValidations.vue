@@ -1,16 +1,44 @@
 <template>
   <div style="padding-top: 2rem;">
     <div style="float: right">
-      <pre>{{ vuelidate }}</pre>
+      <pre>{{ $v }}</pre>
     </div>
     <div style="margin-bottom: 20px">
       <label>Number X</label>
       <input
-        v-model.number="vuelidate.numberX.$model"
+        v-model.number="$v.numberX.$model"
         type="number"
       >
     </div>
+    <div style="margin-bottom: 20px">
+      <label>Optional if previous is less than 5</label>
+      <input
+        v-model.number="optionalNumber"
+        type="number"
+      >
+      <div
+        v-if="$v.optionalNumber"
+        style="background: rgba(219, 53, 53, 0.62); color: #ff9090; padding: 10px 15px"
+      >
+        <p
+          v-for="(error, index) of $v.optionalNumber.$errors"
+          :key="index"
+          style="padding: 0; margin: 5px 0"
+        >
+          {{ error.$message }}
+        </p>
+      </div>
+    </div>
     <NestedA />
+    <div style="background: rgba(219, 53, 53, 0.62); color: #ff9090; padding: 10px 15px">
+      <p
+        v-for="(error, index) of $v.$errors"
+        :key="index"
+        style="padding: 0; margin: 5px 0"
+      >
+        {{ error.$message }}
+      </p>
+    </div>
   </div>
 </template>
 
@@ -24,22 +52,22 @@ export default {
   components: { NestedA },
   setup () {
     const numberX = ref(0)
-    const conditionalParam = ref('')
+    const optionalNumber = ref(0)
 
     const validations = computed(() => {
       const v = { numberX: { required, minValue: minValue(3) } }
       if (numberX.value > 5) {
-        v.conditionalParam = { required }
+        v.optionalNumber = { required, minValue: minValue(numberX), $autoDirty: true }
       }
       return v
     })
 
-    let vuelidate = useVuelidate(
+    let $v = useVuelidate(
       validations,
-      { numberX, conditionalParam }
+      { numberX, optionalNumber }
     )
 
-    return { vuelidate, numberX, conditionalParam }
+    return { $v, numberX, optionalNumber }
   }
 }
 </script>
