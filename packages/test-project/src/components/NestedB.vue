@@ -30,7 +30,7 @@ export default {
   },
   setup (props) {
     const { max, min } = toRefs(props)
-    const numberB = ref(8)
+    const numberB = ref(88)
     const rules = {
       numberB: {
         required,
@@ -39,7 +39,7 @@ export default {
         $autoDirty: true
       }
     }
-    const $v = useVuelidate(rules, { numberB }, 'NestedB')
+    const $v = useVuelidate(rules, { numberB })
 
     return { numberB, $v }
   }

@@ -20,6 +20,8 @@
       </label>
     </div>
     <NestedB
+      v-for="el of min"
+      :key="el"
       :max="max"
       :min="min"
     />
@@ -50,7 +52,7 @@ export default {
         required, maxValue: maxValue(max), $autoDirty: true
       }
     }
-    const $v = useVuelidate(rules, { numberA }, 'NestedA')
+    const $v = useVuelidate(rules, { numberA })
 
     return { numberA, $v, max }
   }
