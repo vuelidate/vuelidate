@@ -1,8 +1,9 @@
-import { provide, inject, ref, computed } from 'vue'
+import { provide, inject, ref, computed, getCurrentInstance, onBeforeUnmount } from 'vue'
 import { unwrap, isFunction } from './utils'
 import { setValidations } from './core'
 
-const VuelidateSymbol = Symbol('vuelidate')
+const VuelidateInjectChildResults = Symbol('vuelidate#injectChiildResults')
+const VuelidateRemoveChildResults = Symbol('vuelidate#removeChiildResults')
 
 /**
  * Composition API compatible Vuelidate
@@ -13,6 +14,10 @@ const VuelidateSymbol = Symbol('vuelidate')
  * @return {UnwrapRef<*>}
  */
 export function useVuelidate (validations, state, registerAs) {
+  if (!registerAs) {
+    const instance = getCurrentInstance()
+    registerAs = instance.type.name + instance.uid
+  }
   const resultsCache = new Map()
 
   const childResultsRaw = {}
@@ -21,12 +26,20 @@ export function useVuelidate (validations, state, registerAs) {
     results[key] = unwrap(childResultsRaw[key])
     return results
   }, {}))
-  const injectToParent = inject(VuelidateSymbol, () => {})
-  provide(VuelidateSymbol, injectChildResults)
+  const injectToParent = inject(VuelidateInjectChildResults, () => {})
+  provide(VuelidateInjectChildResults, injectChildResults)
+
+  const removeFromParent = inject(VuelidateRemoveChildResults, () => {})
+  provide(VuelidateRemoveChildResults, removeChildResults)
 
   function injectChildResults (results, key) {
     childResultsRaw[key] = results
     childResultsKeys.value.push(key)
+  }
+
+  function removeChildResults (key) {
+    childResultsKeys.value = childResultsKeys.value.filter(childKey => childKey !== key)
+    delete childResultsRaw[key]
   }
 
   const validationResults = computed(() => setValidations({
@@ -38,6 +51,7 @@ export function useVuelidate (validations, state, registerAs) {
 
   if (registerAs) {
     injectToParent(validationResults, registerAs)
+    onBeforeUnmount(() => removeFromParent(registerAs))
   }
 
   // TODO: Change into reactive + watch
