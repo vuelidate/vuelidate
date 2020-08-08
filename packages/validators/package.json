@@ -1,6 +1,6 @@
 {
   "name": "@vuelidate/validators",
-  "version": "2.0.0-alpha.0",
+  "version": "2.0.0-alpha.1",
   "description": "Validators for Vuelidate",
   "main": "dist/index.js",
   "module": "dist/index.esm.js",
@@ -15,8 +15,8 @@
   "devDependencies": {
     "bili": "^4.8.1",
     "eslint-plugin-jest": "^23.0.2",
-    "jest": "^24.9.0",
-    "flush-promises": "^1.0.2"
+    "flush-promises": "^1.0.2",
+    "jest": "^24.9.0"
   },
   "sideEffects": [
     "./src/utils/common.js"
