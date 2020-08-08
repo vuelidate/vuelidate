@@ -18,6 +18,7 @@
     "@commitlint/cli": "^8.3.5",
     "@commitlint/config-conventional": "^8.3.4",
     "@vue/compiler-sfc": "^3.0.0-rc.5",
+    "@vue/test-utils": "^2.0.0-beta.2",
     "babel-eslint": "^10.0.3",
     "core-js": "^3.6.4",
     "cz-conventional-changelog": "^3.1.0",
