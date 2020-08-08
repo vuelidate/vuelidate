@@ -185,7 +185,7 @@ function createValidatorResult (rule, state, key, $dirty) {
           $model: model
         })
       ))
-    : message
+    : message || ''
 
   return {
     $message,
