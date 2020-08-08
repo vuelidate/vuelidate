@@ -15,21 +15,23 @@
     "@babel/core": "^7.8.4",
     "@commitlint/cli": "^8.3.5",
     "@commitlint/config-conventional": "^8.3.4",
-    "@vue/compiler-sfc": "^3.0.0-beta.14",
+    "@vue/compiler-sfc": "^3.0.0-rc.5",
     "babel-eslint": "^10.0.3",
     "core-js": "^3.6.4",
     "cz-conventional-changelog": "^3.1.0",
     "eslint": "^6.7.2",
     "eslint-config-standard": "^12.0.0",
     "eslint-plugin-import": "^2.18.2",
+    "eslint-plugin-jest": "^23.18.0",
     "eslint-plugin-node": "^10.0.0",
     "eslint-plugin-promise": "^4.2.1",
     "eslint-plugin-standard": "^4.0.1",
     "eslint-plugin-vue": "^6.1.2",
     "husky": "^3.1.0",
+    "jest": "^26.1.0",
     "lerna": "^3.18.3",
     "standard-version": "^7.0.1",
-    "vue": "^3.0.0-beta.14"
+    "vue": "^3.0.0-rc.5"
   },
   "dependencies": {
     "lern": "^1.0.0"
