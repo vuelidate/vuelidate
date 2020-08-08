@@ -3,7 +3,7 @@
     <div style="margin-bottom: 20px">
       <label>Number A</label>
       <input
-        v-model.number="$v.numberA.$model"
+        v-model.number="numberA"
         type="number"
       >
       <label>Max
@@ -32,7 +32,6 @@
 <script>
 import { ref } from 'vue'
 import useVuelidate from '@vuelidate/core'
-import { required, maxValue } from '@vuelidate/validators'
 import NestedB from './NestedB.vue'
 
 export default {
@@ -47,12 +46,7 @@ export default {
     const numberA = ref(8)
     const max = ref(5)
 
-    const rules = {
-      numberA: {
-        required, maxValue: maxValue(max), $autoDirty: true
-      }
-    }
-    const $v = useVuelidate(rules, { numberA })
+    const $v = useVuelidate()
 
     return { numberA, $v, max }
   }
