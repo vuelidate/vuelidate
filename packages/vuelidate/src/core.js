@@ -25,7 +25,7 @@ import { computed, reactive, ref, watch, isRef, toRef } from 'vue'
  * @param {Object<NormalizedValidator|Function>} validations
  * @return {{ rules: Object<NormalizedValidator>, nestedValidators: Object, config: Object }}
  */
-function sortValidations (validationsRaw) {
+function sortValidations (validationsRaw = {}) {
   const validations = unwrap(validationsRaw)
   const validationKeys = Object.keys(validations)
 
