@@ -368,7 +368,7 @@ function createMetaFields (results, ...otherResults) {
   )
 
   const $anyDirty = computed(() =>
-    allResults.value.some(r => r.$dirty)
+    allResults.value.some(r => r.$dirty) || $dirty.value
   )
 
   const $error = computed(() => ($invalid.value && $dirty.value) || false)
