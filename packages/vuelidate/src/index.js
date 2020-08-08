@@ -16,7 +16,7 @@ const VuelidateRemoveChildResults = Symbol('vuelidate#removeChiildResults')
 export function useVuelidate (validations, state, registerAs) {
   if (!registerAs) {
     const instance = getCurrentInstance()
-    registerAs = instance.type.name + instance.uid
+    registerAs = `_vuelidate_${instance.type.name}_${instance.uid}`
   }
   const resultsCache = new Map()
 
@@ -49,10 +49,8 @@ export function useVuelidate (validations, state, registerAs) {
     resultsCache
   }))
 
-  if (registerAs) {
-    injectToParent(validationResults, registerAs)
-    onBeforeUnmount(() => removeFromParent(registerAs))
-  }
+  injectToParent(validationResults, registerAs)
+  onBeforeUnmount(() => removeFromParent(registerAs))
 
   // TODO: Change into reactive + watch
   return computed(() => {
