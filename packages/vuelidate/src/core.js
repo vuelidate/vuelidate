@@ -413,8 +413,8 @@ function createMetaFields (results, ...otherResults) {
  * @property {*} [$model]
  * @property {Function} $touch
  * @property {Boolean} $dirty
- * @property {Array} $errors
  * @property {Function} $reset
+ * @property {Function} $validate
  */
 
 /**
@@ -426,7 +426,8 @@ function createMetaFields (results, ...otherResults) {
  * @param {Object} params.state
  * @param {String} [params.key] - Current state property key. Used when being called on nested items
  * @param {String} [params.parentKey] - Parent state property key. Used when being called recursively
- * @param {Object} [params.childResults] - Used to collect child results. TBD
+ * @param {Object<ValidationResult>} [params.childResults] - Used to collect child results.
+ * @param {Object} [resultsCache] - The cached validation results
  * @return {UnwrapRef<VuelidateState>}
  */
 export function setValidations ({

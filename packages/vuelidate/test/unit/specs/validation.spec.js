@@ -1,8 +1,6 @@
-import flushPromises from 'flush-promises'
 import { h, ref } from 'vue'
 import { mount } from '@vue/test-utils'
 import { useVuelidate } from '../../../src/index.js'
-// import { minLength } from '@vuelidate/validators'
 
 const isEven = (v) => v % 2 === 0
 // const isOdd = (v) => v % 2 === 1
