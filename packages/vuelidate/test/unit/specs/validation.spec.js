@@ -33,14 +33,14 @@ const shouldBePristineValidationObj = ($v) => {
   expect($v).toHaveProperty('$validate', expect.any(Function))
 }
 
-const shouldBeInvalidValidationObject = ($v, property, validatorName) => {
+const shouldBeInvalidValidationObject = ({ $v, property, propertyPath = property, validatorName }) => {
   expect($v).toHaveProperty('$error', true)
   expect($v).toHaveProperty('$errors', [{
     $message: '',
     $params: {},
     $pending: false,
     $property: property,
-    $propertyPath: property,
+    $propertyPath: propertyPath,
     $validator: validatorName
   }])
   expect($v).toHaveProperty('$invalid', true)
@@ -84,31 +84,33 @@ describe('useVuelidate', () => {
   })
 
   describe('.$touch', () => {
-    it('should update the $dirty state to true', () => {
+    it('should update the `$dirty` state to `true`, on used property', () => {
       const number = ref(1)
       const { vm } = createWrapper({ number: { isEven } }, { number })
 
       shouldBePristineValidationObj(vm.$v.number)
       vm.$v.number.$touch()
-      shouldBeInvalidValidationObject(vm.$v.number, 'number', 'isEven')
+      shouldBeInvalidValidationObject({ $v: vm.$v.number, property: 'number', validatorName: 'isEven' })
     })
 
-    it('should update the $dirty state to true on all properties', () => {
+    it('should update the `$dirty` state to `true` on all nested properties', () => {
       const number = ref(1)
       const number2 = ref(1)
       const { vm } = createWrapper(
-        { number: { isEven }, number2: { isEven } },
-        { number, number2 }
+        { parent: { number: { isEven } }, number2: { isEven } },
+        { parent: { number }, number2 }
       )
 
-      shouldBePristineValidationObj(vm.$v.number)
+      shouldBePristineValidationObj(vm.$v.parent)
       shouldBePristineValidationObj(vm.$v.number2)
-      vm.$v.$touch()
-      shouldBeInvalidValidationObject(vm.$v.number, 'number', 'isEven')
-      shouldBeInvalidValidationObject(vm.$v.number2, 'number2', 'isEven')
+      vm.$v.parent.$touch()
+      shouldBeInvalidValidationObject({ $v: vm.$v.parent.number, property: 'number', propertyPath: 'parent.number', validatorName: 'isEven' })
+      shouldBeInvalidValidationObject({ $v: vm.$v.parent, property: 'number', propertyPath: 'parent.number', validatorName: 'isEven' })
+      expect(vm.$v.parent.$dirty).toBe(true)
+      shouldBePristineValidationObj(vm.$v.number2)
     })
 
-    it('should not update the $dirty state on the property it wasnt used on', () => {
+    it('should not update the `$dirty` state on the property it wasnt used on', () => {
       const numberA = ref(1)
       const numberB = ref(1)
       const { vm } = createWrapper(
@@ -118,8 +120,8 @@ describe('useVuelidate', () => {
 
       shouldBePristineValidationObj(vm.$v.numberA)
       vm.$v.numberA.$touch()
-      shouldBeInvalidValidationObject(vm.$v.numberA, 'numberA', 'isEven')
-      shouldBePristineValidationObj(vm.$v.numberB, 'numberB', 'isEven')
+      shouldBeInvalidValidationObject({ $v: vm.$v.numberA, property: 'numberA', validatorName: 'isEven' })
+      shouldBePristineValidationObj(vm.$v.numberB)
       expect(vm.$v).toHaveProperty('$error', false)
       expect(vm.$v).toHaveProperty('$dirty', false)
       expect(vm.$v).toHaveProperty('$anyDirty', true)
@@ -133,6 +135,21 @@ describe('useVuelidate', () => {
         $validator: 'isEven'
       }])
     })
+
+    it('should update the `$dirty` state to `true` on all properties, when used on top level node', () => {
+      const number = ref(1)
+      const number2 = ref(1)
+      const { vm } = createWrapper(
+        { parent: { number: { isEven } }, number2: { isEven } },
+        { parent: { number }, number2 }
+      )
+
+      shouldBePristineValidationObj(vm.$v.parent)
+      shouldBePristineValidationObj(vm.$v.number2)
+      vm.$v.$touch()
+      shouldBeInvalidValidationObject({ $v: vm.$v.parent, property: 'number', propertyPath: 'parent.number', validatorName: 'isEven' })
+      shouldBeInvalidValidationObject({ $v: vm.$v.number2, property: 'number2', validatorName: 'isEven' })
+    })
   })
 
   describe('.$reset', () => {
@@ -142,7 +159,7 @@ describe('useVuelidate', () => {
       shouldBePristineValidationObj(vm.$v.number)
 
       vm.$v.number.$touch()
-      shouldBeInvalidValidationObject(vm.$v.number, 'number', 'isEven')
+      shouldBeInvalidValidationObject({ $v: vm.$v.number, property: 'number', validatorName: 'isEven' })
 
       vm.$v.number.$reset()
       shouldBePristineValidationObj(vm.$v.number)
@@ -163,36 +180,36 @@ describe('useVuelidate', () => {
       vm.$v.numberA.$touch()
       vm.$v.numberB.$touch()
       // assert both are touched
-      shouldBeInvalidValidationObject(vm.$v.numberA, 'numberA', 'isEven')
-      shouldBeInvalidValidationObject(vm.$v.numberB, 'numberB', 'isEven')
+      shouldBeInvalidValidationObject({ $v: vm.$v.numberA, property: 'numberA', validatorName: 'isEven' })
+      shouldBeInvalidValidationObject({ $v: vm.$v.numberB, property: 'numberB', validatorName: 'isEven' })
       // reset only A
       vm.$v.numberA.$reset()
       // assert that numberB is still dirty
       shouldBePristineValidationObj(vm.$v.numberA)
-      shouldBeInvalidValidationObject(vm.$v.numberB, 'numberB', 'isEven')
+      shouldBeInvalidValidationObject({ $v: vm.$v.numberB, property: 'numberB', validatorName: 'isEven' })
     })
 
-    it('should reset all the properties back to pristine condition', () => {
+    it('should reset all the properties back to pristine condition, including nested ones', () => {
       const numberA = ref(1)
       const numberB = ref(1)
       const { vm } = createWrapper(
         {
-          numberA: { isEven },
+          parent: { numberA: { isEven } },
           numberB: { isEven }
         },
-        { numberA, numberB }
+        { parent: { numberA }, numberB }
       )
 
       // make it dirty
-      vm.$v.numberA.$touch()
+      vm.$v.parent.$touch()
       vm.$v.numberB.$touch()
       // assert both are touched
-      shouldBeInvalidValidationObject(vm.$v.numberA, 'numberA', 'isEven')
-      shouldBeInvalidValidationObject(vm.$v.numberB, 'numberB', 'isEven')
+      shouldBeInvalidValidationObject({ $v: vm.$v.parent, property: 'numberA', propertyPath: 'parent.numberA', validatorName: 'isEven' })
+      shouldBeInvalidValidationObject({ $v: vm.$v.numberB, property: 'numberB', validatorName: 'isEven' })
       // reset only A
       vm.$v.$reset()
       // assert that numberB is still dirty
-      shouldBePristineValidationObj(vm.$v.numberA)
+      shouldBePristineValidationObj(vm.$v.parent)
       shouldBePristineValidationObj(vm.$v.numberB)
     })
   })
@@ -205,7 +222,7 @@ describe('useVuelidate', () => {
 
       number.value = 3
       await vm.$nextTick()
-      shouldBeInvalidValidationObject(vm.$v.number, 'number', 'isEven')
+      shouldBeInvalidValidationObject({ $v: vm.$v.number, property: 'number', validatorName: 'isEven' })
       number.value = 2
       await vm.$nextTick()
       expect(vm.$v.$errors).toHaveLength(0)
@@ -233,7 +250,7 @@ describe('useVuelidate', () => {
 
       vm.$v.number.$model = 3
       await vm.$nextTick()
-      shouldBeInvalidValidationObject(vm.$v.number, 'number', 'isEven')
+      shouldBeInvalidValidationObject({ $v: vm.$v.number, property: 'number', validatorName: 'isEven' })
       vm.$v.number.$model = 2
       await vm.$nextTick()
       expect(vm.$v.$errors).toHaveLength(0)
@@ -244,7 +261,7 @@ describe('useVuelidate', () => {
     })
   })
 
-  describe('nested validations', () => {
+  describe('nested component validations', () => {
     it('should collect child validations when they invalidate', async () => {
       const number = ref(1)
       const CompWithValidations = createComponent(() => useVuelidate({ number: { isEven, $autoDirty: true } }, { number }))
@@ -275,6 +292,116 @@ describe('useVuelidate', () => {
         $propertyPath: 'number',
         $validator: 'isEven'
       }])
+    })
+  })
+
+  it('caches the `$dirty` state of a validator, if the validator gets removed', () => {
+
+  })
+
+  describe('$error', () => {
+    it('returns `false` if both `$invalid` and $dirty` are true', () => {
+
+    })
+  })
+  describe('$errors', () => {
+    it('constructs an array of errors', () => {
+
+    })
+
+    it('collects `$propertyPath` as of deeply nested properties', () => {
+
+    })
+
+    it('keeps `$params` reactive', () => {
+
+    })
+
+    it('keeps `$message` reactive', () => {
+
+    })
+  })
+
+  describe('$pending', () => {
+    it('sets `$pending` to `true`, when async validators are used and are being resolved', () => {
+
+    })
+
+    it('propagates `$pending` up to the top most parent', () => {
+
+    })
+
+    it('sets `$pending` to false, when the last async invocation resolves', () => {
+
+    })
+  })
+
+  describe('$params', () => {
+    it('collects the `$params` passed to a validator via `withParams` or manually', () => {
+
+    })
+
+    it('keeps `$params` reactive', () => {
+
+    })
+  })
+
+  describe('$validate', () => {
+    it('returns a Promise<Boolean>, that resolves instantly if `$pending === false`', () => {
+
+    })
+
+    it('returns a Promise<Boolean>, which resolves after `$pending` resolves', () => {
+
+    })
+  })
+
+  describe('$message', () => {
+    it('collects the `$message` for a validator', () => {
+
+    })
+
+    it('keeps the `$message` reactive', () => {
+
+    })
+
+    it('allows `$message` to be a function', () => {
+
+    })
+
+    it('unwraps `$params` before sending to the $message function', () => {
+
+    })
+  })
+
+  describe('validators', () => {
+    it('supports a validator to be a function, returning a boolean', () => {
+
+    })
+
+    it('supports a validator to be a function, returning an object with `$invalid` property', () => {
+
+    })
+
+    it('supports a validator to be an object with `$validator` function property', () => {
+
+    })
+
+    it('supports async validators via `$async: true` object syntax', () => {
+
+    })
+
+    it('throws when passed an async validator directly', () => {
+
+    })
+
+    it('does not call a validator, until the property is dirty', () => {
+      // TODO: This is a breaking change, big one. Better let ppl know
+
+    })
+
+    it('allows multiple invocations of an async validator, the last one to resolve, sets the return value', () => {
+
     })
   })
 
