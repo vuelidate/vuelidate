@@ -1,0 +1,28 @@
+{
+  "name": "@vuelidate/core-compat",
+  "description": "Simple, lightweight model-based validation for Vue.js",
+  "version": "2.0.0-alpha.0",
+  "main": "dist/index.js",
+  "module": "dist/index.esm.js",
+  "repository": "https://github.com/vuelidate/vuelidate",
+  "license": "MIT",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "bili",
+    "test:unit": "jest",
+    "lint": "eslint src test",
+    "dev": "yarn build --watch"
+  },
+  "devDependencies": {
+    "bili": "^4.8.1"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "peerDependencies": {
+    "@vue/composition-api": "^1.0.0-beta.10",
+    "vue": "^2.6.11"
+  }
+}
