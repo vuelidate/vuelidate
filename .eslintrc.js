@@ -12,7 +12,7 @@ module.exports = {
   rules: {},
   overrides: [
     Object.assign({}, jestConfig.configs.recommended, {
-      files: ['packages/**/*.spec.js'],
+      files: ['packages/**/*.spec.js', 'packages/**/test/**/*.js'],
       globals: jestConfig.environments.globals.globals,
       env: {
         es6: true,

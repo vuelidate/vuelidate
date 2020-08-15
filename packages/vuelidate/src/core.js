@@ -223,6 +223,8 @@ function createValidatorResult (rule, state, key, $dirty) {
  * @param {Object} state - Current state tree
  * @param {String} key - Key for the current state tree
  * @param {String} [parentKey] - Parent key of the state. Optional
+ * @param {Map} [resultsCache] - A cache map of all the validators
+ * @param {String} [path] - the current property path
  * @return {ValidationResult | {}}
  */
 function createValidationResults (rules, state, key, parentKey, resultsCache, path) {
@@ -231,11 +233,11 @@ function createValidationResults (rules, state, key, parentKey, resultsCache, pa
 
   const cachedResult = resultsCache.get(path)
 
-  const $dirty = ref(false)
+  const $dirty = cachedResult ? cachedResult.$dirty : ref(false)
 
   const result = {
     // restore $dirty from cache
-    $dirty: cachedResult ? cachedResult.$dirty : $dirty,
+    $dirty,
     $touch: () => { if (!$dirty.value) $dirty.value = true },
     $reset: () => { if ($dirty.value) $dirty.value = false }
   }
@@ -292,6 +294,8 @@ function createValidationResults (rules, state, key, parentKey, resultsCache, pa
  * @param {Object<NormalizedValidator|Function>} validations - The validation
  * @param {Object} state - Parent state
  * @param {String} [key] - Parent level state key
+ * @param {String} path - Path to current property
+ * @param {Map} resultsCache - Validations cache map
  * @return {{}}
  */
 function collectNestedValidationResults (validations, state, key, path, resultsCache) {
@@ -427,7 +431,7 @@ function createMetaFields (results, ...otherResults) {
  * @param {String} [params.key] - Current state property key. Used when being called on nested items
  * @param {String} [params.parentKey] - Parent state property key. Used when being called recursively
  * @param {Object<ValidationResult>} [params.childResults] - Used to collect child results.
- * @param {Object} [resultsCache] - The cached validation results
+ * @param {Map} resultsCache - The cached validation results
  * @return {UnwrapRef<VuelidateState>}
  */
 export function setValidations ({

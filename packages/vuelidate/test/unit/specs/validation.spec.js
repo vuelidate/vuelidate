@@ -1,83 +1,26 @@
 import { h, ref } from 'vue'
 import { mount } from '@vue/test-utils'
 import { useVuelidate } from '../../../src/index.js'
-
-const isEven = (v) => v % 2 === 0
-// const isOdd = (v) => v % 2 === 1
-
-const createComponent = (getVuelidateResults) => ({
-  name: 'childComp',
-  setup () {
-    const $v = getVuelidateResults()
-
-    return {
-      $v
-    }
-  },
-  render () {
-    return h('pre', {}, JSON.stringify(this.$v))
-  }
-})
-
-const createWrapper = (rules, state) => mount(createComponent(() => useVuelidate(rules, state)))
-
-const shouldBePristineValidationObj = ($v) => {
-  expect($v).toHaveProperty('$error', false)
-  expect($v).toHaveProperty('$errors', [])
-  expect($v).toHaveProperty('$invalid', false)
-  expect($v).toHaveProperty('$pending', false)
-  expect($v).toHaveProperty('$dirty', false)
-  expect($v).toHaveProperty('$anyDirty', false)
-  expect($v).toHaveProperty('$touch', expect.any(Function))
-  expect($v).toHaveProperty('$reset', expect.any(Function))
-  expect($v).toHaveProperty('$validate', expect.any(Function))
-}
-
-const shouldBeInvalidValidationObject = ({ $v, property, propertyPath = property, validatorName }) => {
-  expect($v).toHaveProperty('$error', true)
-  expect($v).toHaveProperty('$errors', [{
-    $message: '',
-    $params: {},
-    $pending: false,
-    $property: property,
-    $propertyPath: propertyPath,
-    $validator: validatorName
-  }])
-  expect($v).toHaveProperty('$invalid', true)
-  expect($v).toHaveProperty('$pending', false)
-  expect($v).toHaveProperty('$dirty', true)
-  expect($v).toHaveProperty('$anyDirty', true)
-  expect($v).toHaveProperty('$touch', expect.any(Function))
-  expect($v).toHaveProperty('$reset', expect.any(Function))
-  expect($v).toHaveProperty('$validate', expect.any(Function))
-}
-
-// $dirty,
-// $error,
-// $errors,
-// $invalid,
-// $anyDirty,
-// $pending,
-// $touch,
-// $reset,
-// $validate,
+import { isEven } from '../validators.fixture'
+import { dynamicValidationWithRefs } from '../validations.fixture'
+import { createSimpleWrapper, shouldBePristineValidationObj, shouldBeInvalidValidationObject, createSimpleComponent } from '../utils'
 
 describe('useVuelidate', () => {
   it('should have a $v key defined if used', () => {
-    const wrapper = createWrapper({}, {})
+    const wrapper = createSimpleWrapper({}, {})
 
     expect(wrapper.vm.$v).toEqual(expect.any(Object))
   })
 
   it('should return a pristine validation object', () => {
-    const { vm } = createWrapper({}, {})
+    const { vm } = createSimpleWrapper({}, {})
 
     shouldBePristineValidationObj(vm.$v)
   })
 
   it('should return a pristine validation object for a property', () => {
     const number = ref(1)
-    const { vm } = createWrapper({ number: { isEven } }, { number })
+    const { vm } = createSimpleWrapper({ number: { isEven } }, { number })
 
     expect(vm.$v).toHaveProperty('number', expect.any(Object))
     shouldBePristineValidationObj(vm.$v.number)
@@ -86,7 +29,7 @@ describe('useVuelidate', () => {
   describe('.$touch', () => {
     it('should update the `$dirty` state to `true`, on used property', () => {
       const number = ref(1)
-      const { vm } = createWrapper({ number: { isEven } }, { number })
+      const { vm } = createSimpleWrapper({ number: { isEven } }, { number })
 
       shouldBePristineValidationObj(vm.$v.number)
       vm.$v.number.$touch()
@@ -96,7 +39,7 @@ describe('useVuelidate', () => {
     it('should update the `$dirty` state to `true` on all nested properties', () => {
       const number = ref(1)
       const number2 = ref(1)
-      const { vm } = createWrapper(
+      const { vm } = createSimpleWrapper(
         { parent: { number: { isEven } }, number2: { isEven } },
         { parent: { number }, number2 }
       )
@@ -113,7 +56,7 @@ describe('useVuelidate', () => {
     it('should not update the `$dirty` state on the property it wasnt used on', () => {
       const numberA = ref(1)
       const numberB = ref(1)
-      const { vm } = createWrapper(
+      const { vm } = createSimpleWrapper(
         { numberA: { isEven }, numberB: { isEven } },
         { numberA, numberB }
       )
@@ -139,7 +82,7 @@ describe('useVuelidate', () => {
     it('should update the `$dirty` state to `true` on all properties, when used on top level node', () => {
       const number = ref(1)
       const number2 = ref(1)
-      const { vm } = createWrapper(
+      const { vm } = createSimpleWrapper(
         { parent: { number: { isEven } }, number2: { isEven } },
         { parent: { number }, number2 }
       )
@@ -150,12 +93,25 @@ describe('useVuelidate', () => {
       shouldBeInvalidValidationObject({ $v: vm.$v.parent, property: 'number', propertyPath: 'parent.number', validatorName: 'isEven' })
       shouldBeInvalidValidationObject({ $v: vm.$v.number2, property: 'number2', validatorName: 'isEven' })
     })
+
+    it('should update the `$dirty` state even if being cached before hand', () => {
+      const { state, validations } = dynamicValidationWithRefs()
+      const { number, conditional } = state
+      const { vm } = createSimpleWrapper(validations, { number })
+      expect(vm.$v.number).toHaveProperty('$dirty', false)
+      conditional.value = 10
+      expect(vm.$v).not.toHaveProperty('number')
+      conditional.value = 3
+      expect(vm.$v.number).toHaveProperty('$dirty', false)
+      vm.$v.number.$touch()
+      expect(vm.$v.number).toHaveProperty('$dirty', true)
+    })
   })
 
   describe('.$reset', () => {
     it('should update the $dirty state to false', () => {
       const number = ref(1)
-      const { vm } = createWrapper({ number: { isEven } }, { number })
+      const { vm } = createSimpleWrapper({ number: { isEven } }, { number })
       shouldBePristineValidationObj(vm.$v.number)
 
       vm.$v.number.$touch()
@@ -168,7 +124,7 @@ describe('useVuelidate', () => {
     it('should update the $dirty state to false, only on the current property', () => {
       const numberA = ref(1)
       const numberB = ref(1)
-      const { vm } = createWrapper(
+      const { vm } = createSimpleWrapper(
         {
           numberA: { isEven },
           numberB: { isEven }
@@ -192,7 +148,7 @@ describe('useVuelidate', () => {
     it('should reset all the properties back to pristine condition, including nested ones', () => {
       const numberA = ref(1)
       const numberB = ref(1)
-      const { vm } = createWrapper(
+      const { vm } = createSimpleWrapper(
         {
           parent: { numberA: { isEven } },
           numberB: { isEven }
@@ -212,12 +168,26 @@ describe('useVuelidate', () => {
       shouldBePristineValidationObj(vm.$v.parent)
       shouldBePristineValidationObj(vm.$v.numberB)
     })
+
+    it('should reset even after coming back from cache', () => {
+      const { state, validations } = dynamicValidationWithRefs()
+      const { number, conditional } = state
+      const { vm } = createSimpleWrapper(validations, { number })
+      vm.$v.number.$touch()
+      expect(vm.$v.number).toHaveProperty('$dirty', true)
+      conditional.value = 10
+      expect(vm.$v).not.toHaveProperty('number')
+      conditional.value = 3
+      expect(vm.$v.number).toHaveProperty('$dirty', true)
+      vm.$v.number.$reset()
+      expect(vm.$v.number).toHaveProperty('$dirty', false)
+    })
   })
 
   describe('$autoDirty', () => {
     it('should update the $dirty state to true when value changes', async () => {
       const number = ref(1)
-      const { vm } = createWrapper({ number: { isEven, $autoDirty: true } }, { number })
+      const { vm } = createSimpleWrapper({ number: { isEven, $autoDirty: true } }, { number })
       shouldBePristineValidationObj(vm.$v.number)
 
       number.value = 3
@@ -236,7 +206,7 @@ describe('useVuelidate', () => {
   describe('$model', () => {
     it('should update the source value', async () => {
       const number = ref(1)
-      const { vm } = createWrapper({ number: { isEven } }, { number })
+      const { vm } = createSimpleWrapper({ number: { isEven } }, { number })
 
       vm.$v.number.$model = 3
       await vm.$nextTick()
@@ -245,7 +215,7 @@ describe('useVuelidate', () => {
 
     it('should update the $dirty state to true when $model value changes', async () => {
       const number = ref(1)
-      const { vm } = createWrapper({ number: { isEven } }, { number })
+      const { vm } = createSimpleWrapper({ number: { isEven } }, { number })
       shouldBePristineValidationObj(vm.$v.number)
 
       vm.$v.number.$model = 3
@@ -264,7 +234,9 @@ describe('useVuelidate', () => {
   describe('nested component validations', () => {
     it('should collect child validations when they invalidate', async () => {
       const number = ref(1)
-      const CompWithValidations = createComponent(() => useVuelidate({ number: { isEven, $autoDirty: true } }, { number }))
+      const CompWithValidations = createSimpleComponent(() =>
+        useVuelidate({ number: { isEven, $autoDirty: true } }, { number })
+      )
 
       const CompWithNestedValidations = {
         setup () {
@@ -293,10 +265,47 @@ describe('useVuelidate', () => {
         $validator: 'isEven'
       }])
     })
+
+    it('should return false on $validate() if nested component validation is invalid', () => {
+
+    })
   })
 
-  it('caches the `$dirty` state of a validator, if the validator gets removed', () => {
+  describe('dynamic rules', () => {
+    it('allows passing a computed value as a validations object', () => {
+      const { state, validations } = dynamicValidationWithRefs()
+      const { number, conditional } = state
+      const { vm } = createSimpleWrapper(validations, state)
+      expect(vm.$v.number).toHaveProperty('isOdd')
+      vm.$v.number.$touch()
+      expect(vm.$v.number.isOdd).toHaveProperty('$invalid', true)
+      number.value = 3
+      expect(vm.$v.number.isOdd).toHaveProperty('$invalid', false)
+      // make sure the conditional is above the threshold
+      conditional.value = 10
+      // assert it is no longer there
+      expect(vm.$v).not.toHaveProperty('number')
+      conditional.value = 3
+      expect(vm.$v.number.$invalid).toBe(false)
+    })
 
+    it('caches the `$dirty` state of a validator, if the validator gets removed and re-added', () => {
+      const { state, validations } = dynamicValidationWithRefs()
+      const { number, conditional } = state
+      const { vm } = createSimpleWrapper(validations, { number })
+      expect(vm.$v.number).toHaveProperty('$dirty', false)
+      vm.$v.number.$touch()
+      expect(vm.$v.number).toHaveProperty('$dirty', true)
+      // make sure the conditional is above the threshold
+      conditional.value = 10
+      // assert it is no longer there
+      expect(vm.$v).not.toHaveProperty('number')
+      conditional.value = 3
+      // assert the dirty state is still there
+      expect(vm.$v.number.$dirty).toBe(true)
+      vm.$v.number.$reset()
+      expect(vm.$v.number.$dirty).toBe(false)
+    })
   })
 
   describe('$error', () => {
@@ -304,6 +313,7 @@ describe('useVuelidate', () => {
 
     })
   })
+
   describe('$errors', () => {
     it('constructs an array of errors', () => {
 
