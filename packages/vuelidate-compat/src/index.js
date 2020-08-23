@@ -16,7 +16,7 @@ const VuelidateRemoveChildResults = Symbol('vuelidate#removeChiildResults')
 export function useVuelidate (validations, state, registerAs) {
   if (!registerAs) {
     const instance = getCurrentInstance()
-    registerAs = `_vuelidate_${instance.type.name}_${instance.uid}`
+    registerAs = `_vuelidate_${instance._uid}`
   }
   const resultsCache = new Map()
 
