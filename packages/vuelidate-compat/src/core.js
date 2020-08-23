@@ -256,11 +256,11 @@ function createValidationResults (rules, state, key, parentKey, resultsCache, pa
   })
 
   result.$invalid = computed(() =>
-    ruleKeys.some(ruleKey => result[ruleKey].$invalid.value)
+    ruleKeys.some(ruleKey => unwrap(result[ruleKey].$invalid))
   )
 
   result.$pending = computed(() =>
-    ruleKeys.some(ruleKey => result[ruleKey].$pending.value)
+    ruleKeys.some(ruleKey => unwrap(result[ruleKey].$pending))
   )
 
   result.$error = computed(() =>
@@ -268,7 +268,7 @@ function createValidationResults (rules, state, key, parentKey, resultsCache, pa
   )
 
   result.$errors = computed(() => ruleKeys
-    .filter(ruleKey => result[ruleKey].$invalid.value)
+    .filter(ruleKey => unwrap(result[ruleKey].$invalid))
     .map(ruleKey => {
       const res = result[ruleKey]
       return reactive({
@@ -481,7 +481,7 @@ export function setValidations ({
   }) : null
 
   if (config.$autoDirty) {
-    const watchTarget = isRef(state[key]) ? state[key] : toRef(state, key)
+    const watchTarget = isRef(state[key]) ? state[key] : computed(() => unwrap(state)[key])
     watch(watchTarget, () => {
       if (!$dirty.value) $touch()
     })
