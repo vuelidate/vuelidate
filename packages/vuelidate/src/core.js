@@ -324,14 +324,15 @@ function collectNestedValidationResults (validations, state, key, path, resultsC
 /**
  * Generates the Meta fields from the results
  * @param {ValidationResult|{}} results
- * @param {Object<ValidationResult>[]} otherResults
+ * @param {Object<ValidationResult>[]} nestedResults
+ * @param {Object<ValidationResult>[]} childResults
  * @return {{$anyDirty: Ref<Boolean>, $error: Ref<Boolean>, $invalid: Ref<Boolean>, $errors: Ref<ErrorObject[]>, $dirty: Ref<Boolean>, $touch: Function, $reset: Function }}
  */
-function createMetaFields (results, ...otherResults) {
+function createMetaFields (results, nestedResults, childResults) {
   // use the $dirty property from the root level results
   const $dirty = results.$dirty
 
-  const allResults = computed(() => otherResults
+  const allResults = computed(() => [nestedResults, childResults]
     .filter(res => res)
     .reduce((allRes, res) => {
       return allRes.concat(Object.values(unwrap(res)))
@@ -492,7 +493,7 @@ export function setValidations ({
     })
   }
 
-  let $validate = function $validate () {
+  function $validate () {
     return new Promise((resolve) => {
       if (!$dirty.value) $touch()
       // return whether it is valid or not
@@ -502,6 +503,15 @@ export function setValidations ({
         unwatch()
       })
     })
+  }
+
+  /**
+   * Returns a child component's results, based on registration name
+   * @param {string} key
+   * @return {VuelidateState}
+   */
+  function $getResultsForChild (key) {
+    return (childResults.value || {})[key]
   }
 
   return reactive({
@@ -518,7 +528,11 @@ export function setValidations ({
     $pending,
     $touch,
     $reset,
-    $validate,
+    // if there are no child results, we are inside a nested property
+    ...(childResults && {
+      $getResultsForChild,
+      $validate
+    }),
     // add each nested property's state
     ...nestedResults
   })

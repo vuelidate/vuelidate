@@ -27,7 +27,6 @@ export const shouldBePristineValidationObj = ($v) => {
   expect($v).toHaveProperty('$anyDirty', false)
   expect($v).toHaveProperty('$touch', expect.any(Function))
   expect($v).toHaveProperty('$reset', expect.any(Function))
-  expect($v).toHaveProperty('$validate', expect.any(Function))
 }
 
 export const shouldBeInvalidValidationObject = ({ $v, property, propertyPath = property, validatorName }) => {
@@ -46,5 +45,4 @@ export const shouldBeInvalidValidationObject = ({ $v, property, propertyPath = p
   expect($v).toHaveProperty('$anyDirty', true)
   expect($v).toHaveProperty('$touch', expect.any(Function))
   expect($v).toHaveProperty('$reset', expect.any(Function))
-  expect($v).toHaveProperty('$validate', expect.any(Function))
 }
