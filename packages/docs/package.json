@@ -1,6 +1,6 @@
 {
   "name": "@vuelidate/docs",
-  "version": "2.0.0-alpha.1",
+  "version": "2.0.0-alpha.2",
   "private": true,
   "description": "Vuelidate documentation",
   "main": "index.js",
@@ -11,10 +11,10 @@
     "dev:docs": "vuepress dev src"
   },
   "dependencies": {
-    "@vue/composition-api": "^0.3.2",
-    "@vuelidate/core": "^2.0.0-alpha.1",
-    "@vuelidate/validators": "^2.0.0-alpha.1",
+    "@vue/composition-api": "^1.0.0-beta.1",
+    "@vuelidate/core": "^2.0.0-alpha.2",
+    "@vuelidate/validators": "^2.0.0-alpha.2",
     "vue": "^2.6.10",
-    "vuepress": "^1.4.0"
+    "vuepress": "^1.5.4"
   }
 }

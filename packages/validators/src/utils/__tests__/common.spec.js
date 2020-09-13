@@ -1,4 +1,4 @@
-import { ref } from 'vue'
+import { ref } from 'vue-demi'
 import { normalizeValidatorObject, isTruthy, unwrap, isObject, isFunction, withAsync } from '../common'
 
 describe('common', () => {

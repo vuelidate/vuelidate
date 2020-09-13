@@ -1,4 +1,4 @@
-import { unref } from 'vue'
+import { unref } from 'vue-demi'
 
 export function isFunction (val) {
   return typeof val === 'function'

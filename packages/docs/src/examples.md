@@ -1,11 +1,5 @@
 # Examples
 
-## Basic form
-
-For each value you want to validate, you have to create a key inside `validations` options. You can specify when input becomes dirty by using appropriate event on your input box.
-
-> Example
-
 ## Without v-model
 
 In case you don't want to modify your model directly, you can still use separate `:input` and `@event` bindings. This is especially useful if you are using data from external source, like Vuex store or props. In that case you have to manually take care of setting the `$dirty` by calling `$touch()` method when appropriate.
