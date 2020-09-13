@@ -1,14 +1,16 @@
-import { h } from 'vue'
+import { h, toRefs, isReactive } from 'vue'
 import { mount } from '@vue/test-utils'
 import { useVuelidate } from '../../src'
 
-export const createSimpleComponent = (getVuelidateResults) => ({
+export const createSimpleComponent = (getVuelidateResults, state) => ({
   name: 'childComp',
   setup () {
     const $v = getVuelidateResults()
 
     return {
-      $v
+      $v,
+      // spread the state so we have access to it
+      ...(isReactive(state) ? toRefs(state) : state)
     }
   },
   render () {
@@ -16,7 +18,7 @@ export const createSimpleComponent = (getVuelidateResults) => ({
   }
 })
 
-export const createSimpleWrapper = (rules, state) => mount(createSimpleComponent(() => useVuelidate(rules, state)))
+export const createSimpleWrapper = (rules, state) => mount(createSimpleComponent(() => useVuelidate(rules, state), state))
 
 export const shouldBePristineValidationObj = ($v) => {
   expect($v).toHaveProperty('$error', false)

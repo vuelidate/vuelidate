@@ -1,7 +1,29 @@
 import { computed, h, ref, reactive } from 'vue'
-import { isEven, isOdd } from './validators.fixture'
+import { asyncIsEven, isEven, isOdd } from './validators.fixture'
 import { createSimpleComponent } from './utils'
 import { useVuelidate } from '../../src'
+
+export function nestedReactiveObjectValidation () {
+  const state = reactive({
+    level0: 0,
+    level1: {
+      child: 1,
+      level2: {
+        child: 2
+      }
+    }
+  })
+  const validations = {
+    level0: { isEven },
+    level1: {
+      child: { isEven },
+      level2: {
+        child: { isEven }
+      }
+    }
+  }
+  return { state, validations }
+}
 
 export function computedValidationsObjectWithRefs () {
   const conditional = ref(0)
@@ -48,13 +70,14 @@ export function nestedComponentValidation ({ state: origState, validations: orig
     name: 'ParentWithChildForm',
     setup () {
       const $v = useVuelidate()
-
+      const shouldRenderChild = ref(true)
       return {
-        $v
+        $v,
+        shouldRenderChild
       }
     },
     render () {
-      return h(ChildComponent)
+      return this.shouldRenderChild ? h(ChildComponent) : false
     }
   }
 
@@ -64,4 +87,16 @@ export function nestedComponentValidation ({ state: origState, validations: orig
     parent,
     childValidationRegisterName
   }
+}
+
+export function simpleValidation () {
+  const state = { number: ref(1) }
+  const validations = { number: { isEven } }
+  return { state, validations }
+}
+
+export function asyncValidation () {
+  const state = { number: ref(1) }
+  const validations = { number: { asyncIsEven } }
+  return { state, validations }
 }
