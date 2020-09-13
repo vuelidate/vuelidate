@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.0.0-alpha.2](https://github.com/vuelidate/vuelidate/compare/@vuelidate/core@2.0.0-alpha.1...@vuelidate/core@2.0.0-alpha.2) (2020-09-13)
+
+
+### Bug Fixes
+
+* **compat:** fix mixin; fix plugin object ([06d5e49](https://github.com/vuelidate/vuelidate/commit/06d5e49154897bce109d576dd70739b659d2d9dc))
+
+
+### Features
+
+* **compat:** use vue-demi for compat and apply vue 2.x fixes ([1ff120b](https://github.com/vuelidate/vuelidate/commit/1ff120b75c49025cfd01aac47d178cb73c6134a5))
+
+
+
+
+
 # [2.0.0-alpha.1](https://github.com/vuelidate/vuelidate/compare/@vuelidate/core@2.0.0-alpha.0...@vuelidate/core@2.0.0-alpha.1) (2020-08-08)
 
 
