@@ -15,9 +15,11 @@
     "lint": "eslint src test",
     "dev": "yarn build --watch"
   },
-  "devDependencies": {
-    "bili": "^4.8.1",
+  "dependencies": {
     "vue-demi": "latest"
+  },
+  "devDependencies": {
+    "bili": "^4.8.1"
   },
   "peerDependencies": {
     "@vue/composition-api": "^1.0.0-beta.1",
