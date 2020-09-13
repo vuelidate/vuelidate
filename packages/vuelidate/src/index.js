@@ -1,4 +1,4 @@
-import { provide, inject, ref, computed, getCurrentInstance, onBeforeUnmount } from 'vue'
+import { provide, inject, ref, computed, getCurrentInstance, onBeforeUnmount } from 'vue-demi'
 import { unwrap, isFunction } from './utils'
 import { setValidations } from './core'
 
@@ -16,7 +16,7 @@ const VuelidateRemoveChildResults = Symbol('vuelidate#removeChiildResults')
 export function useVuelidate (validations, state, registerAs) {
   if (!registerAs) {
     const instance = getCurrentInstance()
-    registerAs = `_vuelidate_${instance.type.name}_${instance.uid}`
+    registerAs = `_vuelidate_${instance._uid}`
   }
   const resultsCache = new Map()
 

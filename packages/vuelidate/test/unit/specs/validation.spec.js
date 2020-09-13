@@ -1,4 +1,3 @@
-import flushPromises from 'flush-promises'
 import { h, ref } from 'vue'
 import { mount } from '@vue/test-utils'
 import { useVuelidate } from '../../../src/index.js'
