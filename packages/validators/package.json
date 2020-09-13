@@ -15,8 +15,13 @@
   "devDependencies": {
     "bili": "^4.8.1",
     "eslint-plugin-jest": "^23.0.2",
+    "jest": "^24.9.0",
     "flush-promises": "^1.0.2",
-    "jest": "^24.9.0"
+    "vue-demi": "latest"
+  },
+  "peerDependencies": {
+    "@vue/composition-api": "^1.0.0-beta.1",
+    "vue": "^2.0.0 || >=3.0.0-rc.0"
   },
   "sideEffects": [
     "./src/utils/common.js"
