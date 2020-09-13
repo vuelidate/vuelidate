@@ -1,4 +1,4 @@
-import { computed, ref } from 'vue'
+import { computed, ref } from 'vue-demi'
 import { flushPromises, mount } from '@vue/test-utils'
 import { isEven, isOdd } from '../validators.fixture'
 import {
