@@ -2,6 +2,7 @@ import { computed, ref } from 'vue'
 import { flushPromises, mount } from '@vue/test-utils'
 import { isEven, isOdd } from '../validators.fixture'
 import {
+  asyncValidation,
   computedValidationsObjectWithReactive,
   computedValidationsObjectWithRefs,
   nestedComponentValidation,
@@ -10,6 +11,7 @@ import {
 } from '../validations.fixture'
 import { createSimpleWrapper, shouldBePristineValidationObj, shouldBeInvalidValidationObject } from '../utils'
 import { withAsync } from '@vuelidate/validators/src/common'
+import useVuelidate from '../../../src'
 
 describe('useVuelidate', () => {
   it('should have a $v key defined if used', () => {
@@ -445,12 +447,37 @@ describe('useVuelidate', () => {
 
     })
 
-    it('supports async validators via `$async: true` object syntax', () => {
-
+    it('supports async validators via `$async: true` object syntax', async () => {
+      jest.useFakeTimers()
+      const { state, validations } = asyncValidation()
+      const { vm } = createSimpleWrapper(validations, state)
+      vm.$v.$touch()
+      await flushPromises()
+      expect(vm.$v.number.asyncIsEven.$pending).toBe(false)
+      state.number.value = 6
+      expect(vm.$v.number.asyncIsEven.$pending).toBe(true)
+      expect(vm.$v.number.$invalid).toBe(true)
+      await flushPromises()
+      expect(vm.$v.number.asyncIsEven.$pending).toBe(false)
+      expect(vm.$v.number.$invalid).toBe(false)
+      jest.useRealTimers()
     })
 
     it('throws when passed an async validator directly', () => {
-
+      const asyncValidator = (v) => Promise.resolve(v)
+      const number = ref(0)
+      const component = {
+        template: '<div>Hello World</div>',
+        setup () {
+          const $v = useVuelidate({ number: { asyncValidator } }, { number })
+          return { $v }
+        }
+      }
+      const { vm } = mount(component)
+      vm.$v.$touch()
+      number.value = 5
+      // throws here, because we call the `$invalid` getter.
+      expect(() => vm.$v.number.$invalid).toThrowError()
     })
 
     it('does not call a validator, until the property is dirty', async () => {
