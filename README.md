@@ -148,7 +148,6 @@ yarn test:unit
 - [Damian Dulisz](https://github.com/shentao)
 - [Natalia Tepluhina](https://github.com/NataliaTepluhina)
 - [Dobromir Hristov](https://github.com/dobromir-hristov)
-- [Ben Hong](https://github.com/bencodezen)
 
 ### Emeriti
 
