@@ -1,17 +1,17 @@
 # Getting started
 
-**Vuelidate 2** is a simple, but powerful, lightweight model-based validation for Vue.js 3.
+**Vuelidate 2** is a simple, but powerful, lightweight model-based validation for Vue.js 3 and Vue 2.x.
 
 Vuelidate is considered _model-based_ because the validation rules are defined next to your data, and the validation tree structure matches the data model structure.
 
-_If you are looking for Vuelidate that supports Vue 2, use [Vuelidate 1](https://github.com/vuelidate/vuelidate/tree/v1)._
+**Vuelidate v2.0 supports both Vue 3.0 and Vue 2.x**
 
 ## Installation
 
 Installing Vuelidate is straightforward, and can be done with your package manager of choice.
 
 ```bash
-npm install @vuelidate/core @vuelidate/validators --save
+npm install @vuelidate/core @vuelidate/validators
 
 // OR
 
@@ -22,12 +22,36 @@ yarn add @vuelidate/core @vuelidate/validators
 
 You can then import Vuelidate and use it as a Vue plugin to enable the functionality globally on all components containing validation configuration.
 
-```js
-import Vue from 'vue'
-import Vuelidate from '@vuelidate/core'
 
-const app = Vue.createApp(App)
-app.use(Vuelidate)
+### Install via plugin in Vue 3.0
+
+> This is only required if you want to use the `validations` option.
+
+```js
+// main.js
+import { createApp } from 'vue'
+import App from './App.vue'
+import { VuelidatePlugin } from '@vuelidate/core'
+
+const app = createApp(App)
+app.use(VuelidatePlugin)
+app.mount('#app')
+```
+
+### Install via plugin in Vue 2.x
+
+> This is only required if you want to use the `validations` option.
+
+```js
+// main.js
+
+import Vue from 'vue'
+import VueCompositionApi from '@vue/composition-api'
+import { VuelidatePlugin } from '@vuelidate/core'
+
+Vue.use(VueCompositionApi)
+Vue.use(VuelidatePlugin)
+
 ```
 
 Now that Vuelidate is registered as a global plugin, create a `validations` function inside your component and define your validation rules.
@@ -112,3 +136,21 @@ Now that we understand the basic content of the error objects, we can build our 
 That's it! Our validations are set and ready.
 
 Head over to the [Guide](./guide.md) page now for a more detailed guide on how to use Vuelidate.
+
+## Sponsors
+
+### Silver
+
+<p align="center">
+  <a href="https://www.storyblok.com/developers?utm_source=newsletter&utm_medium=logo&utm_campaign=vuejs-newsletter" target="_blank">
+    <img src="https://a.storyblok.com/f/51376/3856x824/fea44d52a9/colored-full.png" alt="Storyblok" width="240px">
+  </a>
+</p>
+
+### Bronze
+
+<p align="center">
+  <a href="https://www.vuemastery.com/" target="_blank">
+    <img src="https://cdn.discordapp.com/attachments/258614093362102272/557267759130607630/Vue-Mastery-Big.png" alt="Vue Mastery logo" width="180px">
+  </a>
+</p>
