@@ -1,5 +1,7 @@
 # Getting started
 
+![Vuelidate Logotype](./.vuepress/public/logotype.png)
+
 **Vuelidate 2** is a simple, but powerful, lightweight model-based validation for Vue.js 3 and Vue 2.x.
 
 Vuelidate is considered _model-based_ because the validation rules are defined next to your data, and the validation tree structure matches the data model structure.
