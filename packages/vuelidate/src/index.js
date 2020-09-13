@@ -1,4 +1,4 @@
-import { provide, inject, ref, computed, getCurrentInstance, onBeforeUnmount } from 'vue'
+import { provide, inject, ref, computed, getCurrentInstance, onBeforeUnmount } from 'vue-demi'
 import { unwrap, isFunction } from './utils'
 import { setValidations } from './core'
 
@@ -16,7 +16,7 @@ const VuelidateRemoveChildResults = Symbol('vuelidate#removeChiildResults')
 export function useVuelidate (validations, state, registerAs) {
   if (!registerAs) {
     const instance = getCurrentInstance()
-    registerAs = `_vuelidate_${instance.type.name}_${instance.uid}`
+    registerAs = `_vuelidate_${instance._uid}`
   }
   const resultsCache = new Map()
 
@@ -68,12 +68,12 @@ export function useVuelidate (validations, state, registerAs) {
  */
 
 export const VuelidateMixin = {
+  computed: {},
   beforeCreate () {
     const resultsCache = new Map()
     const options = this.$options
     if (!options.validations) return
 
-    if (!options.computed) options.computed = {}
     if (options.computed.$v) return
 
     const validations = computed(() => isFunction(options.validations)
@@ -97,8 +97,10 @@ export const VuelidateMixin = {
  * Default way to install Vuelidate globally for entire app.
  * @param {Vue} app
  */
-export function VuelidatePlugin (app) {
-  app.mixin(VuelidateMixin)
+export const VuelidatePlugin = {
+  install (app) {
+    app.mixin(VuelidateMixin)
+  }
 }
 
 export default useVuelidate

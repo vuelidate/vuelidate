@@ -1,5 +1,5 @@
 import { len, regex, req } from '../core'
-import { ref } from 'vue'
+import { ref } from 'vue-demi'
 
 describe('core', () => {
   describe('test the req helper for "required"', () => {

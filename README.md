@@ -9,8 +9,8 @@
 ### Silver
 
 <p align="center">
-  <a href="https://www.nativescript.org/vue?utm_source=vuejsnewsletter&utm_medium=email&utm_campaign=nativescript-awareness" target="_blank">
-    <img src="https://cdn.discordapp.com/attachments/491313387129667594/602523039229542400/nativescript-logo.png" alt="NativeScript" width="170px">
+  <a href="https://www.storyblok.com/developers?utm_source=newsletter&utm_medium=logo&utm_campaign=vuejs-newsletter" target="_blank">
+    <img src="https://a.storyblok.com/f/51376/3856x824/fea44d52a9/colored-full.png" alt="Storyblok" width="240px">
   </a>
 </p>
 
@@ -65,7 +65,7 @@ Alternatively it is possible to import a mixin directly to components in which i
 ```html
 <script>
 import { VuelidateMixin } from '@vuelidate/core'
-  
+
 export default {
   mixins: [VuelidateMixin],
   validations: {...}
@@ -148,7 +148,6 @@ yarn test:unit
 - [Damian Dulisz](https://github.com/shentao)
 - [Natalia Tepluhina](https://github.com/NataliaTepluhina)
 - [Dobromir Hristov](https://github.com/dobromir-hristov)
-- [Ben Hong](https://github.com/bencodezen)
 
 ### Emeriti
 

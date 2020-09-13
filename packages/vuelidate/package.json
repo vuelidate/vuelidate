@@ -15,9 +15,15 @@
     "lint": "eslint src test",
     "dev": "yarn build --watch"
   },
+  "dependencies": {
+    "vue-demi": "latest"
+  },
   "devDependencies": {
-    "bili": "^4.8.1",
-    "vue": "^3.0.0-rc.5"
+    "bili": "^4.8.1"
+  },
+  "peerDependencies": {
+    "@vue/composition-api": "^1.0.0-beta.1",
+    "vue": "^2.0.0 || >=3.0.0-rc.0"
   },
   "publishConfig": {
     "access": "public"
