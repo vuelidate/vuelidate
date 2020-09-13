@@ -11,7 +11,7 @@
 
 <script>
 import { ref, reactive } from '@vue/composition-api'
-import useVuelidate from '@vuelidate/core/src'
+import useVuelidate from '@vuelidate/core'
 import { required, maxValue } from '@vuelidate/validators/src/withMessages'
 import NestedB from './NestedB'
 
