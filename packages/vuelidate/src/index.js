@@ -16,7 +16,11 @@ const VuelidateRemoveChildResults = Symbol('vuelidate#removeChiildResults')
 export function useVuelidate (validations, state, registerAs) {
   if (!registerAs) {
     const instance = getCurrentInstance()
-    registerAs = `_vuelidate_${instance._uid}`
+    // NOTE:
+    // ._uid // Vue 2.x Composition-API plugin
+    // .uid // Vue 3.0
+    const uid = instance.uid || instance._uid
+    registerAs = `_vuelidate_${uid}`
   }
   const resultsCache = new Map()
 
