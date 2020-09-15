@@ -35,7 +35,8 @@
     "jest-serializer-vue": "^2.0.2",
     "lerna": "^3.18.3",
     "standard-version": "^7.0.1",
-    "vue-demi": "latest"
+    "vue-demi": "latest",
+    "vue": "^3.0.0-rc.5"
   },
   "dependencies": {
     "lern": "^1.0.0"
