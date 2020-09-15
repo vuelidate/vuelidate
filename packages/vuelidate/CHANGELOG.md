@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.0.0-alpha.3](https://github.com/vuelidate/vuelidate/compare/@vuelidate/core@2.0.0-alpha.2...@vuelidate/core@2.0.0-alpha.3) (2020-09-15)
+
+
+### Bug Fixes
+
+* **core:** handle mismatch in Vue 3.0 and composition-api plugin ([bc19566](https://github.com/vuelidate/vuelidate/commit/bc195663f8319b387a1964cf1b9abb0b4ffcc878))
+
+
+
+
+
 # [2.0.0-alpha.2](https://github.com/vuelidate/vuelidate/compare/@vuelidate/core@2.0.0-alpha.1...@vuelidate/core@2.0.0-alpha.2) (2020-09-13)
 
 

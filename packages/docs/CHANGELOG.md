@@ -3,6 +3,20 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.0.0-alpha.3](https://github.com/vuelidate/vuelidate/compare/@vuelidate/docs@2.0.0-alpha.2...@vuelidate/docs@2.0.0-alpha.3) (2020-09-15)
+
+
+### Features
+
+* add error message display and form submission ([b4655a2](https://github.com/vuelidate/vuelidate/commit/b4655a2ce9f71841bd212be6ff97a94047bc09cd))
+* add more docs pages ([d6eaac1](https://github.com/vuelidate/vuelidate/commit/d6eaac1d27687369a4c6bc81ca52d8e57699efb8))
+* improve the guide page ([f662965](https://github.com/vuelidate/vuelidate/commit/f662965699d213a8bb318a6864388b513324e085))
+* rewrite home page ([f26280d](https://github.com/vuelidate/vuelidate/commit/f26280dc9b6759df251dc3d477c74a22c0316049))
+
+
+
+
+
 # [2.0.0-alpha.2](https://github.com/vuelidate/vuelidate/compare/@vuelidate/docs@2.0.0-alpha.1...@vuelidate/docs@2.0.0-alpha.2) (2020-09-13)
 
 **Note:** Version bump only for package @vuelidate/docs
