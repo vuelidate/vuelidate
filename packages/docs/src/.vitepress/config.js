@@ -11,7 +11,7 @@ const config = {
     ['meta', { name: 'theme-color', content: '#ffffff' }]
   ],
   themeConfig: {
-    repo: 'vuejs/vuex',
+    repo: 'vuelidate/vuelidate',
     docsDir: 'docs',
     sidebar: [
       { text: 'Getting started', link: '/' },
