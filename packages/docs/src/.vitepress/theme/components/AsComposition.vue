@@ -13,7 +13,7 @@
       <input type="text" v-model="repeatPassword">
     </div>
     <p
-      v-for="(error, index) of $v.$errors"
+      v-for="(error, index) of vuelidate.$errors"
       :key="index"
       :style="error.$pending ? 'color: blue;' : 'color: red;'"
     >
@@ -23,7 +23,7 @@
       <small style="color: black"> says:</small>
       <strong>{{ error.$message }}</strong>
     </p>
-    <pre style="background-color: white;">{{ $v.$errors }}</pre>
+    <pre style="background-color: white;">{{ vuelidate.$errors }}</pre>
   </div>
 </template>
 
@@ -31,6 +31,7 @@
 import { ref, reactive } from 'vue'
 import useVuelidate from '@vuelidate/core'
 import { required, minLength, sameAs, helpers } from '@vuelidate/validators'
+import { withAsync } from '@vuelidate/validators/src/common'
 
 const { withMessage, withParams, unwrap } = helpers
 
@@ -61,7 +62,7 @@ function usePassword ({ minimumLength }) {
       ),
       asyncValidator: withMessage(
         ({ $pending, $model }) => $pending ? 'Checking!' : `Error! ${$model} Isn’t "aaaa"`,
-        asyncValidator
+        withAsync(asyncValidator)
       ),
       $autoDirty: true
     },
@@ -75,12 +76,12 @@ function usePassword ({ minimumLength }) {
     }
   }
 
-  const $v = useVuelidate(
+  const vuelidate = useVuelidate(
     rules, { password, repeatPassword }, 'usePassword'
   )
 
   return {
-    $v,
+    vuelidate,
     password,
     repeatPassword,
     rules
@@ -94,9 +95,9 @@ export default {
   name: 'AsComposition',
   setup () {
     const minimumLength = ref(7)
-    const { password, repeatPassword, $v } = usePassword({ minimumLength })
+    const { password, repeatPassword, vuelidate } = usePassword({ minimumLength })
 
-    return { password, repeatPassword, $v, minimumLength }
+    return { password, repeatPassword, vuelidate, minimumLength }
   }
 }
 </script>
