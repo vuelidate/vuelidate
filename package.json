@@ -6,9 +6,6 @@
   "workspaces": {
     "packages": [
       "packages/*"
-    ],
-    "nohoist": [
-      "@vuelidate/docs/**"
     ]
   },
   "devDependencies": {
