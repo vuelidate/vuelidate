@@ -28,9 +28,9 @@
 </template>
 
 <script>
-import { ref, reactive } from '@vue/composition-api'
+import { ref, reactive } from 'vue'
 import useVuelidate from '@vuelidate/core'
-import { required, minLength, sameAs, helpers } from '@vuelidate/validators/src/withMessages'
+import { required, minLength, sameAs, helpers } from '@vuelidate/validators'
 
 const { withMessage, withParams, unwrap } = helpers
 
@@ -91,6 +91,7 @@ const hasKeys = keyLength => value => Object.keys(value).length === unwrap(keyLe
 const hasKeysWithParams = keys => withParams({ keys }, hasKeys(keys))
 
 export default {
+  name: 'AsComposition',
   setup () {
     const minimumLength = ref(7)
     const { password, repeatPassword, $v } = usePassword({ minimumLength })

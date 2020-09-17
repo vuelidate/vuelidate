@@ -23,7 +23,9 @@
 </template>
 
 <script>
-import { required, minLength, sameAs, helpers } from '@vuelidate/validators/src/withMessages'
+import { VuelidateMixin } from '@vuelidate/core'
+
+import { required, minLength, sameAs, helpers } from '@vuelidate/validators'
 
 const { withMessage, withParams, unwrap } = helpers
 
@@ -45,6 +47,7 @@ function $t (key, params) {
 
 export default {
   name: 'AsObject',
+  mixins: [VuelidateMixin],
   data () {
     return {
       minimumLength: 7,
