@@ -10,10 +10,10 @@
 </template>
 
 <script>
-import { ref, reactive } from '@vue/composition-api'
+import { ref } from 'vue'
 import useVuelidate from '@vuelidate/core'
-import { required, minValue } from '@vuelidate/validators/src/withMessages'
-import NestedA from './NestedA'
+import { required, minValue } from '@vuelidate/validators'
+import NestedA from './NestedA.vue'
 
 export default {
   components: { NestedA },

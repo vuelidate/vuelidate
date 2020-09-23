@@ -1,6 +1,6 @@
 # Getting started
 
-![Vuelidate Logotype](./.vuepress/public/logotype.png)
+![Vuelidate Logotype](/logotype.png)
 
 **Vuelidate 2** is a simple, but powerful, lightweight model-based validation for Vue.js 3 and Vue 2.x.
 

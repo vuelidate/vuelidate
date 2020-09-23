@@ -7,14 +7,14 @@
   "repository": "https://github.com/vuelidate/vuelidate",
   "license": "MIT",
   "scripts": {
-    "build:docs": "vuepress build src",
-    "dev:docs": "vuepress dev src"
+    "build:docs": "vitepress build src",
+    "dev:docs": "vitepress dev src"
   },
   "dependencies": {
-    "@vue/composition-api": "^1.0.0-beta.1",
     "@vuelidate/core": "^2.0.0-alpha.3",
-    "@vuelidate/validators": "^2.0.0-alpha.2",
-    "vue": "^2.6.10",
-    "vuepress": "^1.5.4"
+    "@vuelidate/validators": "^2.0.0-alpha.2"
+  },
+  "devDependencies": {
+    "vitepress": "^0.5.0"
   }
 }

@@ -10,9 +10,9 @@
 </template>
 
 <script>
-import { ref, reactive } from '@vue/composition-api'
+import { ref, reactive } from 'vue'
 import useVuelidate from '@vuelidate/core'
-import { required, maxValue, minValue } from '@vuelidate/validators/src/withMessages'
+import { required, maxValue, minValue } from '@vuelidate/validators'
 
 export default {
   setup () {
