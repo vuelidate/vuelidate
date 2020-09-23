@@ -42,8 +42,9 @@
     "lerna:publish": "lerna publish --conventional-commits",
     "lerna:publish:from-package": "lerna publish from-package",
     "lerna:changed": "lerna changed",
-    "lerna:build": "lerna run build --parallel",
+    "lerna:build": "lerna run build --parallel && yarn build-docs",
     "lerna:version": "lerna version --conventional-commits",
+    "build-docs": "cd packages/docs && yarn build:docs",
     "release": "yarn lerna:build && yarn lerna:publish",
     "release:dry": "yarn lerna:build && yarn lerna:version --no-push --no-git-tag-version",
     "test:unit": "jest"
