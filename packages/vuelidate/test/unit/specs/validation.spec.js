@@ -14,24 +14,24 @@ import { withAsync } from '@vuelidate/validators/src/common'
 import useVuelidate from '../../../src'
 
 describe('useVuelidate', () => {
-  it('should have a $v key defined if used', () => {
+  it('should have a `v` key defined if used', () => {
     const wrapper = createSimpleWrapper({}, {})
 
-    expect(wrapper.vm.$v).toEqual(expect.any(Object))
+    expect(wrapper.vm.v).toEqual(expect.any(Object))
   })
 
   it('should return a pristine validation object', () => {
     const { vm } = createSimpleWrapper({}, {})
 
-    shouldBePristineValidationObj(vm.$v)
+    shouldBePristineValidationObj(vm.v)
   })
 
   it('should return a pristine validation object for a property', () => {
     const number = ref(1)
     const { vm } = createSimpleWrapper({ number: { isEven } }, { number })
 
-    expect(vm.$v).toHaveProperty('number', expect.any(Object))
-    shouldBePristineValidationObj(vm.$v.number)
+    expect(vm.v).toHaveProperty('number', expect.any(Object))
+    shouldBePristineValidationObj(vm.v.number)
   })
 
   describe('.$touch', () => {
@@ -39,9 +39,9 @@ describe('useVuelidate', () => {
       const { state, validations } = simpleValidation()
       const { vm } = createSimpleWrapper(validations, state)
 
-      shouldBePristineValidationObj(vm.$v.number)
-      vm.$v.number.$touch()
-      shouldBeInvalidValidationObject({ $v: vm.$v.number, property: 'number', validatorName: 'isEven' })
+      shouldBePristineValidationObj(vm.v.number)
+      vm.v.number.$touch()
+      shouldBeInvalidValidationObject({ v: vm.v.number, property: 'number', validatorName: 'isEven' })
     })
 
     it('should update the `$dirty` state to `true` on all nested properties', () => {
@@ -52,13 +52,13 @@ describe('useVuelidate', () => {
         { parent: { number }, number2 }
       )
 
-      shouldBePristineValidationObj(vm.$v.parent)
-      shouldBePristineValidationObj(vm.$v.number2)
-      vm.$v.parent.$touch()
-      shouldBeInvalidValidationObject({ $v: vm.$v.parent.number, property: 'number', propertyPath: 'parent.number', validatorName: 'isEven' })
-      shouldBeInvalidValidationObject({ $v: vm.$v.parent, property: 'number', propertyPath: 'parent.number', validatorName: 'isEven' })
-      expect(vm.$v.parent.$dirty).toBe(true)
-      shouldBePristineValidationObj(vm.$v.number2)
+      shouldBePristineValidationObj(vm.v.parent)
+      shouldBePristineValidationObj(vm.v.number2)
+      vm.v.parent.$touch()
+      shouldBeInvalidValidationObject({ v: vm.v.parent.number, property: 'number', propertyPath: 'parent.number', validatorName: 'isEven' })
+      shouldBeInvalidValidationObject({ v: vm.v.parent, property: 'number', propertyPath: 'parent.number', validatorName: 'isEven' })
+      expect(vm.v.parent.$dirty).toBe(true)
+      shouldBePristineValidationObj(vm.v.number2)
     })
 
     it('should not update the `$dirty` state on the property it wasnt used on', () => {
@@ -69,15 +69,15 @@ describe('useVuelidate', () => {
         { numberA, numberB }
       )
 
-      shouldBePristineValidationObj(vm.$v.numberA)
-      vm.$v.numberA.$touch()
-      shouldBeInvalidValidationObject({ $v: vm.$v.numberA, property: 'numberA', validatorName: 'isEven' })
-      shouldBePristineValidationObj(vm.$v.numberB)
-      expect(vm.$v).toHaveProperty('$error', false)
-      expect(vm.$v).toHaveProperty('$dirty', false)
-      expect(vm.$v).toHaveProperty('$anyDirty', true)
-      expect(vm.$v).toHaveProperty('$invalid', true)
-      expect(vm.$v.$errors).toEqual([{
+      shouldBePristineValidationObj(vm.v.numberA)
+      vm.v.numberA.$touch()
+      shouldBeInvalidValidationObject({ v: vm.v.numberA, property: 'numberA', validatorName: 'isEven' })
+      shouldBePristineValidationObj(vm.v.numberB)
+      expect(vm.v).toHaveProperty('$error', false)
+      expect(vm.v).toHaveProperty('$dirty', false)
+      expect(vm.v).toHaveProperty('$anyDirty', true)
+      expect(vm.v).toHaveProperty('$invalid', true)
+      expect(vm.v.$errors).toEqual([{
         $message: '',
         $params: {},
         $pending: false,
@@ -95,24 +95,24 @@ describe('useVuelidate', () => {
         { parent: { number }, number2 }
       )
 
-      shouldBePristineValidationObj(vm.$v.parent)
-      shouldBePristineValidationObj(vm.$v.number2)
-      vm.$v.$touch()
-      shouldBeInvalidValidationObject({ $v: vm.$v.parent, property: 'number', propertyPath: 'parent.number', validatorName: 'isEven' })
-      shouldBeInvalidValidationObject({ $v: vm.$v.number2, property: 'number2', validatorName: 'isEven' })
+      shouldBePristineValidationObj(vm.v.parent)
+      shouldBePristineValidationObj(vm.v.number2)
+      vm.v.$touch()
+      shouldBeInvalidValidationObject({ v: vm.v.parent, property: 'number', propertyPath: 'parent.number', validatorName: 'isEven' })
+      shouldBeInvalidValidationObject({ v: vm.v.number2, property: 'number2', validatorName: 'isEven' })
     })
 
     it('should update the `$dirty` state even if being cached before hand', () => {
       const { state, validations } = computedValidationsObjectWithRefs()
       const { number, conditional } = state
       const { vm } = createSimpleWrapper(validations, { number })
-      expect(vm.$v.number).toHaveProperty('$dirty', false)
+      expect(vm.v.number).toHaveProperty('$dirty', false)
       conditional.value = 10
-      expect(vm.$v).not.toHaveProperty('number')
+      expect(vm.v).not.toHaveProperty('number')
       conditional.value = 3
-      expect(vm.$v.number).toHaveProperty('$dirty', false)
-      vm.$v.number.$touch()
-      expect(vm.$v.number).toHaveProperty('$dirty', true)
+      expect(vm.v.number).toHaveProperty('$dirty', false)
+      vm.v.number.$touch()
+      expect(vm.v.number).toHaveProperty('$dirty', true)
     })
   })
 
@@ -120,13 +120,13 @@ describe('useVuelidate', () => {
     it('should update the $dirty state to false', () => {
       const number = ref(1)
       const { vm } = createSimpleWrapper({ number: { isEven } }, { number })
-      shouldBePristineValidationObj(vm.$v.number)
+      shouldBePristineValidationObj(vm.v.number)
 
-      vm.$v.number.$touch()
-      shouldBeInvalidValidationObject({ $v: vm.$v.number, property: 'number', validatorName: 'isEven' })
+      vm.v.number.$touch()
+      shouldBeInvalidValidationObject({ v: vm.v.number, property: 'number', validatorName: 'isEven' })
 
-      vm.$v.number.$reset()
-      shouldBePristineValidationObj(vm.$v.number)
+      vm.v.number.$reset()
+      shouldBePristineValidationObj(vm.v.number)
     })
 
     it('should update the $dirty state to false, only on the current property', () => {
@@ -141,16 +141,16 @@ describe('useVuelidate', () => {
       )
 
       // make it dirty
-      vm.$v.numberA.$touch()
-      vm.$v.numberB.$touch()
+      vm.v.numberA.$touch()
+      vm.v.numberB.$touch()
       // assert both are touched
-      shouldBeInvalidValidationObject({ $v: vm.$v.numberA, property: 'numberA', validatorName: 'isEven' })
-      shouldBeInvalidValidationObject({ $v: vm.$v.numberB, property: 'numberB', validatorName: 'isEven' })
+      shouldBeInvalidValidationObject({ v: vm.v.numberA, property: 'numberA', validatorName: 'isEven' })
+      shouldBeInvalidValidationObject({ v: vm.v.numberB, property: 'numberB', validatorName: 'isEven' })
       // reset only A
-      vm.$v.numberA.$reset()
+      vm.v.numberA.$reset()
       // assert that numberB is still dirty
-      shouldBePristineValidationObj(vm.$v.numberA)
-      shouldBeInvalidValidationObject({ $v: vm.$v.numberB, property: 'numberB', validatorName: 'isEven' })
+      shouldBePristineValidationObj(vm.v.numberA)
+      shouldBeInvalidValidationObject({ v: vm.v.numberB, property: 'numberB', validatorName: 'isEven' })
     })
 
     it('should reset all the properties back to pristine condition, including nested ones', () => {
@@ -165,30 +165,30 @@ describe('useVuelidate', () => {
       )
 
       // make it dirty
-      vm.$v.parent.$touch()
-      vm.$v.numberB.$touch()
+      vm.v.parent.$touch()
+      vm.v.numberB.$touch()
       // assert both are touched
-      shouldBeInvalidValidationObject({ $v: vm.$v.parent, property: 'numberA', propertyPath: 'parent.numberA', validatorName: 'isEven' })
-      shouldBeInvalidValidationObject({ $v: vm.$v.numberB, property: 'numberB', validatorName: 'isEven' })
+      shouldBeInvalidValidationObject({ v: vm.v.parent, property: 'numberA', propertyPath: 'parent.numberA', validatorName: 'isEven' })
+      shouldBeInvalidValidationObject({ v: vm.v.numberB, property: 'numberB', validatorName: 'isEven' })
       // reset only A
-      vm.$v.$reset()
+      vm.v.$reset()
       // assert that numberB is still dirty
-      shouldBePristineValidationObj(vm.$v.parent)
-      shouldBePristineValidationObj(vm.$v.numberB)
+      shouldBePristineValidationObj(vm.v.parent)
+      shouldBePristineValidationObj(vm.v.numberB)
     })
 
     it('should reset even after coming back from cache', () => {
       const { state, validations } = computedValidationsObjectWithRefs()
       const { number, conditional } = state
       const { vm } = createSimpleWrapper(validations, { number })
-      vm.$v.number.$touch()
-      expect(vm.$v.number).toHaveProperty('$dirty', true)
+      vm.v.number.$touch()
+      expect(vm.v.number).toHaveProperty('$dirty', true)
       conditional.value = 10
-      expect(vm.$v).not.toHaveProperty('number')
+      expect(vm.v).not.toHaveProperty('number')
       conditional.value = 3
-      expect(vm.$v.number).toHaveProperty('$dirty', true)
-      vm.$v.number.$reset()
-      expect(vm.$v.number).toHaveProperty('$dirty', false)
+      expect(vm.v.number).toHaveProperty('$dirty', true)
+      vm.v.number.$reset()
+      expect(vm.v.number).toHaveProperty('$dirty', false)
     })
   })
 
@@ -196,18 +196,18 @@ describe('useVuelidate', () => {
     it('should update the $dirty state to true when value changes', async () => {
       const number = ref(1)
       const { vm } = createSimpleWrapper({ number: { isEven, $autoDirty: true } }, { number })
-      shouldBePristineValidationObj(vm.$v.number)
+      shouldBePristineValidationObj(vm.v.number)
 
       number.value = 3
       await vm.$nextTick()
-      shouldBeInvalidValidationObject({ $v: vm.$v.number, property: 'number', validatorName: 'isEven' })
+      shouldBeInvalidValidationObject({ v: vm.v.number, property: 'number', validatorName: 'isEven' })
       number.value = 2
       await vm.$nextTick()
-      expect(vm.$v.$errors).toHaveLength(0)
-      expect(vm.$v.number).toHaveProperty('$error', false)
-      expect(vm.$v.number).toHaveProperty('$dirty', true)
-      expect(vm.$v.number).toHaveProperty('$anyDirty', true)
-      expect(vm.$v.number).toHaveProperty('$invalid', false)
+      expect(vm.v.$errors).toHaveLength(0)
+      expect(vm.v.number).toHaveProperty('$error', false)
+      expect(vm.v.number).toHaveProperty('$dirty', true)
+      expect(vm.v.number).toHaveProperty('$anyDirty', true)
+      expect(vm.v.number).toHaveProperty('$invalid', false)
     })
   })
 
@@ -216,7 +216,7 @@ describe('useVuelidate', () => {
       const number = ref(1)
       const { vm } = createSimpleWrapper({ number: { isEven } }, { number })
 
-      vm.$v.number.$model = 3
+      vm.v.number.$model = 3
       await vm.$nextTick()
       expect(number.value).toBe(3)
     })
@@ -224,26 +224,26 @@ describe('useVuelidate', () => {
     it('should update the $dirty state to true when $model value changes', async () => {
       const number = ref(1)
       const { vm } = createSimpleWrapper({ number: { isEven } }, { number })
-      shouldBePristineValidationObj(vm.$v.number)
+      shouldBePristineValidationObj(vm.v.number)
 
-      vm.$v.number.$model = 3
+      vm.v.number.$model = 3
       await vm.$nextTick()
-      shouldBeInvalidValidationObject({ $v: vm.$v.number, property: 'number', validatorName: 'isEven' })
-      vm.$v.number.$model = 2
+      shouldBeInvalidValidationObject({ v: vm.v.number, property: 'number', validatorName: 'isEven' })
+      vm.v.number.$model = 2
       await vm.$nextTick()
-      expect(vm.$v.$errors).toHaveLength(0)
-      expect(vm.$v.number).toHaveProperty('$error', false)
-      expect(vm.$v.number).toHaveProperty('$dirty', true)
-      expect(vm.$v.number).toHaveProperty('$anyDirty', true)
-      expect(vm.$v.number).toHaveProperty('$invalid', false)
+      expect(vm.v.$errors).toHaveLength(0)
+      expect(vm.v.number).toHaveProperty('$error', false)
+      expect(vm.v.number).toHaveProperty('$dirty', true)
+      expect(vm.v.number).toHaveProperty('$anyDirty', true)
+      expect(vm.v.number).toHaveProperty('$invalid', false)
     })
 
     it('works with `reactive`', () => {
       const { state, validations } = nestedReactiveObjectValidation()
       const { vm } = createSimpleWrapper(validations, state)
       expect(vm.level0).toBe(0)
-      expect(vm.$v.level0.$model).toBe(0)
-      vm.$v.level0.$model = 5
+      expect(vm.v.level0.$model).toBe(0)
+      vm.v.level0.$model = 5
       // assert both the state and the vm state are updated
       expect(state.level0).toBe(5)
       expect(vm.level0).toBe(5)
@@ -254,11 +254,11 @@ describe('useVuelidate', () => {
     it('should collect child validations when they invalidate', async () => {
       const { state, parent } = nestedComponentValidation()
       const wrapper = mount(parent)
-      shouldBePristineValidationObj(wrapper.vm.$v)
+      shouldBePristineValidationObj(wrapper.vm.v)
       state.number.value = 3
       await wrapper.vm.$nextTick()
 
-      expect(wrapper.vm.$v.$errors).toEqual([{
+      expect(wrapper.vm.v.$errors).toEqual([{
         $message: '',
         $params: {},
         $pending: false,
@@ -271,32 +271,32 @@ describe('useVuelidate', () => {
     it('should return false on $validate() if nested component validation is invalid', async () => {
       const { state, parent } = nestedComponentValidation()
       const wrapper = mount(parent)
-      shouldBePristineValidationObj(wrapper.vm.$v)
+      shouldBePristineValidationObj(wrapper.vm.v)
       // make the validation fail
       state.number.value = 3
-      expect(await wrapper.vm.$v.$validate()).toBe(false)
+      expect(await wrapper.vm.v.$validate()).toBe(false)
       // make the validation pass
       state.number.value = 4
-      expect(await wrapper.vm.$v.$validate()).toBe(true)
-      expect(wrapper.vm.$v.$errors).toHaveLength(0)
+      expect(await wrapper.vm.v.$validate()).toBe(true)
+      expect(wrapper.vm.v.$errors).toHaveLength(0)
     })
 
     it('removes the child results if the child gets destroyed', async () => {
       const { childValidationRegisterName, parent, state } = nestedComponentValidation()
       const { vm } = mount(parent)
       // make sure the validation object is clear
-      shouldBePristineValidationObj(vm.$v)
+      shouldBePristineValidationObj(vm.v)
       state.number.value = 3
       await vm.$nextTick()
-      expect(vm.$v.$errors).toHaveLength(1)
-      let childState = vm.$v.$getResultsForChild(childValidationRegisterName)
+      expect(vm.v.$errors).toHaveLength(1)
+      let childState = vm.v.$getResultsForChild(childValidationRegisterName)
       expect(childState).toBeTruthy()
       vm.shouldRenderChild = false
       await vm.$nextTick()
-      childState = vm.$v.$getResultsForChild(childValidationRegisterName)
+      childState = vm.v.$getResultsForChild(childValidationRegisterName)
       expect(childState).toBeFalsy()
       // there are no errors at all
-      expect(vm.$v.$errors).toEqual([])
+      expect(vm.v.$errors).toEqual([])
     })
   })
 
@@ -304,13 +304,13 @@ describe('useVuelidate', () => {
     it('returns `false` if both `$invalid` and $dirty` are true', () => {
       const number = ref(1)
       const { vm } = createSimpleWrapper({ number: { isEven } }, { number })
-      expect(vm.$v.$invalid).toBe(false)
-      expect(vm.$v.$dirty).toBe(false)
-      expect(vm.$v.$error).toBe(false)
-      vm.$v.$touch()
-      expect(vm.$v.$invalid).toBe(true)
-      expect(vm.$v.$dirty).toBe(true)
-      expect(vm.$v.$error).toBe(true)
+      expect(vm.v.$invalid).toBe(false)
+      expect(vm.v.$dirty).toBe(false)
+      expect(vm.v.$error).toBe(false)
+      vm.v.$touch()
+      expect(vm.v.$invalid).toBe(true)
+      expect(vm.v.$dirty).toBe(true)
+      expect(vm.v.$error).toBe(true)
     })
   })
 
@@ -340,10 +340,10 @@ describe('useVuelidate', () => {
     it('returns the validation results for a child component', async () => {
       const { childValidationRegisterName, parent, state } = nestedComponentValidation()
       const { vm } = mount(parent)
-      shouldBePristineValidationObj(vm.$v)
+      shouldBePristineValidationObj(vm.v)
       state.number.value = 3
       await vm.$nextTick()
-      const childState = vm.$v.$getResultsForChild(childValidationRegisterName)
+      const childState = vm.v.$getResultsForChild(childValidationRegisterName)
       expect(childState).toHaveProperty('$errors')
       expect(childState.$errors).toContainEqual({
         '$message': '',
@@ -358,10 +358,10 @@ describe('useVuelidate', () => {
     it('is only preset at the top level', () => {
       const { state, validations } = nestedReactiveObjectValidation()
       const { vm } = createSimpleWrapper(validations, state)
-      expect(vm.$v).toHaveProperty('$getResultsForChild')
-      expect(vm.$v.level0).not.toHaveProperty('$getResultsForChild')
-      expect(vm.$v.level1).not.toHaveProperty('$getResultsForChild')
-      expect(vm.$v.level1.level2).not.toHaveProperty('$getResultsForChild')
+      expect(vm.v).toHaveProperty('$getResultsForChild')
+      expect(vm.v.level0).not.toHaveProperty('$getResultsForChild')
+      expect(vm.v.level1).not.toHaveProperty('$getResultsForChild')
+      expect(vm.v.level1.level2).not.toHaveProperty('$getResultsForChild')
     })
   })
 
@@ -393,26 +393,26 @@ describe('useVuelidate', () => {
     it('returns the result of the validation', async () => {
       const { state, validations } = simpleValidation()
       const { vm } = createSimpleWrapper(validations, state)
-      expect(await vm.$v.$validate()).toBe(false)
+      expect(await vm.v.$validate()).toBe(false)
     })
 
     it('returns a Promise<Boolean>, that resolves instantly if `$pending === false`', async () => {
       const { state, validations } = simpleValidation()
       const { vm } = createSimpleWrapper(validations, state)
-      const promise = vm.$v.$validate()
-      expect(vm.$v.$pending).toBe(false)
+      const promise = vm.v.$validate()
+      expect(vm.v.$pending).toBe(false)
       await promise
-      expect(vm.$v.$pending).toBe(false)
+      expect(vm.v.$pending).toBe(false)
     })
 
     it('is only present at the top level', () => {
       const { state, validations } = nestedReactiveObjectValidation()
       const { vm } = createSimpleWrapper(validations, state)
 
-      expect(vm.$v).toHaveProperty('$validate', expect.any(Function))
-      expect(vm.$v.level0).not.toHaveProperty('$validate')
-      expect(vm.$v.level1).not.toHaveProperty('$validate')
-      expect(vm.$v.level1.level2).not.toHaveProperty('$validate')
+      expect(vm.v).toHaveProperty('$validate', expect.any(Function))
+      expect(vm.v.level0).not.toHaveProperty('$validate')
+      expect(vm.v.level1).not.toHaveProperty('$validate')
+      expect(vm.v.level1.level2).not.toHaveProperty('$validate')
     })
   })
 
@@ -451,15 +451,15 @@ describe('useVuelidate', () => {
       jest.useFakeTimers()
       const { state, validations } = asyncValidation()
       const { vm } = createSimpleWrapper(validations, state)
-      vm.$v.$touch()
+      vm.v.$touch()
       await flushPromises()
-      expect(vm.$v.number.asyncIsEven.$pending).toBe(false)
+      expect(vm.v.number.asyncIsEven.$pending).toBe(false)
       state.number.value = 6
-      expect(vm.$v.number.asyncIsEven.$pending).toBe(true)
-      expect(vm.$v.number.$invalid).toBe(true)
+      expect(vm.v.number.asyncIsEven.$pending).toBe(true)
+      expect(vm.v.number.$invalid).toBe(true)
       await flushPromises()
-      expect(vm.$v.number.asyncIsEven.$pending).toBe(false)
-      expect(vm.$v.number.$invalid).toBe(false)
+      expect(vm.v.number.asyncIsEven.$pending).toBe(false)
+      expect(vm.v.number.$invalid).toBe(false)
       jest.useRealTimers()
     })
 
@@ -469,15 +469,15 @@ describe('useVuelidate', () => {
       const component = {
         template: '<div>Hello World</div>',
         setup () {
-          const $v = useVuelidate({ number: { asyncValidator } }, { number })
-          return { $v }
+          const v = useVuelidate({ number: { asyncValidator } }, { number })
+          return { v }
         }
       }
       const { vm } = mount(component)
-      vm.$v.$touch()
+      vm.v.$touch()
       number.value = 5
       // throws here, because we call the `$invalid` getter.
-      expect(() => vm.$v.number.$invalid).toThrowError()
+      expect(() => vm.v.number.$invalid).toThrowError()
     })
 
     it('does not call a validator, until the property is dirty', async () => {
@@ -488,7 +488,7 @@ describe('useVuelidate', () => {
       expect(isFive).toHaveBeenCalledTimes(0)
       number.value = 10
       expect(isFive).toHaveBeenCalledTimes(0)
-      await vm.$v.$validate()
+      await vm.v.$validate()
       expect(isFive).toHaveBeenCalledTimes(1)
     })
 
@@ -500,25 +500,25 @@ describe('useVuelidate', () => {
       const number = ref(0)
       const { vm } = createSimpleWrapper({ number: { asyncValidator } }, { number })
       // make sure the validator is armed
-      vm.$v.$touch()
+      vm.v.$touch()
       // assert its called once, for the dirty state change
       expect(validator).toHaveBeenCalledTimes(1)
       // assert there is an error state
-      expect(vm.$v.number.asyncValidator.$invalid).toBe(true)
-      expect(vm.$v.number.$invalid).toBe(true)
+      expect(vm.v.number.asyncValidator.$invalid).toBe(true)
+      expect(vm.v.number.$invalid).toBe(true)
       // change it a few times
       number.value = 1
       number.value = 2
       validator.mockResolvedValueOnce(false)
       number.value = 3
       await flushPromises()
-      expect(vm.$v.number.asyncValidator.$invalid).toBe(false)
+      expect(vm.v.number.asyncValidator.$invalid).toBe(false)
       validator.mockResolvedValueOnce(true)
       number.value = 2
       validator.mockResolvedValueOnce(false)
       number.value = 1
       await flushPromises()
-      expect(vm.$v.number.asyncValidator.$invalid).toBe(false)
+      expect(vm.v.number.asyncValidator.$invalid).toBe(false)
     })
 
     describe('dynamic rules', () => {
@@ -526,33 +526,33 @@ describe('useVuelidate', () => {
         const { state, validations } = computedValidationsObjectWithRefs()
         const { number, conditional } = state
         const { vm } = createSimpleWrapper(validations, state)
-        expect(vm.$v.number).toHaveProperty('isOdd')
-        vm.$v.number.$touch()
-        expect(vm.$v.number.isOdd).toHaveProperty('$invalid', true)
+        expect(vm.v.number).toHaveProperty('isOdd')
+        vm.v.number.$touch()
+        expect(vm.v.number.isOdd).toHaveProperty('$invalid', true)
         number.value = 3
-        expect(vm.$v.number.isOdd).toHaveProperty('$invalid', false)
+        expect(vm.v.number.isOdd).toHaveProperty('$invalid', false)
         // make sure the conditional is above the threshold
         conditional.value = 10
         // assert it is no longer there
-        expect(vm.$v).not.toHaveProperty('number')
+        expect(vm.v).not.toHaveProperty('number')
         conditional.value = 3
-        expect(vm.$v.number.$invalid).toBe(false)
+        expect(vm.v.number.$invalid).toBe(false)
       })
 
       it('allows passing a computed value as a validations object, with Reactive', () => {
         const { state, validations } = computedValidationsObjectWithReactive()
         const { vm } = createSimpleWrapper(validations, state)
-        expect(vm.$v.number).toHaveProperty('isOdd')
-        vm.$v.number.$touch()
-        expect(vm.$v.number.isOdd).toHaveProperty('$invalid', true)
+        expect(vm.v.number).toHaveProperty('isOdd')
+        vm.v.number.$touch()
+        expect(vm.v.number.isOdd).toHaveProperty('$invalid', true)
         state.number = 3
-        expect(vm.$v.number.isOdd).toHaveProperty('$invalid', false)
+        expect(vm.v.number.isOdd).toHaveProperty('$invalid', false)
         // make sure the conditional is above the threshold
         state.conditional = 10
         // assert it is no longer there
-        expect(vm.$v).not.toHaveProperty('number')
+        expect(vm.v).not.toHaveProperty('number')
         state.conditional = 3
-        expect(vm.$v.number.$invalid).toBe(false)
+        expect(vm.v.number.$invalid).toBe(false)
       })
 
       it('allows passing a computed as a property validator', () => {
@@ -567,46 +567,46 @@ describe('useVuelidate', () => {
         const validations = { number: numberValidation }
 
         const { vm } = createSimpleWrapper(validations, state)
-        shouldBePristineValidationObj(vm.$v.number)
-        vm.$v.$touch()
+        shouldBePristineValidationObj(vm.v.number)
+        vm.v.$touch()
         number.value = 3
         // assert the number is invalid
-        shouldBeInvalidValidationObject({ $v: vm.$v.number, property: 'number', validatorName: 'isEven' })
+        shouldBeInvalidValidationObject({ v: vm.v.number, property: 'number', validatorName: 'isEven' })
         // go over the condition
         conditional.value = 7
         // assert the validation passes now, and there is no more isEven validator
-        expect(vm.$v.number).not.toHaveProperty('isEven')
-        expect(vm.$v.number.$error).toBe(false)
+        expect(vm.v.number).not.toHaveProperty('isEven')
+        expect(vm.v.number.$error).toBe(false)
         // return the validation back
         conditional.value = 0
         // make sure there is an error
-        expect(vm.$v.number.$error).toBe(true)
+        expect(vm.v.number.$error).toBe(true)
         // make sure it is still dirty
-        expect(vm.$v.number.$dirty).toBe(true)
-        expect(vm.$v.number.isEven.$invalid).toBe(true)
+        expect(vm.v.number.$dirty).toBe(true)
+        expect(vm.v.number.isEven.$invalid).toBe(true)
       })
 
       it('caches the `$dirty` state of a validator, if the validator gets removed and re-added', () => {
         const { state, validations } = computedValidationsObjectWithRefs()
         const { number, conditional } = state
         const { vm } = createSimpleWrapper(validations, { number })
-        expect(vm.$v.number).toHaveProperty('$dirty', false)
-        vm.$v.number.$touch()
-        expect(vm.$v.number).toHaveProperty('$dirty', true)
+        expect(vm.v.number).toHaveProperty('$dirty', false)
+        vm.v.number.$touch()
+        expect(vm.v.number).toHaveProperty('$dirty', true)
         // make sure the conditional is above the threshold
         conditional.value = 10
         // assert it is no longer there
-        expect(vm.$v).not.toHaveProperty('number')
+        expect(vm.v).not.toHaveProperty('number')
         conditional.value = 3
         // assert the dirty state is still there
-        expect(vm.$v.number.$dirty).toBe(true)
-        vm.$v.number.$reset()
-        expect(vm.$v.number.$dirty).toBe(false)
+        expect(vm.v.number.$dirty).toBe(true)
+        vm.v.number.$reset()
+        expect(vm.v.number.$dirty).toBe(false)
       })
     })
   })
 
-  // it('should allow watching a $v state', async () => {
+  // it('should allow watching a v state', async () => {
   //   let watcherValue = null
   //   let watcherValueOld = null
   //
@@ -616,7 +616,7 @@ describe('useVuelidate', () => {
   //       value: { isEven }
   //     },
   //     watch: {
-  //       '$v.value.$invalid' (v, oldv) {
+  //       'v.value.$invalid' (v, oldv) {
   //         watcherValue = v
   //         watcherValueOld = oldv
   //       }
@@ -628,7 +628,7 @@ describe('useVuelidate', () => {
   //   expect(watcherValueOld).toBe(false)
   // })
 
-  // it('should have a $v key while not overriding existing computed', () => {
+  // it('should have a v key while not overriding existing computed', () => {
   //   const vm = new Vue({
   //     ...base,
   //     validations: {
@@ -640,11 +640,11 @@ describe('useVuelidate', () => {
   //       }
   //     }
   //   })
-  //   expect(vm.$v).toBeDefined()
+  //   expect(vm.v).toBeDefined()
   //   expect(vm.x).toBe(1)
   // })
   //
-  // it('should have a $v key defined if used as function', () => {
+  // it('should have a v key defined if used as function', () => {
   //   const vm = new Vue({
   //     ...base,
   //     validations () {
@@ -653,7 +653,7 @@ describe('useVuelidate', () => {
   //       }
   //     }
   //   })
-  //   expect(vm.$v).toBeDefined()
+  //   expect(vm.v).toBeDefined()
   // })
   //
   // it('should not interfere with lifecycle hooks', () => {
@@ -664,7 +664,7 @@ describe('useVuelidate', () => {
   //     validations: {}
   //   })
   //   const vm = new Ctor()
-  //   expect(vm.$v).toBeDefined()
+  //   expect(vm.v).toBeDefined()
   //   expect(createSpy).toHaveBeenCalledTimes(1)
   // })
 
@@ -690,25 +690,25 @@ describe('useVuelidate', () => {
   //
   //   it('$pending should be false on initialization for empty value', () => {
   //     const { vm } = setupAsync()
-  //     expect(vm.$v.value.$pending).toBe(false)
+  //     expect(vm.v.value.$pending).toBe(false)
   //   })
   //
   //   it('$pending should be true immediately after value change on the validator itself', () => {
   //     const { vm } = setupAsync()
   //     vm.value = 'x1'
-  //     expect(vm.$v.value.asyncVal.$pending).toBe(true)
+  //     expect(vm.v.value.asyncVal.$pending).toBe(true)
   //   })
   //
   //   it('$pending should cascade to state property', async () => {
   //     const { vm } = setupAsync()
   //     vm.value = 'x1'
-  //     expect(vm.$v.value.$pending).toBe(true)
+  //     expect(vm.v.value.$pending).toBe(true)
   //   })
   //
-  //   it('$pending should cascade to root $v', () => {
+  //   it('$pending should cascade to root v', () => {
   //     const { vm } = setupAsync()
   //     vm.value = 'x1'
-  //     expect(vm.$v.$pending).toBe(true)
+  //     expect(vm.v.$pending).toBe(true)
   //   })
   //
   //   it('should not be computed without getter evaluation', () => {
@@ -722,22 +722,22 @@ describe('useVuelidate', () => {
   //     vm.value = 'x1'
   //     resolvePromise.resolve(true)
   //     await flushPromises()
-  //     expect(vm.$v.value.$pending).toBe(false)
+  //     expect(vm.v.value.$pending).toBe(false)
   //   })
   //
   //   it('asyncVal value should be false just after value change', () => {
   //     const { vm } = setupAsync()
   //     vm.value = 'x1'
-  //     expect(vm.$v.value.asyncVal).toBe(false)
+  //     expect(vm.v.value.asyncVal).toBe(false)
   //   })
   //
   //   it('asyncVal value should be true after promise resolve', (done) => {
   //     const { resolvePromise, vm } = setupAsync()
   //     vm.value = 'x1'
-  //     vm.$v.value.asyncVal // execute getter
+  //     vm.v.value.asyncVal // execute getter
   //     resolvePromise.resolve(true)
   //     Promise.resolve().then(() => {
-  //       expect(vm.$v.value.asyncVal).toBe(true)
+  //       expect(vm.v.value.asyncVal).toBe(true)
   //       done()
   //     })
   //   })
@@ -745,16 +745,16 @@ describe('useVuelidate', () => {
   //   it('asyncVal value should be false after promise reject', (done) => {
   //     const { resolvePromise, vm } = setupAsync()
   //     vm.value = 'x1'
-  //     vm.$v.value.asyncVal // execute getter
+  //     vm.v.value.asyncVal // execute getter
   //     resolvePromise.reject(new Error('test reject'))
   //     Promise.resolve().then(() => {
-  //       expect(vm.$v.value.asyncVal).toBe(false)
+  //       expect(vm.v.value.asyncVal).toBe(false)
   //       done()
   //     })
   //   })
   // })
   //
-  // describe('$v.value.$dirty', () => {
+  // describe('v.value.$dirty', () => {
   //   it('should have a $dirty set to false on initialization', () => {
   //     const vm = new Vue({
   //       ...base,
@@ -762,7 +762,7 @@ describe('useVuelidate', () => {
   //         value: { isEven }
   //       }
   //     })
-  //     expect(vm.$v.value.$dirty).toBe(false)
+  //     expect(vm.v.value.$dirty).toBe(false)
   //   })
   //
   //   it('should have a $anyDirty set to false on initialization', () => {
@@ -772,7 +772,7 @@ describe('useVuelidate', () => {
   //         value: { isEven }
   //       }
   //     })
-  //     expect(vm.$v.value.$anyDirty).toBe(false)
+  //     expect(vm.v.value.$anyDirty).toBe(false)
   //   })
   //
   //   it('should preserve $dirty flag on validation recomputation', () => {
@@ -790,10 +790,10 @@ describe('useVuelidate', () => {
   //       }
   //     })
   //
-  //     vm.$v.value.$touch()
+  //     vm.v.value.$touch()
   //     vm.out = true
-  //     expect(vm.$v.value.$dirty).toBe(true)
-  //     expect(vm.$v.value2.$dirty).toBe(false)
+  //     expect(vm.v.value.$dirty).toBe(true)
+  //     expect(vm.v.value2.$dirty).toBe(false)
   //   })
   //
   //   it('should preserve $anyDirty flag on validation recomputation', () => {
@@ -811,10 +811,10 @@ describe('useVuelidate', () => {
   //       }
   //     })
   //
-  //     vm.$v.value.$touch()
+  //     vm.v.value.$touch()
   //     vm.out = true
-  //     expect(vm.$v.value.$anyDirty).toBe(true)
-  //     expect(vm.$v.value2.$anyDirty).toBe(false)
+  //     expect(vm.v.value.$anyDirty).toBe(true)
+  //     expect(vm.v.value2.$anyDirty).toBe(false)
   //   })
   //
   //   it('should have a $error set to false on initialization', () => {
@@ -824,7 +824,7 @@ describe('useVuelidate', () => {
   //         value: { isEven }
   //       }
   //     })
-  //     expect(vm.$v.value.$error).toBe(false)
+  //     expect(vm.v.value.$error).toBe(false)
   //   })
   //   it('should have a $anyError set to false on initialization', () => {
   //     const vm = new Vue({
@@ -833,7 +833,7 @@ describe('useVuelidate', () => {
   //         value: { isEven }
   //       }
   //     })
-  //     expect(vm.$v.value.$anyError).toBe(false)
+  //     expect(vm.v.value.$anyError).toBe(false)
   //   })
   //   it('should have a $error false on dirty valid', () => {
   //     const vm = new Vue({
@@ -842,8 +842,8 @@ describe('useVuelidate', () => {
   //         value: { isEven }
   //       }
   //     })
-  //     vm.$v.value.$touch()
-  //     expect(vm.$v.value.$error).toBe(false)
+  //     vm.v.value.$touch()
+  //     expect(vm.v.value.$error).toBe(false)
   //   })
   //   it('should have a $anyError false on dirty valid', () => {
   //     const vm = new Vue({
@@ -852,8 +852,8 @@ describe('useVuelidate', () => {
   //         value: { isEven }
   //       }
   //     })
-  //     vm.$v.value.$touch()
-  //     expect(vm.$v.value.$anyError).toBe(false)
+  //     vm.v.value.$touch()
+  //     expect(vm.v.value.$anyError).toBe(false)
   //   })
   //   it('should have a $error true on dirty invalid', () => {
   //     const vm = new Vue({
@@ -862,8 +862,8 @@ describe('useVuelidate', () => {
   //         value: { isOdd }
   //       }
   //     })
-  //     vm.$v.value.$touch()
-  //     expect(vm.$v.value.$error).toBe(true)
+  //     vm.v.value.$touch()
+  //     expect(vm.v.value.$error).toBe(true)
   //   })
   //   it('should have a $anyError true on dirty invalid', () => {
   //     const vm = new Vue({
@@ -872,8 +872,8 @@ describe('useVuelidate', () => {
   //         value: { isOdd }
   //       }
   //     })
-  //     vm.$v.value.$touch()
-  //     expect(vm.$v.value.$anyError).toBe(true)
+  //     vm.v.value.$touch()
+  //     expect(vm.v.value.$anyError).toBe(true)
   //   })
   //   it('should have a $error false on clean invalid', () => {
   //     const vm = new Vue({
@@ -882,7 +882,7 @@ describe('useVuelidate', () => {
   //         value: { isOdd }
   //       }
   //     })
-  //     expect(vm.$v.value.$error).toBe(false)
+  //     expect(vm.v.value.$error).toBe(false)
   //   })
   //   it('should have a $dirty set to true after $touch', () => {
   //     const vm = new Vue({
@@ -891,8 +891,8 @@ describe('useVuelidate', () => {
   //         value: { isEven }
   //       }
   //     })
-  //     vm.$v.value.$touch()
-  //     expect(vm.$v.value.$dirty).toBe(true)
+  //     vm.v.value.$touch()
+  //     expect(vm.v.value.$dirty).toBe(true)
   //   })
   //   it('should have a $anyDirty set to true after $touch', () => {
   //     const vm = new Vue({
@@ -901,8 +901,8 @@ describe('useVuelidate', () => {
   //         value: { isEven }
   //       }
   //     })
-  //     vm.$v.value.$touch()
-  //     expect(vm.$v.value.$anyDirty).toBe(true)
+  //     vm.v.value.$touch()
+  //     expect(vm.v.value.$anyDirty).toBe(true)
   //   })
   //   it('should have a $dirty set to false after $reset', () => {
   //     const vm = new Vue({
@@ -911,9 +911,9 @@ describe('useVuelidate', () => {
   //         value: { isEven }
   //       }
   //     })
-  //     vm.$v.value.$touch()
-  //     vm.$v.value.$reset()
-  //     expect(vm.$v.value.$dirty).toBe(false)
+  //     vm.v.value.$touch()
+  //     vm.v.value.$reset()
+  //     expect(vm.v.value.$dirty).toBe(false)
   //   })
   //   it('should have a $anyDirty set to false after $reset', () => {
   //     const vm = new Vue({
@@ -922,9 +922,9 @@ describe('useVuelidate', () => {
   //         value: { isEven }
   //       }
   //     })
-  //     vm.$v.value.$touch()
-  //     vm.$v.value.$reset()
-  //     expect(vm.$v.value.$anyDirty).toBe(false)
+  //     vm.v.value.$touch()
+  //     vm.v.value.$reset()
+  //     expect(vm.v.value.$anyDirty).toBe(false)
   //   })
   //   describe('for nested validators', () => {
   //     it('should have nested $dirty false on initialization', () => {
@@ -937,7 +937,7 @@ describe('useVuelidate', () => {
   //           }
   //         }
   //       })
-  //       expect(vm.$v.nested.$dirty).toBe(false)
+  //       expect(vm.v.nested.$dirty).toBe(false)
   //     })
   //     it('should have nested.$dirty false when only one value is $dirty', () => {
   //       const vm = new Vue({
@@ -949,8 +949,8 @@ describe('useVuelidate', () => {
   //           }
   //         }
   //       })
-  //       vm.$v.nested.value1.$touch()
-  //       expect(vm.$v.nested.$dirty).toBe(false)
+  //       vm.v.nested.value1.$touch()
+  //       expect(vm.v.nested.$dirty).toBe(false)
   //     })
   //     it('should have nested.$anyDirty true when only one value is $dirty', () => {
   //       const vm = new Vue({
@@ -962,8 +962,8 @@ describe('useVuelidate', () => {
   //           }
   //         }
   //       })
-  //       vm.$v.nested.value1.$touch()
-  //       expect(vm.$v.nested.$anyDirty).toBe(true)
+  //       vm.v.nested.value1.$touch()
+  //       expect(vm.v.nested.$anyDirty).toBe(true)
   //     })
   //     it('should have nested.$dirty true when all values are $dirty', () => {
   //       const vm = new Vue({
@@ -975,9 +975,9 @@ describe('useVuelidate', () => {
   //           }
   //         }
   //       })
-  //       vm.$v.nested.value1.$touch()
-  //       vm.$v.nested.value2.$touch()
-  //       expect(vm.$v.nested.$dirty).toBe(true)
+  //       vm.v.nested.value1.$touch()
+  //       vm.v.nested.value2.$touch()
+  //       expect(vm.v.nested.$dirty).toBe(true)
   //     })
   //     it('should have nested.$dirty true when all values are $dirty', () => {
   //       const vm = new Vue({
@@ -989,9 +989,9 @@ describe('useVuelidate', () => {
   //           }
   //         }
   //       })
-  //       vm.$v.nested.value1.$touch()
-  //       vm.$v.nested.value2.$touch()
-  //       expect(vm.$v.nested.$dirty).toBe(true)
+  //       vm.v.nested.value1.$touch()
+  //       vm.v.nested.value2.$touch()
+  //       expect(vm.v.nested.$dirty).toBe(true)
   //     })
   //     it('should have nested.$anyDirty true when all values are $anyDirty', () => {
   //       const vm = new Vue({
@@ -1003,9 +1003,9 @@ describe('useVuelidate', () => {
   //           }
   //         }
   //       })
-  //       vm.$v.nested.value1.$touch()
-  //       vm.$v.nested.value2.$touch()
-  //       expect(vm.$v.nested.$anyDirty).toBe(true)
+  //       vm.v.nested.value1.$touch()
+  //       vm.v.nested.value2.$touch()
+  //       expect(vm.v.nested.$anyDirty).toBe(true)
   //     })
   //     it('should have $error false when not all nested values are $dirty and $invalid', () => {
   //       const vm = new Vue({
@@ -1017,8 +1017,8 @@ describe('useVuelidate', () => {
   //           }
   //         }
   //       })
-  //       vm.$v.nested.value1.$touch()
-  //       expect(vm.$v.nested.$error).toBe(false)
+  //       vm.v.nested.value1.$touch()
+  //       expect(vm.v.nested.$error).toBe(false)
   //     })
   //     it('should have $anyError true when not all nested values are $dirty and $invalid', () => {
   //       const vm = new Vue({
@@ -1030,8 +1030,8 @@ describe('useVuelidate', () => {
   //           }
   //         }
   //       })
-  //       vm.$v.nested.value1.$touch()
-  //       expect(vm.$v.nested.$anyError).toBe(true)
+  //       vm.v.nested.value1.$touch()
+  //       expect(vm.v.nested.$anyError).toBe(true)
   //     })
   //     it('should propagate nested.$reset to all nested values', () => {
   //       const vm = new Vue({
@@ -1043,17 +1043,17 @@ describe('useVuelidate', () => {
   //           }
   //         }
   //       })
-  //       vm.$v.nested.value1.$touch()
-  //       vm.$v.nested.$reset()
-  //       expect(vm.$v.nested.value1.$dirty).toBe(false)
-  //       expect(vm.$v.nested.value2.$dirty).toBe(false)
-  //       expect(vm.$v.nested.value1.$anyDirty).toBe(false)
-  //       expect(vm.$v.nested.value2.$anyDirty).toBe(false)
+  //       vm.v.nested.value1.$touch()
+  //       vm.v.nested.$reset()
+  //       expect(vm.v.nested.value1.$dirty).toBe(false)
+  //       expect(vm.v.nested.value2.$dirty).toBe(false)
+  //       expect(vm.v.nested.value1.$anyDirty).toBe(false)
+  //       expect(vm.v.nested.value2.$anyDirty).toBe(false)
   //     })
   //   })
   // })
   //
-  // describe('$v.value', () => {
+  // describe('v.value', () => {
   //   describe('when validations pass', () => {
   //     it('should have $invalid value set to false', () => {
   //       const vm = new Vue({
@@ -1062,7 +1062,7 @@ describe('useVuelidate', () => {
   //           value: { isEven }
   //         }
   //       })
-  //       expect(vm.$v.value.$invalid).toBe(false)
+  //       expect(vm.v.value.$invalid).toBe(false)
   //     })
   //     it('should have validator name value set to true', () => {
   //       const vm = new Vue({
@@ -1071,7 +1071,7 @@ describe('useVuelidate', () => {
   //           value: { isEven }
   //         }
   //       })
-  //       expect(vm.$v.value.isEven).toBe(true)
+  //       expect(vm.v.value.isEven).toBe(true)
   //     })
   //   })
   //   describe('when validations did not pass', () => {
@@ -1087,7 +1087,7 @@ describe('useVuelidate', () => {
   //           value: { isEven }
   //         }
   //       })
-  //       expect(vm.$v.value.$invalid).toBe(true)
+  //       expect(vm.v.value.$invalid).toBe(true)
   //     })
   //     it('should have validator name value set to false', () => {
   //       const vm = new Vue({
@@ -1101,7 +1101,7 @@ describe('useVuelidate', () => {
   //           value: { isEven }
   //         }
   //       })
-  //       expect(vm.$v.value.isEven).toBe(false)
+  //       expect(vm.v.value.isEven).toBe(false)
   //     })
   //   })
   //   describe('when multiple validations exist', () => {
@@ -1112,9 +1112,9 @@ describe('useVuelidate', () => {
   //           value: { isEven, isOdd }
   //         }
   //       })
-  //       expect(vm.$v.value.$invalid).toBe(true)
-  //       expect(vm.$v.value.isEven).toBe(true)
-  //       expect(vm.$v.value.isOdd).toBe(false)
+  //       expect(vm.v.value.$invalid).toBe(true)
+  //       expect(vm.v.value.isEven).toBe(true)
+  //       expect(vm.v.value.isOdd).toBe(false)
   //     })
   //   })
   // })
@@ -1130,8 +1130,8 @@ describe('useVuelidate', () => {
   //         }
   //       }
   //     })
-  //     expect(vm.$v.nested.value3.$invalid).toBe(false)
-  //     expect(vm.$v.nested.value4.$invalid).toBe(true)
+  //     expect(vm.v.nested.value3.$invalid).toBe(false)
+  //     expect(vm.v.nested.value4.$invalid).toBe(true)
   //   })
   //
   //   it('should have $invalid value set to true on single nested fail', () => {
@@ -1144,7 +1144,7 @@ describe('useVuelidate', () => {
   //         }
   //       }
   //     })
-  //     expect(vm.$v.nested.$invalid).toBe(true)
+  //     expect(vm.v.nested.$invalid).toBe(true)
   //   })
   //
   //   it('should have $invalid value set to false when all nested pass', () => {
@@ -1157,7 +1157,7 @@ describe('useVuelidate', () => {
   //         }
   //       }
   //     })
-  //     expect(vm.$v.nested.$invalid).toBe(false)
+  //     expect(vm.v.nested.$invalid).toBe(false)
   //   })
   // })
   //
@@ -1174,7 +1174,7 @@ describe('useVuelidate', () => {
   //         }
   //       }
   //     })
-  //     expect(vm.$v.group.$invalid).toBe(true)
+  //     expect(vm.v.group.$invalid).toBe(true)
   //   })
   //   it('should allow groups defined by paths', () => {
   //     const vm = new Vue({
@@ -1186,7 +1186,7 @@ describe('useVuelidate', () => {
   //         }
   //       }
   //     })
-  //     expect(vm.$v.group['nested.value3'].$invalid).toBe(false)
+  //     expect(vm.v.group['nested.value3'].$invalid).toBe(false)
   //   })
   //   it('should have $invalid value set to true when nested.value3 fail', () => {
   //     const vm = new Vue({
@@ -1200,7 +1200,7 @@ describe('useVuelidate', () => {
   //         }
   //       }
   //     })
-  //     expect(vm.$v.group.$invalid).toBe(true)
+  //     expect(vm.v.group.$invalid).toBe(true)
   //   })
   //   it('should have $invalid value set to false when all grouped pass', () => {
   //     const vm = new Vue({
@@ -1214,7 +1214,7 @@ describe('useVuelidate', () => {
   //         }
   //       }
   //     })
-  //     expect(vm.$v.group.$invalid).toBe(false)
+  //     expect(vm.v.group.$invalid).toBe(false)
   //   })
   //   it('should have $invalid value set to true when grouping undefined validators', () => {
   //     const vm = new Vue({
@@ -1233,8 +1233,8 @@ describe('useVuelidate', () => {
   //         }
   //       }
   //     })
-  //     expect(vm.$v.group['abc.def.ghi']).toBe(false)
-  //     expect(vm.$v.group.$invalid).toBe(true)
+  //     expect(vm.v.group['abc.def.ghi']).toBe(false)
+  //     expect(vm.v.group.$invalid).toBe(true)
   //   })
   // })
   // describe('validating collections with $each', () => {
@@ -1265,23 +1265,23 @@ describe('useVuelidate', () => {
   //
   //   it('should allow changing the array to a non array value and back', () => {
   //     const vm = new Vue(vmDef(isEven))
-  //     expect(vm.$v.list.$invalid).toBe(true)
+  //     expect(vm.v.list.$invalid).toBe(true)
   //     vm.list = undefined
-  //     expect(vm.$v.list.$invalid).toBe(false)
+  //     expect(vm.v.list.$invalid).toBe(false)
   //     vm.list = null
-  //     expect(vm.$v.list.$invalid).toBe(false)
+  //     expect(vm.v.list.$invalid).toBe(false)
   //     vm.list = false
-  //     expect(vm.$v.list.$invalid).toBe(false)
+  //     expect(vm.v.list.$invalid).toBe(false)
   //     vm.list = ''
-  //     expect(vm.$v.list.$invalid).toBe(false)
+  //     expect(vm.v.list.$invalid).toBe(false)
   //     vm.list = 1
-  //     expect(vm.$v.list.$invalid).toBe(false)
+  //     expect(vm.v.list.$invalid).toBe(false)
   //     vm.list = function () {}
-  //     expect(vm.$v.list.$invalid).toBe(false)
+  //     expect(vm.v.list.$invalid).toBe(false)
   //     vm.list = [{ value: 2 }]
-  //     expect(vm.$v.list.$invalid).toBe(false)
-  //     expect(vm.$v.list.$each[0]).toBeDefined()
-  //     expect(vm.$v.list.$each[1]).toBeFalsy()
+  //     expect(vm.v.list.$invalid).toBe(false)
+  //     expect(vm.v.list.$each[0]).toBeDefined()
+  //     expect(vm.v.list.$each[1]).toBeFalsy()
   //   })
   //
   //   it('should allow parent object to be non object', function () {
@@ -1302,146 +1302,146 @@ describe('useVuelidate', () => {
   //       }
   //     })
   //     vm.obj = undefined
-  //     expect(vm.$v.obj.$invalid).toBe(true)
+  //     expect(vm.v.obj.$invalid).toBe(true)
   //     vm.obj = null
-  //     expect(vm.$v.obj.$invalid).toBe(true)
+  //     expect(vm.v.obj.$invalid).toBe(true)
   //     vm.obj = false
-  //     expect(vm.$v.obj.$invalid).toBe(true)
+  //     expect(vm.v.obj.$invalid).toBe(true)
   //     vm.obj = 1
-  //     expect(vm.$v.obj.$invalid).toBe(true)
+  //     expect(vm.v.obj.$invalid).toBe(true)
   //     vm.obj = 'string'
-  //     expect(vm.$v.obj.$invalid).toBe(true)
+  //     expect(vm.v.obj.$invalid).toBe(true)
   //     vm.obj = function () {}
-  //     expect(vm.$v.obj.$invalid).toBe(true)
+  //     expect(vm.v.obj.$invalid).toBe(true)
   //     vm.obj = []
-  //     expect(vm.$v.obj.$invalid).toBe(true)
+  //     expect(vm.v.obj.$invalid).toBe(true)
   //     vm.obj = {}
-  //     expect(vm.$v.obj.$invalid).toBe(true)
+  //     expect(vm.v.obj.$invalid).toBe(true)
   //     vm.obj = { value: 1 }
-  //     expect(vm.$v.obj.$invalid).toBe(false)
+  //     expect(vm.v.obj.$invalid).toBe(false)
   //   })
   //   it('should create validators for list items', () => {
   //     const vm = new Vue(vmDef(isEven))
-  //     expect(vm.$v.list.$each[0]).toBeDefined()
-  //     expect(vm.$v.list.$each[1]).toBeDefined()
-  //     expect(vm.$v.list.$each[2]).toBeFalsy()
+  //     expect(vm.v.list.$each[0]).toBeDefined()
+  //     expect(vm.v.list.$each[1]).toBeDefined()
+  //     expect(vm.v.list.$each[2]).toBeFalsy()
   //   })
   //   it('should validate all items in list', () => {
   //     const vm = new Vue(vmDef(isEven))
-  //     expect(vm.$v.list.$each[0].$invalid).toBe(true)
-  //     expect(vm.$v.list.$each[1].$invalid).toBe(false)
+  //     expect(vm.v.list.$each[0].$invalid).toBe(true)
+  //     expect(vm.v.list.$each[1].$invalid).toBe(false)
   //   })
   //   it('should be $invalid when some elements are invalid', () => {
   //     const vm = new Vue(vmDef(isEven))
-  //     expect(vm.$v.list.$invalid).toBe(true)
+  //     expect(vm.v.list.$invalid).toBe(true)
   //   })
   //   it('should not be $invalid when all elements are valid', () => {
   //     const vm = new Vue(vmDef(T))
-  //     expect(vm.$v.list.$invalid).toBe(false)
+  //     expect(vm.v.list.$invalid).toBe(false)
   //   })
   //   it('should track additions and validate immediately', () => {
   //     const vm = new Vue(vmDef(isEven))
   //     vm.list.push({ value: 3 })
   //     vm.list.push({ value: 4 })
-  //     expect(vm.$v.list.$each[0]).toBeDefined()
-  //     expect(vm.$v.list.$each[1]).toBeDefined()
-  //     expect(vm.$v.list.$each[2]).toBeDefined()
-  //     expect(vm.$v.list.$each[3]).toBeDefined()
-  //     expect(vm.$v.list.$each[4]).toBeFalsy()
-  //     expect(vm.$v.list.$each[0].$invalid).toBe(true)
-  //     expect(vm.$v.list.$each[1].$invalid).toBe(false)
-  //     expect(vm.$v.list.$each[2].$invalid).toBe(true)
-  //     expect(vm.$v.list.$each[3].$invalid).toBe(false)
+  //     expect(vm.v.list.$each[0]).toBeDefined()
+  //     expect(vm.v.list.$each[1]).toBeDefined()
+  //     expect(vm.v.list.$each[2]).toBeDefined()
+  //     expect(vm.v.list.$each[3]).toBeDefined()
+  //     expect(vm.v.list.$each[4]).toBeFalsy()
+  //     expect(vm.v.list.$each[0].$invalid).toBe(true)
+  //     expect(vm.v.list.$each[1].$invalid).toBe(false)
+  //     expect(vm.v.list.$each[2].$invalid).toBe(true)
+  //     expect(vm.v.list.$each[3].$invalid).toBe(false)
   //   })
   //   it('should not loose $dirty after insertion based by index', () => {
   //     const vm = new Vue(vmDef(isEven))
-  //     vm.$v.list.$each[0].$touch()
+  //     vm.v.list.$each[0].$touch()
   //     vm.list.unshift({ value: 0 })
-  //     expect(vm.$v.list.$each[0].$dirty).toBe(true)
-  //     expect(vm.$v.list.$each[1].$dirty).toBe(false)
-  //     expect(vm.$v.list.$each[2].$dirty).toBe(false)
+  //     expect(vm.v.list.$each[0].$dirty).toBe(true)
+  //     expect(vm.v.list.$each[1].$dirty).toBe(false)
+  //     expect(vm.v.list.$each[2].$dirty).toBe(false)
   //   })
   //   it('should not loose $dirty after insertion based by $trackBy', () => {
   //     const vm = new Vue(vmDef(isEven, 'value'))
-  //     vm.$v.list.$each[0].$touch()
+  //     vm.v.list.$each[0].$touch()
   //     vm.list.unshift({ value: 0 })
-  //     expect(vm.$v.list.$each[0].$dirty).toBe(false)
-  //     expect(vm.$v.list.$each[1].$dirty).toBe(true)
+  //     expect(vm.v.list.$each[0].$dirty).toBe(false)
+  //     expect(vm.v.list.$each[1].$dirty).toBe(true)
   //   })
   //   it('should share validators when $trackBy overlap', () => {
   //     const vm = new Vue(vmDef(isEven, 'value'))
   //     vm.list.unshift({ value: 1 })
-  //     expect(vm.$v.list.$each[0]).toBe(vm.$v.list.$each[1])
-  //     expect(vm.$v.list.$each[0].$dirty).toBe(false)
+  //     expect(vm.v.list.$each[0]).toBe(vm.v.list.$each[1])
+  //     expect(vm.v.list.$each[0].$dirty).toBe(false)
   //   })
   //   it('should share validators when functional $trackBy overlap', () => {
   //     const vm = new Vue(vmDef(isEven, (x) => x.value))
   //     vm.list.unshift({ value: 1 })
-  //     expect(vm.$v.list.$each[0]).toBe(vm.$v.list.$each[1])
-  //     expect(vm.$v.list.$each[0].$dirty).toBe(false)
+  //     expect(vm.v.list.$each[0]).toBe(vm.v.list.$each[1])
+  //     expect(vm.v.list.$each[0].$dirty).toBe(false)
   //   })
   //   it('should share validators when $trackBy overlap after initial get', () => {
   //     const vm = new Vue(vmDef(isEven, 'value'))
-  //     vm.$v.list.$each[0].$touch()
+  //     vm.v.list.$each[0].$touch()
   //     vm.list.unshift({ value: 1 })
-  //     expect(vm.$v.list.$each[0]).toBe(vm.$v.list.$each[1])
-  //     expect(vm.$v.list.$each[0].$dirty).toBe(true)
+  //     expect(vm.v.list.$each[0]).toBe(vm.v.list.$each[1])
+  //     expect(vm.v.list.$each[0].$dirty).toBe(true)
   //   })
   //
   //   it('should allow deleting first child', () => {
   //     const vm = new Vue(vmDef(isEven, 'value'))
-  //     expect(vm.$v.list.$each[0].$invalid).toBe(true)
+  //     expect(vm.v.list.$each[0].$invalid).toBe(true)
   //     vm.list.shift()
-  //     expect(vm.$v.list.$each[0].$invalid).toBe(false)
+  //     expect(vm.v.list.$each[0].$invalid).toBe(false)
   //   })
   //   it('should allow deleting last child', () => {
   //     const vm = new Vue(vmDef(isEven, 'value'))
-  //     expect(vm.$v.list.$each[1].$invalid).toBe(false)
+  //     expect(vm.v.list.$each[1].$invalid).toBe(false)
   //     vm.list.pop()
-  //     expect(vm.$v.list.$each[1]).toBeFalsy()
+  //     expect(vm.v.list.$each[1]).toBeFalsy()
   //   })
   //   it('should allow swapping children', () => {
   //     const vm = new Vue(vmDef(isEven, 'value'))
-  //     expect(vm.$v.list.$each[0].$invalid).toBe(true)
-  //     expect(vm.$v.list.$each[1].$invalid).toBe(false)
+  //     expect(vm.v.list.$each[0].$invalid).toBe(true)
+  //     expect(vm.v.list.$each[1].$invalid).toBe(false)
   //     vm.list[0].value = 2
   //     vm.list[1].value = 1
-  //     expect(vm.$v.list.$each[0].$invalid).toBe(false)
-  //     expect(vm.$v.list.$each[1].$invalid).toBe(true)
+  //     expect(vm.v.list.$each[0].$invalid).toBe(false)
+  //     expect(vm.v.list.$each[1].$invalid).toBe(true)
   //   })
   //   it('should allow reordering with insertion children', () => {
   //     const vm = new Vue(vmDef(isEven, 'value'))
   //     vm.list.push({ value: 3 }, { value: 4 }, { value: 5 })
-  //     expect(vm.$v.list.$each[0].$invalid).toBe(true)
-  //     expect(vm.$v.list.$each[4].$invalid).toBe(true)
+  //     expect(vm.v.list.$each[0].$invalid).toBe(true)
+  //     expect(vm.v.list.$each[4].$invalid).toBe(true)
   //     vm.list[0].value = 1
   //     vm.list[1].value = 5
   //     vm.list[2].value = 6
   //     vm.list[3].value = 2
   //     vm.list[4].value = 4
-  //     expect(vm.$v.list.$each[0].$invalid).toBe(true)
-  //     expect(vm.$v.list.$each[4].$invalid).toBe(false)
-  //     expect(vm.$v.list.$each[2].$invalid).toBe(false)
+  //     expect(vm.v.list.$each[0].$invalid).toBe(true)
+  //     expect(vm.v.list.$each[4].$invalid).toBe(false)
+  //     expect(vm.v.list.$each[2].$invalid).toBe(false)
   //   })
   //   it('should allow reordering with different beginning and ending', () => {
   //     const vm = new Vue(vmDef(isEven, 'value'))
   //     vm.list.push({ value: 3 }, { value: 4 }, { value: 5 }, { value: 6 })
-  //     vm.$v.list.$each[0]
+  //     vm.v.list.$each[0]
   //     vm.list[0].value = 5
   //     vm.list[1].value = 6
   //     vm.list[2].value = 2
   //     vm.list[3].value = 1
   //     vm.list[4].value = 4
-  //     expect(vm.$v.list.$each[0].$invalid).toBe(true)
-  //     expect(vm.$v.list.$each[1].$invalid).toBe(false)
-  //     expect(vm.$v.list.$each[2].$invalid).toBe(false)
-  //     expect(vm.$v.list.$each[3].$invalid).toBe(true)
-  //     expect(vm.$v.list.$each[4].$invalid).toBe(false)
+  //     expect(vm.v.list.$each[0].$invalid).toBe(true)
+  //     expect(vm.v.list.$each[1].$invalid).toBe(false)
+  //     expect(vm.v.list.$each[2].$invalid).toBe(false)
+  //     expect(vm.v.list.$each[3].$invalid).toBe(true)
+  //     expect(vm.v.list.$each[4].$invalid).toBe(false)
   //   })
   //   it('should have $iter key that iteates only over provided keys', () => {
   //     const vm = new Vue(vmDef(isEven, 'value'))
-  //     expect(Object.keys(vm.$v.list.$each.$iter)).toEqual(['0', '1'])
-  //     expect(vm.$v.list.$each.$iter[0]).toEqual(vm.$v.list.$each[0])
+  //     expect(Object.keys(vm.v.list.$each.$iter)).toEqual(['0', '1'])
+  //     expect(vm.v.list.$each.$iter[0]).toEqual(vm.v.list.$each[0])
   //   })
   // })
   //
@@ -1465,23 +1465,23 @@ describe('useVuelidate', () => {
   //
   //   it('should validate all items in list', () => {
   //     const vm = new Vue(vmDef(isEven))
-  //     expect(vm.$v.list.$each[0].$invalid).toBe(true)
-  //     expect(vm.$v.list.$each[1].$invalid).toBe(false)
-  //     expect(vm.$v.list.$each[2].$invalid).toBe(true)
+  //     expect(vm.v.list.$each[0].$invalid).toBe(true)
+  //     expect(vm.v.list.$each[1].$invalid).toBe(false)
+  //     expect(vm.v.list.$each[2].$invalid).toBe(true)
   //   })
   //
   //   it('should not loose $dirty after insertion based by index', () => {
   //     const vm = new Vue(vmDef(isEven))
-  //     vm.$v.list.$each[0].$touch()
+  //     vm.v.list.$each[0].$touch()
   //     vm.list.unshift(5)
-  //     expect(vm.$v.list.$each[0].$dirty).toBe(true)
-  //     expect(vm.$v.list.$each[1].$dirty).toBe(false)
-  //     expect(vm.$v.list.$each[2].$dirty).toBe(false)
+  //     expect(vm.v.list.$each[0].$dirty).toBe(true)
+  //     expect(vm.v.list.$each[1].$dirty).toBe(false)
+  //     expect(vm.v.list.$each[2].$dirty).toBe(false)
   //   })
   //
   //   it('should not leak indirect watcher on destroy', () => {
   //     const vm = new Vue(vmDef(isEven))
-  //     expect(vm.$v.list.$each[0].$invalid).toBe(true)
+  //     expect(vm.v.list.$each[0].$invalid).toBe(true)
   //     vm.$destroy()
   //     // FIXME: how to test against memory leak?
   //     // Now this just covers the teardown code in the report.
@@ -1490,14 +1490,14 @@ describe('useVuelidate', () => {
   //   it('should not leak indirect watcher on destroy', () => {
   //     const spy = sinon.spy(isEven)
   //     const vm = new Vue(vmDef(spy))
-  //     expect(vm.$v.list.$each[0].$invalid).toBe(true)
+  //     expect(vm.v.list.$each[0].$invalid).toBe(true)
   //     expect(spy).to.have.been.calledWith(1, vm.list)
   //   })
   //
   //   it('should pass collection as second argument to validators', () => {
   //     const spy = sinon.spy(isEven)
   //     const vm = new Vue(vmDef(spy))
-  //     expect(vm.$v.list.$each[0].$invalid).toBe(true)
+  //     expect(vm.v.list.$each[0].$invalid).toBe(true)
   //     expect(spy).to.have.been.calledWith(1, vm.list)
   //   })
   //
@@ -1505,9 +1505,9 @@ describe('useVuelidate', () => {
   //     const spy = sinon.spy(isEven)
   //     const vm = new Vue(vmDef(spy))
   //
-  //     expect(vm.$v.list.$each[0].$invalid).toBe(true)
-  //     expect(vm.$v.list.$each[1].$invalid).toBe(false)
-  //     expect(vm.$v.list.$each[2].$invalid).toBe(true)
+  //     expect(vm.v.list.$each[0].$invalid).toBe(true)
+  //     expect(vm.v.list.$each[1].$invalid).toBe(false)
+  //     expect(vm.v.list.$each[2].$invalid).toBe(true)
   //
   //     expect(spy).to.have.been.calledWith(1)
   //     expect(spy).to.have.been.calledWith(2)
@@ -1516,9 +1516,9 @@ describe('useVuelidate', () => {
   //     spy.resetHistory()
   //
   //     vm.$set(vm.list, 1, 15)
-  //     expect(vm.$v.list.$each[0].$invalid).toBe(true)
-  //     expect(vm.$v.list.$each[1].$invalid).toBe(true)
-  //     expect(vm.$v.list.$each[2].$invalid).toBe(true)
+  //     expect(vm.v.list.$each[0].$invalid).toBe(true)
+  //     expect(vm.v.list.$each[1].$invalid).toBe(true)
+  //     expect(vm.v.list.$each[2].$invalid).toBe(true)
   //     expect(spy).to.have.been.calledOnce
   //     expect(spy).to.have.been.calledWith(15)
   //   })
@@ -1529,16 +1529,16 @@ describe('useVuelidate', () => {
   //     })
   //     const vm = new Vue(vmDef(spy))
   //
-  //     expect(vm.$v.list.$each[0].$invalid).toBe(false)
-  //     expect(vm.$v.list.$each[1].$invalid).toBe(false)
-  //     expect(vm.$v.list.$each[2].$invalid).toBe(false)
+  //     expect(vm.v.list.$each[0].$invalid).toBe(false)
+  //     expect(vm.v.list.$each[1].$invalid).toBe(false)
+  //     expect(vm.v.list.$each[2].$invalid).toBe(false)
   //     expect(spy).to.have.been.calledThrice
   //     spy.resetHistory()
   //
   //     vm.external = false
-  //     expect(vm.$v.list.$each[0].$invalid).toBe(true)
-  //     expect(vm.$v.list.$each[1].$invalid).toBe(true)
-  //     expect(vm.$v.list.$each[2].$invalid).toBe(false)
+  //     expect(vm.v.list.$each[0].$invalid).toBe(true)
+  //     expect(vm.v.list.$each[1].$invalid).toBe(true)
+  //     expect(vm.v.list.$each[2].$invalid).toBe(false)
   //     expect(spy).to.have.been.calledWith(1)
   //     expect(spy).to.have.been.calledWith(2)
   //     expect(spy).to.have.been.calledTwice
@@ -1557,7 +1557,7 @@ describe('useVuelidate', () => {
   //         }
   //       }
   //     })
-  //     expect(vm.$v.value.$params.isOdd).toBeNull()
+  //     expect(vm.v.value.$params.isOdd).toBeNull()
   //   })
   //
   //   it('should pass $params from validation function', () => {
@@ -1568,7 +1568,7 @@ describe('useVuelidate', () => {
   //         value: { fn }
   //       }
   //     })
-  //     expect(vm.$v.value.$params.fn).toEqual({ type: 'alwaysTrue' })
+  //     expect(vm.v.value.$params.fn).toEqual({ type: 'alwaysTrue' })
   //   })
   //
   //   it('should pass $params from validation object', () => {
@@ -1581,8 +1581,8 @@ describe('useVuelidate', () => {
   //         }
   //       }
   //     })
-  //     expect(vm.$v.$params.value).toEqual({ test: true })
-  //     expect(vm.$v.value.$params).toEqual({ T: null })
+  //     expect(vm.v.$params.value).toEqual({ test: true })
+  //     expect(vm.v.value.$params).toEqual({ T: null })
   //   })
   //
   //   it('should default $params for nested validation object to set of nulls', () => {
@@ -1595,7 +1595,7 @@ describe('useVuelidate', () => {
   //         }
   //       }
   //     })
-  //     expect(vm.$v.nested.$params).toEqual({ value3: null, value4: null })
+  //     expect(vm.v.nested.$params).toEqual({ value3: null, value4: null })
   //   })
   //
   //   it('should return $sub $params on combined validators', () => {
@@ -1608,7 +1608,7 @@ describe('useVuelidate', () => {
   //         value: { combo }
   //       }
   //     })
-  //     expect(vm.$v.value.$params.combo).toEqual({
+  //     expect(vm.v.value.$params.combo).toEqual({
   //       type: 'combo',
   //       $sub: [{ type: 'alwaysTrue' }, { type: 'alwaysFalse' }]
   //     })
@@ -1624,13 +1624,13 @@ describe('useVuelidate', () => {
   //         value: { comboDirect }
   //       }
   //     })
-  //     expect(vm.$v.value.$params.comboDirect).toEqual({
+  //     expect(vm.v.value.$params.comboDirect).toEqual({
   //       $sub: [{ type: 'alwaysTrue' }, { type: 'alwaysFalse' }]
   //     })
   //   })
   // })
   //
-  // describe('$v.$flattenParams', () => {
+  // describe('v.$flattenParams', () => {
   //   const vm = new Vue({
   //     ...base,
   //     data () {
@@ -1644,11 +1644,11 @@ describe('useVuelidate', () => {
   //   })
   //
   //   it('should return a list', () => {
-  //     expect(vm.$v.$flattenParams().length).toBe(1)
+  //     expect(vm.v.$flattenParams().length).toBe(1)
   //   })
   //
   //   it('should return validator params', () => {
-  //     expect(vm.$v.$flattenParams()).toEqual([
+  //     expect(vm.v.$flattenParams()).toEqual([
   //       { path: ['value'], name: 'isEven', params: { type: 'isEven' } }
   //     ])
   //   })
@@ -1667,7 +1667,7 @@ describe('useVuelidate', () => {
   //     })
   //
   //     it('should return an empty array', () => {
-  //       expect(vm.$v.$flattenParams()).toHaveLength(0)
+  //       expect(vm.v.$flattenParams()).toHaveLength(0)
   //     })
   //   })
   //
@@ -1699,20 +1699,20 @@ describe('useVuelidate', () => {
   //     })
   //
   //     it('should work at the deepest validation level', () => {
-  //       expect(vm.$v.first.foo.$flattenParams()).toEqual([
+  //       expect(vm.v.first.foo.$flattenParams()).toEqual([
   //         { path: [], name: 'isEven', params: { type: 'isEven' } }
   //       ])
   //     })
   //
   //     it('should return params of all leaves', () => {
-  //       expect(vm.$v.first.$flattenParams()).toEqual([
+  //       expect(vm.v.first.$flattenParams()).toEqual([
   //         { path: ['foo'], name: 'isEven', params: { type: 'isEven' } },
   //         { path: ['bar'], name: 'isEven', params: { type: 'isEven' } }
   //       ])
   //     })
   //
   //     it('should flatten results from all children', () => {
-  //       expect(vm.$v.$flattenParams()).toEqual([
+  //       expect(vm.v.$flattenParams()).toEqual([
   //         {
   //           path: ['first', 'foo'],
   //           name: 'isEven',
@@ -1770,31 +1770,31 @@ describe('useVuelidate', () => {
   //
   //   it('should give null for root object', () => {
   //     const vm = new Vue(simple)
-  //     expect(vm.$v.$model).toBeNull()
+  //     expect(vm.v.$model).toBeNull()
   //   })
   //
   //   it('should give null for validation group', () => {
   //     const vm = new Vue(nested)
-  //     expect(vm.$v.group.$model).toBeNull()
+  //     expect(vm.v.group.$model).toBeNull()
   //   })
   //
   //   it('should give original model reference for simple object', () => {
   //     const vm = new Vue(simple)
-  //     expect(vm.$v.value.$model).toBe(4)
+  //     expect(vm.v.value.$model).toBe(4)
   //   })
   //
   //   it('should do nothing when setting root model', () => {
   //     const vm = new Vue(simple)
-  //     vm.$v.$model = 'x'
-  //     expect(vm.$v.$model).toBeNull()
-  //     expect(vm.$v.$dirty).toBe(false)
+  //     vm.v.$model = 'x'
+  //     expect(vm.v.$model).toBeNull()
+  //     expect(vm.v.$dirty).toBe(false)
   //   })
   //
   //   it('should do nothing when setting validation group model', () => {
   //     const vm = new Vue(nested)
-  //     vm.$v.group.$model = 'x'
-  //     expect(vm.$v.group.$model).toBeNull()
-  //     expect(vm.$v.group.$dirty).toBe(false)
+  //     vm.v.group.$model = 'x'
+  //     expect(vm.v.group.$model).toBeNull()
+  //     expect(vm.v.group.$dirty).toBe(false)
   //   })
   //
   //   it('should give original model reference for nested object', () => {
@@ -1805,7 +1805,7 @@ describe('useVuelidate', () => {
   //     }
   //     vm.nested = expected
   //
-  //     expect(vm.$v.nested.$model).toBe(expected)
+  //     expect(vm.v.nested.$model).toBe(expected)
   //   })
   //
   //   it('should give original model references for nested object fields', () => {
@@ -1816,14 +1816,14 @@ describe('useVuelidate', () => {
   //     }
   //     vm.nested = expected
   //
-  //     expect(vm.$v.nested.value1.$model).toBe(expected.value1)
-  //     expect(vm.$v.nested.value2.$model).toBe(expected.value2)
+  //     expect(vm.v.nested.value1.$model).toBe(expected.value1)
+  //     expect(vm.v.nested.value2.$model).toBe(expected.value2)
   //   })
   //
   //   it('should set $dirty on write for simple object', () => {
   //     const vm = new Vue(simple)
-  //     vm.$v.value.$model = 5
-  //     expect(vm.$v.value.$dirty).toBe(true)
+  //     vm.v.value.$model = 5
+  //     expect(vm.v.value.$dirty).toBe(true)
   //   })
   //
   //   it('should set $dirty on write for nested object', () => {
@@ -1832,38 +1832,38 @@ describe('useVuelidate', () => {
   //       value1: 'hello',
   //       value2: 'world'
   //     }
-  //     vm.$v.nested.$model = expected
+  //     vm.v.nested.$model = expected
   //
-  //     expect(vm.$v.nested.$dirty).toBe(true)
-  //     expect(vm.$v.nested.value1.$dirty).toBe(true)
-  //     expect(vm.$v.nested.value2.$dirty).toBe(true)
+  //     expect(vm.v.nested.$dirty).toBe(true)
+  //     expect(vm.v.nested.value1.$dirty).toBe(true)
+  //     expect(vm.v.nested.value2.$dirty).toBe(true)
   //   })
   //
   //   it('should not be present on $each', () => {
   //     const vm = new Vue(each)
-  //     expect(vm.$v.array.$each.$model).toBeUndefined()
+  //     expect(vm.v.array.$each.$model).toBeUndefined()
   //   })
   //
   //   it('should reference array with defined $each', () => {
   //     const vm = new Vue(each)
-  //     expect(vm.$v.array.$model).toBe(vm.array)
+  //     expect(vm.v.array.$model).toBe(vm.array)
   //   })
   //
   //   it('should allow reading model on $each fields', () => {
   //     const vm = new Vue(each)
-  //     expect(vm.$v.array.$each[0].$model).toBe(vm.array[0])
+  //     expect(vm.v.array.$each[0].$model).toBe(vm.array[0])
   //   })
   //
   //   it('should allow writing model on $each fields', () => {
   //     const vm = new Vue(each)
-  //     vm.$v.array.$each[0].$model = 5
+  //     vm.v.array.$each[0].$model = 5
   //     expect(vm.array[0]).toBe(5)
   //   })
   //
   //   it('should set $dirty on write through $each field', () => {
   //     const vm = new Vue(each)
-  //     vm.$v.array.$each[0].$model = 5
-  //     expect(vm.$v.array.$each[0].$dirty).toBe(true)
+  //     vm.v.array.$each[0].$model = 5
+  //     expect(vm.v.array.$each[0].$dirty).toBe(true)
   //   })
   // })
 })

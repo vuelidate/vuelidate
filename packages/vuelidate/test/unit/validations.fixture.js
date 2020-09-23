@@ -69,10 +69,10 @@ export function nestedComponentValidation ({ state: origState, validations: orig
   const parent = {
     name: 'ParentWithChildForm',
     setup () {
-      const $v = useVuelidate()
+      const v = useVuelidate()
       const shouldRenderChild = ref(true)
       return {
-        $v,
+        v,
         shouldRenderChild
       }
     },
