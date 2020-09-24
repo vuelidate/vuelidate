@@ -34,9 +34,9 @@ export default {
       emailAddress: { required, email }
     }
 
-    const $v = useVuelidate(rules, { name, emailAddress })
+    const v = useVuelidate(rules, { name, emailAddress })
 
-    return { name, emailAddress, $v }
+    return { name, emailAddress, v }
   }
 }
 ```
@@ -57,7 +57,7 @@ Currently this only works when child components also use `useVuelidate` to regis
     <CompA />
     <CompB />
 
-    <p v-for="(error, index) of $v.$errors" :key="index">
+    <p v-for="(error, index) of v.$errors" :key="index">
       {{ error.$message }}
     </p>
   </div>
@@ -68,9 +68,9 @@ import { useVuelidate } from '@vuelidate/core'
 
 export default {
   setup () {
-    const $v = useVuelidate() // this will contain all $errors from both <CompA> and <CompB>
+    const v = useVuelidate() // this will contain all $errors from both <CompA> and <CompB>
 
-    return { $v }
+    return { v }
   }
 }
 </script>

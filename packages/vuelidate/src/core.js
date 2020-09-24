@@ -420,6 +420,7 @@ function createMetaFields (results, nestedResults, childResults) {
  * @property {Boolean} $dirty
  * @property {Function} $reset
  * @property {Function} $validate
+ * @property {Function} $getResultsForChild
  */
 
 /**
