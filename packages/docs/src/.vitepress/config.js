@@ -1,5 +1,5 @@
-module.exports = {
-  dest: 'dist',
+/** @type {import('vitepress').UserConfig} */
+const config = {
   title: 'Vuelidate',
   head: [
     ['link', { rel: 'apple-touch-icon', sizes: '120x120' }],
@@ -11,16 +11,18 @@ module.exports = {
     ['meta', { name: 'theme-color', content: '#ffffff' }]
   ],
   themeConfig: {
-    logo: 'logo.png',
+    repo: 'vuelidate/vuelidate',
+    docsDir: 'docs',
     sidebar: [
-      '/',
-      'guide',
-      'advanced_usage',
-      'examples',
-      'api',
-      'validators',
-      'custom_validators',
-      'test'
+      { text: 'Getting started', link: '/' },
+      { text: 'Guide', link: '/guide' },
+      { text: 'Advanced Usage', link: '/advanced_usage' },
+      { text: 'Examples', link: '/examples' },
+      { text: 'API', link: '/api' },
+      { text: 'Built-in Validators', link: '/validators' },
+      { text: 'Custom Validators', link: '/custom_validators' },
     ]
-  }
+  },
 }
+
+module.exports = config

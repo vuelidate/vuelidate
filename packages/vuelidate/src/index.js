@@ -8,12 +8,13 @@ const VuelidateRemoveChildResults = Symbol('vuelidate#removeChiildResults')
 /**
  * Composition API compatible Vuelidate
  * Use inside the `setup` lifecycle hook
- * @param {Object} validationsArg - Validations Object
+ * @param {Object} validations - Validations Object
  * @param {Object} state - State object
- * @param {String} registerAs
+ * @param {String} registerAs - a registration name, when registering results to the parent validator.
  * @return {UnwrapRef<*>}
  */
 export function useVuelidate (validations, state, registerAs) {
+  // if there is no registration name, add one.
   if (!registerAs) {
     const instance = getCurrentInstance()
     // NOTE:
@@ -30,21 +31,35 @@ export function useVuelidate (validations, state, registerAs) {
     results[key] = unwrap(childResultsRaw[key])
     return results
   }, {}))
-  const injectToParent = inject(VuelidateInjectChildResults, () => {})
-  provide(VuelidateInjectChildResults, injectChildResults)
 
-  const removeFromParent = inject(VuelidateRemoveChildResults, () => {})
-  provide(VuelidateRemoveChildResults, removeChildResults)
-
-  function injectChildResults (results, key) {
+  /**
+   * Allows children to send validation data up to their parent.
+   * @param {Object} results - the results
+   * @param {String} key - the registeredAs key
+   */
+  function injectChildResultsIntoParent (results, key) {
     childResultsRaw[key] = results
     childResultsKeys.value.push(key)
   }
 
-  function removeChildResults (key) {
+  /**
+   * Allows children to remove the validation data from their parent, before getting destroyed.
+   * @param {String} key - the registeredAs key
+   */
+  function removeChildResultsFromParent (key) {
+    // remove the key
     childResultsKeys.value = childResultsKeys.value.filter(childKey => childKey !== key)
+    // remove the stored data for the key
     delete childResultsRaw[key]
   }
+
+  const sendValidationResultsToParent = inject(VuelidateInjectChildResults, () => {})
+  // provide to all of it's children the send results to parent function
+  provide(VuelidateInjectChildResults, injectChildResultsIntoParent)
+
+  const removeValidationResultsFromParent = inject(VuelidateRemoveChildResults, () => {})
+  // provide to all of it's children the remove results  function
+  provide(VuelidateRemoveChildResults, removeChildResultsFromParent)
 
   const validationResults = computed(() => setValidations({
     validations: unwrap(validations),
@@ -53,8 +68,10 @@ export function useVuelidate (validations, state, registerAs) {
     resultsCache
   }))
 
-  injectToParent(validationResults, registerAs)
-  onBeforeUnmount(() => removeFromParent(registerAs))
+  // send all the data to the parent when the function is invoked inside setup.
+  sendValidationResultsToParent(validationResults, registerAs)
+  // before this component is destroyed, remove all the data from the parent.
+  onBeforeUnmount(() => removeValidationResultsFromParent(registerAs))
 
   // TODO: Change into reactive + watch
   return computed(() => {

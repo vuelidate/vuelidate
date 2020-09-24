@@ -223,6 +223,8 @@ function createValidatorResult (rule, state, key, $dirty) {
  * @param {Object} state - Current state tree
  * @param {String} key - Key for the current state tree
  * @param {String} [parentKey] - Parent key of the state. Optional
+ * @param {Map} [resultsCache] - A cache map of all the validators
+ * @param {String} [path] - the current property path
  * @return {ValidationResult | {}}
  */
 function createValidationResults (rules, state, key, parentKey, resultsCache, path) {
@@ -231,11 +233,11 @@ function createValidationResults (rules, state, key, parentKey, resultsCache, pa
 
   const cachedResult = resultsCache.get(path)
 
-  const $dirty = ref(false)
+  const $dirty = cachedResult ? cachedResult.$dirty : ref(false)
 
   const result = {
     // restore $dirty from cache
-    $dirty: cachedResult ? cachedResult.$dirty : $dirty,
+    $dirty,
     $touch: () => { if (!$dirty.value) $dirty.value = true },
     $reset: () => { if ($dirty.value) $dirty.value = false }
   }
@@ -292,6 +294,8 @@ function createValidationResults (rules, state, key, parentKey, resultsCache, pa
  * @param {Object<NormalizedValidator|Function>} validations - The validation
  * @param {Object} state - Parent state
  * @param {String} [key] - Parent level state key
+ * @param {String} path - Path to current property
+ * @param {Map} resultsCache - Validations cache map
  * @return {{}}
  */
 function collectNestedValidationResults (validations, state, key, path, resultsCache) {
@@ -320,14 +324,15 @@ function collectNestedValidationResults (validations, state, key, path, resultsC
 /**
  * Generates the Meta fields from the results
  * @param {ValidationResult|{}} results
- * @param {Object<ValidationResult>[]} otherResults
+ * @param {Object<ValidationResult>[]} nestedResults
+ * @param {Object<ValidationResult>[]} childResults
  * @return {{$anyDirty: Ref<Boolean>, $error: Ref<Boolean>, $invalid: Ref<Boolean>, $errors: Ref<ErrorObject[]>, $dirty: Ref<Boolean>, $touch: Function, $reset: Function }}
  */
-function createMetaFields (results, ...otherResults) {
+function createMetaFields (results, nestedResults, childResults) {
   // use the $dirty property from the root level results
   const $dirty = results.$dirty
 
-  const allResults = computed(() => otherResults
+  const allResults = computed(() => [nestedResults, childResults]
     .filter(res => res)
     .reduce((allRes, res) => {
       return allRes.concat(Object.values(unwrap(res)))
@@ -413,8 +418,8 @@ function createMetaFields (results, ...otherResults) {
  * @property {*} [$model]
  * @property {Function} $touch
  * @property {Boolean} $dirty
- * @property {Array} $errors
  * @property {Function} $reset
+ * @property {Function} $validate
  */
 
 /**
@@ -426,7 +431,8 @@ function createMetaFields (results, ...otherResults) {
  * @param {Object} params.state
  * @param {String} [params.key] - Current state property key. Used when being called on nested items
  * @param {String} [params.parentKey] - Parent state property key. Used when being called recursively
- * @param {Object} [params.childResults] - Used to collect child results. TBD
+ * @param {Object<ValidationResult>} [params.childResults] - Used to collect child results.
+ * @param {Map} resultsCache - The cached validation results
  * @return {UnwrapRef<VuelidateState>}
  */
 export function setValidations ({
@@ -487,7 +493,7 @@ export function setValidations ({
     })
   }
 
-  let $validate = function $validate () {
+  function $validate () {
     return new Promise((resolve) => {
       if (!$dirty.value) $touch()
       // return whether it is valid or not
@@ -497,6 +503,15 @@ export function setValidations ({
         unwatch()
       })
     })
+  }
+
+  /**
+   * Returns a child component's results, based on registration name
+   * @param {string} key
+   * @return {VuelidateState}
+   */
+  function $getResultsForChild (key) {
+    return (childResults.value || {})[key]
   }
 
   return reactive({
@@ -513,7 +528,11 @@ export function setValidations ({
     $pending,
     $touch,
     $reset,
-    $validate,
+    // if there are no child results, we are inside a nested property
+    ...(childResults && {
+      $getResultsForChild,
+      $validate
+    }),
     // add each nested property's state
     ...nestedResults
   })
