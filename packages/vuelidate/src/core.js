@@ -1,5 +1,5 @@
 import { isFunction, isPromise, unwrap, unwrapObj } from './utils'
-import { computed, reactive, ref, watch, isRef } from 'vue'
+import { computed, reactive, ref, watch, isRef } from 'vue-demi'
 
 /**
  * @typedef NormalizedValidator
