@@ -25,6 +25,31 @@ export function nestedReactiveObjectValidation () {
   return { state, validations }
 }
 
+export function nestedRefObjectValidation () {
+  const state = ref({
+    level0: 0,
+    level1: {
+      child: 1,
+      level2: {
+        child: 2
+      }
+    }
+  })
+
+  const validations = {
+    level0: { isEven, $autoDirty: true },
+    level1: {
+      $autoDirty: true,
+      child: { isEven, $autoDirty: true },
+      level2: {
+        $autoDirty: true,
+        child: { isEven, $autoDirty: true }
+      }
+    }
+  }
+  return { state, validations }
+}
+
 export function computedValidationsObjectWithRefs () {
   const conditional = ref(0)
   const number = ref(0)

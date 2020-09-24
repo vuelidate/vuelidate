@@ -1,13 +1,14 @@
 import { computed, ref } from 'vue-demi'
 import { flushPromises, mount } from '@vue/test-utils'
-import { isEven, isOdd } from '../validators.fixture'
+import { isEven } from '../validators.fixture'
 import {
   asyncValidation,
   computedValidationsObjectWithReactive,
   computedValidationsObjectWithRefs,
   nestedComponentValidation,
   nestedReactiveObjectValidation,
-  simpleValidation
+  simpleValidation,
+  nestedRefObjectValidation
 } from '../validations.fixture'
 import { createSimpleWrapper, shouldBePristineValidationObj, shouldBeInvalidValidationObject } from '../utils'
 import { withAsync } from '@vuelidate/validators/src/common'
@@ -603,6 +604,55 @@ describe('useVuelidate', () => {
         vm.v.number.$reset()
         expect(vm.v.number.$dirty).toBe(false)
       })
+    })
+  })
+
+  describe('deep changes in refs', () => {
+    it('trigger $dirty and $model reactions', async () => {
+      const { state, validations } = nestedRefObjectValidation()
+
+      const { vm } = createSimpleWrapper(validations, state)
+
+      expect(vm.v.level1.level2.child).toHaveProperty('$model', 2)
+      expect(vm.v.level1.level2.child).toHaveProperty('$dirty', false)
+
+      state.value = {
+        ...state.value,
+        level1: {
+          ...state.value.level1,
+          level2: {
+            child: 1
+          }
+        }
+      }
+      await flushPromises()
+
+      expect(vm.v.level1.level2.child).toHaveProperty('$model', 1)
+      expect(vm.v.level1.level2.child).toHaveProperty('$dirty', true)
+      expect(vm.v.level1.level2).toHaveProperty('$anyDirty', true)
+      expect(vm.v.level1).toHaveProperty('$anyDirty', true)
+      expect(vm.v).toHaveProperty('$anyDirty', true)
+    })
+
+    it('trigger $invalid reactions', async () => {
+      const { state, validations } = nestedRefObjectValidation()
+
+      const { vm } = createSimpleWrapper(validations, state)
+
+      vm.v.level1.level2.child.$touch()
+      expect(vm.v.level1.level2.child).toHaveProperty('$invalid', false)
+
+      state.value = {
+        ...state.value,
+        level1: {
+          ...state.value.level1,
+          level2: {
+            child: 1
+          }
+        }
+      }
+
+      expect(vm.v.level1.level2.child).toHaveProperty('$invalid', true)
     })
   })
 
