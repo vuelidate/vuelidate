@@ -7,7 +7,7 @@
   "repository": "https://github.com/vuelidate/vuelidate",
   "license": "MIT",
   "scripts": {
-    "build:docs": "(vitepress build src &) && sleep 10",
+    "build:docs": "vitepress build src",
     "dev:docs": "vitepress dev src"
   },
   "dependencies": {
@@ -15,6 +15,7 @@
     "@vuelidate/validators": "^2.0.0-alpha.2"
   },
   "devDependencies": {
+    "tree-kill": "^1.2.2",
     "vitepress": "^0.6.0"
   }
 }
