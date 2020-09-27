@@ -15,31 +15,31 @@
     <p>X + Y = {{ xPlusY }}</p>
     <div style="background: rgba(219, 53, 53, 0.62); color: #ff9090; padding: 10px 15px">
       <p
-        v-for="(error, index) of $v.$errors"
+        v-for="(error, index) of vv.$errors"
         :key="index"
         style="padding: 0; margin: 5px 0"
       >
         {{ error.$message }}
       </p>
     </div>
-    <button @click="$v.$touch()">
+    <button @click="vv.$touch()">
       $touch!
     </button>
-    <pre style="color: white">{{ $v }}</pre>
+    <pre style="color: white">{{ vv }}</pre>
   </div>
 </template>
 
 <script>
 import { ref } from 'vue'
-import { VuelidateMixin } from '@vuelidate/core'
+import useVuelidate from '@vuelidate/core'
 import { minValue } from '@vuelidate/validators'
 
 export default {
-  mixins: [VuelidateMixin],
   setup (props, context) {
     const x = ref(1)
+    const vv = useVuelidate()
 
-    return { x }
+    return { x, vv }
   },
   data () {
     return {
