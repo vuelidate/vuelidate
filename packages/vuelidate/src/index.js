@@ -24,9 +24,6 @@ export function useVuelidate (validations, state, registerAs) {
         ? rules.call(state.value)
         : rules
       )
-
-      const uid = instance.uid || instance._uid
-      registerAs = `_vuelidate_${uid}`
     }
   }
 
