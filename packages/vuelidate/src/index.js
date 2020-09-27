@@ -1,4 +1,4 @@
-import { provide, inject, ref, computed, getCurrentInstance, onBeforeUnmount } from 'vue-demi'
+import { reactive, toRefs, provide, inject, ref, computed, getCurrentInstance, onBeforeUnmount } from 'vue-demi'
 import { unwrap, isFunction } from './utils'
 import { setValidations } from './core'
 
@@ -14,6 +14,22 @@ const VuelidateRemoveChildResults = Symbol('vuelidate#removeChiildResults')
  * @return {UnwrapRef<*>}
  */
 export function useVuelidate (validations, state, registerAs) {
+  if (!validations) {
+    const instance = getCurrentInstance()
+    if (instance.type.validations) {
+      const rules = instance.type.validations
+
+      state = computed(() => toRefs(reactive(instance.ctx)))
+      validations = computed(() => isFunction(rules)
+        ? rules.call(state.value)
+        : rules
+      )
+
+      const uid = instance.uid || instance._uid
+      registerAs = `_vuelidate_${uid}`
+    }
+  }
+
   // if there is no registration name, add one.
   if (!registerAs) {
     const instance = getCurrentInstance()
@@ -23,6 +39,7 @@ export function useVuelidate (validations, state, registerAs) {
     const uid = instance.uid || instance._uid
     registerAs = `_vuelidate_${uid}`
   }
+
   const resultsCache = new Map()
 
   const childResultsRaw = {}
@@ -80,48 +97,6 @@ export function useVuelidate (validations, state, registerAs) {
       ...childResults.value
     }
   })
-}
-
-/**
- * Vuelidate mixin, used to attach Vuelidate only to specified components
- * Relies on `validations` option to be defined on component instance
- * @type {ComponentOptions}
- */
-
-export const VuelidateMixin = {
-  computed: {},
-  beforeCreate () {
-    const resultsCache = new Map()
-    const options = this.$options
-    if (!options.validations) return
-
-    if (options.computed.$v) return
-
-    const validations = computed(() => isFunction(options.validations)
-      ? options.validations.call(this)
-      : options.validations
-    )
-    let $v
-
-    options.computed.$v = function () {
-      if ($v) {
-        return $v.value
-      } else {
-        $v = computed(() => setValidations({ validations, state: this, resultsCache }))
-        return $v.value
-      }
-    }
-  }
-}
-
-/**
- * Default way to install Vuelidate globally for entire app.
- * @param {Vue} app
- */
-export const VuelidatePlugin = {
-  install (app) {
-    app.mixin(VuelidateMixin)
-  }
 }
 
 export default useVuelidate
