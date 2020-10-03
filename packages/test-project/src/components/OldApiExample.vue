@@ -1,6 +1,5 @@
 <template>
   <div>
-    <<<<<<< HEAD
     <button @click="vv.$touch()">
       $touch!
     </button>
@@ -8,10 +7,7 @@
       $reset!
     </button>
     <br>
-    <label>Number X</label>
-    =======
     <label>Number X ($model: {{ vv.x.$model }})</label>
-    >>>>>>> 109e4ed (fix: support nestedState for OptionsAPI and refactor)
     <input
       v-model.number="x"
       type="number"
@@ -68,7 +64,6 @@
 import { ref } from 'vue'
 import useVuelidate from '@vuelidate/core'
 import { minValue } from '@vuelidate/validators'
-import { computed } from 'vue-demi'
 
 export default {
   setup (props, context) {
