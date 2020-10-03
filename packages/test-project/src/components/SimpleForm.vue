@@ -1,19 +1,28 @@
 <template>
   <div class="SimpleForm">
+    <label>name</label>
     <input
       v-model="name"
       type="text"
     >
+    <label>twitter</label>
     <input
       v-model="social.twitter"
       type="text"
     >
+    <label>github</label>
     <input
       v-model="social.github"
       type="text"
     >
     <button @click="validate">
       Validate
+    </button>
+    <button @click="v$.$touch">
+      $touch
+    </button>
+    <button @click="v$.$reset">
+      $reset
     </button>
     <div style="background: rgba(219, 53, 53, 0.62); color: #ff9090; padding: 10px 15px">
       <p
@@ -36,7 +45,7 @@ import { required, helpers, minLength } from '@vuelidate/validators'
 const { withAsync } = helpers
 
 const asyncValidator = withAsync({
-  $message: 'Should aaaa',
+  $message: 'Should be aaaa',
   $validator: (v) => {
     return new Promise(resolve => {
       console.log('called')
@@ -64,7 +73,7 @@ export default {
         },
         social: {
           github: { minLength: minLength(4) },
-          twitter: { asyncValidator, minLength: minLength(6) }
+          twitter: { minLength: minLength(6) }
         }
       },
       { name, social },
@@ -74,7 +83,7 @@ export default {
   },
   methods: {
     validate () {
-      this.v$.$validate().then((result) => {
+      this.v$.$validate({ silent: true }).then((result) => {
         console.log('Result is', result)
       })
     }
