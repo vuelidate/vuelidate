@@ -310,8 +310,8 @@ function getNestedState (state, key) {
 
   // If state isn't available during setup, created a computed that will update when becomes available
   return computed(() => {
-      const s = unwrap(state)
-      return s ? s[key] : undefined
+    const s = unwrap(state)
+    return s ? s[key] : undefined
   })
 }
 
@@ -368,7 +368,10 @@ function createMetaFields (results, nestedResults, childResults, path) {
 
     // collect all nested and child $silentErrors
     const nestedErrors = allResults.value
-      .filter(result => unwrap(result).$silentErrors.length)
+      .filter(result => {
+        if (!unwrap(result).$silentErrors) return false
+        return unwrap(result).$silentErrors.length
+      })
       .reduce((errors, result) => {
         return errors.concat(...result.$silentErrors)
       }, [])
@@ -383,7 +386,10 @@ function createMetaFields (results, nestedResults, childResults, path) {
 
     // collect all nested and child $errors
     const nestedErrors = allResults.value
-      .filter(result => unwrap(result).$errors.length)
+      .filter(result => {
+        if (!unwrap(result).$errors) return false
+        return unwrap(result).$errors.length
+      })
       .reduce((errors, result) => {
         return errors.concat(...result.$errors)
       }, [])
