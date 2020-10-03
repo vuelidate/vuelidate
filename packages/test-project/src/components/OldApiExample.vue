@@ -2,13 +2,13 @@
   <div>
     <label>Number X</label>
     <input
-      v-model="x"
+      v-model.number="x"
       type="number"
     >
     <br>
     <label>Number Y</label>
     <input
-      v-model="y"
+      v-model.number="y"
       type="number"
     >
     <br>
@@ -22,6 +22,21 @@
         {{ error.$message }}
       </p>
     </div>
+
+    <label>Dims</label>
+    <input
+      v-model.number="dims.w"
+      type="number"
+    >
+    <input
+      v-model.number="dims.h"
+      type="number"
+    >
+    <input
+      v-model.number="dims.l"
+      type="number"
+    >
+
     <button @click="vv.$touch()">
       $touch!
     </button>
@@ -43,7 +58,12 @@ export default {
   },
   data () {
     return {
-      y: 3
+      y: 3,
+      dims: {
+        w: 1,
+        h: 1,
+        l: 1
+      }
     }
   },
   computed: {
@@ -52,7 +72,7 @@ export default {
     }
   },
   validations () {
-    console.log(this.y)
+    console.log(this)
     return {
       x: {
         // $autoDirty: true,
@@ -74,6 +94,18 @@ export default {
         isEven: {
           $validator: (v) => v % 2 === 0,
           $message: 'Sum must be an even number'
+        }
+      },
+      dims: {
+        volume: {
+          $validator: (dims) => (dims.h * dims.w * dims.l) > 0,
+          $message: 'Volume must be greater than zero'
+        },
+        w: {
+          minValue: minValue(2)
+        },
+        l: {
+          minValue: minValue(4)
         }
       }
     }
