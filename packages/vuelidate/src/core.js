@@ -444,6 +444,7 @@ export function setValidations ({
   childResults,
   resultsCache
 }) {
+  state = unwrap(state)
   const path = parentKey ? `${parentKey}.${key}` : key
   // Sort out the validation object into:
   // – rules = validators for current state tree fragment
