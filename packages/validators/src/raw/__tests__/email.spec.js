@@ -38,12 +38,16 @@ describe('email validator', () => {
     expect(email('someone@g~mail.com')).toBe(false)
     expect(email('someone@g=ail.com')).toBe(false)
     expect(email('"someone@gmail.com')).toBe(false)
+    expect(email('nonvalid±@gmail.com')).toBe(false)
+    expect(email('joão@gmail.com')).toBe(false)
+    expect(email('someõne@gmail.com')).toBe(false)
   })
 
   it('should not validate addresses that contain spaces', () => {
     expect(email('someone@gmail.com ')).toBe(false)
     expect(email('someone@gmail.com    ')).toBe(false)
     expect(email(' someone@gmail.com')).toBe(false)
+    expect(email('some one@gmail.com')).toBe(false)
   })
 
   it('should validate real addresses', () => {
@@ -56,5 +60,7 @@ describe('email validator', () => {
     expect(email('someone@g.accountants')).toBe(true)
     expect(email('"some@one"@gmail.com')).toBe(true)
     expect(email('"some one"@gmail.com')).toBe(true)
+    expect(email('user.name+tag+sorting@example.com')).toBe(true)
+    expect(email('"john..doe"@example.org')).toBe(true)
   })
 })
