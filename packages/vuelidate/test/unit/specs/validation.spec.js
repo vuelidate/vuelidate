@@ -242,12 +242,12 @@ describe('useVuelidate', () => {
     it('works with `reactive`', () => {
       const { state, validations } = nestedReactiveObjectValidation()
       const { vm } = createSimpleWrapper(validations, state)
-      expect(vm.level0).toBe(0)
+      expect(vm.state.level0).toBe(0)
       expect(vm.v.level0.$model).toBe(0)
       vm.v.level0.$model = 5
       // assert both the state and the vm state are updated
       expect(state.level0).toBe(5)
-      expect(vm.level0).toBe(5)
+      expect(vm.state.level0).toBe(5)
     })
   })
 

@@ -1,4 +1,4 @@
-import { h, toRefs, isReactive } from 'vue'
+import { h } from 'vue'
 import { mount } from '@vue/test-utils'
 import { useVuelidate } from '../../src'
 
@@ -10,7 +10,7 @@ export const createSimpleComponent = (getVuelidateResults, state) => ({
     return {
       v,
       // spread the state so we have access to it
-      ...(isReactive(state) ? toRefs(state) : state)
+      state
     }
   },
   render () {
