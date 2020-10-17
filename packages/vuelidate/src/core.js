@@ -307,7 +307,7 @@ function collectNestedValidationResults (validations, state, key, path, resultsC
   return nestedValidationKeys.reduce((results, nestedKey) => {
     // if we have a key, use the nested state
     // else use top level state
-    const nestedState = key ? state[key] : state
+    const nestedState = key ? computed(() => unwrap(unwrap(state)[key])) : state
 
     // build validation results for nested state
     results[nestedKey] = setValidations({
@@ -445,6 +445,7 @@ export function setValidations ({
   resultsCache
 }) {
   const path = parentKey ? `${parentKey}.${key}` : key
+
   // Sort out the validation object into:
   // – rules = validators for current state tree fragment
   // — nestedValidators = nested state fragments keys that might contain more validators
@@ -476,22 +477,25 @@ export function setValidations ({
    */
 
   const $model = key ? computed({
-    get: () => unwrap(state[key]),
+    get: () => unwrap(unwrap(state)[key]),
     set: val => {
       $dirty.value = true
-      if (isRef(state[key])) {
-        state[key].value = val
+      const unwrappedState = unwrap(state)
+
+      if (isRef(unwrappedState[key])) {
+        unwrappedState[key].value = val
       } else {
-        state[key] = val
+        unwrappedState[key] = val
       }
     }
   }) : null
 
   if (config.$autoDirty) {
-    const watchTarget = isRef(state[key]) ? state[key] : computed(() => unwrap(state)[key])
-    watch(watchTarget, () => {
-      if (!$dirty.value) $touch()
-    })
+    watch(
+      () => unwrap(unwrap(state)[key]),
+      () => {
+        if (!$dirty.value) $touch()
+      })
   }
 
   function $validate () {
