@@ -317,11 +317,19 @@ describe('useVuelidate', () => {
 
   describe('$errors', () => {
     it('constructs an array of errors', () => {
-
+      const { state, validations } = nestedReactiveObjectValidation()
+      const { vm } = createSimpleWrapper(validations, state)
+      vm.v.$touch()
+      expect(vm.v.$errors).toEqual(expect.any(Array))
+      expect(vm.v.$errors).toHaveLength(1)
+      expect(vm.v.$errors[0]).toMatchSnapshot()
     })
 
     it('collects `$propertyPath` as of deeply nested properties', () => {
-
+      const { state, validations } = nestedReactiveObjectValidation()
+      const { vm } = createSimpleWrapper(validations, state)
+      vm.v.$touch()
+      expect(vm.v.$errors[0]).toHaveProperty('$propertyPath', 'level1.child')
     })
 
     it('keeps `$params` reactive', () => {
