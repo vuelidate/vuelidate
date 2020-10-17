@@ -1,3 +1,3 @@
 import { regex } from '../common'
 
-export default regex(/^[0-9]*$/)
+export default regex(/^\d*(\.\d+)?$/)

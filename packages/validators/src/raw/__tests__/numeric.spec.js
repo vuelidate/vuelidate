@@ -45,9 +45,9 @@ describe('numeric validator', () => {
     expect(numeric('-123')).toBe(false)
   })
 
-  it('should not validate decimal numbers', () => {
-    expect(numeric('0.1')).toBe(false)
-    expect(numeric('1.0')).toBe(false)
+  it('should validate decimal numbers', () => {
+    expect(numeric('0.1')).toBe(true)
+    expect(numeric('1.0')).toBe(true)
   })
 
   it('should not validate negative decimal numbers', () => {
