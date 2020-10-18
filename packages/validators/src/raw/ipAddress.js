@@ -1,6 +1,11 @@
 import { req } from '../common'
 
-export default (value) => {
+/**
+ * Check if a string is an IP Address
+ * @param {String} value
+ * @returns {boolean}
+ */
+export default function (value) {
   if (!req(value)) {
     return true
   }

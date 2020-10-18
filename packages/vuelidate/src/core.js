@@ -5,7 +5,7 @@ import { computed, reactive, ref, watch, isRef } from 'vue-demi'
  * @typedef NormalizedValidator
  * @property {Validator} $validator
  * @property {String | Ref<String> | function(*): string} [$message]
- * @property {Ref<Object>} [$params]
+ * @property {Object | Ref<Object>} [$params]
  */
 
 /**
@@ -22,7 +22,7 @@ import { computed, reactive, ref, watch, isRef } from 'vue-demi'
 
 /**
  * Sorts the validators for a state tree branch
- * @param {Object<NormalizedValidator|Function>} validations
+ * @param {Object<NormalizedValidator|Function>} validationsRaw
  * @return {{ rules: Object<NormalizedValidator>, nestedValidators: Object, config: Object }}
  */
 function sortValidations (validationsRaw = {}) {

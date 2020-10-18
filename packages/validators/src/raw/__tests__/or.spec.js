@@ -1,9 +1,16 @@
 import or from '../or'
+import {
+  T,
+  F,
+  NormalizedF,
+  NormalizedT,
+  NormalizedValidatorResponseF,
+  NormalizedValidatorResponseT,
+  ValidatorResponseF,
+  ValidatorResponseT
+} from '../../../tests/fixtures'
 
 describe('or validator', () => {
-  const T = () => true
-  const F = () => false
-
   it('should not validate no functions', () => {
     expect(or()()).toBe(false)
   })
@@ -32,5 +39,17 @@ describe('or validator', () => {
     const spy = jest.fn()
     or(spy)(1, 2)
     expect(spy).toHaveBeenCalledWith(1, 2)
+  })
+
+  it('should work with functions returning ValidatorResponse', () => {
+    expect(or(ValidatorResponseT, ValidatorResponseF, ValidatorResponseF)()).toBe(true)
+    expect(or(ValidatorResponseF, ValidatorResponseF, ValidatorResponseF)()).toBe(false)
+  })
+
+  it('should work with Normalized Validators', () => {
+    expect(or(NormalizedT, NormalizedT)()).toBe(true)
+    expect(or(NormalizedF, NormalizedT)()).toBe(true)
+    expect(or(NormalizedValidatorResponseT, NormalizedValidatorResponseT)()).toBe(true)
+    expect(or(NormalizedValidatorResponseF, NormalizedValidatorResponseT)()).toBe(true)
   })
 })
