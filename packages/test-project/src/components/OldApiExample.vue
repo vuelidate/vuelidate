@@ -1,18 +1,20 @@
 <template>
   <div>
-    <label>Number X</label>
+    <label>Number X ($model: {{ vv.x.$model }})</label>
     <input
       v-model.number="x"
       type="number"
     >
     <br>
-    <label>Number Y</label>
+    <label>Number Y ($model: {{ vv.y.$model }})</label>
     <input
       v-model.number="y"
       type="number"
     >
     <br>
     <p>X + Y = {{ xPlusY }}</p>
+
+    <label>Number Y+X ($model: {{ vv.xPlusY.$model }})</label>
     <div style="background: rgba(219, 53, 53, 0.62); color: #ff9090; padding: 10px 15px">
       <p
         v-for="(error, index) of vv.$errors"
@@ -23,19 +25,29 @@
       </p>
     </div>
 
-    <label>Dims</label>
-    <input
-      v-model.number="dims.w"
-      type="number"
-    >
-    <input
-      v-model.number="dims.h"
-      type="number"
-    >
-    <input
-      v-model.number="dims.l"
-      type="number"
-    >
+    <h3>Dims</h3>
+    <label>
+      x ($model: {{ vv.dims.w.$model }})
+      <input
+        v-model.number="dims.w"
+        type="number"
+      >
+    </label>
+    |
+    <label>
+      <input
+        v-model.number="dims.h"
+        type="number"
+      >
+    </label>
+    |
+    <label>
+      l ($model: {{ vv.dims.l.$model }})
+      <input
+        v-model.number="dims.l"
+        type="number"
+      >
+    </label>
 
     <button @click="vv.$touch()">
       $touch!
@@ -79,7 +91,7 @@ export default {
   //
   // },
   validations () {
-    console.log(this)
+    console.log('validation fn', this)
     return {
       x: {
         $autoDirty: true,
@@ -103,19 +115,24 @@ export default {
           $validator: (v) => v % 2 === 0,
           $message: 'Sum must be an even number'
         }
+      },
+      dims: {
+        maxVolume: {
+          $validator: (dims) => dims && dims.h ? (dims.h * dims.w * dims.l) > 0 : false,
+          $message: 'Volume must be greater than zero'
+        },
+        minVolume: {
+          $validator: (dims) => dims && dims.h ? (dims.h * dims.w * dims.l) < 12 : false,
+          $message: 'Volume must be less than 12'
+        },
+        w: {
+          $autoDirty: true,
+          minValue: minValue(2)
+        },
+        l: {
+          minValue: minValue(4)
+        }
       }
-      // dims: {
-      //   volume: {
-      //     $validator: (dims) => (dims.h * dims.w * dims.l) > 0,
-      //     $message: 'Volume must be greater than zero'
-      //   },
-      //   w: {
-      //     minValue: minValue(2)
-      //   },
-      //   l: {
-      //     minValue: minValue(4)
-      //   }
-      // }
     }
   }
 }

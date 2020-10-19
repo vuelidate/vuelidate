@@ -1,5 +1,5 @@
-import { toRef, onMounted, reactive, toRefs, provide, inject, ref, computed, getCurrentInstance, onBeforeUnmount } from 'vue-demi'
-import { unwrap, isFunction } from './utils'
+import { computed, getCurrentInstance, inject, onBeforeMount, onBeforeUnmount, provide, ref } from 'vue-demi'
+import { isFunction, unwrap } from './utils'
 import { setValidations } from './core'
 
 const VuelidateInjectChildResults = Symbol('vuelidate#injectChiildResults')
@@ -19,27 +19,11 @@ export function useVuelidate (validations, state, globalConfig = {}) {
     if (instance.type.validations) {
       const rules = instance.type.validations
 
-      const _state = ref({})
-      state = computed(() => _state.value)
-      onMounted(() => {
-        console.log('mounted', Object.keys(instance.ctx))
-        _state.value = instance.ctx
+      state = ref({})
+      onBeforeMount(() => {
+        state.value = instance.proxy
       })
 
-      // state = computed(() => reactive(Object.keys(instance.ctx).reduce((userState, key) => {
-      //   console.log('recalculate state')
-      //   if (key.includes('$') || key.includes('_')) return userState
-      //   return {
-      //     ...userState,
-      //     [key]: toRef(instance.ctx[key])
-      //   }
-      // }, {})))
-
-      // state = computed(() => {
-      //   const s = toRefs(reactive(instance.ctx))
-      //   console.log('recalculate state', s)
-      //   return s
-      // })
       validations = computed(() => isFunction(rules)
         ? rules.call(state.value)
         : rules
@@ -111,6 +95,11 @@ export function useVuelidate (validations, state, globalConfig = {}) {
   sendValidationResultsToParent(validationResults, $registerAs)
   // before this component is destroyed, remove all the data from the parent.
   onBeforeUnmount(() => removeValidationResultsFromParent($registerAs))
+
+  // // TODO autodirty is setting dirty for any temporal undefined
+  // onBeforeMount(() => {
+  //   validationResults.$reset()
+  // })
 
   // TODO: Change into reactive + watch
   return computed(() => {
