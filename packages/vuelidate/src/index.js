@@ -22,6 +22,8 @@ export function useVuelidate (validations, state, globalConfig = {}) {
 
       state = ref({})
       onBeforeMount(() => {
+        // Delay binding state to validations defined with the Options API until mounting, when the data
+        // has been attached to the component instance. From that point on it will be reactive.
         state.value = instance.proxy
       })
 
