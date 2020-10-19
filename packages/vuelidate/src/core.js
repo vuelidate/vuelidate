@@ -304,19 +304,14 @@ function createValidationResults (rules, modelValue, key, resultsCache, path, co
  * @returns {Ref<*>>|ComputedRef<*>}
  */
 function getNestedState (state, key) {
-  const s = unwrap(state)
+  const initialState = unwrap(state)
 
-  if (!s) {
-    return computed(() => {
+  if (initialState && (isRef(initialState[key]) || isReactive(initialState[key]))) return initialState[key]
+
+  // If state isn't available during setup, created a computed that will update when becomes available
+  return computed(() => {
       const s = unwrap(state)
       return s ? s[key] : undefined
-    })
-  }
-
-  if (isRef(s[key]) || isReactive(s[key])) return s[key]
-
-  return computed(() => {
-    return unwrap(state)[key]
   })
 }
 
