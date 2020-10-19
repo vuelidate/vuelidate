@@ -1,5 +1,5 @@
 import { isFunction, isPromise, unwrap, unwrapObj } from './utils'
-import { computed, reactive, ref, watch, isRef } from 'vue-demi'
+import { computed, isReactive, isRef, reactive, ref, watch } from 'vue-demi'
 
 /**
  * @typedef NormalizedValidator
@@ -155,27 +155,21 @@ function createAsyncResult (rule, model, $pending, $dirty, { $lazy }) {
  * Returns the validation result.
  * Detects async and sync validators.
  * @param {NormalizedValidator} rule
- * @param {Object} state
- * @param {String} key
+ * @param {Ref<*>} modelValue
  * @return {{$params: *, $message: Ref<String>, $pending: Ref<Boolean>, $invalid: Ref<Boolean>}}
  */
-function createValidatorResult (rule, state, key, $dirty, config) {
-  const model = computed(() => {
-    const s = unwrap(state)
-    return s ? unwrap(s[key]) : null
-  })
-
+function createValidatorResult (rule, modelValue, $dirty, config) {
   const $pending = ref(false)
   const $params = rule.$params || {}
   const $invalid = rule.$async
     ? createAsyncResult(
       rule.$validator,
-      model,
+      modelValue,
       $pending,
       $dirty,
       config
     )
-    : createComputedResult(rule.$validator, model, $dirty, config)
+    : createComputedResult(rule.$validator, modelValue, $dirty, config)
 
   const message = rule.$message
   const $message = isFunction(message)
@@ -185,7 +179,7 @@ function createValidatorResult (rule, state, key, $dirty, config) {
           $pending,
           $invalid,
           $params: unwrapObj($params), // $params can hold refs, so we unwrap them for easy access
-          $model: model
+          $model: modelValue
         })
       ))
     : message || ''
@@ -223,14 +217,13 @@ function createValidatorResult (rule, state, key, $dirty, config) {
  * Creates the main Validation Results object for a state tree
  * Walks the tree's top level branches
  * @param {Object<NormalizedValidator>} rules - Rules for the current state tree
- * @param {Object} state - Current state tree
+ * @param {Object} modelValue - Current state tree
  * @param {String} key - Key for the current state tree
- * @param {String} [parentKey] - Parent key of the state. Optional
  * @param {Map} [resultsCache] - A cache map of all the validators
  * @param {String} [path] - the current property path
  * @return {ValidationResult | {}}
  */
-function createValidationResults (rules, state, key, parentKey, resultsCache, path, config) {
+function createValidationResults (rules, modelValue, key, resultsCache, path, config) {
   // collect the property keys
   const ruleKeys = Object.keys(rules)
 
@@ -259,8 +252,7 @@ function createValidationResults (rules, state, key, parentKey, resultsCache, pa
   ruleKeys.forEach(ruleKey => {
     result[ruleKey] = createValidatorResult(
       rules[ruleKey],
-      state,
-      key,
+      modelValue,
       result.$dirty,
       config
     )
@@ -304,25 +296,46 @@ function createValidationResults (rules, state, key, parentKey, resultsCache, pa
 }
 
 /**
+ * create protected state for cases when the state branch does not exist yet.
+ * This protects when using the OptionsAPI as the data is LINKED after the setup
+ * method
+ * @param {Object} state
+ * @param {string} key
+ * @returns {Ref<*>>|ComputedRef<*>}
+ */
+function getNestedState (state, key) {
+  const s = unwrap(state)
+
+  if (!s) {
+    return computed(() => {
+      const s = unwrap(state)
+      return s ? s[key] : undefined
+    })
+  }
+
+  if (isRef(s[key]) || isReactive(s[key])) return s[key]
+
+  return computed(() => {
+    return unwrap(state)[key]
+  })
+}
+
+/**
  * Collects the validation results of all nested state properties
  * @param {Object<NormalizedValidator|Function>} validations - The validation
- * @param {Object} state - Parent state
+ * @param {Object} nestedState - Current state
  * @param {String} [key] - Parent level state key
  * @param {String} path - Path to current property
  * @param {Map} resultsCache - Validations cache map
  * @return {{}}
  */
-function collectNestedValidationResults (validations, state, key, path, resultsCache, config) {
+function collectNestedValidationResults (validations, nestedState, key, path, resultsCache, config) {
   const nestedValidationKeys = Object.keys(validations)
 
   // if we have no state, return empty object
   if (!nestedValidationKeys.length) return {}
 
   return nestedValidationKeys.reduce((results, nestedKey) => {
-    // if we have a key, use the nested state
-    // else use top level state
-    const nestedState = key ? computed(() => unwrap(unwrap(state)[key])) : state
-
     // build validation results for nested state
     results[nestedKey] = setValidations({
       validations: validations[nestedKey],
@@ -482,7 +495,7 @@ export function setValidations ({
   resultsCache,
   globalConfig = {}
 }) {
-  // state = (state)
+  console.log('setValidations', state, key)
   const path = parentKey ? `${parentKey}.${key}` : key
 
   // Sort out the validation object into:
@@ -492,11 +505,13 @@ export function setValidations ({
   const { rules, nestedValidators, config } = sortValidations(validations)
   const mergedConfig = { ...globalConfig, ...config }
 
+  const nestedState = key ? getNestedState(state, key) : state
+
   // Use rules for the current state fragment and validate it
-  const results = createValidationResults(rules, state, key, parentKey, resultsCache, path, mergedConfig)
+  const results = createValidationResults(rules, nestedState, key, resultsCache, path, mergedConfig)
   // Use nested keys to repeat the process
   // *WARN*: This is recursive
-  const nestedResults = collectNestedValidationResults(nestedValidators, state, key, path, resultsCache, mergedConfig)
+  const nestedResults = collectNestedValidationResults(nestedValidators, nestedState, key, path, resultsCache, mergedConfig)
 
   // Collect and merge this level validation results
   // with all nested validation results
@@ -516,27 +531,24 @@ export function setValidations ({
    * If we have no `key`, this is the top level state
    * We dont need `$model` there.
    */
-
   const $model = key ? computed({
-    get: () => unwrap(unwrap(state)[key]),
+    get: () => unwrap(nestedState),
     set: val => {
       $dirty.value = true
-      const unwrappedState = unwrap(state)
-
-      if (isRef(unwrappedState[key])) {
-        unwrappedState[key].value = val
+      const s = unwrap(state)
+      if (isRef(s[key])) {
+        s[key].value = val
       } else {
-        unwrappedState[key] = val
+        s[key] = val
       }
     }
   }) : null
 
   if (mergedConfig.$autoDirty) {
-    watch(
-      () => unwrap(unwrap(state)[key]),
-      () => {
-        if (!$dirty.value) $touch()
-      })
+    const watchTarget = nestedState
+    watch(watchTarget, () => {
+      if (!$dirty.value) $touch()
+    })
   }
 
   /**

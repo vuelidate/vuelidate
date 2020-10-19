@@ -1,5 +1,5 @@
-import { reactive, provide, inject, ref, computed, getCurrentInstance, onBeforeUnmount } from 'vue-demi'
-import { unwrap, isFunction } from './utils'
+import { computed, getCurrentInstance, inject, onBeforeMount, onBeforeUnmount, provide, ref } from 'vue-demi'
+import { isFunction, unwrap } from './utils'
 import { setValidations } from './core'
 import ResultsStorage from './storage'
 
@@ -20,7 +20,11 @@ export function useVuelidate (validations, state, globalConfig = {}) {
     if (instance.type.validations) {
       const rules = instance.type.validations
 
-      state = computed(() => reactive(instance.ctx))
+      state = ref({})
+      onBeforeMount(() => {
+        state.value = instance.proxy
+      })
+
       validations = computed(() => isFunction(rules)
         ? rules.call(state.value)
         : rules
@@ -92,6 +96,11 @@ export function useVuelidate (validations, state, globalConfig = {}) {
   sendValidationResultsToParent(validationResults, $registerAs)
   // before this component is destroyed, remove all the data from the parent.
   onBeforeUnmount(() => removeValidationResultsFromParent($registerAs))
+
+  // // TODO autodirty is setting dirty for any temporal undefined
+  // onBeforeMount(() => {
+  //   validationResults.$reset()
+  // })
 
   // TODO: Change into reactive + watch
   return computed(() => {
