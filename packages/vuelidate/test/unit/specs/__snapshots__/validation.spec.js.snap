@@ -1,0 +1,12 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`useVuelidate $errors constructs an array of errors 1`] = `
+Object {
+  "$message": "",
+  "$params": Object {},
+  "$pending": false,
+  "$property": "child",
+  "$propertyPath": "level1.child",
+  "$validator": "isEven",
+}
+`;
