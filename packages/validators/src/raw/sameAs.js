@@ -1,3 +1,10 @@
 import { unwrap } from '../utils/common'
 
-export default equalTo => value => unwrap(value) === unwrap(equalTo)
+/**
+ * Check if two values are identical.
+ * @param {*} equalTo
+ * @return {function(*=): boolean}
+ */
+export default function (equalTo) {
+  return value => unwrap(value) === unwrap(equalTo)
+}

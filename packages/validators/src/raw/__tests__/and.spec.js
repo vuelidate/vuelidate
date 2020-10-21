@@ -1,9 +1,16 @@
 import and from '../and'
+import {
+  F,
+  T,
+  ValidatorResponseT,
+  ValidatorResponseF,
+  NormalizedF,
+  NormalizedT,
+  NormalizedValidatorResponseF,
+  NormalizedValidatorResponseT
+} from '../../../tests/fixtures'
 
 describe('and validator', () => {
-  const T = () => true
-  const F = () => false
-
   it('should not validate no functions', () => {
     expect(and()()).toBe(false)
   })
@@ -32,5 +39,17 @@ describe('and validator', () => {
     const spy = jest.fn()
     and(spy)(1, 2)
     expect(spy).toHaveBeenCalledWith(1, 2)
+  })
+
+  it('should work with functions returning ValidatorResponse', () => {
+    expect(and(ValidatorResponseT, ValidatorResponseT, ValidatorResponseT)()).toBe(true)
+    expect(and(ValidatorResponseF, ValidatorResponseF, ValidatorResponseF)()).toBe(false)
+  })
+
+  it('should work with Normalized Validators', () => {
+    expect(and(NormalizedT, NormalizedT)()).toBe(true)
+    expect(and(NormalizedF, NormalizedF)()).toBe(false)
+    expect(and(NormalizedValidatorResponseT, NormalizedValidatorResponseT)()).toBe(true)
+    expect(and(NormalizedValidatorResponseF, NormalizedValidatorResponseF)()).toBe(false)
   })
 })

@@ -1,4 +1,6 @@
-import { unref } from 'vue-demi'
+import { unref as unwrap } from 'vue-demi'
+
+export { unwrap }
 
 export function isFunction (val) {
   return typeof val === 'function'
@@ -6,15 +8,6 @@ export function isFunction (val) {
 
 export function isObject (o) {
   return o !== null && typeof o === 'object' && !Array.isArray(o)
-}
-
-/**
- * Unwraps a ref, returning its value
- * @param val
- * @return {*}
- */
-export function unwrap (val) {
-  return unref(val)
 }
 
 /**
@@ -49,4 +42,23 @@ export function withAsync (validator) {
   const normalized = normalizeValidatorObject(validator)
   normalized.$async = true
   return normalized
+}
+
+/**
+ * Unwraps a ValidatorResponse object, into a boolean.
+ * @param {ValidatorResponse} result
+ * @return {boolean}
+ */
+export function unwrapValidatorResponse (result) {
+  if (typeof result === 'object') return result.$invalid
+  return result
+}
+
+/**
+ * Unwraps a `NormalizedValidator` object, returning it's validator function.
+ * @param {NormalizedValidator | Function} validator
+ * @return {function}
+ */
+export function unwrapNormalizedValidator (validator) {
+  return validator.$validator || validator
 }

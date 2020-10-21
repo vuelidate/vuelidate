@@ -1,6 +1,12 @@
 import macAddress from '../raw/macAddress'
 
-export default (separator) => ({
-  $validator: macAddress(separator),
-  $message: 'The value is not a valid MAC Address'
-})
+/**
+ * Validate if value is a valid Mac Address string.
+ * @returns {NormalizedValidator}
+ */
+export default function (separator) {
+  return {
+    $validator: macAddress(separator),
+    $message: 'The value is not a valid MAC Address'
+  }
+}

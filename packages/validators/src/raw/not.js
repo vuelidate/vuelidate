@@ -1,6 +1,13 @@
 import { req } from '../common'
+import { unwrapNormalizedValidator, unwrapValidatorResponse } from '../utils/common'
 
-// TODO: Double check this
-export default (validator) => function (value, vm) {
-  return !req(value) || !validator.call(this, value, vm)
+/**
+ * Swaps the result of a value
+ * @param {NormalizedValidator|Function} validator
+ * @returns {function(*=, *=): boolean}
+ */
+export default function (validator) {
+  return function (value, vm) {
+    return !req(value) || !unwrapValidatorResponse(unwrapNormalizedValidator(validator).call(this, value, vm))
+  }
 }
