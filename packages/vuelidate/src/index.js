@@ -1,4 +1,4 @@
-import { computed, getCurrentInstance, inject, onBeforeMount, onBeforeUnmount, provide, ref } from 'vue-demi'
+import { watch, computed, getCurrentInstance, inject, onBeforeMount, onBeforeUnmount, provide, ref } from 'vue-demi'
 import { isFunction, unwrap } from './utils'
 import { setValidations } from './core'
 import ResultsStorage from './storage'
@@ -15,29 +15,7 @@ const VuelidateRemoveChildResults = Symbol('vuelidate#removeChiildResults')
  * @return {UnwrapRef<*>}
  */
 export function useVuelidate (validations, state, globalConfig = {}) {
-  if (!validations) {
-    const instance = getCurrentInstance()
-    if (instance.type.validations) {
-      const rules = instance.type.validations
-
-      state = ref({})
-      onBeforeMount(() => {
-        // Delay binding state to validations defined with the Options API until mounting, when the data
-        // has been attached to the component instance. From that point on it will be reactive.
-        state.value = instance.proxy
-      })
-
-      validations = computed(() => isFunction(rules)
-        ? rules.call(state.value)
-        : rules
-      )
-
-      globalConfig = instance.type.validationsConfig || {}
-    }
-  }
-
   let { $registerAs } = globalConfig
-
   // if there is no registration name, add one.
   if (!$registerAs) {
     const instance = getCurrentInstance()
@@ -47,7 +25,7 @@ export function useVuelidate (validations, state, globalConfig = {}) {
     const uid = instance.uid || instance._uid
     $registerAs = `_vuelidate_${uid}`
   }
-
+  const validationResults = ref({})
   const resultsCache = new ResultsStorage()
 
   const childResultsRaw = {}
@@ -86,16 +64,46 @@ export function useVuelidate (validations, state, globalConfig = {}) {
   // provide to all of it's children the remove results  function
   provide(VuelidateRemoveChildResults, removeChildResultsFromParent)
 
-  const validationResults = computed(() => setValidations({
-    validations,
-    state,
-    childResults,
-    resultsCache,
-    globalConfig
-  }))
+  if (!validations) {
+    const instance = getCurrentInstance()
+    if (instance.type.validations) {
+      const rules = instance.type.validations
+
+      state = ref({})
+      onBeforeMount(() => {
+        console.log('[beforeMount]')
+
+        // Delay binding state to validations defined with the Options API until mounting, when the data
+        // has been attached to the component instance. From that point on it will be reactive.
+        state.value = instance.proxy
+
+        validations = isFunction(rules)
+          ? rules.call(instance.proxy)
+          : rules
+
+        validationResults.value = setValidations({
+          validations,
+          state,
+          childResults,
+          resultsCache,
+          globalConfig
+        })
+      })
+
+      globalConfig = instance.type.validationsConfig || {}
+    }
+  } else {
+    validationResults.value = setValidations({
+      validations,
+      state,
+      childResults,
+      resultsCache,
+      globalConfig
+    })
+  }
 
   // send all the data to the parent when the function is invoked inside setup.
-  sendValidationResultsToParent(validationResults, $registerAs)
+  sendValidationResultsToParent(validationResults.value, $registerAs)
   // before this component is destroyed, remove all the data from the parent.
   onBeforeUnmount(() => removeValidationResultsFromParent($registerAs))
 

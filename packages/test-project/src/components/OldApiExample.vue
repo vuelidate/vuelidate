@@ -68,6 +68,7 @@
 import { ref } from 'vue'
 import useVuelidate from '@vuelidate/core'
 import { minValue } from '@vuelidate/validators'
+import { computed } from 'vue-demi'
 
 export default {
   setup (props, context) {
@@ -95,11 +96,11 @@ export default {
     $autoDirty: true
   },
   validations () {
-    console.log('validation fn', this)
+    // console.log('validation fn', this)
     return {
       x: {
         $autoDirty: true,
-        minValue: minValue(this.y),
+        minValue: minValue(computed(() => this.y)),
         isEven: {
           $validator: (v) => v % 2 === 0,
           $message: 'X must be an even number'
