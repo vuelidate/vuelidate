@@ -1,6 +1,6 @@
 {
   "name": "@vuelidate/docs",
-  "version": "2.0.0-alpha.4",
+  "version": "2.0.0-alpha.5",
   "private": true,
   "description": "Vuelidate documentation",
   "main": "index.js",
@@ -11,8 +11,8 @@
     "dev:docs": "vitepress dev src"
   },
   "dependencies": {
-    "@vuelidate/core": "^2.0.0-alpha.4",
-    "@vuelidate/validators": "^2.0.0-alpha.2"
+    "@vuelidate/core": "^2.0.0-alpha.5",
+    "@vuelidate/validators": "^2.0.0-alpha.3"
   },
   "devDependencies": {
     "tree-kill": "^1.2.2",

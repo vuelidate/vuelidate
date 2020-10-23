@@ -3,6 +3,25 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.0.0-alpha.3](https://github.com/vuelidate/vuelidate/compare/@vuelidate/validators@2.0.0-alpha.2...@vuelidate/validators@2.0.0-alpha.3) (2020-10-23)
+
+
+### Bug Fixes
+
+* **validators:** fix `not`,`or`, `and` validators ([#724](https://github.com/vuelidate/vuelidate/issues/724)) ([995c6f9](https://github.com/vuelidate/vuelidate/commit/995c6f909e43e4e03622d96986123498e6fa6378))
+* **validators:** Unify minLength validator format ([#726](https://github.com/vuelidate/vuelidate/issues/726)) ([e5d755a](https://github.com/vuelidate/vuelidate/commit/e5d755a429ee9bbb20c24d893e98fa7a082aaf0a))
+* **validators:** update "numeric" validator ([#711](https://github.com/vuelidate/vuelidate/issues/711)) ([a80b157](https://github.com/vuelidate/vuelidate/commit/a80b1574f3e456970b92da61efe0e1e4a7a1e101))
+* **validators:** update email regex validator ([#718](https://github.com/vuelidate/vuelidate/issues/718)) ([d68a480](https://github.com/vuelidate/vuelidate/commit/d68a48062c2cf21512d8c7e72ceb843a083ac4c5))
+
+
+### Features
+
+* typings ([#722](https://github.com/vuelidate/vuelidate/issues/722)) ([b99b8ab](https://github.com/vuelidate/vuelidate/commit/b99b8ab14fe6fdd81c3796594053147feb647961))
+
+
+
+
+
 # [2.0.0-alpha.2](https://github.com/vuelidate/vuelidate/compare/@vuelidate/validators@2.0.0-alpha.1...@vuelidate/validators@2.0.0-alpha.2) (2020-09-13)
 
 
