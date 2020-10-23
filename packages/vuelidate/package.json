@@ -3,7 +3,7 @@
   "description": "Simple, lightweight model-based validation for Vue.js",
   "version": "2.0.0-alpha.5",
   "main": "dist/index.js",
-  "types": "index.d.ts",
+  "types": "dist/index.d.ts",
   "module": "dist/index.esm.js",
   "repository": "https://github.com/vuelidate/vuelidate",
   "license": "MIT",
@@ -21,6 +21,7 @@
   },
   "devDependencies": {
     "bili": "^4.8.1",
+    "rollup-plugin-copy": "^3.3.0",
     "vue": "^3.0.1"
   },
   "peerDependencies": {

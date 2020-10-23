@@ -1,9 +1,8 @@
 /** @type {import('bili').Config} */
 module.exports = {
-  input: 'src/index.js',
+  input: ['src', 'src/raw'],
   output: {
-    format: ['es', 'cjs'],
-    moduleName: 'Vuelidate'
+    format: ['esm', 'cjs']
   },
   plugins: {
     copy: {
