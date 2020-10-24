@@ -345,8 +345,8 @@ describe('useVuelidate', () => {
       const { state, validations } = nestedReactiveObjectValidation()
       const { vm } = createSimpleWrapper(validations, state)
 
-      vm.v.level1.level2.child.$model = 3;
-      expect(vm.v.$errors.find(error => error.$propertyPath === 'level1.level2.child')).toBeTruthy();
+      vm.v.level1.level2.child.$model = 3
+      expect(vm.v.$errors.find(error => error.$propertyPath === 'level1.level2.child')).toBeTruthy()
     })
 
     it('keeps `$params` reactive', () => {
