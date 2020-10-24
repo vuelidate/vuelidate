@@ -1,4 +1,4 @@
-import { reactive, provide, inject, ref, computed, getCurrentInstance, onBeforeUnmount } from 'vue-demi'
+import { reactive, provide, inject, ref, computed, getCurrentInstance, onBeforeUnmount, isRef } from 'vue-demi'
 import { unwrap, isFunction } from './utils'
 import { setValidations } from './core'
 
@@ -14,7 +14,7 @@ const VuelidateRemoveChildResults = Symbol('vuelidate#removeChiildResults')
  * @return {UnwrapRef<*>}
  */
 export function useVuelidate (validations, state, globalConfig = {}) {
-  const isOptionsApiMode = !validations
+  const canOptimize = !globalConfig.$deoptimize || !validations || (validations && !isRef(validations))
 
   if (!validations) {
     const instance = getCurrentInstance()
@@ -83,7 +83,7 @@ export function useVuelidate (validations, state, globalConfig = {}) {
 
   // TODO: This should likely be refactored at some point once we figure out Options API
   // limitations. Otherwise it might lead to memory leaks.
-  const validationResults = isOptionsApiMode
+  const validationResults = !canOptimize
     ? computed(() => setValidations({
       validations,
       state,
@@ -106,7 +106,7 @@ export function useVuelidate (validations, state, globalConfig = {}) {
 
   // TODO: Change into reactive + watch
   return computed(() => {
-    const results = isOptionsApiMode ? validationResults.value : validationResults
+    const results = !canOptimize ? validationResults.value : validationResults
     return {
       ...results,
       ...childResults.value
