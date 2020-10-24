@@ -132,13 +132,15 @@ type ExtractStateLeaf <Vrules extends ValidationRuleCollection> =
     : unknown;
 
 type ChildStateLeafs <Vargs extends ValidationArgs = ValidationArgs> = {
-  [K in keyof Vargs]: Vargs[K] extends ValidationRuleCollection
-    ? ExtractStateLeaf<Vargs[K]> & (
-      Vargs[K] extends Record<string, ValidationArgs>
-        ? ChildStateLeafs<Vargs[K]>
-        : unknown
-    )
+  [K in keyof Vargs]?: (
+  Vargs[K] extends ValidationRuleCollection
+    ? ExtractStateLeaf<Vargs[K]>
     : unknown
+  ) & (
+  Vargs[K] extends Record<string, ValidationArgs>
+    ? ChildStateLeafs<Vargs[K]>
+    : unknown
+  )
 };
 
 type ExtractState <Vargs extends ValidationArgs> = Vargs extends ValidationRuleCollection
@@ -152,7 +154,7 @@ export const useVuelidate: <
   T extends ExtractState<Vargs>
 >(
   validationsArgs: Ref<Vargs> | Vargs,
-  state: Partial<T> | Ref<Partial<T>> | ToRefs<Partial<T>>,
+  state: T | Ref<T> | ToRefs<T>,
   registerAs?: string
 ) => Ref<Validation<Vargs>>;
 export const VuelidatePlugin: (app: Component) => void;
