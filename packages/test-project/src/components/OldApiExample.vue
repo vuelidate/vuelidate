@@ -1,5 +1,12 @@
 <template>
   <div>
+    <button @click="vv.$touch()">
+      $touch!
+    </button>
+    <button @click="vv.$reset()">
+      $reset!
+    </button>
+    <br>
     <label>Number X</label>
     <input
       v-model.number="x"
@@ -37,9 +44,6 @@
       type="number"
     >
 
-    <button @click="vv.$touch()">
-      $touch!
-    </button>
     <pre style="color: white">{{ vv }}</pre>
   </div>
 </template>
@@ -71,11 +75,13 @@ export default {
       return this.x + this.y
     }
   },
+  validationsConfig: {
+    $autoDirty: true
+  },
   validations () {
-    console.log(this)
     return {
       x: {
-        // $autoDirty: true,
+        $autoDirty: true,
         minValue: minValue(this.y),
         isEven: {
           $validator: (v) => v % 2 === 0,
@@ -83,6 +89,7 @@ export default {
         }
       },
       y: {
+        $autoDirty: true,
         minValue: minValue(4),
         isEven: {
           $validator: (v) => v % 2 === 0,

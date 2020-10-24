@@ -23,6 +23,7 @@ export const createSimpleWrapper = (rules, state) => mount(createSimpleComponent
 export const shouldBePristineValidationObj = (v) => {
   expect(v).toHaveProperty('$error', false)
   expect(v).toHaveProperty('$errors', [])
+  expect(v).toHaveProperty('$silentErrors', [])
   expect(v).toHaveProperty('$invalid', false)
   expect(v).toHaveProperty('$pending', false)
   expect(v).toHaveProperty('$dirty', false)
