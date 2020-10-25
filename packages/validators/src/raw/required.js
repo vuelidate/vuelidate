@@ -1,8 +1,13 @@
 import { req } from '../common'
 
-export default (value) => {
+/**
+ * Validates if a value is empty.
+ * @param {String | Array | Date | Object} value
+ * @returns {boolean}
+ */
+export default function (value) {
   if (typeof value === 'string') {
-    return req(value.trim())
+    value = value.trim()
   }
   return req(value)
 }

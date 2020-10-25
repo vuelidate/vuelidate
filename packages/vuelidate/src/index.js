@@ -1,4 +1,4 @@
-import { toRef, onMounted, reactive, toRefs, provide, inject, ref, computed, getCurrentInstance, onBeforeUnmount } from 'vue-demi'
+import { reactive, provide, inject, ref, computed, getCurrentInstance, onBeforeUnmount, isRef } from 'vue-demi'
 import { unwrap, isFunction } from './utils'
 import { setValidations } from './core'
 
@@ -14,32 +14,14 @@ const VuelidateRemoveChildResults = Symbol('vuelidate#removeChiildResults')
  * @return {UnwrapRef<*>}
  */
 export function useVuelidate (validations, state, globalConfig = {}) {
+  const canOptimize = !globalConfig.$deoptimize || !validations || (validations && !isRef(validations))
+
   if (!validations) {
     const instance = getCurrentInstance()
     if (instance.type.validations) {
       const rules = instance.type.validations
 
-      const _state = ref({})
-      state = computed(() => _state.value)
-      onMounted(() => {
-        console.log('mounted', Object.keys(instance.ctx))
-        _state.value = instance.ctx
-      })
-
-      // state = computed(() => reactive(Object.keys(instance.ctx).reduce((userState, key) => {
-      //   console.log('recalculate state')
-      //   if (key.includes('$') || key.includes('_')) return userState
-      //   return {
-      //     ...userState,
-      //     [key]: toRef(instance.ctx[key])
-      //   }
-      // }, {})))
-
-      // state = computed(() => {
-      //   const s = toRefs(reactive(instance.ctx))
-      //   console.log('recalculate state', s)
-      //   return s
-      // })
+      state = computed(() => reactive(instance.ctx))
       validations = computed(() => isFunction(rules)
         ? rules.call(state.value)
         : rules
@@ -99,13 +81,23 @@ export function useVuelidate (validations, state, globalConfig = {}) {
   // provide to all of it's children the remove results  function
   provide(VuelidateRemoveChildResults, removeChildResultsFromParent)
 
-  const validationResults = setValidations({
-    validations,
-    state,
-    childResults,
-    resultsCache,
-    globalConfig
-  })
+  // TODO: This should likely be refactored at some point once we figure out Options API
+  // limitations. Otherwise it might lead to memory leaks.
+  const validationResults = !canOptimize
+    ? computed(() => setValidations({
+      validations,
+      state,
+      childResults,
+      resultsCache,
+      globalConfig
+    }))
+    : setValidations({
+      validations,
+      state,
+      childResults,
+      resultsCache,
+      globalConfig
+    })
 
   // send all the data to the parent when the function is invoked inside setup.
   sendValidationResultsToParent(validationResults, $registerAs)
@@ -114,8 +106,9 @@ export function useVuelidate (validations, state, globalConfig = {}) {
 
   // TODO: Change into reactive + watch
   return computed(() => {
+    const results = !canOptimize ? validationResults.value : validationResults
     return {
-      ...validationResults,
+      ...results,
       ...childResults.value
     }
   })

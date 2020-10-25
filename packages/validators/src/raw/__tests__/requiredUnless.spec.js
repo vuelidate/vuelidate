@@ -1,7 +1,5 @@
 import requiredUnless from '../requiredUnless'
-
-const T = () => true
-const F = () => false
+import { T, F } from '../../../tests/fixtures'
 
 describe('requiredUnless validator', () => {
   it('should not validate if prop is falsy', () => {

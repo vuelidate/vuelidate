@@ -1,7 +1,6 @@
 import requiredIf from '../requiredIf'
+import { T, F } from '../../../tests/fixtures'
 
-const T = () => true
-const F = () => false
 const promiseT = () => Promise.resolve(true)
 const promiseF = () => Promise.resolve(false)
 

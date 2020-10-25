@@ -14,7 +14,7 @@
     "@babel/preset-env": "^7.11.0",
     "@commitlint/cli": "^8.3.5",
     "@commitlint/config-conventional": "^8.3.4",
-    "@vue/compiler-sfc": "^3.0.0-rc.12",
+    "@vue/compiler-sfc": "^3.0.1",
     "@vue/test-utils": "^2.0.0-beta.2",
     "babel-eslint": "^10.0.3",
     "core-js": "^3.6.4",
@@ -33,7 +33,7 @@
     "lerna": "^3.18.3",
     "standard-version": "^7.0.1",
     "vue-demi": "latest",
-    "vue": "^3.0.0-rc.12"
+    "vue": "^3.0.1"
   },
   "dependencies": {
     "lern": "^1.0.0"

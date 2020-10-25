@@ -1,5 +1,12 @@
 <template>
   <div>
+    <button @click="vv.$touch()">
+      $touch!
+    </button>
+    <button @click="vv.$reset()">
+      $reset!
+    </button>
+    <br>
     <label>Number X</label>
     <input
       v-model.number="x"
@@ -37,12 +44,6 @@
       type="number"
     >
 
-    <button @click="vv.$touch()">
-      $touch!
-    </button>
-    <button @click="vv.$reset()">
-      $reset!
-    </button>
     <pre style="color: white">{{ vv }}</pre>
   </div>
 </template>
@@ -74,12 +75,10 @@ export default {
       return this.x + this.y
     }
   },
-  // validationsConfig: {
-  //   $autoDirty: true
-  //
-  // },
+  validationsConfig: {
+    $autoDirty: true
+  },
   validations () {
-    console.log(this)
     return {
       x: {
         $autoDirty: true,
@@ -103,19 +102,19 @@ export default {
           $validator: (v) => v % 2 === 0,
           $message: 'Sum must be an even number'
         }
+      },
+      dims: {
+        volume: {
+          $validator: (dims) => (dims.h * dims.w * dims.l) > 0,
+          $message: 'Volume must be greater than zero'
+        },
+        w: {
+          minValue: minValue(2)
+        },
+        l: {
+          minValue: minValue(4)
+        }
       }
-      // dims: {
-      //   volume: {
-      //     $validator: (dims) => (dims.h * dims.w * dims.l) > 0,
-      //     $message: 'Volume must be greater than zero'
-      //   },
-      //   w: {
-      //     minValue: minValue(2)
-      //   },
-      //   l: {
-      //     minValue: minValue(4)
-      //   }
-      // }
     }
   }
 }
