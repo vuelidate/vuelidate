@@ -1,4 +1,4 @@
-import { watch, computed, getCurrentInstance, inject, onBeforeMount, onBeforeUnmount, provide, ref } from 'vue-demi'
+import { computed, getCurrentInstance, inject, onBeforeMount, onBeforeUnmount, provide, reactive, ref } from 'vue-demi'
 import { isFunction, unwrap } from './utils'
 import { setValidations } from './core'
 import ResultsStorage from './storage'
@@ -9,7 +9,7 @@ const VuelidateRemoveChildResults = Symbol('vuelidate#removeChiildResults')
 /**
  * Composition API compatible Vuelidate
  * Use inside the `setup` lifecycle hook
- * @param {Object} validations - Validations Object
+ * @param {Object|null} validations - Validations Object
  * @param {Object} state - State object
  * @param {String} globalConfig - Config Object
  * @return {UnwrapRef<*>}
@@ -77,8 +77,20 @@ export function useVuelidate (validations, state, globalConfig = {}) {
         // has been attached to the component instance. From that point on it will be reactive.
         state.value = instance.proxy
 
+        // helper proxy for instance property access. It makes every reference
+        // reactive for the validation function
+        function ComputedProxyFactory (target) {
+          return new Proxy(target, {
+            get (target, prop, receiver) {
+              return (typeof target[prop] === 'object')
+                ? ComputedProxyFactory(target[prop])
+                : computed(() => target[prop])
+            }
+          })
+        }
+
         validations = isFunction(rules)
-          ? rules.call(instance.proxy)
+          ? rules.call(instance.proxy, new ComputedProxyFactory(instance.proxy))
           : rules
 
         validationResults.value = setValidations({
