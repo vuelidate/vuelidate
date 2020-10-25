@@ -1,6 +1,17 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`useVuelidate $errors constructs an array of errors 1`] = `
+exports[`useVuelidate $errors constructs an array of errors for invalid AND drity properties 1`] = `
+Object {
+  "$message": "",
+  "$params": Object {},
+  "$pending": false,
+  "$property": "child",
+  "$propertyPath": "level1.child",
+  "$validator": "isEven",
+}
+`;
+
+exports[`useVuelidate $silentErrors constructs an array of errors for invalid properties 1`] = `
 Object {
   "$message": "",
   "$params": Object {},
