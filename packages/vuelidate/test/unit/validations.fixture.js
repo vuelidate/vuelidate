@@ -88,7 +88,7 @@ export function nestedComponentValidation ({ state: origState, validations: orig
   const childValidationRegisterName = 'child-validation'
 
   const ChildComponent = createSimpleComponent(() =>
-    useVuelidate(validations, state, childValidationRegisterName)
+    useVuelidate(validations, state, { $registerAs: childValidationRegisterName })
   )
 
   const parent = {

@@ -1,6 +1,4 @@
-import withParams from './utils/withParams'
-import withMessage from './utils/withMessage'
-import { req, len, regex } from './raw/core'
-
-export { withParams, withMessage, req, len, regex }
+export { default as withParams } from './utils/withParams'
+export { default as withMessage } from './utils/withMessage'
+export { req, len, regex } from './raw/core'
 export { unwrap, withAsync } from './utils/common'

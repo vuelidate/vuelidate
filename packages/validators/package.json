@@ -1,8 +1,9 @@
 {
   "name": "@vuelidate/validators",
-  "version": "2.0.0-alpha.2",
+  "version": "2.0.0-alpha.4",
   "description": "Validators for Vuelidate",
   "main": "dist/index.js",
+  "types": "index.d.ts",
   "module": "dist/index.esm.js",
   "repository": "https://github.com/vuelidate/vuelidate",
   "license": "MIT",
@@ -28,5 +29,9 @@
   ],
   "publishConfig": {
     "access": "public"
-  }
+  },
+  "files": [
+    "dist",
+    "index.d.ts"
+  ]
 }

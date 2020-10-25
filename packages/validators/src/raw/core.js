@@ -45,7 +45,9 @@ export const len = (value) => {
  * @param {RegExp} expr
  * @return {function(*=): boolean}
  */
-export const regex = expr => value => {
-  value = unwrap(value)
-  return !req(value) || expr.test(value)
+export function regex (expr) {
+  return value => {
+    value = unwrap(value)
+    return !req(value) || expr.test(value)
+  }
 }

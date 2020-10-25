@@ -2,7 +2,7 @@
 
 > Simple, lightweight model-based validation for Vue.js 2.x & 3.0
 
-Visit [Vuelidate Docs](https://vuelidate-next.netlify.org) for detailed instructions.
+Visit [Vuelidate Docs](https://vuelidate-next.netlify.app) for detailed instructions.
 
 ## Sponsors
 

@@ -3,6 +3,31 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.0.0-alpha.6](https://github.com/vuelidate/vuelidate/compare/@vuelidate/core@2.0.0-alpha.5...@vuelidate/core@2.0.0-alpha.6) (2020-10-24)
+
+**Note:** Version bump only for package @vuelidate/core
+
+
+
+
+
+# [2.0.0-alpha.5](https://github.com/vuelidate/vuelidate/compare/@vuelidate/core@2.0.0-alpha.4...@vuelidate/core@2.0.0-alpha.5) (2020-10-23)
+
+
+### Bug Fixes
+
+* chain of state refs ([#674](https://github.com/vuelidate/vuelidate/issues/674)) ([c0ae553](https://github.com/vuelidate/vuelidate/commit/c0ae5538272296b81c8b892a783b59a287843a88))
+* **validators:** fix `not`,`or`, `and` validators ([#724](https://github.com/vuelidate/vuelidate/issues/724)) ([995c6f9](https://github.com/vuelidate/vuelidate/commit/995c6f909e43e4e03622d96986123498e6fa6378))
+
+
+### Features
+
+* typings ([#722](https://github.com/vuelidate/vuelidate/issues/722)) ([b99b8ab](https://github.com/vuelidate/vuelidate/commit/b99b8ab14fe6fdd81c3796594053147feb647961))
+
+
+
+
+
 # [2.0.0-alpha.4](https://github.com/vuelidate/vuelidate/compare/@vuelidate/core@2.0.0-alpha.3...@vuelidate/core@2.0.0-alpha.4) (2020-09-24)
 
 **Note:** Version bump only for package @vuelidate/core

@@ -1,13 +1,11 @@
 import { isFunction, isPromise, unwrap, unwrapObj } from './utils'
 import { computed, isReactive, isRef, reactive, ref, watch } from 'vue-demi'
 
-const listOfComputed = []
-
 /**
  * @typedef NormalizedValidator
  * @property {Validator} $validator
  * @property {String | Ref<String> | function(*): string} [$message]
- * @property {Ref<Object>} [$params]
+ * @property {Object | Ref<Object>} [$params]
  */
 
 /**
@@ -24,7 +22,7 @@ const listOfComputed = []
 
 /**
  * Sorts the validators for a state tree branch
- * @param {Object<NormalizedValidator|Function>} validations
+ * @param {Object<NormalizedValidator|Function>} validationsRaw
  * @return {{ rules: Object<NormalizedValidator>, nestedValidators: Object, config: Object }}
  */
 function sortValidations (validationsRaw = {}) {
@@ -128,7 +126,6 @@ function createAsyncResult (rule, model, $pending, $dirty, { $lazy }) {
   watch(
     [model, $dirty],
     modelValue => {
-      console.log('watch')
       if ($lazy && !$dirty.value) return false
       const ruleResult = callRule(rule, model)
 
@@ -309,8 +306,8 @@ function getNestedState (state, key) {
 
   // If state isn't available during setup, created a computed that will update when becomes available
   return computed(() => {
-      const s = unwrap(state)
-      return s ? s[key] : undefined
+    const s = unwrap(state)
+    return s ? s[key] : undefined
   })
 }
 
@@ -489,8 +486,9 @@ export function setValidations ({
   resultsCache,
   globalConfig = {}
 }) {
-  console.log('setValidations', state, key)
+  // state = (state)
   const path = parentKey ? `${parentKey}.${key}` : key
+
   // Sort out the validation object into:
   // – rules = validators for current state tree fragment
   // — nestedValidators = nested state fragments keys that might contain more validators
@@ -528,18 +526,18 @@ export function setValidations ({
     get: () => unwrap(nestedState),
     set: val => {
       $dirty.value = true
-      const s = unwrap(state)
-      if (isRef(s[key])) {
-        s[key].value = val
+      const unwrappedState = unwrap(state)
+
+      if (isRef(unwrappedState[key])) {
+        unwrappedState[key].value = val
       } else {
-        s[key] = val
+        unwrappedState[key] = val
       }
     }
   }) : null
 
   if (mergedConfig.$autoDirty) {
-    const watchTarget = nestedState
-    watch(watchTarget, () => {
+    watch(nestedState, () => {
       if (!$dirty.value) $touch()
     })
   }
