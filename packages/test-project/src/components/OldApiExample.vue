@@ -91,12 +91,13 @@ export default {
   //   $autoDirty: true
   //
   // },
-  validations () {
-    // console.log('validation fn', this)
+  validations (vm) {
+    console.log('validation fn')
     return {
       x: {
         $autoDirty: true,
-        minValue: minValue(computed(() => this.y)),
+        minValue: minValue(vm.y),
+        // minValue: minValue(computed(() => this.y + 2),
         isEven: {
           $validator: (v) => v % 2 === 0,
           $message: 'X must be an even number'
