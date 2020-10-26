@@ -6,28 +6,7 @@ import ResultsStorage from './storage'
 const VuelidateInjectChildResults = Symbol('vuelidate#injectChiildResults')
 const VuelidateRemoveChildResults = Symbol('vuelidate#removeChiildResults')
 
-/**
- * Composition API compatible Vuelidate
- * Use inside the `setup` lifecycle hook
- * @param {Object|null} validations - Validations Object
- * @param {Object} state - State object
- * @param {String} globalConfig - Config Object
- * @return {UnwrapRef<*>}
- */
-export function useVuelidate (validations, state, globalConfig = {}) {
-  let { $registerAs } = globalConfig
-  // if there is no registration name, add one.
-  if (!$registerAs) {
-    const instance = getCurrentInstance()
-    // NOTE:
-    // ._uid // Vue 2.x Composition-API plugin
-    // .uid // Vue 3.0
-    const uid = instance.uid || instance._uid
-    $registerAs = `_vuelidate_${uid}`
-  }
-  const validationResults = ref({})
-  const resultsCache = new ResultsStorage()
-
+function nestedValidations () {
   const childResultsRaw = {}
   const childResultsKeys = ref([])
   const childResults = computed(() => childResultsKeys.value.reduce((results, key) => {
@@ -56,13 +35,43 @@ export function useVuelidate (validations, state, globalConfig = {}) {
     delete childResultsRaw[key]
   }
 
-  const sendValidationResultsToParent = inject(VuelidateInjectChildResults, () => {})
+  const sendValidationResultsToParent = inject(VuelidateInjectChildResults, () => {
+  })
   // provide to all of it's children the send results to parent function
   provide(VuelidateInjectChildResults, injectChildResultsIntoParent)
 
-  const removeValidationResultsFromParent = inject(VuelidateRemoveChildResults, () => {})
+  const removeValidationResultsFromParent = inject(VuelidateRemoveChildResults, () => {
+  })
   // provide to all of it's children the remove results  function
   provide(VuelidateRemoveChildResults, removeChildResultsFromParent)
+
+  return { childResults, sendValidationResultsToParent, removeValidationResultsFromParent }
+}
+
+/**
+ * Composition API compatible Vuelidate
+ * Use inside the `setup` lifecycle hook
+ * @param {Object|null} validations - Validations Object
+ * @param {Object} state - State object
+ * @param {String} globalConfig - Config Object
+ * @return {UnwrapRef<*>}
+ */
+export function useVuelidate (validations, state, globalConfig = {}) {
+  let { $registerAs } = globalConfig
+
+  // if there is no registration name, add one.
+  if (!$registerAs) {
+    const instance = getCurrentInstance()
+    // NOTE:
+    // ._uid // Vue 2.x Composition-API plugin
+    // .uid // Vue 3.0
+    const uid = instance.uid || instance._uid
+    $registerAs = `_vuelidate_${uid}`
+  }
+  const validationResults = ref({})
+  const resultsCache = new ResultsStorage()
+
+  const { childResults, sendValidationResultsToParent, removeValidationResultsFromParent } = nestedValidations()
 
   if (!validations) {
     const instance = getCurrentInstance()
@@ -71,8 +80,6 @@ export function useVuelidate (validations, state, globalConfig = {}) {
 
       state = ref({})
       onBeforeMount(() => {
-        console.log('[beforeMount]')
-
         // Delay binding state to validations defined with the Options API until mounting, when the data
         // has been attached to the component instance. From that point on it will be reactive.
         state.value = instance.proxy
