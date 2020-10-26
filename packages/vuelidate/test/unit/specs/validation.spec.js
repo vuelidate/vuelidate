@@ -449,9 +449,8 @@ describe('useVuelidate', () => {
       const validations = { number: { isEvenValidator } }
       const { vm } = createSimpleWrapper(validations, state)
       vm.v.$touch()
-      expect(vm.v.$errors).toHaveLength(1)
-      expect(vm.v.$errors[0]).toHaveProperty('$params')
-      expect(vm.v.$errors[0].$params).toHaveProperty('min', 4)
+      expect(vm.v.number.isEvenValidator).toHaveProperty('$params')
+      expect(vm.v.number.isEvenValidator.$params).toHaveProperty('min', 4)
     })
 
     it('keeps `$params` reactive', () => {
@@ -461,9 +460,9 @@ describe('useVuelidate', () => {
       const validations = { number: { isEvenValidator } }
       const { vm } = createSimpleWrapper(validations, state)
       vm.v.$touch()
-      expect(vm.v.$errors[0].$params.min).toBe(4)
+      expect(vm.v.number.isEvenValidator.$params.min).toBe(4)
       min.value = 10
-      expect(vm.v.$errors[0].$params.min).toBe(10)
+      expect(vm.v.number.isEvenValidator.$params.min).toBe(10)
     })
 
     it('collects plain validator response', () => {
@@ -475,7 +474,7 @@ describe('useVuelidate', () => {
       const validations = { number: { isEvenValidator } }
       const { vm } = createSimpleWrapper(validations, state)
       vm.v.$touch()
-      expect(vm.v.$errors[0].$params).toHaveProperty('$response', {
+      expect(vm.v.number.isEvenValidator.$params).toHaveProperty('$response', {
         $invalid: false,
         $data: { foo: 'foo' }
       })
@@ -491,7 +490,7 @@ describe('useVuelidate', () => {
       const { vm } = createSimpleWrapper(validations, state)
       vm.v.$touch()
       await flushPromises()
-      expect(vm.v.$errors[0].$params).toHaveProperty('$response', {
+      expect(vm.v.number.isEvenValidator.$params).toHaveProperty('$response', {
         $invalid: false,
         $data: { foo: 'foo' }
       })
