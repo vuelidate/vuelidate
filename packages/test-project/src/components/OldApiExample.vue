@@ -7,17 +7,17 @@
       $reset!
     </button>
     <br>
-    <label>Number X ($model: {{ vv.x.$model }})</label>
+    <label>Number X</label>
     <input
       v-model.number="x"
       type="number"
-    >
+    > ($model: {{ vv.x.$model }})
     <br>
-    <label>Number Y ($model: {{ vv.y.$model }})</label>
+    <label>Number Y</label>
     <input
       v-model.number="y"
       type="number"
-    >
+    > ($model: {{ vv.y.$model }})
     <br>
     <p>X + Y = {{ xPlusY }}</p>
 
@@ -34,7 +34,7 @@
 
     <h3>Dims</h3>
     <label>
-      x ($model: {{ vv.dims.w.$model }})
+      width
       <input
         v-model.number="dims.w"
         type="number"
@@ -42,6 +42,7 @@
     </label>
     |
     <label>
+      height
       <input
         v-model.number="dims.h"
         type="number"
@@ -49,12 +50,15 @@
     </label>
     |
     <label>
-      l ($model: {{ vv.dims.l.$model }})
+      length
       <input
         v-model.number="dims.l"
         type="number"
       >
     </label>
+    <br><br>
+    <span>width ($model: {{ vv.dims.w.$model }}, dirtyAndInvalid: {{ dirtyAndInvalid }})</span> <br>
+    <span>length ($model: {{ vv.dims.l.$model }})</span>
 
     <pre style="color: white">{{ vv }}</pre>
   </div>
@@ -86,6 +90,10 @@ export default {
   computed: {
     xPlusY () {
       return this.x + this.y
+    },
+    // example of a computed value using the validation object
+    dirtyAndInvalid () {
+      return this.vv.dims.w.$dirty && this.vv.dims.w.$invalid
     }
   },
   validations (vm) {
