@@ -11,7 +11,7 @@ import {
   nestedRefObjectValidation
 } from '../validations.fixture'
 import { createSimpleWrapper, shouldBePristineValidationObj, shouldBeInvalidValidationObject, shouldBeErroredValidationObject } from '../utils'
-import { withAsync } from '@vuelidate/validators/src/common'
+import { withAsync, withMessage, withParams } from '@vuelidate/validators/src/common'
 import useVuelidate from '../../../src'
 
 describe('useVuelidate', () => {
@@ -110,7 +110,9 @@ describe('useVuelidate', () => {
       expect(vm.v).toHaveProperty('$invalid', true)
       expect(vm.v.$errors).toEqual([{
         $message: '',
-        $params: {},
+        $params: {
+          $response: false
+        },
         $pending: false,
         $property: 'numberA',
         $propertyPath: 'numberA',
@@ -298,7 +300,9 @@ describe('useVuelidate', () => {
 
       expect(wrapper.vm.v.$errors).toEqual([{
         $message: '',
-        $params: {},
+        $params: {
+          $response: false
+        },
         $pending: false,
         $property: 'number',
         $propertyPath: 'number',
@@ -404,7 +408,9 @@ describe('useVuelidate', () => {
       expect(childState).toHaveProperty('$errors')
       expect(childState.$errors).toContainEqual({
         '$message': '',
-        '$params': {},
+        '$params': {
+          $response: false
+        },
         '$pending': false,
         '$property': 'number',
         '$propertyPath': 'number',
@@ -437,12 +443,58 @@ describe('useVuelidate', () => {
   })
 
   describe('$params', () => {
-    it('collects the `$params` passed to a validator via `withParams` or manually', () => {
-
+    it('collects the `$params` passed to a validator via `withParams`', () => {
+      const isEvenValidator = withParams({ min: 4 }, isEven)
+      const state = { number: ref(1) }
+      const validations = { number: { isEvenValidator } }
+      const { vm } = createSimpleWrapper(validations, state)
+      vm.v.$touch()
+      expect(vm.v.$errors).toHaveLength(1)
+      expect(vm.v.$errors[0]).toHaveProperty('$params')
+      expect(vm.v.$errors[0].$params).toHaveProperty('min', 4)
     })
 
     it('keeps `$params` reactive', () => {
+      const min = ref(4)
+      const isEvenValidator = withParams({ min }, isEven)
+      const state = { number: ref(1) }
+      const validations = { number: { isEvenValidator } }
+      const { vm } = createSimpleWrapper(validations, state)
+      vm.v.$touch()
+      expect(vm.v.$errors[0].$params.min).toBe(4)
+      min.value = 10
+      expect(vm.v.$errors[0].$params.min).toBe(10)
+    })
 
+    it('collects plain validator response', () => {
+      const isEvenValidator = withParams({ min: 4 }, (v) => ({
+        $invalid: isEven(v),
+        $data: { foo: 'foo' }
+      }))
+      const state = { number: ref(1) }
+      const validations = { number: { isEvenValidator } }
+      const { vm } = createSimpleWrapper(validations, state)
+      vm.v.$touch()
+      expect(vm.v.$errors[0].$params).toHaveProperty('$response', {
+        $invalid: false,
+        $data: { foo: 'foo' }
+      })
+    })
+
+    it('collects async validator response', async () => {
+      const isEvenValidator = withParams({ min: 4 }, withAsync((v) => Promise.resolve({
+        $invalid: isEven(v),
+        $data: { foo: 'foo' }
+      })))
+      const state = { number: ref(1) }
+      const validations = { number: { isEvenValidator } }
+      const { vm } = createSimpleWrapper(validations, state)
+      vm.v.$touch()
+      await flushPromises()
+      expect(vm.v.$errors[0].$params).toHaveProperty('$response', {
+        $invalid: false,
+        $data: { foo: 'foo' }
+      })
     })
   })
 
@@ -483,19 +535,55 @@ describe('useVuelidate', () => {
 
   describe('$message', () => {
     it('collects the `$message` for a validator', () => {
-
-    })
-
-    it('keeps the `$message` reactive', () => {
-
+      const v = withMessage('Field is not Even', isEven)
+      const val = ref(1)
+      const { vm } = createSimpleWrapper({ val: v }, { val })
+      vm.v.$touch()
+      expect(vm.v.$errors[0]).toHaveProperty('$message', 'Field is not Even')
     })
 
     it('allows `$message` to be a function', () => {
+      const isEvenMessage = withMessage(() => `Field is not Even`, isEven)
+      const value = ref(1)
+      const { vm } = createSimpleWrapper({ value: { isEvenMessage } }, { value })
+      vm.v.$touch()
+      expect(vm.v.$errors[0]).toHaveProperty('$message', 'Field is not Even')
+    })
 
+    it('keeps the `$message` reactive', () => {
+      const isEvenMessage = withMessage(({ $model }) => `Field is not Even, given ${$model}`, isEven)
+      const value = ref(1)
+      const { vm } = createSimpleWrapper({ value: { isEvenMessage } }, { value })
+      vm.v.$touch()
+      expect(vm.v.$errors[0]).toHaveProperty('$message', 'Field is not Even, given 1')
+      value.value = 5
+      expect(vm.v.$errors[0]).toHaveProperty('$message', 'Field is not Even, given 5')
     })
 
     it('unwraps `$params` before sending to the $message function', () => {
+      const foo = ref('foo')
+      const validator = withParams({ foo }, isEven)
+      const isEvenMessage = withMessage(({ $params }) => `Field is not Even, param is ${$params.foo}`, validator)
+      const value = ref(1)
+      const { vm } = createSimpleWrapper({ value: { isEvenMessage } }, { value })
+      vm.v.$touch()
+      expect(vm.v.$errors[0]).toHaveProperty('$message', 'Field is not Even, param is foo')
+      foo.value = 'bar'
+      expect(vm.v.$errors[0]).toHaveProperty('$message', 'Field is not Even, param is bar')
+    })
 
+    it('allows passing a message from a validator response', () => {
+      const validator = (v) => ({
+        $invalid: isEven(v),
+        $message: v === 7 ? 'I dont like 7' : null
+      })
+      const isEvenMessage = withMessage(({ $params, $model }) => $params?.$response?.$message || `Field is not Even, ${$model} given`, validator)
+      const value = ref(1)
+      const { vm } = createSimpleWrapper({ value: { isEvenMessage } }, { value })
+      vm.v.$touch()
+      expect(vm.v.$errors[0]).toHaveProperty('$message', 'Field is not Even, 1 given')
+      value.value = 7
+      expect(vm.v.$errors[0]).toHaveProperty('$message', 'I dont like 7')
     })
   })
 

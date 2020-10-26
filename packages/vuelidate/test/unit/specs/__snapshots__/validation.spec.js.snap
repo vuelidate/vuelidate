@@ -14,7 +14,9 @@ Object {
 exports[`useVuelidate $silentErrors constructs an array of errors for invalid properties 1`] = `
 Object {
   "$message": "",
-  "$params": Object {},
+  "$params": Object {
+    "$response": false,
+  },
   "$pending": false,
   "$property": "child",
   "$propertyPath": "level1.child",

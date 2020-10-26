@@ -72,7 +72,9 @@ export const shouldBeErroredValidationObject = ({ v, property, propertyPath = pr
   expect(v).toHaveProperty('$error', true)
   expect(v).toHaveProperty('$errors', [{
     $message: '',
-    $params: {},
+    $params: {
+      $response: expect.anything()
+    },
     $pending: false,
     $property: property,
     $propertyPath: propertyPath,
