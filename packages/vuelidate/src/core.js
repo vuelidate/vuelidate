@@ -496,7 +496,6 @@ export function setValidations ({
   resultsCache,
   globalConfig = {}
 }) {
-  console.log('setValidations', state, key)
   const path = parentKey ? `${parentKey}.${key}` : key
 
   // Sort out the validation object into:

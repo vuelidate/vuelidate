@@ -184,15 +184,17 @@ describe('useVuelidate', () => {
       shouldBeInvalidValidationObject({ v: vm.v.numberB, property: 'numberB', validatorName: 'isEven' })
     })
 
-    it('should reset even after coming back from cache', () => {
+    it('should reset even after coming back from cache', async () => {
       const { state, validations } = computedValidationsObjectWithRefs()
       const { number, conditional } = state
-      const { vm } = createSimpleWrapper(validations, { number }, { $deoptimize: true })
+      const { vm } = createSimpleWrapper(validations, { number })
       vm.v.number.$touch()
       expect(vm.v.number).toHaveProperty('$dirty', true)
       conditional.value = 10
+      await vm.$nextTick()
       expect(vm.v).not.toHaveProperty('number')
       conditional.value = 3
+      await vm.$nextTick()
       expect(vm.v.number).toHaveProperty('$dirty', true)
       vm.v.number.$reset()
       expect(vm.v.number).toHaveProperty('$dirty', false)
@@ -579,13 +581,13 @@ describe('useVuelidate', () => {
         // make sure the conditional is above the threshold
         state.conditional = 10
         // assert it is no longer there
-        expect(vm.v).not.toHaveProperty('number')
+        expect(vm.v.number).not.toHaveProperty('number')
         state.conditional = 3
         expect(vm.v.number.$invalid).toBe(false)
       })
 
       // TODO: Fix this one. Not sure why it fails
-      it.skip('allows passing a computed as a property validator', () => {
+      it('allows passing a computed as a property validator', () => {
         const conditional = ref(0)
         const number = ref(0)
         const numberValidation = computed(() => {
