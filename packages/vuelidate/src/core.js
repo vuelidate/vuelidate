@@ -155,21 +155,21 @@ function createAsyncResult (rule, model, $pending, $dirty, { $lazy }) {
  * Returns the validation result.
  * Detects async and sync validators.
  * @param {NormalizedValidator} rule
- * @param {Ref<*>} modelValue
+ * @param {Ref<*>} model
  * @return {{$params: *, $message: Ref<String>, $pending: Ref<Boolean>, $invalid: Ref<Boolean>}}
  */
-function createValidatorResult (rule, modelValue, $dirty, config) {
+function createValidatorResult (rule, model, $dirty, config) {
   const $pending = ref(false)
   const $params = rule.$params || {}
   const $invalid = rule.$async
     ? createAsyncResult(
       rule.$validator,
-      modelValue,
+      model,
       $pending,
       $dirty,
       config
     )
-    : createComputedResult(rule.$validator, modelValue, $dirty, config)
+    : createComputedResult(rule.$validator, model, $dirty, config)
 
   const message = rule.$message
   const $message = isFunction(message)
@@ -179,7 +179,7 @@ function createValidatorResult (rule, modelValue, $dirty, config) {
           $pending,
           $invalid,
           $params: unwrapObj($params), // $params can hold refs, so we unwrap them for easy access
-          $model: modelValue
+          $model: model
         })
       ))
     : message || ''
@@ -217,13 +217,13 @@ function createValidatorResult (rule, modelValue, $dirty, config) {
  * Creates the main Validation Results object for a state tree
  * Walks the tree's top level branches
  * @param {Object<NormalizedValidator>} rules - Rules for the current state tree
- * @param {Object} modelValue - Current state tree
+ * @param {Object} model - Current state value
  * @param {String} key - Key for the current state tree
  * @param {Map} [resultsCache] - A cache map of all the validators
  * @param {String} [path] - the current property path
  * @return {ValidationResult | {}}
  */
-function createValidationResults (rules, modelValue, key, resultsCache, path, config) {
+function createValidationResults (rules, model, key, resultsCache, path, config) {
   // collect the property keys
   const ruleKeys = Object.keys(rules)
 
@@ -252,7 +252,7 @@ function createValidationResults (rules, modelValue, key, resultsCache, path, co
   ruleKeys.forEach(ruleKey => {
     result[ruleKey] = createValidatorResult(
       rules[ruleKey],
-      modelValue,
+      model,
       result.$dirty,
       config
     )
