@@ -1,5 +1,5 @@
 import { isFunction, isPromise, unwrap, unwrapObj } from './utils'
-import { computed, isReactive, isRef, reactive, ref, watch } from 'vue-demi'
+import { computed, isRef, reactive, ref, watch } from 'vue-demi'
 
 /**
  * @typedef NormalizedValidator
@@ -296,26 +296,6 @@ function createValidationResults (rules, model, key, resultsCache, path, config)
 }
 
 /**
- * create protected state for cases when the state branch does not exist yet.
- * This protects when using the OptionsAPI as the data is LINKED after the setup
- * method
- * @param {Object} state
- * @param {string} key
- * @returns {Ref<*>>|ComputedRef<*>}
- */
-function getNestedState (state, key) {
-  const initialState = unwrap(state)
-
-  if (initialState && (isRef(initialState[key]) || isReactive(initialState[key]))) return initialState[key]
-
-  // If state isn't available during setup, created a computed that will update when becomes available
-  return computed(() => {
-    const s = unwrap(state)
-    return s ? s[key] : undefined
-  })
-}
-
-/**
  * Collects the validation results of all nested state properties
  * @param {Object<NormalizedValidator|Function>} validations - The validation
  * @param {Object} nestedState - Current state
@@ -505,7 +485,12 @@ export function setValidations ({
   const { rules, nestedValidators, config } = sortValidations(validations)
   const mergedConfig = { ...globalConfig, ...config }
 
-  const nestedState = key ? getNestedState(state, key) : state
+  // create protected state for cases when the state branch does not exist yet.
+  // This protects when using the OptionsAPI as the data is bound after the setup method
+  const nestedState = key ? computed(() => {
+    const s = unwrap(state)
+    return s ? unwrap(s[key]) : undefined
+  }) : state
 
   // Use rules for the current state fragment and validate it
   const results = createValidationResults(rules, nestedState, key, resultsCache, path, mergedConfig)

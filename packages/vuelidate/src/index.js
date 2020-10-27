@@ -35,13 +35,11 @@ function nestedValidations () {
     delete childResultsRaw[key]
   }
 
-  const sendValidationResultsToParent = inject(VuelidateInjectChildResults, () => {
-  })
+  const sendValidationResultsToParent = inject(VuelidateInjectChildResults, () => {})
   // provide to all of it's children the send results to parent function
   provide(VuelidateInjectChildResults, injectChildResultsIntoParent)
 
-  const removeValidationResultsFromParent = inject(VuelidateRemoveChildResults, () => {
-  })
+  const removeValidationResultsFromParent = inject(VuelidateRemoveChildResults, () => {})
   // provide to all of it's children the remove results  function
   provide(VuelidateRemoveChildResults, removeChildResultsFromParent)
 
