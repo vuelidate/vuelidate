@@ -18,7 +18,25 @@ export const createSimpleComponent = (getVuelidateResults, state) => ({
   }
 })
 
+export const createOldApiSimpleComponent = (rules, state, config) => ({
+  name: 'childComp',
+  validations () {
+    return typeof rules === 'function' ? rules.call(this) : rules
+  },
+  setup () {
+    return { v: useVuelidate() }
+  },
+  data () {
+    return state
+  },
+  render () {
+    return h('pre', {}, JSON.stringify(this.v))
+  }
+})
+
 export const createSimpleWrapper = (rules, state, config = {}) => mount(createSimpleComponent(() => useVuelidate(rules, state, config), state))
+
+export const createOldApiSimpleWrapper = (rules, state, config = {}) => mount(createOldApiSimpleComponent(rules, state, config))
 
 export const shouldBePristineValidationObj = (v) => {
   expect(v).toHaveProperty('$error', false)
