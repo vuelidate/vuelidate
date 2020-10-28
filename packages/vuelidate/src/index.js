@@ -1,4 +1,4 @@
-import { computed, getCurrentInstance, inject, onBeforeMount, onBeforeUnmount, provide, ref } from 'vue-demi'
+import { computed, getCurrentInstance, inject, onBeforeMount, onBeforeUnmount, provide, isRef, ref } from 'vue-demi'
 import { isFunction, unwrap } from './utils'
 import { setValidations } from './core'
 import ResultsStorage from './storage'
@@ -56,10 +56,12 @@ function nestedValidations () {
  */
 export function useVuelidate (validations, state, globalConfig = {}) {
   let { $registerAs } = globalConfig
+  const canOptimize = !globalConfig.$deoptimize || !validations || (validations && !isRef(validations))
+
+  const instance = getCurrentInstance()
 
   // if there is no registration name, add one.
   if (!$registerAs) {
-    const instance = getCurrentInstance()
     // NOTE:
     // ._uid // Vue 2.x Composition-API plugin
     // .uid // Vue 3.0
@@ -71,46 +73,50 @@ export function useVuelidate (validations, state, globalConfig = {}) {
 
   const { childResults, sendValidationResultsToParent, removeValidationResultsFromParent } = nestedValidations()
 
-  if (!validations) {
-    const instance = getCurrentInstance()
-    if (instance.type.validations) {
-      const rules = instance.type.validations
+  // Options API
+  if (!validations && instance.type.validations) {
+    const rules = instance.type.validations
 
-      state = ref({})
-      onBeforeMount(() => {
-        // Delay binding state to validations defined with the Options API until mounting, when the data
-        // has been attached to the component instance. From that point on it will be reactive.
-        state.value = instance.proxy
+    state = ref({})
+    onBeforeMount(() => {
+      // Delay binding state to validations defined with the Options API until mounting, when the data
+      // has been attached to the component instance. From that point on it will be reactive.
+      state.value = instance.proxy
 
-        // helper proxy for instance property access. It makes every reference
-        // reactive for the validation function
-        function ComputedProxyFactory (target) {
-          return new Proxy(target, {
-            get (target, prop, receiver) {
-              return (typeof target[prop] === 'object')
-                ? ComputedProxyFactory(target[prop])
-                : computed(() => target[prop])
-            }
-          })
-        }
-
-        validations = isFunction(rules)
-          ? rules.call(instance.proxy, new ComputedProxyFactory(instance.proxy))
-          : rules
-
-        validationResults.value = setValidations({
-          validations,
-          state,
-          childResults,
-          resultsCache,
-          globalConfig
+      // helper proxy for instance property access. It makes every reference
+      // reactive for the validation function
+      function ComputedProxyFactory (target) {
+        return new Proxy(target, {
+          get (target, prop, receiver) {
+            return (typeof target[prop] === 'object')
+              ? ComputedProxyFactory(target[prop])
+              : computed(() => target[prop])
+          }
         })
-      })
+      }
 
-      globalConfig = instance.type.validationsConfig || {}
-    }
+      validations = isFunction(rules)
+        ? rules.call(instance.proxy, new ComputedProxyFactory(instance.proxy))
+        : rules
+
+      validationResults.value = setValidations({
+        validations,
+        state,
+        childResults,
+        resultsCache,
+        globalConfig
+      })
+    })
+
+    globalConfig = instance.type.validationsConfig || {}
   } else {
-    validationResults.value = setValidations({
+    validationResults.value = !canOptimize ? computed(() => setValidations({
+      validations,
+      state,
+      childResults,
+      resultsCache,
+      globalConfig
+    })) : setValidations({
       validations,
       state,
       childResults,
@@ -120,7 +126,7 @@ export function useVuelidate (validations, state, globalConfig = {}) {
   }
 
   // send all the data to the parent when the function is invoked inside setup.
-  sendValidationResultsToParent(validationResults.value, $registerAs)
+  sendValidationResultsToParent(validationResults, $registerAs)
   // before this component is destroyed, remove all the data from the parent.
   onBeforeUnmount(() => removeValidationResultsFromParent($registerAs))
 
@@ -132,7 +138,7 @@ export function useVuelidate (validations, state, globalConfig = {}) {
   // TODO: Change into reactive + watch
   return computed(() => {
     return {
-      ...validationResults.value,
+      ...unwrap(validationResults.value),
       ...childResults.value
     }
   })
