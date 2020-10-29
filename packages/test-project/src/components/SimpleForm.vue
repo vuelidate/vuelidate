@@ -38,10 +38,9 @@
 </template>
 
 <script>
-import { ref, reactive } from 'vue'
+import { ref, reactive, computed } from 'vue'
 import useVuelidate from '@vuelidate/core'
 import { required, helpers, minLength } from '@vuelidate/validators'
-import { unwrapObj } from '@vuelidate/core/src/utils'
 
 const { withAsync } = helpers
 
@@ -61,14 +60,14 @@ const asyncValidator = withAsync({
 export default {
   name: 'SimpleForm',
   setup () {
-    const name = ref('')
+    const name = ref('given name')
     const social = reactive({
       github: 'hi',
       twitter: 'hey'
     })
 
     let v$ = useVuelidate(
-      {
+      computed(() => ({
         name: {
           required: helpers.withMessage('This field is required', required),
           minLength: helpers.withMessage(({
@@ -76,14 +75,14 @@ export default {
             $invalid,
             $params,
             $model
-          }) => `This field has a value of '${$model}' but must have a min length of ${$params.min} so it is ${$invalid ? 'invalid' : 'valid' }`, minLength(4)),
+          }) => `This field has a value of '${$model}' but must have a min length of ${$params.min} so it is ${$invalid ? 'invalid' : 'valid'}`, minLength(4)),
           asyncValidator
         },
         social: {
-          github: { minLength: minLength(4) },
-          twitter: { minLength: minLength(6) }
+          github: { minLength: minLength(social.twitter.length) },
+          twitter: { minLength: minLength(name.value.length) }
         }
-      },
+      })),
       { name, social },
       { $autoDirty: true }
     )

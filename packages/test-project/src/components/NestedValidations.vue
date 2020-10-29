@@ -17,7 +17,7 @@
         type="number"
       >
       <div
-        v-if="vv.optionalNumber"
+        v-if="vv.optionalNumber && vv.optionalNumber.$errors.length"
         style="background: rgba(219, 53, 53, 0.62); color: #ff9090; padding: 10px 15px"
       >
         <p
@@ -29,6 +29,7 @@
         </p>
       </div>
     </div>
+    <button type="button" @click="vv.$touch()">$touch</button>
     <NestedA />
     <div style="background: rgba(219, 53, 53, 0.62); color: #ff9090; padding: 10px 15px">
       <p
