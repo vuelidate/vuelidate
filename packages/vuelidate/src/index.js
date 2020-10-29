@@ -56,7 +56,6 @@ function nestedValidations () {
  */
 export function useVuelidate (validations, state, globalConfig = {}) {
   let { $registerAs } = globalConfig
-  const canOptimize = !globalConfig.$deoptimize || !validations || (validations && !isRef(validations))
 
   const instance = getCurrentInstance()
 
@@ -109,18 +108,20 @@ export function useVuelidate (validations, state, globalConfig = {}) {
 
     globalConfig = instance.type.validationsConfig || {}
   } else {
-    validationResults.value = !canOptimize ? computed(() => setValidations({
-      validations,
-      state,
-      childResults,
-      resultsCache,
-      globalConfig
-    })) : setValidations({
-      validations,
-      state,
-      childResults,
-      resultsCache,
-      globalConfig
+    const validationsWatchTarget = isRef(validations)
+      ? validations
+      : () => validations
+
+    watch(validationsWatchTarget, (newValidationRules) => {
+      validationResults.value = setValidations({
+        validations: newValidationRules,
+        state,
+        childResults,
+        resultsCache,
+        globalConfig
+      })
+    }, {
+      immediate: true
     })
   }
 

@@ -16,11 +16,20 @@ export default class ResultsStorage {
 
     const storedRulesKeys = Object.keys(storedRules)
     const newRulesKeys = Object.keys(rules)
-    const hasAllValidators = newRulesKeys.every(ruleKey =>
-      storedRulesKeys.includes(ruleKey)
-    ) && newRulesKeys.length === storedRulesKeys.length
 
-    if (hasAllValidators) return result
-    return { $dirty: result.$dirty, $partial: true }
+    if (newRulesKeys.length !== storedRulesKeys.length) return { $dirty: result.$dirty, $partial: true }
+
+    const hasAllValidators = newRulesKeys.every(ruleKey => storedRulesKeys.includes(ruleKey))
+    if (!hasAllValidators) return { $dirty: result.$dirty, $partial: true }
+
+    const hasSameParams = newRulesKeys.every(ruleKey => {
+      if (!rules[ruleKey].$params) return true
+      Object.keys(rules[ruleKey].$params).every(paramKey => {
+        return storedRules[ruleKey].$params[paramKey] === rules[ruleKey].$params[paramKey]
+      })
+    })
+    if (!hasSameParams) return { $dirty: result.$dirty, $partial: true }
+
+    return result
   }
 }
