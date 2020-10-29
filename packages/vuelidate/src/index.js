@@ -128,11 +128,6 @@ export function useVuelidate (validations, state, globalConfig = {}) {
   // before this component is destroyed, remove all the data from the parent.
   onBeforeUnmount(() => removeValidationResultsFromParent($registerAs))
 
-  // // TODO autodirty is setting dirty for any temporal undefined
-  // onBeforeMount(() => {
-  //   validationResults.$reset()
-  // })
-
   // TODO: Change into reactive + watch
   return computed(() => {
     return {
