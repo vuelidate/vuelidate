@@ -32,40 +32,47 @@
       </p>
     </div>
 
-    <h3>Dims</h3>
     <label>
-      width
       <input
-        v-model.number="dims.w"
-        type="number"
+        v-model="hasDims"
+        type="checkbox"
       >
-    </label>
-    |
-    <label>
-      height
-      <input
-        v-model.number="dims.h"
-        type="number"
-      >
-    </label>
-    |
-    <label>
-      length
-      <input
-        v-model.number="dims.l"
-        type="number"
-      >
-    </label>
-    <br><br>
-    <span>width ($model: {{ vv.dims.w.$model }}, dirtyAndInvalid: {{ dirtyAndInvalid }})</span> <br>
-    <span>length ($model: {{ vv.dims.l.$model }})</span>
-
+      has dims</label>
+    <div v-if="hasDims">
+      <h3>Dims</h3>
+      <label>
+        width
+        <input
+          v-model.number="dims.w"
+          type="number"
+        >
+      </label>
+      |
+      <label>
+        height
+        <input
+          v-model.number="dims.h"
+          type="number"
+        >
+      </label>
+      |
+      <label>
+        length
+        <input
+          v-model.number="dims.l"
+          type="number"
+        >
+      </label>
+      <br><br>
+      <span>width ($model: {{ vv.dims.w.$model }}, dirtyAndInvalid: {{ dirtyAndInvalid }})</span> <br>
+      <span>length ($model: {{ vv.dims.l.$model }})</span>
+    </div>
     <pre style="color: white">{{ vv }}</pre>
   </div>
 </template>
 
 <script>
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import useVuelidate from '@vuelidate/core'
 import { minValue } from '@vuelidate/validators'
 
@@ -78,6 +85,7 @@ export default {
   },
   data () {
     return {
+      hasDims: true,
       y: 3,
       dims: {
         w: 1,
@@ -100,12 +108,10 @@ export default {
   //
   // },
   validations (vm) {
-    console.log('validation fn')
-    return {
+    const validations = {
       x: {
         $autoDirty: true,
-        minValue: minValue(vm.y),
-        // minValue: minValue(computed(() => this.y + 2),
+        minValue: minValue(computed(() => this.y)),
         isEven: {
           $validator: (v) => v % 2 === 0,
           $message: 'X must be an even number'
@@ -125,8 +131,12 @@ export default {
           $validator: (v) => v % 2 === 0,
           $message: 'Sum must be an even number'
         }
-      },
-      dims: {
+      }
+    }
+
+    if (this.hasDims) {
+      validations.x.minValue = minValue(computed(() => this.dims.w))
+      validations.dims = {
         maxVolume: {
           $validator: (dims) => dims && dims.h ? (dims.h * dims.w * dims.l) > 0 : false,
           $message: 'Volume must be greater than zero'
@@ -144,6 +154,8 @@ export default {
         }
       }
     }
+
+    return validations
   }
 }
 </script>

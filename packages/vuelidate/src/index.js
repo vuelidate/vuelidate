@@ -1,4 +1,4 @@
-import { computed, getCurrentInstance, inject, onBeforeMount, onBeforeUnmount, provide, isRef, ref } from 'vue-demi'
+import { watch, computed, getCurrentInstance, inject, onBeforeMount, onBeforeUnmount, provide, isRef, ref } from 'vue-demi'
 import { isFunction, unwrap } from './utils'
 import { setValidations } from './core'
 import ResultsStorage from './storage'
@@ -95,17 +95,16 @@ export function useVuelidate (validations, state, globalConfig = {}) {
         })
       }
 
-      validations = isFunction(rules)
-        ? rules.call(instance.proxy, new ComputedProxyFactory(instance.proxy))
-        : rules
-
-      validationResults.value = setValidations({
-        validations,
-        state,
-        childResults,
-        resultsCache,
-        globalConfig
-      })
+      watch(() => isFunction(rules) ? rules.call(instance.proxy, new ComputedProxyFactory(instance.proxy)) : rules,
+        (validations) => {
+          validationResults.value = setValidations({
+            validations,
+            state,
+            childResults,
+            resultsCache,
+            globalConfig
+          })
+        }, { immediate: true })
     })
 
     globalConfig = instance.type.validationsConfig || {}
