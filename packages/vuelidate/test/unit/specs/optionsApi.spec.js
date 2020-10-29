@@ -1,6 +1,12 @@
-import { ref } from 'vue-demi'
-import { isEven } from '../validators.fixture'
-import { createOldApiSimpleWrapper, shouldBeErroredValidationObject, shouldBePristineValidationObj } from '../utils'
+import { ref, nextTick } from 'vue-demi'
+import { isEven, isOdd } from '../validators.fixture'
+import {
+  createOldApiSimpleWrapper,
+  shouldBeErroredValidationObject,
+  shouldBeInvalidValidationObject,
+  shouldBePristineValidationObj
+} from '../utils'
+import { flushPromises } from '@vue/test-utils'
 
 describe('OptionsAPI validations', () => {
   it('should have a `v` key defined if used', () => {
@@ -141,83 +147,111 @@ describe('OptionsAPI validations', () => {
   //   })
   // })
 
-  // describe('validators', () => {
-  //  it('supports access to the component scope', () => {
-  //
-  //  }
-  //
-  //   it('supports a validator to be a function, returning a boolean', () => {
-  //
-  //   })
-  //
-  //   it('supports a validator to be a function, returning an object with `$invalid` property', () => {
-  //
-  //   })
-  //
-  //   it('supports a validator to be an object with `$validator` function property', () => {
-  //
-  //   })
-  //
-  //   it('supports async validators via `$async: true` object syntax', async () => {
-  //     jest.useFakeTimers()
-  //     const { state, validations } = asyncValidation()
-  //     const { vm } = createSimpleWrapper(validations, state)
-  //     vm.v.$touch()
-  //     await flushPromises()
-  //     expect(vm.v.number.asyncIsEven.$pending).toBe(false)
-  //     state.number.value = 6
-  //     expect(vm.v.number.asyncIsEven.$pending).toBe(true)
-  //     expect(vm.v.number.$invalid).toBe(true)
-  //     await flushPromises()
-  //     expect(vm.v.number.asyncIsEven.$pending).toBe(false)
-  //     expect(vm.v.number.$invalid).toBe(false)
-  //     jest.useRealTimers()
-  //   })
-  //
-  //   it('throws when passed an async validator directly', () => {
-  //     const asyncValidator = (v) => Promise.resolve(v)
-  //     const number = ref(0)
-  //     const component = {
-  //       template: '<div>Hello World</div>',
-  //       setup () {
-  //         const v = useVuelidate({ number: { asyncValidator } }, { number })
-  //         return { v }
-  //       }
-  //     }
-  //     const { vm } = mount(component)
-  //     // throws here, because we call the `$invalid` getter.
-  //     expect(() => vm.v.$touch).toThrowError()
-  //   })
-  //
-  //   // TODO: Fix this one
-  //   it.skip('allows multiple invocations of an async validator, the last one to resolve, sets the return value', async () => {
-  //     // prepare async validator
-  //     const validator = jest.fn().mockResolvedValue(true)
-  //     const asyncValidator = withAsync(validator)
-  //     // prepare state
-  //     const number = ref(0)
-  //     const { vm } = createSimpleWrapper({ number: { asyncValidator } }, { number }, { $lazy: true })
-  //     // make sure the validator is armed
-  //     vm.v.$touch()
-  //     // assert its called once, for the dirty state change
-  //     expect(validator).toHaveBeenCalledTimes(1)
-  //     // assert there is an error state
-  //     expect(vm.v.number.asyncValidator.$invalid).toBe(true)
-  //     expect(vm.v.number.$invalid).toBe(true)
-  //     // change it a few times
-  //     number.value = 1
-  //     number.value = 2
-  //     validator.mockResolvedValueOnce(false)
-  //     number.value = 3
-  //     await flushPromises()
-  //     expect(vm.v.number.asyncValidator.$invalid).toBe(false)
-  //     validator.mockResolvedValueOnce(true)
-  //     number.value = 2
-  //     validator.mockResolvedValueOnce(false)
-  //     number.value = 1
-  //     await flushPromises()
-  //     expect(vm.v.number.asyncValidator.$invalid).toBe(false)
-  //   })
+  describe('validators', () => {
+    it('supports access to the component scope', async () => {
+      const validation = function () {
+        if (this.condition) {
+          return { number: { isOdd } }
+        }
+        return { number: { isEven } }
+      }
+      const wrapper = createOldApiSimpleWrapper(validation, { number: 2, condition: true })
+
+      expect(wrapper.vm.v).toHaveProperty('number', expect.any(Object))
+      shouldBeInvalidValidationObject({ v: wrapper.vm.v, property: 'number', validatorName: 'isOdd' })
+    })
+
+    it('support dynamic validations', async () => {
+      const validation = function () {
+        if (this.condition) {
+          return {}
+        }
+        return { number: { isEven } }
+      }
+      const wrapper = createOldApiSimpleWrapper(validation, { number: 2, condition: false })
+
+      expect(wrapper.vm.v).toHaveProperty('number', expect.any(Object))
+      shouldBePristineValidationObj(wrapper.vm.v.number)
+
+      wrapper.vm.condition = true
+      await flushPromises()
+
+      expect(wrapper.vm.v).not.toHaveProperty('number')
+      shouldBePristineValidationObj(wrapper.vm.v)
+    })
+
+    //   it('supports a validator to be a function, returning a boolean', () => {
+    //
+    //   })
+    //
+    //   it('supports a validator to be a function, returning an object with `$invalid` property', () => {
+    //
+    //   })
+    //
+    //   it('supports a validator to be an object with `$validator` function property', () => {
+    //
+    //   })
+    //
+    //   it('supports async validators via `$async: true` object syntax', async () => {
+    //     jest.useFakeTimers()
+    //     const { state, validations } = asyncValidation()
+    //     const { vm } = createSimpleWrapper(validations, state)
+    //     vm.v.$touch()
+    //     await flushPromises()
+    //     expect(vm.v.number.asyncIsEven.$pending).toBe(false)
+    //     state.number.value = 6
+    //     expect(vm.v.number.asyncIsEven.$pending).toBe(true)
+    //     expect(vm.v.number.$invalid).toBe(true)
+    //     await flushPromises()
+    //     expect(vm.v.number.asyncIsEven.$pending).toBe(false)
+    //     expect(vm.v.number.$invalid).toBe(false)
+    //     jest.useRealTimers()
+    //   })
+    //
+    //   it('throws when passed an async validator directly', () => {
+    //     const asyncValidator = (v) => Promise.resolve(v)
+    //     const number = ref(0)
+    //     const component = {
+    //       template: '<div>Hello World</div>',
+    //       setup () {
+    //         const v = useVuelidate({ number: { asyncValidator } }, { number })
+    //         return { v }
+    //       }
+    //     }
+    //     const { vm } = mount(component)
+    //     // throws here, because we call the `$invalid` getter.
+    //     expect(() => vm.v.$touch).toThrowError()
+    //   })
+    //
+    //   // TODO: Fix this one
+    //   it.skip('allows multiple invocations of an async validator, the last one to resolve, sets the return value', async () => {
+    //     // prepare async validator
+    //     const validator = jest.fn().mockResolvedValue(true)
+    //     const asyncValidator = withAsync(validator)
+    //     // prepare state
+    //     const number = ref(0)
+    //     const { vm } = createSimpleWrapper({ number: { asyncValidator } }, { number }, { $lazy: true })
+    //     // make sure the validator is armed
+    //     vm.v.$touch()
+    //     // assert its called once, for the dirty state change
+    //     expect(validator).toHaveBeenCalledTimes(1)
+    //     // assert there is an error state
+    //     expect(vm.v.number.asyncValidator.$invalid).toBe(true)
+    //     expect(vm.v.number.$invalid).toBe(true)
+    //     // change it a few times
+    //     number.value = 1
+    //     number.value = 2
+    //     validator.mockResolvedValueOnce(false)
+    //     number.value = 3
+    //     await flushPromises()
+    //     expect(vm.v.number.asyncValidator.$invalid).toBe(false)
+    //     validator.mockResolvedValueOnce(true)
+    //     number.value = 2
+    //     validator.mockResolvedValueOnce(false)
+    //     number.value = 1
+    //     await flushPromises()
+    //     expect(vm.v.number.asyncValidator.$invalid).toBe(false)
+  })
 
   // describe('deep changes in state', () => {
   //   it('trigger $dirty and $model reactions', async () => {

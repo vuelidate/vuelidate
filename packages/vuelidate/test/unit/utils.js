@@ -18,11 +18,9 @@ export const createSimpleComponent = (getVuelidateResults, state) => ({
   }
 })
 
-export const createOldApiSimpleComponent = (rules, state, config) => ({
+export const createOldApiSimpleComponent = (validations, state, config) => ({
   name: 'childComp',
-  validations () {
-    return typeof rules === 'function' ? rules.call(this) : rules
-  },
+  validations,
   setup () {
     return { v: useVuelidate() }
   },
