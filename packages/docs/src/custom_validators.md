@@ -134,7 +134,7 @@ const alpha = helpers.regex('alpha', /^[a-zA-Z]*$/)
 If you want to use locator strategy, exactly the same one as in `sameAs` or `requiredIf` builtin validators, you can use `ref` helper to accomplish that, in exactly the same way how it is used inside those two validators.
 
 ```js
-import { ref, withParams } from './common'
+import { ref, withParams } from '@vuelidate/validators'
 export default (equalTo) =>
   withParams({ type: 'sameAs', eq: equalTo }, function(value, parentVm) {
     return value === ref(equalTo, this, parentVm)
@@ -142,7 +142,7 @@ export default (equalTo) =>
 ```
 
 ```js
-import { req, ref, withParams } from './common'
+import { req, ref, withParams } from '@vuelidate/validators'
 
 export default (prop) =>
   withParams({ type: 'requiredIf', prop }, function(value, parentVm) {
@@ -197,7 +197,7 @@ const validations = {
 This table contains all helpers that can be used to help you with writing your own validators. You can import them from validators library
 
 ```js
-import { helpers } from 'vuelidate/lib/validators'
+import { helpers } from '@vuelidate/validators'
 ```
 
 | Helper       | Description                                                                                                                                   |
