@@ -157,6 +157,6 @@ export const useVuelidate: <
   state: T | Ref<T> | ToRefs<T>,
   registerAs?: string
 ) => Ref<Validation<Vargs>>;
-export const VuelidatePlugin: (app: Component) => void;
+export const VuelidatePlugin: (app: App) => void;
 
 export default useVuelidate;
