@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.0.0-alpha.7](https://github.com/vuelidate/vuelidate/compare/@vuelidate/core@2.0.0-alpha.6...@vuelidate/core@2.0.0-alpha.7) (2020-11-02)
+
+
+### Bug Fixes
+
+* **core:** fix VuelidatePlugin type to accept App argument ([#745](https://github.com/vuelidate/vuelidate/issues/745)) ([0fc3e74](https://github.com/vuelidate/vuelidate/commit/0fc3e744e23d4a4e2735f523328e9fb7d42ac164))
+* **core:** pass path as parentKey to nested setValidations ([#746](https://github.com/vuelidate/vuelidate/issues/746)) ([3d42c60](https://github.com/vuelidate/vuelidate/commit/3d42c60fbc3c1a65ee1e06f49bff7379f43cffb5))
+
+
+
+
+
 # [2.0.0-alpha.6](https://github.com/vuelidate/vuelidate/compare/@vuelidate/core@2.0.0-alpha.5...@vuelidate/core@2.0.0-alpha.6) (2020-10-24)
 
 **Note:** Version bump only for package @vuelidate/core

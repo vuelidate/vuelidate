@@ -1,6 +1,6 @@
 {
   "name": "@vuelidate/validators",
-  "version": "2.0.0-alpha.4",
+  "version": "2.0.0-alpha.5",
   "description": "Validators for Vuelidate",
   "main": "dist/index.js",
   "types": "index.d.ts",
