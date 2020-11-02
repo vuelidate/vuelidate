@@ -328,8 +328,9 @@ describe('useVuelidate', () => {
     it('collects `$propertyPath` as of deeply nested properties', () => {
       const { state, validations } = nestedReactiveObjectValidation()
       const { vm } = createSimpleWrapper(validations, state)
-      vm.v.$touch()
-      expect(vm.v.$errors[0]).toHaveProperty('$propertyPath', 'level1.child')
+
+      vm.v.level1.level2.child.$model = 3;
+      expect(vm.v.$errors.find(error => error.$propertyPath === 'level1.level2.child')).toBeTruthy();
     })
 
     it('keeps `$params` reactive', () => {

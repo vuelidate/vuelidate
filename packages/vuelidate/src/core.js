@@ -314,7 +314,7 @@ function collectNestedValidationResults (validations, state, key, path, resultsC
       validations: validations[nestedKey],
       state: nestedState,
       key: nestedKey,
-      parentKey: key,
+      parentKey: path,
       resultsCache
     })
     return results
