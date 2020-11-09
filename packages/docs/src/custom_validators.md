@@ -168,7 +168,7 @@ const validations = {
 };
 ```
 
-`$message` can be a basic string, or it can take a function that receives an object with the following properties:
+`$message` can also take a function that is reactive to changes in the validator state and model. The `$messages` function receives an object with the following properties:
 
 | Property   |                            |
 | ---------  | -------------------------- |
