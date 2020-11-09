@@ -32,6 +32,7 @@
 import { ref, reactive } from 'vue'
 import useVuelidate from '@vuelidate/core'
 import { required, helpers, minLength } from '@vuelidate/validators'
+import { unwrapObj } from '@vuelidate/core/src/utils'
 
 const { withAsync } = helpers
 
@@ -60,7 +61,14 @@ export default {
     let v$ = useVuelidate(
       {
         name: {
-          required, minLength: minLength(4), asyncValidator
+          required: helpers.withMessage('This field is required', required),
+          minLength: helpers.withMessage(({
+            $pending,
+            $invalid,
+            $params,
+            $model
+          }) => `This field has a value of '${$model}' but must have a min length of ${$params.min} so it is ${$invalid ? 'invalid' : 'valid' }`, minLength(4)),
+          asyncValidator
         },
         social: {
           github: { minLength: minLength(4) },

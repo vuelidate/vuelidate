@@ -152,6 +152,46 @@ export default (prop) =>
 
 Note that imports are slightly different, as this is how the code looks like from library source point of view. This style is the correct one if you are willing to contribute your own validators to vuelidate. You should still use helpers export inside your own code (as presented in previous examples).
 
+## Custom error messages
+
+While validators from the `@vuelidate/validators` package come with basic error messages, you may want to override them or define messages for your own validators. The best way to do this is via the `withMessage` helper.
+
+`withMessage` takes `$message` as the first argument and a validator as the second argument, and returns a version of that validator with the customised message.
+
+```js
+import { required, helpers, minLength } from '@vuelidate/validators'
+
+const validations = {
+  name: {
+    required: helpers.withMessage('This field cannot be empty', required),
+  }
+};
+```
+
+`$message` can be a basic string, or it can take a function that receives an object with the following properties:
+
+| Property   |                            |
+| ---------  | -------------------------- |
+| `$invalid` | The valid state of the validator |
+| `$model`   | The value being validated |
+| `$params`  | Values of params in any validator created with the `withParams` helper |
+| `$pending` | Whether an async validator has resolved yet  |
+
+
+```js
+import { required, helpers, minLength } from '@vuelidate/validators'
+
+const validations = {
+  name: {
+    minLength: helpers.withMessage(
+      ({ $pending, $invalid, $params, $model }) => `This field has a value of '${$model}' but must have a min length of ${$params.min} so it is ${$invalid ? 'invalid' : 'valid' }`,
+      minLength(4),
+    ),
+  }
+};
+```
+
+
 ## List of helpers
 
 This table contains all helpers that can be used to help you with writing your own validators. You can import them from validators library
@@ -163,6 +203,7 @@ import { helpers } from 'vuelidate/lib/validators'
 | Helper       | Description                                                                                                                                   |
 | ------------ | --------------------------------------------------------------------------------------------------------------------------------------------- |
 | `withParams` | Allows adding `$params` metadata to your validation function.                                                                                 |
+| `withMessage` | Allows adding custom error messages to built-in or custom validators                                                                  |
 | `req`        | Minimal version of `required` validator. Use it to make your validator accept optional fields                                                 |
 | `ref`        | A locator helper. This allows for convinient referencing of other fields in the model.                                                        |
 | `len`        | Get length of any kind value, whatever makes sense in the context. This can mean array length, string length, or number of keys on the object |
