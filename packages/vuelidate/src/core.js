@@ -90,7 +90,6 @@ function normalizeValidatorResponse (result) {
  * Returns the result of the validator every time the model changes.
  * Wraps the call in a computed property.
  * Used for with normal functions.
- * TODO: This allows a validator to return $invalid, probably along with other parameters. We do not utilize them ATM.
  * @param {Validator} rule
  * @param {Ref<*>} model
  * @param {Ref<boolean>} $dirty
