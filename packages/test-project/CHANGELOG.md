@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.2.4](https://github.com/vuelidate/vuelidate/compare/test-project@0.2.3...test-project@0.2.4) (2020-11-19)
+
+**Note:** Version bump only for package test-project
+
+
+
+
+
 ## [0.2.3](https://github.com/vuelidate/vuelidate/compare/test-project@0.2.2...test-project@0.2.3) (2020-10-23)
 
 **Note:** Version bump only for package test-project

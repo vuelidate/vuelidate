@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.0.0-alpha.8](https://github.com/vuelidate/vuelidate/compare/@vuelidate/core@2.0.0-alpha.7...@vuelidate/core@2.0.0-alpha.8) (2020-11-19)
+
+
+### Bug Fixes
+
+* changed type for VuelidatePlugin to Plugin from vue ([#752](https://github.com/vuelidate/vuelidate/issues/752)) ([7daaf4c](https://github.com/vuelidate/vuelidate/commit/7daaf4c646c66123cc27d6ad883750f308c2c243))
+
+
+
+
+
 # [2.0.0-alpha.7](https://github.com/vuelidate/vuelidate/compare/@vuelidate/core@2.0.0-alpha.6...@vuelidate/core@2.0.0-alpha.7) (2020-11-02)
 
 
