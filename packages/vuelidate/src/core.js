@@ -22,11 +22,13 @@ import { computed, reactive, ref, watch, isRef } from 'vue-demi'
 
 /**
  * Sorts the validators for a state tree branch
- * @param {Object<NormalizedValidator|Function>} validationsRaw
+ * @param {Object<NormalizedValidator|Function>|Function} validationsRaw
  * @return {{ rules: Object<NormalizedValidator>, nestedValidators: Object, config: Object }}
  */
 function sortValidations (validationsRaw = {}) {
-  const validations = unwrap(validationsRaw)
+  const validations = typeof validationsRaw === 'function'
+    ? validationsRaw()
+    : unwrap(validationsRaw)
   const validationKeys = Object.keys(validations)
 
   const rules = {}

@@ -13,6 +13,7 @@ import {
 import { createSimpleWrapper, shouldBePristineValidationObj, shouldBeInvalidValidationObject } from '../utils'
 import { withAsync } from '@vuelidate/validators/src/common'
 import useVuelidate from '../../../src'
+import { sameAs } from '@vuelidate/validators/src'
 
 describe('useVuelidate', () => {
   it('should have a `v` key defined if used', () => {
@@ -33,6 +34,25 @@ describe('useVuelidate', () => {
 
     expect(vm.v).toHaveProperty('number', expect.any(Object))
     shouldBePristineValidationObj(vm.v.number)
+  })
+
+  it('accepts a function as validations', async () => {
+    const password = ref('a special password')
+    const confirmPassword = ref('')
+
+    const { vm } = createSimpleWrapper(() => ({
+      confirmPassword: {
+        sameAs: sameAs(password, 'Password')
+      }
+    }), { confirmPassword })
+
+    await vm.v.$validate()
+
+    expect(vm.v.$invalid).toBe(true)
+
+    confirmPassword.value = password.value
+
+    expect(vm.v.$invalid).toBe(false)
   })
 
   describe('.$touch', () => {
@@ -329,8 +349,8 @@ describe('useVuelidate', () => {
       const { state, validations } = nestedReactiveObjectValidation()
       const { vm } = createSimpleWrapper(validations, state)
 
-      vm.v.level1.level2.child.$model = 3;
-      expect(vm.v.$errors.find(error => error.$propertyPath === 'level1.level2.child')).toBeTruthy();
+      vm.v.level1.level2.child.$model = 3
+      expect(vm.v.$errors.find(error => error.$propertyPath === 'level1.level2.child')).toBeTruthy()
     })
 
     it('keeps `$params` reactive', () => {
