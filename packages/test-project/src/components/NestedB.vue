@@ -7,7 +7,7 @@
         type="number"
       >
     </div>
-    <pre>{{ $v.$errors }}</pre>
+    <pre>{{ vv.$errors }}</pre>
   </div>
 </template>
 
@@ -39,9 +39,9 @@ export default {
         $autoDirty: true
       }
     }
-    const $v = useVuelidate(rules, { numberB })
+    const vv = useVuelidate(rules, { numberB })
 
-    return { numberB, $v }
+    return { numberB, vv }
   }
 }
 </script>
