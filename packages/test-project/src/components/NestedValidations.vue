@@ -45,7 +45,7 @@
 <script>
 import { ref, computed } from 'vue'
 import useVuelidate from '@vuelidate/core'
-import { required, minValue } from '@vuelidate/validators'
+import { required, minValue, maxValue } from '@vuelidate/validators'
 import NestedA from './NestedA.vue'
 
 export default {
@@ -58,6 +58,9 @@ export default {
       const v = { numberX: { required, minValue: minValue(3) } }
       if (numberX.value > 5) {
         v.optionalNumber = { required, minValue: minValue(numberX), $autoDirty: true }
+      }
+      if (numberX.value > 10) {
+        v.optionalNumber = { ...v.optionalNumber, maxValue: maxValue(15) }
       }
       return v
     })

@@ -234,9 +234,13 @@ function createValidationResults (rules, state, key, parentKey, resultsCache, pa
   // collect the property keys
   const ruleKeys = Object.keys(rules)
 
-  const cachedResult = resultsCache.get(path)
+  const cachedResult = resultsCache.get(path, rules)
+  let $dirty = ref(false)
 
-  const $dirty = cachedResult ? cachedResult.$dirty : ref(false)
+  if (cachedResult) {
+    if (!cachedResult.$partial) return cachedResult
+    $dirty = cachedResult.$dirty
+  }
 
   const result = {
     // restore $dirty from cache
@@ -294,7 +298,7 @@ function createValidationResults (rules, state, key, parentKey, resultsCache, pa
     : []
   )
 
-  resultsCache.set(path, result)
+  resultsCache.set(path, rules, result)
 
   return result
 }

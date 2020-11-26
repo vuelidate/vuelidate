@@ -1,6 +1,7 @@
 import { reactive, provide, inject, ref, computed, getCurrentInstance, onBeforeUnmount } from 'vue-demi'
 import { unwrap, isFunction } from './utils'
 import { setValidations } from './core'
+import ResultsStorage from './storage'
 
 const VuelidateInjectChildResults = Symbol('vuelidate#injectChiildResults')
 const VuelidateRemoveChildResults = Symbol('vuelidate#removeChiildResults')
@@ -14,8 +15,6 @@ const VuelidateRemoveChildResults = Symbol('vuelidate#removeChiildResults')
  * @return {UnwrapRef<*>}
  */
 export function useVuelidate (validations, state, globalConfig = {}) {
-  const isOptionsApiMode = !validations
-
   if (!validations) {
     const instance = getCurrentInstance()
     if (instance.type.validations) {
@@ -43,7 +42,7 @@ export function useVuelidate (validations, state, globalConfig = {}) {
     $registerAs = `_vuelidate_${uid}`
   }
 
-  const resultsCache = new Map()
+  const resultsCache = new ResultsStorage()
 
   const childResultsRaw = {}
   const childResultsKeys = ref([])
@@ -81,23 +80,13 @@ export function useVuelidate (validations, state, globalConfig = {}) {
   // provide to all of it's children the remove results  function
   provide(VuelidateRemoveChildResults, removeChildResultsFromParent)
 
-  // TODO: This should likely be refactored at some point once we figure out Options API
-  // limitations. Otherwise it might lead to memory leaks.
-  const validationResults = isOptionsApiMode
-    ? computed(() => setValidations({
-      validations,
-      state,
-      childResults,
-      resultsCache,
-      globalConfig
-    }))
-    : setValidations({
-      validations,
-      state,
-      childResults,
-      resultsCache,
-      globalConfig
-    })
+  const validationResults = computed(() => setValidations({
+    validations,
+    state,
+    childResults,
+    resultsCache,
+    globalConfig
+  }))
 
   // send all the data to the parent when the function is invoked inside setup.
   sendValidationResultsToParent(validationResults, $registerAs)
@@ -106,9 +95,8 @@ export function useVuelidate (validations, state, globalConfig = {}) {
 
   // TODO: Change into reactive + watch
   return computed(() => {
-    const results = isOptionsApiMode ? validationResults.value : validationResults
     return {
-      ...results,
+      ...validationResults.value,
       ...childResults.value
     }
   })
