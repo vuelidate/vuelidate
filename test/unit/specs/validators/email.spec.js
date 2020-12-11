@@ -57,6 +57,7 @@ describe('email validator', () => {
     expect(email('someone@g-mail.com')).to.be.true
     expect(email('some!one@gmail.com')).to.be.true
     expect(email('soMe12_one@gmail.com')).to.be.true
+    expect(email('someone@gMail.com')).to.be.true
     expect(email('someone@gmail.co')).to.be.true
     expect(email('someone@g.cn')).to.be.true
     expect(email('someone@g.accountants')).to.be.true
