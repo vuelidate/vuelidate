@@ -45,6 +45,15 @@
 ```bash
 npm install vuelidate --save
 ```
+check install latest version in Vue3.0
+
+```bash
+npm install @vuelidate/core @vuelidate/validators
+
+// OR
+
+yarn add @vuelidate/core @vuelidate/validators
+```
 
 You can import the library and use as a Vue plugin to enable the functionality globally on all components containing validation configuration.
 
