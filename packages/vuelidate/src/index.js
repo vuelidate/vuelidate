@@ -111,7 +111,13 @@ export const VuelidateMixin = {
         return $v.value
       }
     }
-  }
+  },
+  beforeUnmount() {
+    const options = this.$options;
+    if (options.computed.$v) {
+      delete options.computed.$v;
+    }
+  },
 }
 
 /**
