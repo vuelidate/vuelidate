@@ -48,7 +48,7 @@ export interface ValidationRuleWithParams<P extends object = object, T = unknown
   $params: P
 }
 
-export type ValidationRule <T = unknown> = ValidationRuleWithParams<any, T> | ValidationRuleWithoutParams<T> | ValidatorFn<T>;
+export type ValidationRule <T = unknown> = ValidationRuleWithParams<any, T> | ValidationRuleWithoutParams<T> | ValidatorFn<T> | boolean;
 
 type ValidationRuleCollection <T = unknown> = Record<string, ValidationRule<T>>;
 
