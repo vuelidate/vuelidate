@@ -1,4 +1,4 @@
-import { watch, computed, getCurrentInstance, inject, onBeforeMount, onBeforeUnmount, provide, isRef, ref } from 'vue-demi'
+import { watch, computed, getCurrentInstance, inject, onBeforeMount, onBeforeUnmount, provide, isRef, ref, reactive, isProxy } from 'vue-demi'
 import { isFunction, unwrap } from './utils'
 import { setValidations } from './core'
 import ResultsStorage from './storage'
@@ -108,9 +108,10 @@ export function useVuelidate (validations, state, globalConfig = {}) {
 
     globalConfig = instance.type.validationsConfig || {}
   } else {
-    const validationsWatchTarget = isRef(validations)
+    const validationsWatchTarget = isRef(validations) || isProxy(validations)
       ? validations
-      : () => validations
+      // wrap plain objects in a reactive, so we can track changes if they have computed in them.
+      : reactive(validations)
 
     watch(validationsWatchTarget, (newValidationRules) => {
       validationResults.value = setValidations({
