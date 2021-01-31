@@ -535,13 +535,12 @@ export function setValidations ({
   }
 
   /**
-   * Executes the validators and returns the result. Doesn’t work with $lazy: true
-   * @param {boolean} silent - when true, won’t trigger $dirty state
+   * Executes the validators and returns the result.
    * @return {Promise<boolean>}
    */
-  function $validate ({ silent = false } = {}) {
+  function $validate () {
     return new Promise((resolve) => {
-      if (!silent && !$dirty.value) $touch()
+      if (!$dirty.value) $touch()
       // return whether it is valid or not
       if (!$pending.value) return resolve(!$invalid.value)
       const unwatch = watch($pending, () => {

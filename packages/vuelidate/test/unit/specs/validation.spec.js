@@ -444,6 +444,14 @@ describe('useVuelidate', () => {
       expect(vm.v.$pending).toBe(false)
     })
 
+    it('works with `lazy: true`', async () => {
+      const { state, validations } = simpleValidation()
+      const { vm } = createSimpleWrapper(validations, state, { $lazy: true })
+      expect(await vm.v.$validate()).toBe(false)
+      state.number.value = 2
+      expect(await vm.v.$validate()).toBe(true)
+    })
+
     it('is only present at the top level', () => {
       const { state, validations } = nestedReactiveObjectValidation()
       const { vm } = createSimpleWrapper(validations, state)
