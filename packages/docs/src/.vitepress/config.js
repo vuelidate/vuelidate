@@ -21,6 +21,7 @@ const config = {
       { text: 'API', link: '/api' },
       { text: 'Built-in Validators', link: '/validators' },
       { text: 'Custom Validators', link: '/custom_validators' },
+      { text: 'Migration Guide', link: '/migration_guide' },
     ]
   },
 }
