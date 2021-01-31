@@ -97,7 +97,6 @@ function normalizeValidatorResponse (result) {
 function createComputedResult (rule, model, $dirty, { $lazy }) {
   return computed(() => {
     // if $dirty is false, we dont validate at all.
-    // TODO: Make this optional, this is a huge breaking change
     if ($lazy && !$dirty.value) return false
     let result = callRule(rule, unwrap(model))
     // if it returns a promise directly, error out
@@ -156,6 +155,7 @@ function createAsyncResult (rule, model, $pending, $dirty, { $lazy }) {
  * Detects async and sync validators.
  * @param {NormalizedValidator} rule
  * @param {Ref<*>} model
+ * @param {Object} config
  * @return {{$params: *, $message: Ref<String>, $pending: Ref<Boolean>, $invalid: Ref<Boolean>}}
  */
 function createValidatorResult (rule, model, $dirty, config) {
@@ -329,6 +329,7 @@ function collectNestedValidationResults (validations, nestedState, key, path, re
  * @param {ValidationResult|{}} results
  * @param {Object<ValidationResult>[]} nestedResults
  * @param {Object<ValidationResult>[]} childResults
+ * @param {String} path
  * @return {{$anyDirty: Ref<Boolean>, $error: Ref<Boolean>, $invalid: Ref<Boolean>, $errors: Ref<ErrorObject[]>, $dirty: Ref<Boolean>, $touch: Function, $reset: Function }}
  */
 function createMetaFields (results, nestedResults, childResults, path) {
@@ -349,8 +350,7 @@ function createMetaFields (results, nestedResults, childResults, path) {
     // collect all nested and child $silentErrors
     const nestedErrors = allResults.value
       .filter(result => {
-        if (!unwrap(result).$silentErrors) return false
-        return unwrap(result).$silentErrors.length
+        return (unwrap(result).$silentErrors || []).length
       })
       .reduce((errors, result) => {
         return errors.concat(...result.$silentErrors)
@@ -405,7 +405,6 @@ function createMetaFields (results, nestedResults, childResults, path) {
   const $error = computed(() => ($invalid.value && $dirty.value) || false)
 
   const $touch = () => {
-    // $dirty.value = true
     // call the root $touch
     results.$touch()
     // call all nested level $touch
@@ -423,7 +422,7 @@ function createMetaFields (results, nestedResults, childResults, path) {
     })
   }
 
-  // Ensure that if all child and nester results are $dirty, this also becomes $dirty
+  // Ensure that if all child and nested results are $dirty, this also becomes $dirty
   if (allResults.value.length && allResults.value.every(nr => nr.$dirty)) $touch()
 
   return {
@@ -530,8 +529,7 @@ export function setValidations ({
   }) : null
 
   if (mergedConfig.$autoDirty) {
-    const watchTarget = nestedState
-    watch(watchTarget, () => {
+    watch(nestedState, () => {
       if (!$dirty.value) $touch()
     })
   }
@@ -539,7 +537,7 @@ export function setValidations ({
   /**
    * Executes the validators and returns the result. Doesn’t work with $lazy: true
    * @param {boolean} silent - when true, won’t trigger $dirty state
-   * @return {VuelidateState}
+   * @return {Promise<boolean>}
    */
   function $validate ({ silent = false } = {}) {
     return new Promise((resolve) => {

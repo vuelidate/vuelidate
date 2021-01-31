@@ -288,14 +288,14 @@ export default {
 }
 ```
 
-This is good for the general case, but what if you have async validators? You can use the `v$alidate` method, which returns a promise. That promise resolves with a boolean,
+This is good for the general case, but what if you have async validators? You can use the `$validate` method, which returns a promise. That promise resolves with a boolean,
 depending on what the validation status is.
 
 ```js
 export default {
   methods: {
     async submitForm() {
-      if(! await this.v$.v$alidate()) return
+      if(! await this.v$.$validate()) return
       // do stuff
     }
   }
