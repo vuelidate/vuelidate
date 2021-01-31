@@ -541,7 +541,7 @@ export function setValidations ({
   }) : null
 
   if (mergedConfig.$autoDirty) {
-    watch(() => nestedState, () => {
+    watch(nestedState, () => {
       if (!$dirty.value) $touch()
     })
   }
