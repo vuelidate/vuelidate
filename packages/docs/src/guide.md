@@ -253,7 +253,7 @@ The easiest way to display errors is to use the form's top level `$errors` prope
   v-for="(error, index) of v$.$errors"
   :key="index"
 >
-  <strong>{{ error.v$alidator }}</strong>
+  <strong>{{ error.$validator }}</strong>
   <small> on property</small>
   <strong>{{ error.$property }}</strong>
   <small> says:</small>
