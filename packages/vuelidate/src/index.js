@@ -94,7 +94,7 @@ export function useVuelidate (validations, state, globalConfig = {}) {
         })
       }
 
-      watch(() => isFunction(rules) ? rules.call(instance.proxy, new ComputedProxyFactory(instance.proxy)) : rules,
+      watch(() => isFunction(rules) ? rules.call(state.value, new ComputedProxyFactory(state.value)) : rules,
         (validations) => {
           validationResults.value = setValidations({
             validations,

@@ -1,6 +1,8 @@
 import { isFunction, isPromise, unwrap, unwrapObj } from './utils'
 import { computed, isRef, reactive, ref, watch } from 'vue-demi'
 
+let ROOT_PATH = '__root'
+
 /**
  * @typedef NormalizedValidator
  * @property {Validator} $validator
@@ -208,9 +210,11 @@ function createValidatorResult (rule, model, $dirty, config) {
  * @property {Ref<Boolean>} $dirty
  * @property {Ref<Boolean>} $invalid
  * @property {Ref<Boolean>} $error
+ * @property {Ref<String>} $path
  * @property {Function} $touch
  * @property {Function} $reset
- * @property {Ref<ErrorObject[]>} $errors
+ * @property {ComputedRef<ErrorObject[]>} $errors
+ * @property {ComputedRef<ErrorObject[]>} $silentErrors
  */
 
 /**
@@ -219,7 +223,7 @@ function createValidatorResult (rule, model, $dirty, config) {
  * @param {Object<NormalizedValidator>} rules - Rules for the current state tree
  * @param {Object} model - Current state value
  * @param {String} key - Key for the current state tree
- * @param {Map} [resultsCache] - A cache map of all the validators
+ * @param {ResultsStorage} [resultsCache] - A cache map of all the validators
  * @param {String} [path] - the current property path
  * @return {ValidationResult | {}}
  */
@@ -227,12 +231,14 @@ function createValidationResults (rules, model, key, resultsCache, path, config)
   // collect the property keys
   const ruleKeys = Object.keys(rules)
 
-  const cachedResult = resultsCache.get(path, rules)
+  const cachedResult = resultsCache.checkRulesValidity(path, rules)
   let $dirty = ref(false)
 
   if (cachedResult) {
+    // if the rules are the same as before, use the cached results
     if (!cachedResult.$partial) return cachedResult
-    $dirty = cachedResult.$dirty
+    // use the `$dirty.value`, so we dont save references by accident
+    $dirty.value = cachedResult.$dirty.value
   }
 
   const result = {
@@ -349,9 +355,7 @@ function createMetaFields (results, nestedResults, childResults, path) {
 
     // collect all nested and child $silentErrors
     const nestedErrors = allResults.value
-      .filter(result => {
-        return (unwrap(result).$silentErrors || []).length
-      })
+      .filter(result => (unwrap(result).$silentErrors || []).length)
       .reduce((errors, result) => {
         return errors.concat(...result.$silentErrors)
       }, [])
@@ -366,10 +370,7 @@ function createMetaFields (results, nestedResults, childResults, path) {
 
     // collect all nested and child $errors
     const nestedErrors = allResults.value
-      .filter(result => {
-        if (!unwrap(result).$errors) return false
-        return unwrap(result).$errors.length
-      })
+      .filter(result => (unwrap(result).$errors || []).length)
       .reduce((errors, result) => {
         return errors.concat(...result.$errors)
       }, [])
@@ -440,17 +441,20 @@ function createMetaFields (results, nestedResults, childResults, path) {
 
 /**
  * @typedef VuelidateState
- * @property {Boolean} $anyDirty
- * @property {Boolean} $error
- * @property {Boolean} $pending
- * @property {Boolean} $invalid
- * @property {ErrorObject[]} $errors
- * @property {*} [$model]
+ * @property {WritableComputedRef<any>} $model
+ * @property {ComputedRef<Boolean>} $dirty
+ * @property {ComputedRef<Boolean>} $error
+ * @property {ComputedRef<ErrorObject[]>} $errors
+ * @property {ComputedRef<Boolean>} $invalid
+ * @property {ComputedRef<Boolean>} $anyDirty
+ * @property {ComputedRef<Boolean>} $pending
  * @property {Function} $touch
- * @property {Boolean} $dirty
  * @property {Function} $reset
- * @property {Function} $validate
- * @property {Function} $getResultsForChild
+ * @property {String} $path
+ * @property {ComputedRef<ErrorObject[]>} $silentErrors
+ * @property {Function} [$validate]
+ * @property {Function} [$getResultsForChild]
+ * @property {Object.<string, VuelidateState>}
  */
 
 /**
@@ -464,7 +468,7 @@ function createMetaFields (results, nestedResults, childResults, path) {
  * @param {String} [params.parentKey] - Parent state property key. Used when being called recursively
  * @param {Object<ValidationResult>} [params.childResults] - Used to collect child results.
  * @param {Map} resultsCache - The cached validation results
- * @return {UnwrapRef<VuelidateState>}
+ * @return {UnwrapNestedRefs<VuelidateState>}
  */
 export function setValidations ({
   validations,
@@ -509,7 +513,7 @@ export function setValidations ({
     $touch,
     $reset,
     $silentErrors
-  } = createMetaFields(results, nestedResults, childResults, path || '__root')
+  } = createMetaFields(results, nestedResults, childResults, path || ROOT_PATH)
 
   /**
    * If we have no `key`, this is the top level state
@@ -573,7 +577,7 @@ export function setValidations ({
     $pending,
     $touch,
     $reset,
-    $path: path || '__root',
+    $path: path || ROOT_PATH,
     $silentErrors,
     // if there are no child results, we are inside a nested property
     ...(childResults && {

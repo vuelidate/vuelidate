@@ -3,11 +3,23 @@ export default class ResultsStorage {
     this.storage = new Map()
   }
 
+  /**
+   * Stores a validation result, and its rules by its path
+   * @param {String} path
+   * @param {Object<NormalizedValidator>} rules
+   * @param {ValidationResult} result
+   */
   set (path, rules, result) {
     this.storage.set(path, { rules, result })
   }
 
-  get (path, rules) {
+  /**
+   * Check if the stored `results` for the provided `path` have the same `rules`
+   * @param {String} path
+   * @param {Object<NormalizedValidator>} rules
+   * @return {{$partial: boolean, $dirty: Ref<boolean>}|undefined|ValidationResult}
+   */
+  checkRulesValidity (path, rules) {
     const storedRuleResultPair = this.storage.get(path)
     if (!storedRuleResultPair) return undefined
 
