@@ -111,7 +111,7 @@ export function useVuelidate (validations, state, globalConfig = {}) {
     const validationsWatchTarget = isRef(validations) || isProxy(validations)
       ? validations
       // wrap plain objects in a reactive, so we can track changes if they have computed in them.
-      : reactive(validations)
+      : reactive(validations || {})
 
     watch(validationsWatchTarget, (newValidationRules) => {
       validationResults.value = setValidations({

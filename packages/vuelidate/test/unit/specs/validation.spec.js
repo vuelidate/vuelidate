@@ -21,6 +21,14 @@ describe('useVuelidate', () => {
     expect(wrapper.vm.v).toEqual(expect.any(Object))
   })
 
+  it('does not error out if invoked without any parameters', () => {
+    const warnSpy = jest.spyOn(console, 'warn')
+    const { vm } = createSimpleWrapper()
+
+    expect(warnSpy).toHaveBeenCalledTimes(0)
+    shouldBePristineValidationObj(vm.v)
+  })
+
   it('should return a pristine validation object', () => {
     const { vm } = createSimpleWrapper({}, {})
 
