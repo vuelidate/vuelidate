@@ -1,6 +1,5 @@
 export default class ResultsStorage {
-  constructor (id) {
-    this.id = id
+  constructor () {
     this.storage = new Map()
   }
 

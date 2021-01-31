@@ -1,3 +1,8 @@
+---
+title: Advanced Usage | Vuelidate
+lang: en-US
+---
+
 # Advanced usage
 
 ## Using component mixin
@@ -27,6 +32,8 @@ export default {
 </script>
 ```
 
+<AsComposition></AsComposition>
+
 ## Composition API
 
 ```js
@@ -54,7 +61,7 @@ export default {
 
 ## Nested validations
 
-When using `useVuelidate`, Vuelidate will collect all validation `$errors` from all nested components. No need to pass any props or listen to any events.
+When using `useVuelidate`, Vuelidate will collect all validation `$errors` and `$silentErrors` from all nested components. No need to pass any props or listen to any events. Additionally calling `$touch` in the root component will automatically call `$touch` in the nested components making building complex forms a breeze.
 
 This is the recommended approach when handling collections. Create a new, nested component with it’s own validation rules.
 
@@ -64,6 +71,7 @@ This is the recommended approach when handling collections. Create a new, nested
     <CompA />
     <CompB />
 
+    // this will contain all $errors and $silentErrors from both <CompA> and <CompB>
     <p v-for="(error, index) of v.$errors" :key="index">
       {{ error.$message }}
     </p>
@@ -78,7 +86,7 @@ import CompB from '@/components/CompB'
 export default {
   components: { CompA, CompB }
   setup () {
-    // this will contain all $errors and $silentErrors from both <CompA> and <CompB>
+    // this will collect all nested component’s validation results
     const v = useVuelidate()
 
     return { v }
