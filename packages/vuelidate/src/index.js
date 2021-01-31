@@ -1,30 +1,12 @@
-import { provide, inject, ref, computed, getCurrentInstance, onBeforeUnmount } from 'vue-demi'
-import { unwrap, isFunction } from './utils'
+import { watch, computed, getCurrentInstance, inject, onBeforeMount, onBeforeUnmount, provide, isRef, ref, reactive, isProxy } from 'vue-demi'
+import { isFunction, unwrap } from './utils'
 import { setValidations } from './core'
+import ResultsStorage from './storage'
 
 const VuelidateInjectChildResults = Symbol('vuelidate#injectChiildResults')
 const VuelidateRemoveChildResults = Symbol('vuelidate#removeChiildResults')
 
-/**
- * Composition API compatible Vuelidate
- * Use inside the `setup` lifecycle hook
- * @param {Object} validations - Validations Object
- * @param {Object} state - State object
- * @param {String} registerAs - a registration name, when registering results to the parent validator.
- * @return {UnwrapRef<*>}
- */
-export function useVuelidate (validations, state, registerAs) {
-  // if there is no registration name, add one.
-  if (!registerAs) {
-    const instance = getCurrentInstance()
-    // NOTE:
-    // ._uid // Vue 2.x Composition-API plugin
-    // .uid // Vue 3.0
-    const uid = instance.uid || instance._uid
-    registerAs = `_vuelidate_${uid}`
-  }
-  const resultsCache = new Map()
-
+function nestedValidations () {
   const childResultsRaw = {}
   const childResultsKeys = ref([])
   const childResults = computed(() => childResultsKeys.value.reduce((results, key) => {
@@ -61,67 +43,101 @@ export function useVuelidate (validations, state, registerAs) {
   // provide to all of it's children the remove results  function
   provide(VuelidateRemoveChildResults, removeChildResultsFromParent)
 
-  const validationResults = computed(() => setValidations({
-    validations: unwrap(validations),
-    state,
-    childResults,
-    resultsCache
-  }))
+  return { childResults, sendValidationResultsToParent, removeValidationResultsFromParent }
+}
+
+/**
+ * Composition API compatible Vuelidate
+ * Use inside the `setup` lifecycle hook
+ * @param {Object|null} validations - Validations Object
+ * @param {Object} state - State object
+ * @param {String} globalConfig - Config Object
+ * @return {UnwrapRef<*>}
+ */
+export function useVuelidate (validations, state, globalConfig = {}) {
+  let { $registerAs } = globalConfig
+
+  const instance = getCurrentInstance()
+
+  // if there is no registration name, add one.
+  if (!$registerAs) {
+    // NOTE:
+    // ._uid // Vue 2.x Composition-API plugin
+    // .uid // Vue 3.0
+    const uid = instance.uid || instance._uid
+    $registerAs = `_vuelidate_${uid}`
+  }
+  const validationResults = ref({})
+  const resultsCache = new ResultsStorage()
+
+  const { childResults, sendValidationResultsToParent, removeValidationResultsFromParent } = nestedValidations()
+
+  // Options API
+  if (!validations && instance.type.validations) {
+    const rules = instance.type.validations
+
+    state = ref({})
+    onBeforeMount(() => {
+      // Delay binding state to validations defined with the Options API until mounting, when the data
+      // has been attached to the component instance. From that point on it will be reactive.
+      state.value = instance.proxy
+
+      // helper proxy for instance property access. It makes every reference
+      // reactive for the validation function
+      function ComputedProxyFactory (target) {
+        return new Proxy(target, {
+          get (target, prop, receiver) {
+            return (typeof target[prop] === 'object')
+              ? ComputedProxyFactory(target[prop])
+              : computed(() => target[prop])
+          }
+        })
+      }
+
+      watch(() => isFunction(rules) ? rules.call(state.value, new ComputedProxyFactory(state.value)) : rules,
+        (validations) => {
+          validationResults.value = setValidations({
+            validations,
+            state,
+            childResults,
+            resultsCache,
+            globalConfig
+          })
+        }, { immediate: true })
+    })
+
+    globalConfig = instance.type.validationsConfig || {}
+  } else {
+    const validationsWatchTarget = isRef(validations) || isProxy(validations)
+      ? validations
+      // wrap plain objects in a reactive, so we can track changes if they have computed in them.
+      : reactive(validations || {})
+
+    watch(validationsWatchTarget, (newValidationRules) => {
+      validationResults.value = setValidations({
+        validations: newValidationRules,
+        state,
+        childResults,
+        resultsCache,
+        globalConfig
+      })
+    }, {
+      immediate: true
+    })
+  }
 
   // send all the data to the parent when the function is invoked inside setup.
-  sendValidationResultsToParent(validationResults, registerAs)
+  sendValidationResultsToParent(validationResults, $registerAs)
   // before this component is destroyed, remove all the data from the parent.
-  onBeforeUnmount(() => removeValidationResultsFromParent(registerAs))
+  onBeforeUnmount(() => removeValidationResultsFromParent($registerAs))
 
   // TODO: Change into reactive + watch
   return computed(() => {
     return {
-      ...validationResults.value,
+      ...unwrap(validationResults.value),
       ...childResults.value
     }
   })
-}
-
-/**
- * Vuelidate mixin, used to attach Vuelidate only to specified components
- * Relies on `validations` option to be defined on component instance
- * @type {ComponentOptions}
- */
-
-export const VuelidateMixin = {
-  computed: {},
-  beforeCreate () {
-    const resultsCache = new Map()
-    const options = this.$options
-    if (!options.validations) return
-
-    if (options.computed.$v) return
-
-    const validations = computed(() => isFunction(options.validations)
-      ? options.validations.call(this)
-      : options.validations
-    )
-    let $v
-
-    options.computed.$v = function () {
-      if ($v) {
-        return $v.value
-      } else {
-        $v = computed(() => setValidations({ validations, state: this, resultsCache }))
-        return $v.value
-      }
-    }
-  }
-}
-
-/**
- * Default way to install Vuelidate globally for entire app.
- * @param {Vue} app
- */
-export const VuelidatePlugin = {
-  install (app) {
-    app.mixin(VuelidateMixin)
-  }
 }
 
 export default useVuelidate

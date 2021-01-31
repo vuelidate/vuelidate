@@ -22,87 +22,103 @@ yarn add @vuelidate/core @vuelidate/validators
 
 ## Getting Started
 
-You can then import Vuelidate and use it as a Vue plugin to enable the functionality globally on all components containing validation configuration.
+::: tip
+When used with Vue 2.x, you need to install the `@vue/composition-api` plugin. You can learn how to do that [here](https://github.com/vuejs/composition-api).
+Once this is done, you can proceed with the below.
+:::
 
-
-### Install via plugin in Vue 3.0
-
-> This is only required if you want to use the `validations` option.
 
 ```js
-// main.js
-import { createApp } from 'vue'
-import App from './App.vue'
-import { VuelidatePlugin } from '@vuelidate/core'
+import useVuelidate from '@vuelidate/core'
+import { required, email } from '@vuelidate/validators'
 
-const app = createApp(App)
-app.use(VuelidatePlugin)
-app.mount('#app')
-```
-
-### Install via plugin in Vue 2.x
-
-> This is only required if you want to use the `validations` option.
-
-```js
-// main.js
-
-import Vue from 'vue'
-import VueCompositionApi from '@vue/composition-api'
-import { VuelidatePlugin } from '@vuelidate/core'
-
-Vue.use(VueCompositionApi)
-Vue.use(VuelidatePlugin)
-
-```
-
-Now that Vuelidate is registered as a global plugin, create a `validations` function inside your component and define your validation rules.
-
-First, import the validators that you want to use from `@vuelidate/validators`.
-
-```js
-import { required } from '@vuelidate/validators'
-```
-
-Next, add the `validations` function, it should return an object that matches the structure of your state. In this example, we have a field `name`, which is declared inside of the component's `data()`.
-
-Notice that in the `validations` function we declare the same structure, and the `name` property specifies the validators that we want to apply to it - in this case, a `required` validation.
-
-Below you can find a visual example of the relation between the component internal state in `data` and the `validations` object. Notice the structure matches exactly.
-
-```js
-data () {
-  return {
-    firstName: '',
-    lastName: '',
-    contact: {
-      email: ''
+export default {
+  setup () {
+    return { v$: useVuelidate() }
+  },
+  data () {
+    return {
+      firstName: '',
+      lastName: '',
+      contact: {
+        email: ''
+      }
     }
-  }
-},
-validations () {
-  return {
-    firstName: { required }, // Matches this.firstName
-    lastName: { required }, // Matches this.lastName
-    contact: {
-      email: { required, email } // Matches this.contact.email
+  },
+  validations () {
+    return {
+      firstName: { required }, // Matches this.firstName
+      lastName: { required }, // Matches this.lastName
+      contact: {
+        email: { required, email } // Matches this.contact.email
+      }
     }
   }
 }
 ```
 
-```js
-import { required } from '@vuelidate/validators'
+Lets explain what happens here. We declare our local state with `data`, then we declare our validation rules with `validations`. Lastly, we activate Vuelidate inside `setup` by calling `useVuelidate`. Internally it will take the `validations` returned object and treat it as the validation rules. It will also take the whole component instance local state (including `data`, but also `computed`).
+
+Notice how the the objects returned from `data` and `validations` have a matching structure.
+
+```js{9-15,18-24}
+import useVuelidate from '@vuelidate/core'
+import { required, email } from '@vuelidate/validators'
+
 export default {
-  data() {
+  setup () {
+    return { v$: useVuelidate() }
+  },
+  data () {
     return {
-      name: ''
+      firstName: '',
+      lastName: '',
+      contact: {
+        email: ''
+      }
     }
   },
-  validations() {
+  validations () {
     return {
-      name: { required }
+      firstName: { required }, // Matches this.firstName
+      lastName: { required }, // Matches this.lastName
+      contact: {
+        email: { required, email } // Matches this.contact.email
+      }
     }
+  }
+}
+```
+
+### Alternative syntax (Composition API)
+
+Vuelidate v2.x also comes with support for Composition API. The above example can be translated into the composition API syntax.
+
+```js
+import { reactive } from 'vue' // "from '@vue/composition-api'" if you are using Vue 2.x
+import useVuelidate from '@vuelidate/core'
+import { required, email } from '@vuelidate/validators'
+
+export default {
+  setup () {
+    const state = reactive({
+      firstName: '',
+      lastName: '',
+      contact: {
+        email: ''
+      }
+    })
+    const rules = {
+      firstName: { required }, // Matches state.firstName
+      lastName: { required }, // Matches state.lastName
+      contact: {
+        email: { required, email } // Matches state.contact.email
+      }
+    }
+
+    const v$ = useVuelidate(rules, state)
+
+    return { name, v$ }
   }
 }
 ```
@@ -113,7 +129,7 @@ If _any_ error is present, the `$errors` array property inside of `$v.name` will
 
 Each object inside the `$errors` array will contain a few properties that allows us to dynamically build our error message.
 
-An example of our `name` property being in an error state due to it being required would be:
+An example of our `name` property being in an error state due to it being `required` would be:
 
 ```js
 {
@@ -126,7 +142,7 @@ An example of our `name` property being in an error state due to it being requir
 
 Now that we understand the basic content of the error objects, we can build our error messages in the template. This approach will dynamically cover any number of validators that were applied to our input.
 
-```vue
+```html
 <div :class="{ error: v$.name.$errors.length }">
   <input v-model="name">
   <div class="input-errors" v-for="(error, index) of v$.name.$errors">
@@ -140,6 +156,14 @@ That's it! Our validations are set and ready.
 Head over to the [Guide](./guide.md) page now for a more detailed guide on how to use Vuelidate.
 
 ## Sponsors
+
+### Gold
+
+<p align="center">
+  <a href="https://vuejs.amsterdam/?utm_source=newsletter&utm_medium=logo&utm_campaign=vuejs-newsletter" target="_blank">
+    <img src="https://camo.githubusercontent.com/d70ce43e50f085dcaaba44706e75107b0f86ad6ab45d7cd75ec2d877db543d86/68747470733a2f2f63646e2e646973636f72646170702e636f6d2f6174746163686d656e74732f3739333538333739373435343530333937362f3739333538333833313336393634363132302f7675656a73616d7374657264616d2e706e67" alt="Vue.js Amsterdam" width="360px">
+  </a>
+</p>
 
 ### Silver
 

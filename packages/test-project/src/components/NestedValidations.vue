@@ -1,12 +1,12 @@
 <template>
   <div style="padding-top: 2rem;">
     <div style="float: right">
-      <pre>{{ $v }}</pre>
+      <pre>{{ vv }}</pre>
     </div>
     <div style="margin-bottom: 20px">
       <label>Number X</label>
       <input
-        v-model.number="$v.numberX.$model"
+        v-model.number="vv.numberX.$model"
         type="number"
       >
     </div>
@@ -17,11 +17,11 @@
         type="number"
       >
       <div
-        v-if="$v.optionalNumber"
+        v-if="vv.optionalNumber && vv.optionalNumber.$errors.length"
         style="background: rgba(219, 53, 53, 0.62); color: #ff9090; padding: 10px 15px"
       >
         <p
-          v-for="(error, index) of $v.optionalNumber.$errors"
+          v-for="(error, index) of vv.optionalNumber.$errors"
           :key="index"
           style="padding: 0; margin: 5px 0"
         >
@@ -29,10 +29,11 @@
         </p>
       </div>
     </div>
+    <button type="button" @click="vv.$touch()">$touch</button>
     <NestedA />
     <div style="background: rgba(219, 53, 53, 0.62); color: #ff9090; padding: 10px 15px">
       <p
-        v-for="(error, index) of $v.$errors"
+        v-for="(error, index) of vv.$errors"
         :key="index"
         style="padding: 0; margin: 5px 0"
       >
@@ -45,7 +46,7 @@
 <script>
 import { ref, computed } from 'vue'
 import useVuelidate from '@vuelidate/core'
-import { required, minValue } from '@vuelidate/validators'
+import { required, minValue, maxValue } from '@vuelidate/validators'
 import NestedA from './NestedA.vue'
 
 export default {
@@ -59,15 +60,18 @@ export default {
       if (numberX.value > 5) {
         v.optionalNumber = { required, minValue: minValue(numberX), $autoDirty: true }
       }
+      if (numberX.value > 10) {
+        v.optionalNumber = { ...v.optionalNumber, maxValue: maxValue(15) }
+      }
       return v
     })
 
-    let $v = useVuelidate(
+    let vv = useVuelidate(
       validations,
       { numberX, optionalNumber }
     )
 
-    return { $v, numberX, optionalNumber }
+    return { vv, numberX, optionalNumber }
   }
 }
 </script>

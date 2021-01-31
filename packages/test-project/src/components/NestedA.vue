@@ -25,7 +25,7 @@
       :max="max"
       :min="min"
     />
-    <!-- <pre style="background-color: white;">{{ $v.$errors }}</pre> -->
+    <!-- <pre style="background-color: white;">{{ vv.$errors }}</pre> -->
   </div>
 </template>
 
@@ -46,9 +46,9 @@ export default {
     const numberA = ref(8)
     const max = ref(5)
 
-    const $v = useVuelidate()
+    const vv = useVuelidate()
 
-    return { numberA, $v, max }
+    return { numberA, vv, max }
   }
 }
 </script>

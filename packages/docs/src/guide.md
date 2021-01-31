@@ -1,7 +1,7 @@
 # Guide
 
 ## Basics
-As we mentioned in the [getting started quick guide](/#getting-started-2), validation rules are defined inside the object returned by the `validations` method. We will refer to those as just _validations_ from now on.
+As we mentioned in the [getting started guide](/#getting-started-2), validation rules are defined inside the object returned by the `validations` method. We will refer to those as just _validations_ from now on.
 
 You can access the component's instance and it's properties via `this` when writing more complicated validation rules.
 
@@ -13,9 +13,15 @@ Each validation rule must have a corresponding property inside the `data` object
 
 ```html
 <script>
+import useVuelidate from '@vuelidate/core'
 import { required } from '@vuelidate/validators'
 
 export default {
+  setup () {
+    return {
+      v$: useVuelidate()
+    }
+  },
   data() {
     return {
       name: ''
@@ -32,7 +38,24 @@ export default {
 
 Vuelidate comes with a set of validators, that live inside the `@vuelidate/validations` package, which you must install separately. For a full list of available validators, check the [Validators](./validators.md) page.
 
-Validators are functions that return a boolean value after checking the validity of the state of a form.
+Validators are functions that receive the matching value and return a either `true` or `false`, depending on whether the validator check passes or not.
+
+The built-in validators are additionally wrapped in an object which contains several additional properties like:
+* `$validator` – contains the validation function
+* `$message` – contains the validator’s error message
+* `$params` – contains the params that are passed during validator configuration (applies to validators that accept configuration)
+
+Here’s an example of how the `minLength` validator looks like:
+
+```js
+export default function minLength (min) {
+  return {
+    $validator: minLength(min),
+    $message: ({ $params }) => `This field should be at least ${$params.min} long.`,
+    $params: { min }
+  }
+}
+```
 
 Vuelidate also supports writing your own custom validators, you can learn more about how to write your own validators on the [Custom Validators](./custom_validators.md) page.
 
@@ -40,17 +63,16 @@ Vuelidate also supports writing your own custom validators, you can learn more a
 
 Now that we have our validation rules set up, we can start checking for errors.
 
-Vuelidate builds a validation state, that can be accessed via the `$v` property. It is a nested object that follows your `validations` structure,
-but with some extra validity related properties.
+Vuelidate builds a validation state, that can be accessed via the `v$` property (this is the property name that you return from `setup`). It is a nested object that follows your `validations` structure, but with some extra validity related properties.
 
-`$v` is also reactive - meaning it changes as the user types.
+`v$` is also reactive - meaning it changes as the user interacts with the state!
 
 Building up on our form example above, to check whether name is valid we can now check to see if the `name.$error` property is `true` or `false`, and display an error for our users.
 
 ```html
 <label>
   <input v-model="name">
-  <div v-if="$v.name.$error">Name field has an error.</div>
+  <div v-if="v$.name.$error">Name field has an error.</div>
 </label>
 ```
 
@@ -62,6 +84,7 @@ The properties you will check against most often are:
   "$dirty": false,
   "$error": false,
   "$errors": [],
+  "$silentErrors": [],
   "$invalid": false,
 ```
 
@@ -69,44 +92,46 @@ This is just a subset of all the properties, but they are enough to get us start
 
 ### The dirty state
 
-Vuelidate tracks the `dirty` state of each field.
+Vuelidate tracks the `$dirty` state of each property.
 
-A field is considered `dirty` after it has received some sort of interaction from the user, which means all fields begin with a `dirty` state of `false`. Once the user types into, or modifies the `value` of the input's model, the field's `$dirty` state becomes `true`.
+A property is considered `$dirty` after it has received some sort of interaction from the user, which means all properties begin with a `$dirty` state of `false`.
 
-This can come in handy to determine when to show error messages, or compare data.
+Although the validations will run in the background updating the `$invalid` state. However, the `$error` will stay `false` until both the `$dirty` and `$invalid` states are `true`.
 
-If you ever need to programmatically change the  `$dirty` state on a field to `true` - as if the user of your form had manipulated it, you can use the handy `$touch()` method, attached to an `input` event.
+There are multiple ways to update the `$dirty` state.
+
+#### Using `$touch`
+
+You can programmatically update the `$dirty` state by calling the `$touch` method. For example, for the `name` property you can call `v$.name.$touch()` to change it’s `$dirty` state.
+
+Here’s an example of adding it to the above form, where we attach it to the `@blur` event so that our error only shows up after the user entered and left the input.
 
 ```html
-<input v-model="name" @input="$v.name.$touch">
+<label>
+  <input v-model="name" @blur="v$.name.$touch">
+  <div v-if="v$.name.$error">Name field has an error.</div>
+</label>
 ```
 
-This will ensure that the field is "touched" every time you input something.
+If you want to change the `$dirty` state for more than one property, you can also use `v$.$touch()`, which will call `$touch` on all the nested properties. This is useful in cases where you have a **Submit** button and want to trigger the whole form `$dirty`. See [Validatiing Forms Before Submitting](./guide#validating-forms-before-submitting) for an example.
 
-This same process can be achieved within your methods and watchers by directly calling the function in them.
+#### Using the `$model` property
 
-```js
-methods: {
-  makeDirty() {
-    this.$v.name.$touch()
-  }
-}
-```
+Another way to ensure that the `$dirty` state is updated when interactive with an input, is to directly bind your input's `v-model` declaration to the `$model` of that field's validation object.
 
-#### Using the $model property
-
-A less verbose way to ensure that your validations are ran whenever your input's state changes is to directly bind your input's `v-model` declaration into the `$model` of that field's validation object.
-
-This is a special property that points to your validator's bound model data, and calls `touch` when you update or modify that field's data.
+This is a special property that acts as a "proxy" to the targeted property. When you modify it, it calls `$touch()` for that property and then proceedes to to update the original value.
 
 ```html
 <template>
-  <input v-model="$v.name.$model">
+  <input v-model="v$.name.$model">
 </template>
 
 <script>
+import useVuelidate from '@vuelidate/core'
 import { required } from '@vuelidate/validators'
+
 export default {
+  setup: () => ({ v$: useVuelidate() })
   data() {
     return {
       name: ''
@@ -119,20 +144,21 @@ export default {
 </script>
 ```
 
-In the above example, we no longer need to call `$touch` manually every time the input is updated.
-
-Additionally, Vuelidate will take of updating the state of the component for you.
-
-In the above example, whenever the `input` element changes, `$v.name.$touch()` will be called, updating the state of the validation - and the `name` state will be updated.
-
 This binding is accomplished internally through a getter/setter that reads and updates the original state. When the setter is called, it also triggers `$touch()` for that property.
 
-#### Setting dirty state with $autoDirty
+#### Setting dirty state with `$autoDirty`
 
-It is quite common to forget to use `$model` or `$touch`. If you want to ensure dirty state is always tracked, you can use the `$autoDirty` settings property, when defining your validations:
+It is quite common to forget to use `$model` or `$touch`. If you want to ensure dirty state is always tracked, you can use the `$autoDirty` config param, when defining your validation rules:
 
 ```js
+import useVuelidate from '@vuelidate/core'
+import { required } from '@vuelidate/validators'
+
 export default {
+  setup: () => ({ v$: useVuelidate() })
+  data () {
+    return { name: '' }
+  },
   validations() {
     return {
       name: { required, $autoDirty: true },
@@ -149,11 +175,28 @@ You can then change your field's `v-model` expression to just the data property:
 <input v-model="name">
 ```
 
-#### Lazy validations by default
+#### Lazy validations
 
-Validation in Vuelidate 2 is by default `lazy`, meaning validators are only called, after a field is dirty, so after `touch()` is called or by using `$model`.
+Validation in Vuelidate 2 introduces the `$lazy` param, which will make the selected validators lazy. That means they will only be called, after the property is `$dirty`, so after `touch()` is called, by using that property’s `$model` or by also using the `$autoDirty` param.
 
 This saves extra invocations for async validators as well as makes the initial validation setup a bit more performant.
+
+```js
+import useVuelidate from '@vuelidate/core'
+import { required } from '@vuelidate/validators'
+
+export default {
+  setup: () => ({ v$: useVuelidate() })
+  data () {
+    return { name: '' }
+  },
+  validations() {
+    return {
+      name: { required, $lazy: true },
+    }
+  }
+}
+```
 
 #### Resetting dirty state
 
@@ -161,7 +204,7 @@ If you wish to reset a form's `$dirty` state, you can do so by using the appropr
 For example when closing a create/edit modal, you dont want the validation state to persist.
 
 ```html
-<app-modal @closed="$v.$reset()">
+<app-modal @closed="v$.$reset()">
   <!-- some inputs  -->
 </app-modal>
 ```
@@ -175,8 +218,9 @@ The validation state has entries for each validator, that hold a set of helpful 
   "$dirty": false,
   "$error": false,
   "$errors": [],
+  "$silentErrors": [],
   "$invalid": false,
-  // .. other properties
+  // ...other properties
   "name": {
     "$dirty": false,
     "required": {
@@ -189,7 +233,8 @@ The validation state has entries for each validator, that hold a set of helpful 
     "$pending": false,
     "$error": false,
     "$errors": [],
-    // .. other properties
+    "$silentErrors": []
+    // ...other properties
   }
 }
 ```
@@ -198,9 +243,13 @@ As you can see, the `name` field has it's own `$dirty`, `$error` among other att
 
 The root properties like, `$dirty`, `$error` and `$invalid` are all collective computed properties, meaning their value changes depending on the nested children's state.
 
-**Example:** If a form has 10 fields and one of them has it's `$error: true`, then the root `$error` will also be `true`, giving allot of flexibility when trying to display error state.
+**Example:** If a form has 10 fields and one of them has it's `$error: true`, then the root `$error` will also be `true`, giving additional flexibility when trying to display error state.
 
 ### Displaying error messages
+
+::: tip NEW IN v2.0
+The built-in validators now all include error messages.
+:::
 
 The validation state holds useful data, like the invalid state of each property validator, along with extra properties, like an error message or extra parameters.
 
@@ -210,7 +259,7 @@ The easiest way to display errors is to use the form's top level `$errors` prope
 
 ```vue
 <p
-  v-for="(error, index) of $v.$errors"
+  v-for="(error, index) of v$.$errors"
   :key="index"
 >
   <strong>{{ error.$validator }}</strong>
@@ -225,7 +274,7 @@ You can also check for errors on each form property:
 
 ```vue
 <p
-  v-for="(error, index) of $v.name.$errors"
+  v-for="(error, index) of v$.name.$errors"
   :key="index"
 >
   <!-- Same as above -->
@@ -234,29 +283,29 @@ You can also check for errors on each form property:
 
 ### Validating forms before submitting
 
-To submit a form, you often need to validate it first. In most cases, you can just check for the `$error` status of the form. It is a good practice to `$touch` the form first, so all validators initiate.
+To submit a form, you often need to validate it first. In most cases, you can just check for the `$invalid` status of the form or `$error` if you want to only consider `$dirty` fields. It is a good practice to `$touch` the form first, so all validators (including those with `$lazy: true`) are run. This will also cause all the errors to show up that were hidden due to `$dirty` state being `false`.
 
 ```js
 export default {
   methods: {
     submitForm() {
-      this.$v.$touch()
-      if(this.$v.$error) return
-      // do stuff
+      this.v$.$touch()
+      if(this.v$.$error) return
+      // actually submit form
     }
   }
 }
 ```
 
-This is good for the general case, but what if you have async validators? You can use the `$validate` method, which returns a promise. That promise resolves with a boolean,
-depending on what the validation status is.
+This is good for the general case, but what if you have async validators? You can use the `$validate` method, which returns a promise. That promise resolves with a boolean, depending on what the validation status is.
 
 ```js
 export default {
   methods: {
     async submitForm() {
-      if(! await this.$v.$validate()) return
-      // do stuff
+      const isFormCorrect = await this.v$.$validate()
+      if (!isFormCorrect) return
+      // actually submit form
     }
   }
 }
