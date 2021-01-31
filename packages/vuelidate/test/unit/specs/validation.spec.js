@@ -43,6 +43,24 @@ describe('useVuelidate', () => {
     shouldBePristineValidationObj(vm.v.number)
   })
 
+  it('should set the parent `$dirty` prop to true, when all children are dirty', () => {
+    const { state, validations } = nestedReactiveObjectValidation()
+    const { vm } = createSimpleWrapper(validations, state)
+
+    expect(vm.v.$dirty).toBe(false)
+    expect(vm.v.level0.$dirty).toBe(false)
+    expect(vm.v.level1.$dirty).toBe(false)
+
+    vm.v.level1.$touch()
+    expect(vm.v.$dirty).toBe(false)
+    expect(vm.v.level0.$dirty).toBe(false)
+    expect(vm.v.level1.$dirty).toBe(true)
+
+    vm.v.level0.$touch()
+    expect(vm.v.$dirty).toBe(true)
+    expect(vm.v.level0.$dirty).toBe(true)
+  })
+
   describe('.$touch', () => {
     it('should update the `$dirty` state to `true`, on used property', () => {
       const { state, validations } = simpleValidation()

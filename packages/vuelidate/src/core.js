@@ -339,15 +339,23 @@ function collectNestedValidationResults (validations, nestedState, key, path, re
  * @return {{$anyDirty: Ref<Boolean>, $error: Ref<Boolean>, $invalid: Ref<Boolean>, $errors: Ref<ErrorObject[]>, $dirty: Ref<Boolean>, $touch: Function, $reset: Function }}
  */
 function createMetaFields (results, nestedResults, childResults, path) {
-  // use the $dirty property from the root level results
-  const $dirty = results.$dirty
-
   const allResults = computed(() => [nestedResults, childResults]
     .filter(res => res)
     .reduce((allRes, res) => {
       return allRes.concat(Object.values(unwrap(res)))
     }, [])
   )
+
+  // returns `$dirty` as true, if all children are dirty
+  const $dirty = computed({
+    get () {
+      return results.$dirty.value ||
+        (allResults.value.length ? allResults.value.every(r => r.$dirty) : false)
+    },
+    set (v) {
+      results.$dirty.value = v
+    }
+  })
 
   const $silentErrors = computed(() => {
     // current state level errors, fallback to empty array if root
@@ -533,7 +541,7 @@ export function setValidations ({
   }) : null
 
   if (mergedConfig.$autoDirty) {
-    watch(nestedState, () => {
+    watch(() => nestedState, () => {
       if (!$dirty.value) $touch()
     })
   }
