@@ -1,4 +1,4 @@
-import { Ref, defineComponent, Plugin } from 'vue-demi';
+import { Ref, defineComponent } from 'vue-demi';
 type Component = ReturnType<typeof defineComponent>;
 
 /*
@@ -157,6 +157,5 @@ export const useVuelidate: <
   state: T | Ref<T> | ToRefs<T>,
   registerAs?: string
 ) => Ref<Validation<Vargs>>;
-export const VuelidatePlugin: Plugin;
 
 export default useVuelidate;
