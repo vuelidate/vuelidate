@@ -54,7 +54,9 @@ export const shouldBeInvalidValidationObject = ({ v, property, propertyPath = pr
   expect(v).toHaveProperty('$errors', [])
   expect(v).toHaveProperty('$silentErrors', [{
     $message: '',
-    $params: {},
+    $params: {
+      $response: expect.anything()
+    },
     $pending: false,
     $property: property,
     $propertyPath: propertyPath,
@@ -82,7 +84,9 @@ export const shouldBeErroredValidationObject = ({ v, property, propertyPath = pr
   }])
   expect(v).toHaveProperty('$silentErrors', [{
     $message: '',
-    $params: {},
+    $params: {
+      $response: expect.anything()
+    },
     $pending: false,
     $property: property,
     $propertyPath: propertyPath,

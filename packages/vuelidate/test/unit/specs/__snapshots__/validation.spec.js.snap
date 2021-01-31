@@ -3,7 +3,9 @@
 exports[`useVuelidate $errors constructs an array of errors for invalid AND drity properties 1`] = `
 Object {
   "$message": "",
-  "$params": Object {},
+  "$params": Object {
+    "$response": false,
+  },
   "$pending": false,
   "$property": "child",
   "$propertyPath": "level1.child",

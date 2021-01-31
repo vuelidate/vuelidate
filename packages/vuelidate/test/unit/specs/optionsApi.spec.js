@@ -81,7 +81,9 @@ describe('OptionsAPI validations', () => {
 
       expect(wrapper.vm.v.$errors).toEqual([{
         $message: '',
-        $params: {},
+        $params: {
+          $response: false
+        },
         $pending: false,
         $property: 'number',
         $propertyPath: 'number',
@@ -132,7 +134,9 @@ describe('OptionsAPI validations', () => {
       expect(childState).toHaveProperty('$errors')
       expect(childState.$errors).toContainEqual({
         '$message': '',
-        '$params': {},
+        '$params': {
+          $response: false
+        },
         '$pending': false,
         '$property': 'number',
         '$propertyPath': 'number',
