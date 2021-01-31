@@ -1,3 +1,5 @@
+import { unwrap } from './utils'
+
 export default class ResultsStorage {
   constructor () {
     this.storage = new Map()
@@ -29,14 +31,16 @@ export default class ResultsStorage {
     const hasAllValidators = newRulesKeys.every(ruleKey => storedRulesKeys.includes(ruleKey))
     if (!hasAllValidators) return false
 
-    const hasSameParams = newRulesKeys.every(ruleKey => {
+    return newRulesKeys.every(ruleKey => {
       if (!rules[ruleKey].$params) return true
-      Object.keys(rules[ruleKey].$params).every(paramKey => {
-        return storedRules[ruleKey].$params[paramKey] === rules[ruleKey].$params[paramKey]
-      })
+      return Object.keys(rules[ruleKey].$params)
+        // make sure we dont compare the `$response` param
+        .filter(key => key !== '$response')
+        .every(paramKey => {
+          // make sure to unwrap before comparing
+          return unwrap(storedRules[ruleKey].$params[paramKey]) === unwrap(rules[ruleKey].$params[paramKey])
+        })
     })
-    if (!hasSameParams) return false
-    return true
   }
 
   /**

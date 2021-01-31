@@ -93,9 +93,9 @@ function normalizeValidatorResponse (result) {
  * @param {Validator} rule
  * @param {Ref<*>} model
  * @param {Ref<boolean>} $dirty
- * @param {Reactive<Object>} $params
+ * @param {Ref<Object> | Object} $params
  * @param {Object} config
- * @return {Ref<Boolean>}
+ * @return {ComputedRef<Boolean>}
  */
 function createComputedResult (rule, model, $dirty, $params, { $lazy }) {
   return computed(() => {
@@ -117,6 +117,7 @@ function createComputedResult (rule, model, $dirty, $params, { $lazy }) {
  * @param {Ref<*>} model
  * @param {Ref<Boolean>} $pending
  * @param {Ref<Boolean>} $dirty
+ * @param {Ref<Object> | Object} $params
  * @param {Object} config
  * @return {Ref<Boolean>}
  */
@@ -230,6 +231,7 @@ function createValidatorResult (rule, model, $dirty, config) {
  * @param {String} key - Key for the current state tree
  * @param {ResultsStorage} [resultsCache] - A cache map of all the validators
  * @param {String} [path] - the current property path
+ * @param {Object} [config] - the config object
  * @return {ValidationResult | {}}
  */
 function createValidationResults (rules, model, key, resultsCache, path, config) {
@@ -312,7 +314,8 @@ function createValidationResults (rules, model, key, resultsCache, path, config)
  * @param {Object} nestedState - Current state
  * @param {String} [key] - Parent level state key
  * @param {String} path - Path to current property
- * @param {Map} resultsCache - Validations cache map
+ * @param {ResultsStorage} resultsCache - Validations cache map
+ * @param {Object} config - The config object
  * @return {{}}
  */
 function collectNestedValidationResults (validations, nestedState, key, path, resultsCache, config) {
@@ -480,7 +483,7 @@ function createMetaFields (results, nestedResults, childResults, path) {
  * @param {String} [params.key] - Current state property key. Used when being called on nested items
  * @param {String} [params.parentKey] - Parent state property key. Used when being called recursively
  * @param {Object<ValidationResult>} [params.childResults] - Used to collect child results.
- * @param {Map} resultsCache - The cached validation results
+ * @param {ResultsStorage} resultsCache - The cached validation results
  * @return {UnwrapNestedRefs<VuelidateState>}
  */
 export function setValidations ({
