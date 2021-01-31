@@ -231,7 +231,7 @@ function createValidationResults (rules, model, key, resultsCache, path, config)
   // collect the property keys
   const ruleKeys = Object.keys(rules)
 
-  const cachedResult = resultsCache.checkRulesValidity(path, rules)
+  const cachedResult = resultsCache.get(path, rules)
   let $dirty = ref(false)
 
   if (cachedResult) {

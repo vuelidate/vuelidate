@@ -14,24 +14,20 @@ export default class ResultsStorage {
   }
 
   /**
-   * Check if the stored `results` for the provided `path` have the same `rules`
+   * Check if the stored `results` for the provided `path` have the same `rules` compared to 'storedRules'
    * @param {String} path
    * @param {Object<NormalizedValidator>} rules
-   * @return {{$partial: boolean, $dirty: Ref<boolean>}|undefined|ValidationResult}
+   * @param {Object<NormalizedValidator>} storedRules
+   * @return {Boolean}
    */
-  checkRulesValidity (path, rules) {
-    const storedRuleResultPair = this.storage.get(path)
-    if (!storedRuleResultPair) return undefined
-
-    const { rules: storedRules, result } = storedRuleResultPair
-
+  checkRulesValidity (path, rules, storedRules) {
     const storedRulesKeys = Object.keys(storedRules)
     const newRulesKeys = Object.keys(rules)
 
-    if (newRulesKeys.length !== storedRulesKeys.length) return { $dirty: result.$dirty, $partial: true }
+    if (newRulesKeys.length !== storedRulesKeys.length) return false
 
     const hasAllValidators = newRulesKeys.every(ruleKey => storedRulesKeys.includes(ruleKey))
-    if (!hasAllValidators) return { $dirty: result.$dirty, $partial: true }
+    if (!hasAllValidators) return false
 
     const hasSameParams = newRulesKeys.every(ruleKey => {
       if (!rules[ruleKey].$params) return true
@@ -39,8 +35,24 @@ export default class ResultsStorage {
         return storedRules[ruleKey].$params[paramKey] === rules[ruleKey].$params[paramKey]
       })
     })
-    if (!hasSameParams) return { $dirty: result.$dirty, $partial: true }
+    if (!hasSameParams) return false
+    return true
+  }
 
+  /**
+   * Returns the matched result if catche is valid
+   * @param {String} path
+   * @param {Object<NormalizedValidator>} rules
+   * @return {{$partial: boolean, $dirty: Ref<boolean>}|undefined|ValidationResult}
+   */
+  get (path, rules) {
+    const storedRuleResultPair = this.storage.get(path)
+    if (!storedRuleResultPair) return undefined
+    const { rules: storedRules, result } = storedRuleResultPair
+
+    const isValidCache = this.checkRulesValidity(path, rules, storedRules)
+
+    if (!isValidCache) return { $dirty: result.$dirty, $partial: true }
     return result
   }
 }
