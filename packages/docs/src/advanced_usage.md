@@ -32,8 +32,6 @@ export default {
 </script>
 ```
 
-<AsComposition></AsComposition>
-
 ## Composition API
 
 ```js
