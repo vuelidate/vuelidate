@@ -107,16 +107,19 @@ describe('useVuelidate', () => {
       shouldBeErroredValidationObject({ v: vm.v.number2, property: 'number2', validatorName: 'isEven' })
     })
 
-    // TODO: This breaks due to not wrapping the results in a computed
-    // for performance reasons
-    it.skip('should update the `$dirty` state even if being cached before hand', () => {
+    it('should update the `$dirty` state even if being cached before hand', async () => {
       const { state, validations } = computedValidationsObjectWithRefs()
       const { number, conditional } = state
       const { vm } = createSimpleWrapper(validations, { number })
       expect(vm.v.number).toHaveProperty('$dirty', false)
       conditional.value = 10
+      // await the async watcher to pass
+      await vm.$nextTick()
       expect(vm.v).not.toHaveProperty('number')
+      // return the validator
       conditional.value = 3
+      // await the async watcher to pass
+      await vm.$nextTick()
       expect(vm.v.number).toHaveProperty('$dirty', false)
       vm.v.number.$touch()
       expect(vm.v.number).toHaveProperty('$dirty', true)
