@@ -35,9 +35,6 @@
     "vue-demi": "latest",
     "vue": "^3.0.1"
   },
-  "dependencies": {
-    "lern": "^1.0.0"
-  },
   "scripts": {
     "lerna:publish": "lerna publish --conventional-commits",
     "lerna:publish:from-package": "lerna publish from-package",
