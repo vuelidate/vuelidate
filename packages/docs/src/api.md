@@ -31,3 +31,10 @@ The presence of those special reserved keywords means that you cannot specify yo
 | `$touch`              | **function** | Sets its property and all nested properties `$dirty` state to true.                                                            |
 | `$getResultsForChild` | **function** | Retrieves the validation results for a nested form component.                                                                  |
 | `$reset`              | **function** | Resets the validation state of a validation tree.                                                                              |
+
+## Validation Configuration
+
+| Name             | Type                 | Description                                                                                                                                                                                                           |
+|------------------|----------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| $scope           | string\|boolean=true | Defines a scope, which the component will use to collect validation results from child components and push them up to it's parent, with the same scope. `true` means it collects all, `false` means it collects none. |
+| $stopPropagation | boolean=false        | Should the component stop emitting it's results up, no matter the scope. By default it is set to `false`.                                                                                                             |

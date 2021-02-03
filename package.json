@@ -32,8 +32,8 @@
     "jest-serializer-vue": "^2.0.2",
     "lerna": "^3.18.3",
     "standard-version": "^7.0.1",
-    "vue-demi": "latest",
-    "vue": "^3.0.1"
+    "vue": "^3.0.1",
+    "vue-demi": "latest"
   },
   "scripts": {
     "lerna:publish": "lerna publish --conventional-commits",
