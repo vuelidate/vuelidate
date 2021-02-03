@@ -7,8 +7,8 @@ const VuelidateInjectChildResults = Symbol('vuelidate#injectChiildResults')
 const VuelidateRemoveChildResults = Symbol('vuelidate#removeChiildResults')
 
 export const CollectFlag = {
-  COLLECT_ALL: 1,
-  COLLECT_NONE: 0
+  COLLECT_ALL: true,
+  COLLECT_NONE: false
 }
 
 /**
