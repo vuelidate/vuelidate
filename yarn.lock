@@ -8566,14 +8566,7 @@ left-pad@^1.3.0:
   resolved "https://registry.yarnpkg.com/left-pad/-/left-pad-1.3.0.tgz#5b8a3a7765dfe001261dde915589e782f8c94d1e"
   integrity sha512-XI5MPzVNApjAyhQzphX8BkmKsKUxD4LdyK24iZeQGinBN9yTQT3bFlCBy/aVx2HrNcqQGsdot8ghrjyrvMCoEA==
 
-lern@^1.0.0:
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/lern/-/lern-1.0.0.tgz#7e844eb0bea91072c3ef8953dabe5297297ec46b"
-  integrity sha512-KdFOVEPF6y7zCarBpLbKR/B4OvhAVa8obafxJGFefAzeXcfuYsqkGtHW/nY9Ox/UEimy9xzwxM/KCStpaAFPUA==
-  dependencies:
-    lerna "^3.13.4"
-
-lerna@^3.13.4, lerna@^3.18.3:
+lerna@^3.18.3:
   version "3.22.1"
   resolved "https://registry.yarnpkg.com/lerna/-/lerna-3.22.1.tgz#82027ac3da9c627fd8bf02ccfeff806a98e65b62"
   integrity sha512-vk1lfVRFm+UuEFA7wkLKeSF7Iz13W+N/vFd48aW2yuS7Kv0RbNm2/qcDPV863056LMfkRlsEe+QYOw3palj5Lg==
