@@ -48,6 +48,10 @@
 
 [https://vuelidate.js.org/](https://vuelidate.js.org/)
 
+## Vue 3 support
+
+Vue 3 support is almost here with the Vuelidate 2 rewrite. Check out the [next](https://github.com/vuelidate/vuelidate/tree/next) branch to see the latest progress.
+
 ## Installation
 
 ```bash
