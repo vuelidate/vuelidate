@@ -42,6 +42,6 @@ export const requiredIf: (prop: boolean | string | (() => boolean | Promise<bool
 export const requiredUnless: (prop: boolean | string | (() => boolean | Promise<boolean>)) => ValidationRuleWithoutParams;
 export const sameAs: <E = unknown>(
   equalTo: E,
-  otherName: string
+  otherName?: string
 ) => ValidationRuleWithParams<{ equalTo: E, otherName: string }>;
 export const url: ValidationRuleWithoutParams;
