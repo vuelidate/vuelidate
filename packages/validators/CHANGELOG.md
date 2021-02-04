@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.0.0-alpha.6](https://github.com/vuelidate/vuelidate/compare/@vuelidate/validators@2.0.0-alpha.5...@vuelidate/validators@2.0.0-alpha.6) (2021-02-04)
+
+
+### Bug Fixes
+
+* improve the validator message consistency ([#779](https://github.com/vuelidate/vuelidate/issues/779)) ([9d47c3c](https://github.com/vuelidate/vuelidate/commit/9d47c3c1507952a519d007b3dfdffb9c080a6640))
+* remove side effects from withMessage helper ([#763](https://github.com/vuelidate/vuelidate/issues/763)) ([e77a610](https://github.com/vuelidate/vuelidate/commit/e77a61039afcac3dcce66d84d4229ead5b050a58))
+
+
+
+
+
 # [2.0.0-alpha.5](https://github.com/vuelidate/vuelidate/compare/@vuelidate/validators@2.0.0-alpha.4...@vuelidate/validators@2.0.0-alpha.5) (2020-11-02)
 
 **Note:** Version bump only for package @vuelidate/validators

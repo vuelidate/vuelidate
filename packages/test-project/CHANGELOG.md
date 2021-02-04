@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.3.0](https://github.com/vuelidate/vuelidate/compare/test-project@0.2.4...test-project@0.3.0) (2021-02-04)
+
+
+### Features
+
+* add global configs, remove mixin, add silentErrors, lazy mode  ([#790](https://github.com/vuelidate/vuelidate/issues/790)) ([22cd7c5](https://github.com/vuelidate/vuelidate/commit/22cd7c5ae5a0c5c2e4a021dc082509b3be3f5141)), closes [#670](https://github.com/vuelidate/vuelidate/issues/670)
+
+
+### BREAKING CHANGES
+
+* Validations are no longer lazy by default, you need to specify `$lazy: true` to each, or at the top using the globalConfig.
+
+
+
+
+
 ## [0.2.4](https://github.com/vuelidate/vuelidate/compare/test-project@0.2.3...test-project@0.2.4) (2020-11-19)
 
 **Note:** Version bump only for package test-project
