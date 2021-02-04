@@ -1,4 +1,4 @@
-import { h, isRef } from 'vue-demi'
+import { h, nextTick } from 'vue-demi'
 import { useVuelidate } from '../../src'
 import { mount } from './test-utils'
 
@@ -32,9 +32,17 @@ export const createOldApiSimpleComponent = (validations, state, config) => ({
   }
 })
 
-export const createSimpleWrapper = (rules, state, config = {}) => mount(createSimpleComponent(() => useVuelidate(rules, state, config), state))
+export async function createSimpleWrapper (rules, state, config = {}) {
+  const wrapper = mount(createSimpleComponent(() => useVuelidate(rules, state, config), state))
+  await nextTick()
+  return wrapper
+}
 
-export const createOldApiSimpleWrapper = (rules, state, config = {}) => mount(createOldApiSimpleComponent(rules, state, config))
+export async function createOldApiSimpleWrapper (rules, state, config = {}) {
+  const wrapper = mount(createOldApiSimpleComponent(rules, state, config))
+  await nextTick()
+  return wrapper
+}
 
 export const shouldBePristineValidationObj = (v) => {
   expect(v).toHaveProperty('$error', false)

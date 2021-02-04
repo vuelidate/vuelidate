@@ -38,12 +38,6 @@ export function isPromise (object) {
   return isObject(object) && isFunction(object.then)
 }
 
-export function withAsync (validator) {
-  const normalized = normalizeValidatorObject(validator)
-  normalized.$async = true
-  return normalized
-}
-
 /**
  * Unwraps a ValidatorResponse object, into a boolean.
  * @param {ValidatorResponse} result

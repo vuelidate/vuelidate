@@ -1,5 +1,5 @@
 import { ref } from 'vue-demi'
-import { normalizeValidatorObject, isTruthy, unwrap, isObject, isFunction, withAsync } from '../common'
+import { normalizeValidatorObject, isTruthy, unwrap, isObject, isFunction } from '../common'
 
 describe('common', () => {
   describe('isFunction', () => {
@@ -59,25 +59,6 @@ describe('common', () => {
       const fn = jest.fn(() => true)
       expect(isTruthy(fn)).toBe(true)
       expect(fn).toHaveBeenCalled()
-    })
-  })
-
-  describe('withAsync', () => {
-    const T = () => true
-    it('wraps a function in an async object', () => {
-      expect(withAsync(T)).toEqual({
-        $async: true,
-        $validator: T
-      })
-    })
-
-    it('wraps a validator object into an async validator', () => {
-      const validator = { $validator: T, $message: 'Truthy' }
-      expect(withAsync(validator)).toEqual({
-        $async: true,
-        $validator: T,
-        $message: 'Truthy'
-      })
     })
   })
 })

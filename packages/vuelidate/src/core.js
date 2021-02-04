@@ -1,5 +1,6 @@
 import { isFunction, isPromise, unwrap, unwrapObj, isProxy } from './utils'
 import { computed, isRef, reactive, ref, watch } from 'vue-demi'
+import { nextTick } from 'vue'
 
 let ROOT_PATH = '__root'
 
@@ -86,30 +87,6 @@ function normalizeValidatorResponse (result) {
 }
 
 /**
- * Returns the result of the validator every time the model changes.
- * Wraps the call in a computed property.
- * Used for with normal functions.
- * TODO: This allows a validator to return $invalid, probably along with other parameters. We do not utilize them ATM.
- * @param {Validator} rule
- * @param {Ref<*>} model
- * @param {Ref<boolean>} $dirty
- * @param {Object} config
- * @return {Ref<Boolean>}
- */
-function createComputedResult (rule, model, $dirty, { $lazy }) {
-  return computed(() => {
-    // if $dirty is false, we dont validate at all.
-    if ($lazy && !$dirty.value) return false
-    let result = callRule(rule, unwrap(model))
-    // if it returns a promise directly, error out
-    if (isPromise(result)) {
-      throw Error('[vuelidate] detected a raw async validator. Please wrap any async validators in the `withAsync` helper.')
-    }
-    return normalizeValidatorResponse(result)
-  })
-}
-
-/**
  * Returns the result of an async validator.
  * @param {Function} rule
  * @param {Ref<*>} model
@@ -126,7 +103,7 @@ function createAsyncResult (rule, model, $pending, $dirty, { $lazy }) {
 
   watch(
     [model, $dirty],
-    modelValue => {
+    ([modelValue, dirty]) => {
       if ($lazy && !$dirty.value) return false
       const ruleResult = callRule(rule, model)
 
@@ -134,7 +111,7 @@ function createAsyncResult (rule, model, $pending, $dirty, { $lazy }) {
       $pending.value = !!$pendingCounter.value
       $invalid.value = true
 
-      ruleResult
+      Promise.resolve(ruleResult)
         .then(data => {
           $pendingCounter.value--
           $pending.value = !!$pendingCounter.value
@@ -145,8 +122,7 @@ function createAsyncResult (rule, model, $pending, $dirty, { $lazy }) {
           $pending.value = !!$pendingCounter.value
           $invalid.value = true
         })
-    },
-    { flush: 'sync' }
+    }, { immediate: true }
   )
 
   return $invalid
@@ -163,15 +139,13 @@ function createAsyncResult (rule, model, $pending, $dirty, { $lazy }) {
 function createValidatorResult (rule, model, $dirty, config) {
   const $pending = ref(false)
   const $params = rule.$params || {}
-  const $invalid = rule.$async
-    ? createAsyncResult(
-      rule.$validator,
-      model,
-      $pending,
-      $dirty,
-      config
-    )
-    : createComputedResult(rule.$validator, model, $dirty, config)
+  const $invalid = createAsyncResult(
+    rule.$validator,
+    model,
+    $pending,
+    $dirty,
+    config
+  )
 
   const message = rule.$message
   const $message = isFunction(message)
@@ -551,8 +525,10 @@ export function setValidations ({
    * @return {Promise<boolean>}
    */
   function $validate () {
-    return new Promise((resolve) => {
+    return new Promise(async (resolve) => {
       if (!$dirty.value) $touch()
+      // await the watchers
+      await nextTick()
       // return whether it is valid or not
       if (!$pending.value) return resolve(!$invalid.value)
       const unwatch = watch($pending, () => {
