@@ -1,6 +1,6 @@
 {
   "name": "@vuelidate/docs",
-  "version": "2.0.0-alpha.9",
+  "version": "2.0.0-alpha.10",
   "private": true,
   "description": "Vuelidate documentation",
   "main": "index.js",
@@ -12,7 +12,7 @@
   },
   "dependencies": {
     "@vuelidate/core": "^2.0.0-alpha.9",
-    "@vuelidate/validators": "^2.0.0-alpha.6"
+    "@vuelidate/validators": "^2.0.0-alpha.7"
   },
   "devDependencies": {
     "tree-kill": "^1.2.2",

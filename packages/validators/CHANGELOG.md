@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.0.0-alpha.7](https://github.com/vuelidate/vuelidate/compare/@vuelidate/validators@2.0.0-alpha.6...@vuelidate/validators@2.0.0-alpha.7) (2021-02-04)
+
+
+### Bug Fixes
+
+* **types:** declare second sameAs validator parameter as optional ([#773](https://github.com/vuelidate/vuelidate/issues/773)) ([#776](https://github.com/vuelidate/vuelidate/issues/776)) ([9ed9365](https://github.com/vuelidate/vuelidate/commit/9ed9365fb264a0e0f5024fba43e2dedf15e981d2))
+
+
+
+
+
 # [2.0.0-alpha.6](https://github.com/vuelidate/vuelidate/compare/@vuelidate/validators@2.0.0-alpha.5...@vuelidate/validators@2.0.0-alpha.6) (2021-02-04)
 
 
