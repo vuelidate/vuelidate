@@ -253,6 +253,40 @@ describe('useVuelidate', () => {
       expect(vm.v.number).toHaveProperty('$anyDirty', true)
       expect(vm.v.number).toHaveProperty('$invalid', false)
     })
+
+    it('when used at root with plain object, should update the $dirty state', async () => {
+      const number = ref(1)
+      const { vm } = createSimpleWrapper({ number: { isEven } }, { number }, { $autoDirty: true })
+      shouldBeInvalidValidationObject({ v: vm.v.number, property: 'number', validatorName: 'isEven' })
+
+      number.value = 3
+      await vm.$nextTick()
+      shouldBeErroredValidationObject({ v: vm.v.number, property: 'number', validatorName: 'isEven' })
+      number.value = 2
+      await vm.$nextTick()
+      expect(vm.v.$errors).toHaveLength(0)
+      expect(vm.v.number).toHaveProperty('$error', false)
+      expect(vm.v.number).toHaveProperty('$dirty', true)
+      expect(vm.v.number).toHaveProperty('$anyDirty', true)
+      expect(vm.v.number).toHaveProperty('$invalid', false)
+    })
+
+    it('when used at root with reactive object, should update the $dirty state', async () => {
+      const { state, validations } = nestedReactiveObjectValidation()
+      const { vm } = createSimpleWrapper(validations, state, { $autoDirty: true })
+      shouldBePristineValidationObj(vm.v.level0)
+
+      state.level0 = 3
+      await vm.$nextTick()
+      shouldBeErroredValidationObject({ v: vm.v.level0, property: 'level0', validatorName: 'isEven' })
+      state.level0 = 2
+      await vm.$nextTick()
+      expect(vm.v.level0).toHaveProperty('$error', false)
+      expect(vm.v.level0).toHaveProperty('$dirty', true)
+      expect(vm.v.level0).toHaveProperty('$anyDirty', true)
+      expect(vm.v.level0).toHaveProperty('$invalid', false)
+      expect(vm.v.$errors).toHaveLength(0)
+    })
   })
 
   describe('$model', () => {
