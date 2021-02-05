@@ -31,7 +31,6 @@
 import { ref, reactive } from 'vue'
 import useVuelidate from '@vuelidate/core'
 import { required, minLength, sameAs, helpers } from '@vuelidate/validators'
-import { withAsync } from '@vuelidate/validators/src/common'
 
 const { withMessage, withParams, unwrap } = helpers
 
@@ -62,7 +61,7 @@ function usePassword ({ minimumLength }) {
       ),
       asyncValidator: withMessage(
         ({ $pending, $model }) => $pending ? 'Checking!' : `Error! ${$model} Isn’t "aaaa"`,
-        withAsync(asyncValidator)
+        asyncValidator
       ),
       $autoDirty: true
     },

@@ -38,7 +38,7 @@ If you want to create a validator that groups many otherwise unrelated fields to
 
 ## Collections validation
 
-Array support with `$each` keyword
+Use nested component validations.
 
 > Example
 
@@ -50,16 +50,33 @@ Any component's data has to be accessed synchronously for correct reactive behav
 
 Validator is evaluated on every data change, as it is essentially a computed value. If you need to throttle an async call, do it on your data change event, not on the validator itself. You may end up with broken Vue observables otherwise.
 
-> Example
+```js
+const asyncEmailValidator = (v) => Promise.resolve() // does something async
+export default {
+  validations () {
+    return {
+      email: {
+        isUnique: asyncEmailValidator
+      }
+    }
+  }
+}
+```
 
 The `async/await` syntax is fully supported. It works especially great in combination with Fetch API.
 
 ```js
-validations: {
-  async isUnique (value) {
-    if (value === '') return true
-    const response = await fetch(`/api/unique/${value}`)
-    return Boolean(await response.json())
+export default {
+  validations () {
+    return {
+      email: {
+        async isUnique (value) {
+          if (value === '') return true
+          const response = await fetch(`/api/unique/${value}`)
+          return Boolean(await response.json())
+        }
+      }
+    }
   }
 }
 ```
