@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.0.0-alpha.10](https://github.com/vuelidate/vuelidate/compare/@vuelidate/core@2.0.0-alpha.9...@vuelidate/core@2.0.0-alpha.10) (2021-02-07)
+
+
+### Bug Fixes
+
+* **core:** allow $autoDirty on the root, when passed a plain object as state ([#796](https://github.com/vuelidate/vuelidate/issues/796)) ([4d49bb2](https://github.com/vuelidate/vuelidate/commit/4d49bb2060bfa07f8e190489e89cb5240b37311d))
+
+
+
+
+
 # [2.0.0-alpha.9](https://github.com/vuelidate/vuelidate/compare/@vuelidate/core@2.0.0-alpha.8...@vuelidate/core@2.0.0-alpha.9) (2021-02-04)
 
 
