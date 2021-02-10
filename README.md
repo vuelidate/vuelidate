@@ -10,7 +10,12 @@
 
 <p align="center">
   <a href="https://vuejs.amsterdam/?utm_source=newsletter&utm_medium=logo&utm_campaign=vuejs-newsletter" target="_blank">
-    <img src="https://cdn.discordapp.com/attachments/793583797454503976/793583831369646120/vuejsamsterdam.png" alt="Storyblok" width="380px">
+    <img src="https://cdn.discordapp.com/attachments/793583797454503976/793583831369646120/vuejsamsterdam.png" alt="Vuejs Amsterdam" width="380px">
+  </a>
+</p>
+<p align="center">
+  <a href="https://theroadtoenterprise.com/?utm_source=newsletter&utm_medium=logo&utm_campaign=vuejs-newsletter" target="_blank">
+    <img src="https://cdn.discordapp.com/attachments/793583797454503976/809062891420123166/logo.png" alt="Vue - The Road To Enterprise" width="380px">
   </a>
 </p>
 
