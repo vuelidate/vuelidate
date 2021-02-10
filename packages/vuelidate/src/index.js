@@ -1,5 +1,5 @@
-import { watch, computed, getCurrentInstance, inject, onBeforeMount, onBeforeUnmount, provide, isRef, ref, reactive, isProxy } from 'vue-demi'
-import { isFunction, unwrap } from './utils'
+import { watch, computed, getCurrentInstance, inject, onBeforeMount, onBeforeUnmount, provide, isRef, ref, reactive } from 'vue-demi'
+import { isFunction, unwrap, isProxy } from './utils'
 import { setValidations } from './core'
 import ResultsStorage from './storage'
 
