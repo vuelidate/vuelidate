@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.0.0-alpha.11](https://github.com/vuelidate/vuelidate/compare/@vuelidate/core@2.0.0-alpha.10...@vuelidate/core@2.0.0-alpha.11) (2021-02-10)
+
+
+### Bug Fixes
+
+* **core:** remove isProxy and implement own ([95706a3](https://github.com/vuelidate/vuelidate/commit/95706a3ee667ae8d01b37172868360277da86c7f))
+* **core:** remove isProxy and implement own in index.js ([376c054](https://github.com/vuelidate/vuelidate/commit/376c054844fcde8529e572a9bd1690a38621f5f7))
+
+
+
+
+
 # [2.0.0-alpha.10](https://github.com/vuelidate/vuelidate/compare/@vuelidate/core@2.0.0-alpha.9...@vuelidate/core@2.0.0-alpha.10) (2021-02-07)
 
 
