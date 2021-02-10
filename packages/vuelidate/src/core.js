@@ -1,5 +1,5 @@
-import { isFunction, isPromise, unwrap, unwrapObj } from './utils'
-import { computed, isProxy, isRef, reactive, ref, watch } from 'vue-demi'
+import { isFunction, isPromise, unwrap, unwrapObj, isProxy } from './utils'
+import { computed, isRef, reactive, ref, watch } from 'vue-demi'
 
 let ROOT_PATH = '__root'
 
