@@ -34,8 +34,6 @@ export default class ResultsStorage {
     return newRulesKeys.every(ruleKey => {
       if (!rules[ruleKey].$params) return true
       return Object.keys(rules[ruleKey].$params)
-        // make sure we dont compare the `$response` param
-        .filter(key => key !== '$response')
         .every(paramKey => {
           // make sure to unwrap before comparing
           return unwrap(storedRules[ruleKey].$params[paramKey]) === unwrap(rules[ruleKey].$params[paramKey])
