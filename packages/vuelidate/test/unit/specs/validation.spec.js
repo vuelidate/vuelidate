@@ -1,4 +1,4 @@
-import { computed, ref } from 'vue-demi'
+import { computed, ref, h } from 'vue-demi'
 import { flushPromises, mount } from '@vue/test-utils'
 import { isEven } from '../validators.fixture'
 import {
@@ -10,9 +10,15 @@ import {
   simpleValidation,
   nestedRefObjectValidation
 } from '../validations.fixture'
-import { createSimpleWrapper, shouldBePristineValidationObj, shouldBeInvalidValidationObject, shouldBeErroredValidationObject } from '../utils'
+import {
+  createSimpleWrapper,
+  shouldBePristineValidationObj,
+  shouldBeInvalidValidationObject,
+  shouldBeErroredValidationObject,
+  createSimpleComponent
+} from '../utils'
 import { withAsync, withMessage, withParams } from '@vuelidate/validators/src/common'
-import useVuelidate from '../../../src'
+import useVuelidate, { CollectFlag } from '../../../src'
 
 describe('useVuelidate', () => {
   it('should have a `v` key defined if used', () => {
@@ -249,6 +255,40 @@ describe('useVuelidate', () => {
       expect(vm.v.number).toHaveProperty('$anyDirty', true)
       expect(vm.v.number).toHaveProperty('$invalid', false)
     })
+
+    it('when used at root with plain object, should update the $dirty state', async () => {
+      const number = ref(1)
+      const { vm } = createSimpleWrapper({ number: { isEven } }, { number }, { $autoDirty: true })
+      shouldBeInvalidValidationObject({ v: vm.v.number, property: 'number', validatorName: 'isEven' })
+
+      number.value = 3
+      await vm.$nextTick()
+      shouldBeErroredValidationObject({ v: vm.v.number, property: 'number', validatorName: 'isEven' })
+      number.value = 2
+      await vm.$nextTick()
+      expect(vm.v.$errors).toHaveLength(0)
+      expect(vm.v.number).toHaveProperty('$error', false)
+      expect(vm.v.number).toHaveProperty('$dirty', true)
+      expect(vm.v.number).toHaveProperty('$anyDirty', true)
+      expect(vm.v.number).toHaveProperty('$invalid', false)
+    })
+
+    it('when used at root with reactive object, should update the $dirty state', async () => {
+      const { state, validations } = nestedReactiveObjectValidation()
+      const { vm } = createSimpleWrapper(validations, state, { $autoDirty: true })
+      shouldBePristineValidationObj(vm.v.level0)
+
+      state.level0 = 3
+      await vm.$nextTick()
+      shouldBeErroredValidationObject({ v: vm.v.level0, property: 'level0', validatorName: 'isEven' })
+      state.level0 = 2
+      await vm.$nextTick()
+      expect(vm.v.level0).toHaveProperty('$error', false)
+      expect(vm.v.level0).toHaveProperty('$dirty', true)
+      expect(vm.v.level0).toHaveProperty('$anyDirty', true)
+      expect(vm.v.level0).toHaveProperty('$invalid', false)
+      expect(vm.v.$errors).toHaveLength(0)
+    })
   })
 
   describe('$model', () => {
@@ -339,6 +379,90 @@ describe('useVuelidate', () => {
       expect(childState).toBeFalsy()
       // there are no errors at all
       expect(vm.v.$errors).toEqual([])
+    })
+
+    it('collects all child validation results, if parent `$scope` is not set', async () => {
+      const { childValidationRegisterName, parent, state } = nestedComponentValidation({ childScope: 'child' })
+      const { vm } = mount(parent)
+      shouldBeInvalidValidationObject({ v: vm.v, property: 'number', validatorName: 'isEven' })
+      state.number.value = 3
+      await vm.$nextTick()
+      expect(vm.v.$errors).toHaveLength(1)
+      let childState = vm.v.$getResultsForChild(childValidationRegisterName)
+      expect(childState).toBeTruthy()
+    })
+
+    it('collects all child validation results, if both have the same `$scope`', async () => {
+      const { childValidationRegisterName, parent, state } = nestedComponentValidation({ parentScope: 'sameScope', childScope: 'sameScope' })
+      const { vm } = mount(parent)
+      shouldBeInvalidValidationObject({ v: vm.v, property: 'number', validatorName: 'isEven' })
+      state.number.value = 3
+      await vm.$nextTick()
+      expect(vm.v.$errors).toHaveLength(1)
+      let childState = vm.v.$getResultsForChild(childValidationRegisterName)
+      expect(childState).toBeTruthy()
+    })
+
+    it('does not collect child validation results, if components have different `$scope`', async () => {
+      const { childValidationRegisterName, parent, state } = nestedComponentValidation({ parentScope: 'parent', childScope: 'child' })
+      const { vm } = mount(parent)
+      shouldBePristineValidationObj(vm.v)
+      state.number.value = 3
+      await vm.$nextTick()
+      const childState = vm.v.$getResultsForChild(childValidationRegisterName)
+      expect(childState).toEqual(undefined)
+      expect(vm.v.$errors).toEqual([])
+    })
+
+    it('does not collect child validation, if child `$scope` is `COLLECT_NONE`', async () => {
+      const { childValidationRegisterName, parent, state } = nestedComponentValidation({ childScope: CollectFlag.COLLECT_NONE })
+      const { vm } = mount(parent)
+      shouldBePristineValidationObj(vm.v)
+      state.number.value = 3
+      await vm.$nextTick()
+      const childState = vm.v.$getResultsForChild(childValidationRegisterName)
+      expect(childState).toEqual(undefined)
+      expect(vm.v.$errors).toEqual([])
+    })
+
+    it('does not collect child validations, if parent `$scope` is `COLLECT_NONE`', async () => {
+      const { childValidationRegisterName, parent, state } = nestedComponentValidation({ parentScope: CollectFlag.COLLECT_NONE })
+      const { vm } = mount(parent)
+      shouldBePristineValidationObj(vm.v)
+      state.number.value = 3
+      await vm.$nextTick()
+      const childState = vm.v.$getResultsForChild(childValidationRegisterName)
+      expect(childState).toEqual(undefined)
+      expect(vm.v.$errors).toEqual([])
+    })
+
+    it('stops the propagation of errors up the component chain', () => {
+      const { state, validations } = simpleValidation()
+      let $registerAs = 'componentC'
+      const componentC = createSimpleComponent(() => useVuelidate(validations, state, { $registerAs }))
+      const componentB = {
+        setup: () => ({ v: useVuelidate({ $stopPropagation: true, $lazy: false }) }),
+        render: () => h(componentC)
+      }
+      const componentA = {
+        setup: () => ({ v: useVuelidate() }),
+        render: () => h(componentB)
+      }
+      // mount the top most component
+      const wrapper = mount(componentA)
+      // make sure it has no errors
+      expect(wrapper.vm.v.$silentErrors).toHaveLength(0)
+      // make sure the child component is not registered at all
+      expect(wrapper.vm.v.$getResultsForChild($registerAs)).toBeFalsy()
+
+      // find componentB
+      let componentCVueWrapper = wrapper.findComponent(componentB)
+      // make sure it has errors
+      expect(componentCVueWrapper.vm.v.$silentErrors).toHaveLength(1)
+      // make sure that componentC is registered
+      expect(componentCVueWrapper.vm.v.$getResultsForChild($registerAs)).toBeTruthy()
+      // make sure that componentC has errors
+      expect(wrapper.findComponent(componentC).vm.v.$silentErrors).toHaveLength(1)
     })
   })
 

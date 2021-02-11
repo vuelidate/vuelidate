@@ -1,4 +1,4 @@
-import { isRef, computed, ref } from 'vue-demi'
+import { isRef, computed, ref, isReactive, isReadonly } from 'vue-demi'
 
 export function unwrap (val) {
   return isRef(val)
@@ -34,4 +34,8 @@ export function paramToRef (param) {
   } else {
     return ref(param)
   }
+}
+
+export function isProxy (value) {
+  return isReactive(value) || isReadonly(value)
 }

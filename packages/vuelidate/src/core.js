@@ -1,4 +1,4 @@
-import { isFunction, isPromise, unwrap, unwrapObj } from './utils'
+import { isFunction, isPromise, unwrap, unwrapObj, isProxy } from './utils'
 import { computed, isRef, reactive, ref, watch } from 'vue-demi'
 
 let ROOT_PATH = '__root'
@@ -312,13 +312,12 @@ function createValidationResults (rules, model, key, resultsCache, path, config)
  * Collects the validation results of all nested state properties
  * @param {Object<NormalizedValidator|Function>} validations - The validation
  * @param {Object} nestedState - Current state
- * @param {String} [key] - Parent level state key
  * @param {String} path - Path to current property
  * @param {ResultsStorage} resultsCache - Validations cache map
  * @param {Object} config - The config object
  * @return {{}}
  */
-function collectNestedValidationResults (validations, nestedState, key, path, resultsCache, config) {
+function collectNestedValidationResults (validations, nestedState, path, resultsCache, config) {
   const nestedValidationKeys = Object.keys(validations)
 
   // if we have no state, return empty object
@@ -343,10 +342,9 @@ function collectNestedValidationResults (validations, nestedState, key, path, re
  * @param {ValidationResult|{}} results
  * @param {Object<ValidationResult>[]} nestedResults
  * @param {Object<ValidationResult>[]} childResults
- * @param {String} path
  * @return {{$anyDirty: Ref<Boolean>, $error: Ref<Boolean>, $invalid: Ref<Boolean>, $errors: Ref<ErrorObject[]>, $dirty: Ref<Boolean>, $touch: Function, $reset: Function }}
  */
-function createMetaFields (results, nestedResults, childResults, path) {
+function createMetaFields (results, nestedResults, childResults) {
   const allResults = computed(() => [nestedResults, childResults]
     .filter(res => res)
     .reduce((allRes, res) => {
@@ -506,16 +504,18 @@ export function setValidations ({
 
   // create protected state for cases when the state branch does not exist yet.
   // This protects when using the OptionsAPI as the data is bound after the setup method
-  const nestedState = key ? computed(() => {
-    const s = unwrap(state)
-    return s ? unwrap(s[key]) : undefined
-  }) : state
+  const nestedState = key
+    ? computed(() => {
+      const s = unwrap(state)
+      return s ? unwrap(s[key]) : undefined
+    })
+    : isProxy(state) ? state : reactive(state || {})
 
   // Use rules for the current state fragment and validate it
   const results = createValidationResults(rules, nestedState, key, resultsCache, path, mergedConfig)
   // Use nested keys to repeat the process
   // *WARN*: This is recursive
-  const nestedResults = collectNestedValidationResults(nestedValidators, nestedState, key, path, resultsCache, mergedConfig)
+  const nestedResults = collectNestedValidationResults(nestedValidators, nestedState, path, resultsCache, mergedConfig)
 
   // Collect and merge this level validation results
   // with all nested validation results
@@ -529,7 +529,7 @@ export function setValidations ({
     $touch,
     $reset,
     $silentErrors
-  } = createMetaFields(results, nestedResults, childResults, path || ROOT_PATH)
+  } = createMetaFields(results, nestedResults, childResults)
 
   /**
    * If we have no `key`, this is the top level state
@@ -548,7 +548,7 @@ export function setValidations ({
     }
   }) : null
 
-  if (mergedConfig.$autoDirty) {
+  if (key && mergedConfig.$autoDirty) {
     watch(nestedState, () => {
       if (!$dirty.value) $touch()
     })

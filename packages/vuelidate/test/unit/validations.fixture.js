@@ -82,19 +82,19 @@ export function computedValidationsObjectWithReactive () {
   }
 }
 
-export function nestedComponentValidation ({ state: origState, validations: origValidations } = {}) {
+export function nestedComponentValidation ({ state: origState, validations: origValidations, parentScope, childScope } = {}) {
   const state = origState || { number: ref(1) }
   const validations = origValidations || { number: { isEven, $autoDirty: true } }
   const childValidationRegisterName = 'child-validation'
 
   const ChildComponent = createSimpleComponent(() =>
-    useVuelidate(validations, state, { $registerAs: childValidationRegisterName })
+    useVuelidate(validations, state, { $registerAs: childValidationRegisterName, $scope: childScope })
   )
 
   const parent = {
     name: 'ParentWithChildForm',
     setup () {
-      const v = useVuelidate()
+      const v = useVuelidate({ $scope: parentScope })
       const shouldRenderChild = ref(true)
       return {
         v,

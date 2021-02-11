@@ -1,6 +1,6 @@
 {
   "name": "@vuelidate/validators",
-  "version": "2.0.0-alpha.5",
+  "version": "2.0.0-alpha.8",
   "description": "Validators for Vuelidate",
   "main": "dist/index.js",
   "types": "index.d.ts",
@@ -14,17 +14,13 @@
     "lint": "eslint src"
   },
   "dependencies": {
-    "vue-demi": "latest"
+    "vue-demi": "^0.6.0"
   },
   "devDependencies": {
     "bili": "^4.8.1",
     "eslint-plugin-jest": "^23.0.2",
     "flush-promises": "^1.0.2",
     "jest": "^24.9.0"
-  },
-  "peerDependencies": {
-    "@vue/composition-api": "^1.0.0-beta.1",
-    "vue": "^2.0.0 || >=3.0.0-rc.0"
   },
   "sideEffects": [
     "./src/utils/common.js"

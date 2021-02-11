@@ -3,6 +3,47 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.0.0-alpha.12](https://github.com/vuelidate/vuelidate/compare/@vuelidate/docs@2.0.0-alpha.11...@vuelidate/docs@2.0.0-alpha.12) (2021-02-10)
+
+**Note:** Version bump only for package @vuelidate/docs
+
+
+
+
+
+# [2.0.0-alpha.11](https://github.com/vuelidate/vuelidate/compare/@vuelidate/docs@2.0.0-alpha.10...@vuelidate/docs@2.0.0-alpha.11) (2021-02-07)
+
+**Note:** Version bump only for package @vuelidate/docs
+
+
+
+
+
+# [2.0.0-alpha.10](https://github.com/vuelidate/vuelidate/compare/@vuelidate/docs@2.0.0-alpha.9...@vuelidate/docs@2.0.0-alpha.10) (2021-02-04)
+
+**Note:** Version bump only for package @vuelidate/docs
+
+
+
+
+
+# [2.0.0-alpha.9](https://github.com/vuelidate/vuelidate/compare/@vuelidate/docs@2.0.0-alpha.8...@vuelidate/docs@2.0.0-alpha.9) (2021-02-04)
+
+
+### Features
+
+* add global configs, remove mixin, add silentErrors, lazy mode  ([#790](https://github.com/vuelidate/vuelidate/issues/790)) ([22cd7c5](https://github.com/vuelidate/vuelidate/commit/22cd7c5ae5a0c5c2e4a021dc082509b3be3f5141)), closes [#670](https://github.com/vuelidate/vuelidate/issues/670)
+* allow scoping of component validations, fixes: [#719](https://github.com/vuelidate/vuelidate/issues/719) ([#791](https://github.com/vuelidate/vuelidate/issues/791)) ([d7a8797](https://github.com/vuelidate/vuelidate/commit/d7a87976f3a1a27914c406462e09df69ccb653c8))
+
+
+### BREAKING CHANGES
+
+* Validations are no longer lazy by default, you need to specify `$lazy: true` to each, or at the top using the globalConfig.
+
+
+
+
+
 # [2.0.0-alpha.8](https://github.com/vuelidate/vuelidate/compare/@vuelidate/docs@2.0.0-alpha.7...@vuelidate/docs@2.0.0-alpha.8) (2020-11-19)
 
 **Note:** Version bump only for package @vuelidate/docs
