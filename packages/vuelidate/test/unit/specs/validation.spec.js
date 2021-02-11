@@ -116,13 +116,12 @@ describe('useVuelidate', () => {
       expect(vm.v).toHaveProperty('$invalid', true)
       expect(vm.v.$errors).toEqual([{
         $message: '',
-        $params: {
-          $response: false
-        },
         $pending: false,
+        $params: {},
         $property: 'numberA',
         $propertyPath: 'numberA',
-        $validator: 'isEven'
+        $validator: 'isEven',
+        $response: false
       }])
     })
 
@@ -340,13 +339,12 @@ describe('useVuelidate', () => {
 
       expect(wrapper.vm.v.$errors).toEqual([{
         $message: '',
-        $params: {
-          $response: false
-        },
+        $params: {},
         $pending: false,
         $property: 'number',
         $propertyPath: 'number',
-        $validator: 'isEven'
+        $validator: 'isEven',
+        $response: false
       }])
     })
 
@@ -532,13 +530,12 @@ describe('useVuelidate', () => {
       expect(childState).toHaveProperty('$errors')
       expect(childState.$errors).toContainEqual({
         '$message': '',
-        '$params': {
-          $response: false
-        },
+        '$params': {},
         '$pending': false,
         '$property': 'number',
         '$propertyPath': 'number',
-        '$validator': 'isEven'
+        '$validator': 'isEven',
+        $response: false
       })
     })
 
@@ -598,7 +595,7 @@ describe('useVuelidate', () => {
       const validations = { number: { isEvenValidator } }
       const { vm } = createSimpleWrapper(validations, state)
       vm.v.$touch()
-      expect(vm.v.number.isEvenValidator.$params).toHaveProperty('$response', {
+      expect(vm.v.number.isEvenValidator).toHaveProperty('$response', {
         $invalid: false,
         $data: { foo: 'foo' }
       })
@@ -614,7 +611,7 @@ describe('useVuelidate', () => {
       const { vm } = createSimpleWrapper(validations, state)
       vm.v.$touch()
       await flushPromises()
-      expect(vm.v.number.isEvenValidator.$params).toHaveProperty('$response', {
+      expect(vm.v.number.isEvenValidator).toHaveProperty('$response', {
         $invalid: false,
         $data: { foo: 'foo' }
       })
@@ -700,7 +697,7 @@ describe('useVuelidate', () => {
         $invalid: isEven(v),
         $message: v === 7 ? 'I dont like 7' : null
       })
-      const isEvenMessage = withMessage(({ $params, $model }) => $params?.$response?.$message || `Field is not Even, ${$model} given`, validator)
+      const isEvenMessage = withMessage(({ $response, $model }) => $response?.$message || `Field is not Even, ${$model} given`, validator)
       const value = ref(1)
       const { vm } = createSimpleWrapper({ value: { isEvenMessage } }, { value })
       vm.v.$touch()

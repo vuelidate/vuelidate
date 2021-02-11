@@ -54,13 +54,12 @@ export const shouldBeInvalidValidationObject = ({ v, property, propertyPath = pr
   expect(v).toHaveProperty('$errors', [])
   expect(v).toHaveProperty('$silentErrors', [{
     $message: '',
-    $params: {
-      $response: expect.anything()
-    },
+    $params: {},
     $pending: false,
     $property: property,
     $propertyPath: propertyPath,
-    $validator: validatorName
+    $validator: validatorName,
+    $response: false
   }])
   expect(v).toHaveProperty('$invalid', true)
   expect(v).toHaveProperty('$pending', false)
@@ -74,23 +73,21 @@ export const shouldBeErroredValidationObject = ({ v, property, propertyPath = pr
   expect(v).toHaveProperty('$error', true)
   expect(v).toHaveProperty('$errors', [{
     $message: '',
-    $params: {
-      $response: expect.anything()
-    },
+    $params: {},
     $pending: false,
     $property: property,
     $propertyPath: propertyPath,
-    $validator: validatorName
+    $validator: validatorName,
+    $response: false
   }])
   expect(v).toHaveProperty('$silentErrors', [{
     $message: '',
-    $params: {
-      $response: expect.anything()
-    },
+    $params: {},
     $pending: false,
     $property: property,
     $propertyPath: propertyPath,
-    $validator: validatorName
+    $validator: validatorName,
+    $response: false
   }])
   expect(v).toHaveProperty('$invalid', true)
   expect(v).toHaveProperty('$pending', false)

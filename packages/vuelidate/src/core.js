@@ -95,9 +95,10 @@ function normalizeValidatorResponse (result) {
  * @param {Ref<boolean>} $dirty
  * @param {Ref<Object> | Object} $params
  * @param {Object} config
+ * @param {Ref<*>} $response
  * @return {ComputedRef<Boolean>}
  */
-function createComputedResult (rule, model, $dirty, $params, { $lazy }) {
+function createComputedResult (rule, model, $dirty, $params, { $lazy }, $response) {
   return computed(() => {
     // if $dirty is false, we dont validate at all.
     if ($lazy && !$dirty.value) return false
@@ -106,7 +107,7 @@ function createComputedResult (rule, model, $dirty, $params, { $lazy }) {
     if (isPromise(result)) {
       throw Error('[vuelidate] detected a raw async validator. Please wrap any async validators in the `withAsync` helper.')
     }
-    $params.$response = result
+    $response.value = result
     return normalizeValidatorResponse(result)
   })
 }
@@ -119,9 +120,10 @@ function createComputedResult (rule, model, $dirty, $params, { $lazy }) {
  * @param {Ref<Boolean>} $dirty
  * @param {Ref<Object> | Object} $params
  * @param {Object} config
+ * @param {Ref<*>} $response
  * @return {Ref<Boolean>}
  */
-function createAsyncResult (rule, model, $pending, $dirty, $params, { $lazy }) {
+function createAsyncResult (rule, model, $pending, $dirty, $params, { $lazy }, $response) {
   const $invalid = ref(!!$dirty.value)
   const $pendingCounter = ref(0)
 
@@ -141,13 +143,13 @@ function createAsyncResult (rule, model, $pending, $dirty, $params, { $lazy }) {
         .then(data => {
           $pendingCounter.value--
           $pending.value = !!$pendingCounter.value
-          $params.$response = data
+          $response.value = data
           $invalid.value = normalizeValidatorResponse(data)
         })
         .catch(() => {
           $pendingCounter.value--
           $pending.value = !!$pendingCounter.value
-          $params.$response = null
+          $response.value = null
           $invalid.value = true
         })
     },
@@ -162,12 +164,14 @@ function createAsyncResult (rule, model, $pending, $dirty, $params, { $lazy }) {
  * Detects async and sync validators.
  * @param {NormalizedValidator} rule
  * @param {Ref<*>} model
+ * @param {Ref<boolean>} $dirty
  * @param {Object} config
- * @return {{$params: *, $message: Ref<String>, $pending: Ref<Boolean>, $invalid: Ref<Boolean>}}
+ * @return {{$params: *, $message: Ref<String>, $pending: Ref<Boolean>, $invalid: Ref<Boolean>, $response: Ref<*>}}
  */
 function createValidatorResult (rule, model, $dirty, config) {
   const $pending = ref(false)
   const $params = rule.$params || {}
+  const $response = ref(null)
   const $invalid = rule.$async
     ? createAsyncResult(
       rule.$validator,
@@ -175,9 +179,10 @@ function createValidatorResult (rule, model, $dirty, config) {
       $pending,
       $dirty,
       $params,
-      config
+      config,
+      $response
     )
-    : createComputedResult(rule.$validator, model, $dirty, $params, config)
+    : createComputedResult(rule.$validator, model, $dirty, $params, config, $response)
 
   const message = rule.$message
   const $message = isFunction(message)
@@ -187,7 +192,8 @@ function createValidatorResult (rule, model, $dirty, config) {
           $pending,
           $invalid,
           $params: unwrapObj($params), // $params can hold refs, so we unwrap them for easy access
-          $model: model
+          $model: model,
+          $response
         })
       ))
     : message || ''
@@ -196,7 +202,8 @@ function createValidatorResult (rule, model, $dirty, config) {
     $message,
     $params,
     $pending,
-    $invalid
+    $invalid,
+    $response
   }
 }
 
@@ -293,6 +300,7 @@ function createValidationResults (rules, model, key, resultsCache, path, config)
         $validator: ruleKey,
         $message: res.$message,
         $params: res.$params,
+        $response: res.$response,
         $pending: res.$pending
       })
     })

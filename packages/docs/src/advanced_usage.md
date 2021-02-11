@@ -203,20 +203,19 @@ function validator (value) {
 }
 ```
 
-The entire response can be accessed from `$params.$response` property in the validation and error objects. We can use this to show a more custom error message.
+The entire response can be accessed from `$response` property in the validation and error objects. We can use this to show a more custom error message.
 
 ```js
 const validatorWithMessage = withMessage($params => _.get($params, '$response.data.message', 'Invalid data'), validator)
 ```
 
-If you need to access the data, you can just go into the `$params` property.
+If you need to access the data, you can just go into the `$response` property.
 
 ```js
 export default {
   computed: {
     someComputed() {
-      const params = this.v.someProperty.validator.$params
-      return params.$response ? params.$response.$data : null
+      const params = this.v.someProperty.validatorName.$response
     }
   }
 }

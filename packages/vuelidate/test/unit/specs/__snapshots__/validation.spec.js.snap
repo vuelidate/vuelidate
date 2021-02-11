@@ -3,12 +3,11 @@
 exports[`useVuelidate $errors constructs an array of errors for invalid AND drity properties 1`] = `
 Object {
   "$message": "",
-  "$params": Object {
-    "$response": false,
-  },
+  "$params": Object {},
   "$pending": false,
   "$property": "child",
   "$propertyPath": "level1.child",
+  "$response": false,
   "$validator": "isEven",
 }
 `;
@@ -16,12 +15,11 @@ Object {
 exports[`useVuelidate $silentErrors constructs an array of errors for invalid properties 1`] = `
 Object {
   "$message": "",
-  "$params": Object {
-    "$response": false,
-  },
+  "$params": Object {},
   "$pending": false,
   "$property": "child",
   "$propertyPath": "level1.child",
+  "$response": false,
   "$validator": "isEven",
 }
 `;
