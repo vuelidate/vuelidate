@@ -1,6 +1,7 @@
 import { computed, ref, h } from 'vue-demi'
-import { flushPromises, mount } from '@vue/test-utils'
+import { mount, flushPromises } from '../test-utils'
 import { isEven } from '../validators.fixture'
+
 import {
   asyncValidation,
   computedValidationsObjectWithReactive,

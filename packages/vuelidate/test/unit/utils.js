@@ -1,6 +1,6 @@
-import { h } from 'vue'
-import { mount } from '@vue/test-utils'
+import { h, isRef } from 'vue-demi'
 import { useVuelidate } from '../../src'
+import { mount } from './test-utils'
 
 export const createSimpleComponent = (getVuelidateResults, state) => ({
   name: 'childComp',

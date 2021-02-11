@@ -21,7 +21,8 @@
     "vue-demi": "^0.6.0"
   },
   "devDependencies": {
-    "bili": "^4.8.1"
+    "bili": "^4.8.1",
+    "flush-promises": "^1.0.2"
   },
   "publishConfig": {
     "access": "public"

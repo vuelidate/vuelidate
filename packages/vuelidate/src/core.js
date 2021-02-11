@@ -501,7 +501,7 @@ export function setValidations ({
       const s = unwrap(state)
       return s ? unwrap(s[key]) : undefined
     })
-    : isProxy(state) ? state : reactive(state || {})
+    : state
 
   // Use rules for the current state fragment and validate it
   const results = createValidationResults(rules, nestedState, key, resultsCache, path, mergedConfig)

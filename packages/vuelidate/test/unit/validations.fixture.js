@@ -1,4 +1,4 @@
-import { computed, h, ref, reactive } from 'vue'
+import { computed, h, ref, reactive } from 'vue-demi'
 import { asyncIsEven, isEven, isOdd } from './validators.fixture'
 import { createSimpleComponent } from './utils'
 import { useVuelidate } from '../../src'
