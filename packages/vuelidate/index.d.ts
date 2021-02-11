@@ -65,6 +65,7 @@ export interface RuleResultWithoutParams {
   readonly $message: string
   readonly $pending: boolean
   readonly $invalid: boolean
+  readonly $response: any
 }
 
 export interface RuleResultWithParams <P extends object = object> extends RuleResultWithoutParams {
@@ -86,6 +87,7 @@ export interface ErrorObject {
   readonly $message: string | Ref<string>
   readonly $params: object
   readonly $pending: boolean
+  readonly $response: any
 }
 
 type BaseValidation <
