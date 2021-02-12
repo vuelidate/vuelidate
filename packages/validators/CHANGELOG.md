@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.0.0-alpha.9](https://github.com/vuelidate/vuelidate/compare/@vuelidate/validators@2.0.0-alpha.8...@vuelidate/validators@2.0.0-alpha.9) (2021-02-12)
+
+
+### Bug Fixes
+
+* **validators:** add the helpers to the types ([dd1105d](https://github.com/vuelidate/vuelidate/commit/dd1105deaf0b7d7d4212ee0d4318747342d4080a))
+
+
+
+
+
 # [2.0.0-alpha.8](https://github.com/vuelidate/vuelidate/compare/@vuelidate/validators@2.0.0-alpha.7...@vuelidate/validators@2.0.0-alpha.8) (2021-02-07)
 
 **Note:** Version bump only for package @vuelidate/validators
