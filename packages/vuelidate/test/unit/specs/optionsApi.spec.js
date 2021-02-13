@@ -13,7 +13,7 @@ import {
   nestedRefObjectValidation,
   nestedReactiveObjectValidation
 } from '../validations.fixture'
-import { flushPromises, mount } from '@vue/test-utils'
+import { flushPromises, mount } from '../test-utils'
 import useVuelidate from '../../../src'
 import { withAsync } from '@vuelidate/validators/src/common'
 
