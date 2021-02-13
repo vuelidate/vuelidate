@@ -101,7 +101,7 @@ function createAsyncResult (rule, model, $pending, $dirty, { $lazy }) {
 
   $pending.value = false
 
-  watch(
+  const $unwatch = watch(
     [model, $dirty],
     ([modelValue, dirty]) => {
       if ($lazy && !$dirty.value) return false
@@ -125,7 +125,7 @@ function createAsyncResult (rule, model, $pending, $dirty, { $lazy }) {
     }, { immediate: true }
   )
 
-  return $invalid
+  return { $invalid, $unwatch }
 }
 
 /**
@@ -139,7 +139,7 @@ function createAsyncResult (rule, model, $pending, $dirty, { $lazy }) {
 function createValidatorResult (rule, model, $dirty, config) {
   const $pending = ref(false)
   const $params = rule.$params || {}
-  const $invalid = createAsyncResult(
+  const { $invalid, $unwatch } = createAsyncResult(
     rule.$validator,
     model,
     $pending,
@@ -164,7 +164,8 @@ function createValidatorResult (rule, model, $dirty, config) {
     $message,
     $params,
     $pending,
-    $invalid
+    $invalid,
+    $unwatch
   }
 }
 
@@ -211,6 +212,7 @@ function createValidationResults (rules, model, key, resultsCache, path, config)
   if (cachedResult) {
     // if the rules are the same as before, use the cached results
     if (!cachedResult.$partial) return cachedResult
+    cachedResult.$unwatch()
     // use the `$dirty.value`, so we dont save references by accident
     $dirty.value = cachedResult.$dirty.value
   }
@@ -269,6 +271,10 @@ function createValidationResults (rules, model, key, resultsCache, path, config)
     ? result.$silentErrors.value
     : []
   )
+
+  result.$unwatch = () => ruleKeys.forEach(ruleKey => {
+    result[ruleKey].$unwatch()
+  })
 
   resultsCache.set(path, rules, result)
 
