@@ -1,4 +1,4 @@
-import { isFunction, isPromise, unwrap, unwrapObj, isProxy } from './utils'
+import { isFunction, unwrap, unwrapObj } from './utils'
 import { computed, isRef, reactive, ref, watch } from 'vue-demi'
 import { nextTick } from 'vue'
 
@@ -521,9 +521,13 @@ export function setValidations ({
   }) : null
 
   if (key && mergedConfig.$autoDirty) {
-    watch(nestedState, () => {
+    const $unwatch = watch(nestedState, () => {
+      const autoDirtyPath = `_${path}_$watcher_`
+      const cachedAutoDirty = resultsCache.get(autoDirtyPath, {})
       if (!$dirty.value) $touch()
-    })
+      if (cachedAutoDirty) cachedAutoDirty.$unwatch()
+      resultsCache.set(autoDirtyPath, {}, { $unwatch })
+    }, { flush: 'sync' })
   }
 
   /**
