@@ -13,21 +13,6 @@ export default class ResultsStorage {
     this.storage.set(path, { rules, result })
   }
 
-  invalidateValidatorAt (path) {
-    const storedRuleResultPair = this.storage.get(path)
-    if (!storedRuleResultPair) return undefined
-
-    const { result } = storedRuleResultPair
-
-    this.storage.set(path, {
-      rules: {},
-      result: {
-        $dirty: result.$dirty,
-        $unwatch: () => {}
-      }
-    })
-  }
-
   /**
    * Check if the stored `results` for the provided `path` have the same `rules` compared to 'storedRules'
    * @param {String} path
@@ -44,14 +29,12 @@ export default class ResultsStorage {
     const hasAllValidators = newRulesKeys.every(ruleKey => storedRulesKeys.includes(ruleKey))
     if (!hasAllValidators) return false
 
-    const hasSameParams = newRulesKeys.every(ruleKey => {
+    return newRulesKeys.every(ruleKey => {
       if (!rules[ruleKey].$params) return true
       Object.keys(rules[ruleKey].$params).every(paramKey => {
         return storedRules[ruleKey].$params[paramKey] === rules[ruleKey].$params[paramKey]
       })
     })
-    if (!hasSameParams) return false
-    return true
   }
 
   /**
@@ -67,7 +50,9 @@ export default class ResultsStorage {
 
     const isValidCache = this.checkRulesValidity(path, rules, storedRules)
 
-    if (!isValidCache) return { $dirty: result.$dirty, $partial: true, $unwatch: result.$unwatch }
+    const $unwatch = result.$unwatch ? result.$unwatch : () => ({})
+
+    if (!isValidCache) return { $dirty: result.$dirty, $partial: true, $unwatch }
     return result
   }
 }

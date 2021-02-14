@@ -213,8 +213,6 @@ function createValidationResults (rules, model, key, resultsCache, path, config)
     if (!cachedResult.$partial) return cachedResult
     // remove old watchers
     cachedResult.$unwatch()
-    // invalidate the validators, as they are now unwatched
-    resultsCache.invalidateValidatorAt(path)
     // use the `$dirty.value`, so we dont save references by accident
     $dirty.value = cachedResult.$dirty.value
   }
@@ -231,7 +229,12 @@ function createValidationResults (rules, model, key, resultsCache, path, config)
    * If there are no validation rules, it is most likely
    * a top level state, aka root
    */
-  if (!ruleKeys.length) return result
+  if (!ruleKeys.length) {
+    // if there are cached results, we should overwrite them with the new ones
+    cachedResult && resultsCache.set(path, rules, result)
+
+    return result
+  }
 
   ruleKeys.forEach(ruleKey => {
     result[ruleKey] = createValidatorResult(
