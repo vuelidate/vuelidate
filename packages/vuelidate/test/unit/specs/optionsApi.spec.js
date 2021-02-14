@@ -1,4 +1,4 @@
-import { ref } from 'vue-demi'
+import { ref, nextTick } from 'vue-demi'
 import { isEven, isOdd } from '../validators.fixture'
 import {
   createOldApiSimpleWrapper,
@@ -14,32 +14,30 @@ import {
   nestedReactiveObjectValidation
 } from '../validations.fixture'
 import { flushPromises, mount } from '../test-utils'
-import useVuelidate from '../../../src'
-import { withAsync } from '@vuelidate/validators/src/common'
 
 describe('OptionsAPI validations', () => {
-  it('should have a `v` key defined if used', () => {
-    const { vm } = createOldApiSimpleWrapper({}, {})
+  it('should have a `v` key defined if used', async () => {
+    const { vm } = await createOldApiSimpleWrapper({}, {})
 
     expect(vm.v).toEqual(expect.any(Object))
   })
 
-  it('should return a pristine validation object', () => {
-    const { vm } = createOldApiSimpleWrapper({}, {})
+  it('should return a pristine validation object', async () => {
+    const { vm } = await createOldApiSimpleWrapper({}, {})
 
     shouldBePristineValidationObj(vm.v)
   })
 
-  it('should return a pristine validation object for a property using ref', () => {
+  it('should return a pristine validation object for a property using ref', async () => {
     const number = ref(2)
-    const { vm } = createOldApiSimpleWrapper({ number: { isEven } }, { number })
+    const { vm } = await createOldApiSimpleWrapper({ number: { isEven } }, { number })
 
     expect(vm.v).toHaveProperty('number', expect.any(Object))
     shouldBePristineValidationObj(vm.v.number)
   })
 
-  it('should return a pristine validation object for a property', () => {
-    const { vm } = createOldApiSimpleWrapper({ number: { isEven } }, { number: 2 })
+  it('should return a pristine validation object for a property', async () => {
+    const { vm } = await createOldApiSimpleWrapper({ number: { isEven } }, { number: 2 })
 
     expect(vm.v).toHaveProperty('number', expect.any(Object))
     shouldBePristineValidationObj(vm.v.number)
@@ -47,7 +45,7 @@ describe('OptionsAPI validations', () => {
 
   describe('$model', () => {
     it('should update the source value', async () => {
-      const { vm } = createOldApiSimpleWrapper({ number: { isEven } }, { number: 1 })
+      const { vm } = await createOldApiSimpleWrapper({ number: { isEven } }, { number: 1 })
 
       vm.v.number.$model = 3
       await vm.$nextTick()
@@ -55,7 +53,7 @@ describe('OptionsAPI validations', () => {
     })
 
     it('should update the $dirty state to true when $model value changes', async () => {
-      const { vm } = createOldApiSimpleWrapper({ number: { isEven } }, { number: 2 })
+      const { vm } = await createOldApiSimpleWrapper({ number: { isEven } }, { number: 2 })
       shouldBePristineValidationObj(vm.v.number)
 
       vm.v.number.$model = 3
@@ -75,6 +73,7 @@ describe('OptionsAPI validations', () => {
     it('should collect child validations when they invalidate', async () => {
       const { state, parent } = nestedComponentValidation()
       const wrapper = mount(parent)
+      await wrapper.vm.$nextTick()
       shouldBeInvalidValidationObject({ v: wrapper.vm.v, property: 'number', validatorName: 'isEven' })
       state.number.value = 3
       await wrapper.vm.$nextTick()
@@ -92,6 +91,8 @@ describe('OptionsAPI validations', () => {
     it('should return false on $validate() if nested component validation is invalid', async () => {
       const { state, parent } = nestedComponentValidation()
       const wrapper = mount(parent)
+      await wrapper.vm.$nextTick()
+
       shouldBeInvalidValidationObject({ v: wrapper.vm.v, property: 'number', validatorName: 'isEven' })
       // make the validation fail
       state.number.value = 3
@@ -105,6 +106,8 @@ describe('OptionsAPI validations', () => {
     it('removes the child results if the child gets destroyed', async () => {
       const { childValidationRegisterName, parent, state } = nestedComponentValidation()
       const { vm } = mount(parent)
+      await vm.$nextTick()
+
       // make sure the validation object is clear
       shouldBeInvalidValidationObject({ v: vm.v, property: 'number', validatorName: 'isEven' })
       state.number.value = 3
@@ -125,6 +128,7 @@ describe('OptionsAPI validations', () => {
     it('returns the validation results for a child component', async () => {
       const { childValidationRegisterName, parent, state } = nestedComponentValidation()
       const { vm } = mount(parent)
+      await vm.$nextTick()
       shouldBeInvalidValidationObject({ v: vm.v, property: 'number', validatorName: 'isEven' })
       state.number.value = 3
       await vm.$nextTick()
@@ -140,9 +144,9 @@ describe('OptionsAPI validations', () => {
       })
     })
 
-    it('is only preset at the top level', () => {
+    it('is only preset at the top level', async () => {
       const { state, validations } = nestedReactiveObjectValidation()
-      const { vm } = createOldApiSimpleWrapper(validations, state)
+      const { vm } = await createOldApiSimpleWrapper(validations, state)
       expect(vm.v).toHaveProperty('$getResultsForChild')
       expect(vm.v.level0).not.toHaveProperty('$getResultsForChild')
       expect(vm.v.level1).not.toHaveProperty('$getResultsForChild')
@@ -164,7 +168,7 @@ describe('OptionsAPI validations', () => {
         }
         return { number: { isEven } }
       }
-      const wrapper = createOldApiSimpleWrapper(validation, { number: 2, condition: true })
+      const wrapper = await createOldApiSimpleWrapper(validation, { number: 2, condition: true })
 
       expect(wrapper.vm.v).toHaveProperty('number', expect.any(Object))
       shouldBeInvalidValidationObject({ v: wrapper.vm.v, property: 'number', validatorName: 'isOdd' })
@@ -177,7 +181,7 @@ describe('OptionsAPI validations', () => {
         }
         return { number: { isEven } }
       }
-      const wrapper = createOldApiSimpleWrapper(validation, { number: 2, condition: false })
+      const wrapper = await createOldApiSimpleWrapper(validation, { number: 2, condition: false })
 
       expect(wrapper.vm.v).toHaveProperty('number', expect.any(Object))
       shouldBePristineValidationObj(wrapper.vm.v.number)
@@ -204,33 +208,26 @@ describe('OptionsAPI validations', () => {
     it('supports async validators via `$async: true` object syntax', async () => {
       jest.useFakeTimers()
       const { state, validations } = asyncValidation()
-      const { vm } = createSimpleWrapper(validations, state)
+      const { vm } = await createSimpleWrapper(validations, state)
       vm.v.$touch()
-      await flushPromises()
+      await nextTick()
+      jest.advanceTimersByTime(6)
+      await nextTick()
       expect(vm.v.number.asyncIsEven.$pending).toBe(false)
       state.number.value = 6
+      await nextTick()
+
       expect(vm.v.number.asyncIsEven.$pending).toBe(true)
       expect(vm.v.number.$invalid).toBe(true)
-      await flushPromises()
+
+      jest.advanceTimersByTime(6)
+      await nextTick()
+
       expect(vm.v.number.asyncIsEven.$pending).toBe(false)
       expect(vm.v.number.$invalid).toBe(false)
       jest.useRealTimers()
     })
 
-    it('throws when passed an async validator directly', () => {
-      const asyncValidator = (v) => Promise.resolve(v)
-      const number = ref(0)
-      const component = {
-        template: '<div>Hello World</div>',
-        setup () {
-          const v = useVuelidate({ number: { asyncValidator } }, { number })
-          return { v }
-        }
-      }
-      const { vm } = mount(component)
-      // throws here, because we call the `$invalid` getter.
-      expect(() => vm.v.$touch).toThrowError()
-    })
     //
     // TODO: Fix this one
     // it('allows multiple invocations of an async validator, the last one to resolve, sets the return value', async () => {
@@ -267,7 +264,7 @@ describe('OptionsAPI validations', () => {
     it('trigger $dirty and $model reactions', async () => {
       const { state, validations } = nestedRefObjectValidation()
 
-      const { vm } = createSimpleWrapper(validations, state)
+      const { vm } = await createSimpleWrapper(validations, state)
 
       expect(vm.v.level1.level2.child).toHaveProperty('$model', 2)
       expect(vm.v.level1.level2.child).toHaveProperty('$dirty', false)
@@ -293,7 +290,7 @@ describe('OptionsAPI validations', () => {
     it('trigger $invalid reactions', async () => {
       const { state, validations } = nestedRefObjectValidation()
 
-      const { vm } = createSimpleWrapper(validations, state)
+      const { vm } = await createSimpleWrapper(validations, state)
 
       vm.v.level1.level2.child.$touch()
       expect(vm.v.level1.level2.child).toHaveProperty('$invalid', false)
@@ -307,6 +304,7 @@ describe('OptionsAPI validations', () => {
           }
         }
       }
+      await vm.$nextTick()
 
       expect(vm.v.level1.level2.child).toHaveProperty('$invalid', true)
     })

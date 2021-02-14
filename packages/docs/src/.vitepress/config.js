@@ -17,7 +17,7 @@ const config = {
       { text: 'Getting started', link: '/' },
       { text: 'Guide', link: '/guide' },
       { text: 'Advanced Usage', link: '/advanced_usage' },
-      { text: 'Examples', link: '/examples' },
+      { text: 'Examples (outdated)', link: '/examples' },
       { text: 'API', link: '/api' },
       { text: 'Built-in Validators', link: '/validators' },
       { text: 'Custom Validators', link: '/custom_validators' },

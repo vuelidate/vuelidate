@@ -73,7 +73,7 @@ export function computedValidationsObjectWithReactive () {
   })
   const validations = computed(() => {
     return state.conditional > 5
-      ? {}
+      ? { number: {} }
       : { number: { isOdd } }
   })
   return {

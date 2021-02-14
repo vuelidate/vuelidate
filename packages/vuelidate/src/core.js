@@ -1,5 +1,5 @@
-import { isFunction, isPromise, unwrap, unwrapObj, isProxy } from './utils'
-import { computed, isRef, reactive, ref, watch } from 'vue-demi'
+import { isFunction, unwrap, unwrapObj } from './utils'
+import { computed, isRef, reactive, ref, watch, nextTick } from 'vue-demi'
 
 let ROOT_PATH = '__root'
 
@@ -86,30 +86,6 @@ function normalizeValidatorResponse (result) {
 }
 
 /**
- * Returns the result of the validator every time the model changes.
- * Wraps the call in a computed property.
- * Used for with normal functions.
- * TODO: This allows a validator to return $invalid, probably along with other parameters. We do not utilize them ATM.
- * @param {Validator} rule
- * @param {Ref<*>} model
- * @param {Ref<boolean>} $dirty
- * @param {Object} config
- * @return {Ref<Boolean>}
- */
-function createComputedResult (rule, model, $dirty, { $lazy }) {
-  return computed(() => {
-    // if $dirty is false, we dont validate at all.
-    if ($lazy && !$dirty.value) return false
-    let result = callRule(rule, unwrap(model))
-    // if it returns a promise directly, error out
-    if (isPromise(result)) {
-      throw Error('[vuelidate] detected a raw async validator. Please wrap any async validators in the `withAsync` helper.')
-    }
-    return normalizeValidatorResponse(result)
-  })
-}
-
-/**
  * Returns the result of an async validator.
  * @param {Function} rule
  * @param {Ref<*>} model
@@ -124,9 +100,9 @@ function createAsyncResult (rule, model, $pending, $dirty, { $lazy }) {
 
   $pending.value = false
 
-  watch(
+  const $unwatch = watch(
     [model, $dirty],
-    modelValue => {
+    ([modelValue, dirty]) => {
       if ($lazy && !$dirty.value) return false
       const ruleResult = callRule(rule, model)
 
@@ -134,7 +110,7 @@ function createAsyncResult (rule, model, $pending, $dirty, { $lazy }) {
       $pending.value = !!$pendingCounter.value
       $invalid.value = true
 
-      ruleResult
+      Promise.resolve(ruleResult)
         .then(data => {
           $pendingCounter.value--
           $pending.value = !!$pendingCounter.value
@@ -145,11 +121,10 @@ function createAsyncResult (rule, model, $pending, $dirty, { $lazy }) {
           $pending.value = !!$pendingCounter.value
           $invalid.value = true
         })
-    },
-    { flush: 'sync' }
+    }, { immediate: true }
   )
 
-  return $invalid
+  return { $invalid, $unwatch }
 }
 
 /**
@@ -163,15 +138,13 @@ function createAsyncResult (rule, model, $pending, $dirty, { $lazy }) {
 function createValidatorResult (rule, model, $dirty, config) {
   const $pending = ref(false)
   const $params = rule.$params || {}
-  const $invalid = rule.$async
-    ? createAsyncResult(
-      rule.$validator,
-      model,
-      $pending,
-      $dirty,
-      config
-    )
-    : createComputedResult(rule.$validator, model, $dirty, config)
+  const { $invalid, $unwatch } = createAsyncResult(
+    rule.$validator,
+    model,
+    $pending,
+    $dirty,
+    config
+  )
 
   const message = rule.$message
   const $message = isFunction(message)
@@ -190,7 +163,8 @@ function createValidatorResult (rule, model, $dirty, config) {
     $message,
     $params,
     $pending,
-    $invalid
+    $invalid,
+    $unwatch
   }
 }
 
@@ -237,6 +211,8 @@ function createValidationResults (rules, model, key, resultsCache, path, config)
   if (cachedResult) {
     // if the rules are the same as before, use the cached results
     if (!cachedResult.$partial) return cachedResult
+    // remove old watchers
+    cachedResult.$unwatch()
     // use the `$dirty.value`, so we dont save references by accident
     $dirty.value = cachedResult.$dirty.value
   }
@@ -253,7 +229,12 @@ function createValidationResults (rules, model, key, resultsCache, path, config)
    * If there are no validation rules, it is most likely
    * a top level state, aka root
    */
-  if (!ruleKeys.length) return result
+  if (!ruleKeys.length) {
+    // if there are cached results, we should overwrite them with the new ones
+    cachedResult && resultsCache.set(path, rules, result)
+
+    return result
+  }
 
   ruleKeys.forEach(ruleKey => {
     result[ruleKey] = createValidatorResult(
@@ -295,6 +276,10 @@ function createValidationResults (rules, model, key, resultsCache, path, config)
     ? result.$silentErrors.value
     : []
   )
+
+  result.$unwatch = () => ruleKeys.forEach(ruleKey => {
+    result[ruleKey].$unwatch()
+  })
 
   resultsCache.set(path, rules, result)
 
@@ -541,9 +526,13 @@ export function setValidations ({
   }) : null
 
   if (key && mergedConfig.$autoDirty) {
-    watch(nestedState, () => {
+    const $unwatch = watch(nestedState, () => {
+      const autoDirtyPath = `_${path}_$watcher_`
+      const cachedAutoDirty = resultsCache.get(autoDirtyPath, {})
       if (!$dirty.value) $touch()
-    })
+      if (cachedAutoDirty) cachedAutoDirty.$unwatch()
+      resultsCache.set(autoDirtyPath, {}, { $unwatch })
+    }, { flush: 'sync' })
   }
 
   /**
@@ -551,8 +540,10 @@ export function setValidations ({
    * @return {Promise<boolean>}
    */
   function $validate () {
-    return new Promise((resolve) => {
+    return new Promise(async (resolve) => {
       if (!$dirty.value) $touch()
+      // await the watchers
+      await nextTick()
       // return whether it is valid or not
       if (!$pending.value) return resolve(!$invalid.value)
       const unwatch = watch($pending, () => {

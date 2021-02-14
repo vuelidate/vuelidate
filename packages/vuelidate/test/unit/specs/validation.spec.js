@@ -1,4 +1,4 @@
-import { computed, ref, h } from 'vue-demi'
+import { computed, ref, h, nextTick } from 'vue-demi'
 import { mount, flushPromises } from '../test-utils'
 import { isEven } from '../validators.fixture'
 
@@ -18,41 +18,40 @@ import {
   shouldBeErroredValidationObject,
   createSimpleComponent
 } from '../utils'
-import { withAsync } from '@vuelidate/validators/src/common'
 import useVuelidate, { CollectFlag } from '../../../src'
 
 describe('useVuelidate', () => {
-  it('should have a `v` key defined if used', () => {
-    const wrapper = createSimpleWrapper({}, {})
+  it('should have a `v` key defined if used', async () => {
+    const wrapper = await createSimpleWrapper({}, {})
 
     expect(wrapper.vm.v).toEqual(expect.any(Object))
   })
 
-  it('does not error out if invoked without any parameters', () => {
+  it('does not error out if invoked without any parameters', async () => {
     const warnSpy = jest.spyOn(console, 'warn')
-    const { vm } = createSimpleWrapper()
+    const { vm } = await createSimpleWrapper()
 
     expect(warnSpy).toHaveBeenCalledTimes(0)
     shouldBePristineValidationObj(vm.v)
   })
 
-  it('should return a pristine validation object', () => {
-    const { vm } = createSimpleWrapper({}, {})
+  it('should return a pristine validation object', async () => {
+    const { vm } = await createSimpleWrapper({}, {})
 
     shouldBePristineValidationObj(vm.v)
   })
 
-  it('should return a pristine validation object for a property', () => {
+  it('should return a pristine validation object for a property', async () => {
     const number = ref(2)
-    const { vm } = createSimpleWrapper({ number: { isEven } }, { number })
+    const { vm } = await createSimpleWrapper({ number: { isEven } }, { number })
 
     expect(vm.v).toHaveProperty('number', expect.any(Object))
     shouldBePristineValidationObj(vm.v.number)
   })
 
-  it('should set the parent `$dirty` prop to true, when all children are dirty', () => {
+  it('should set the parent `$dirty` prop to true, when all children are dirty', async () => {
     const { state, validations } = nestedReactiveObjectValidation()
-    const { vm } = createSimpleWrapper(validations, state)
+    const { vm } = await createSimpleWrapper(validations, state)
 
     expect(vm.v.$dirty).toBe(false)
     expect(vm.v.level0.$dirty).toBe(false)
@@ -69,20 +68,21 @@ describe('useVuelidate', () => {
   })
 
   describe('.$touch', () => {
-    it('should update the `$dirty` state to `true`, on used property', () => {
+    it('should update the `$dirty` state to `true`, on used property', async () => {
       const { state, validations } = simpleValidation()
-      const { vm } = createSimpleWrapper(validations, state)
+      const { vm } = await createSimpleWrapper(validations, state)
 
       shouldBeInvalidValidationObject({ v: vm.v.number, property: 'number', validatorName: 'isEven' })
 
       vm.v.number.$touch()
+      await vm.$nextTick()
       shouldBeErroredValidationObject({ v: vm.v.number, property: 'number', validatorName: 'isEven' })
     })
 
-    it('should update the `$dirty` state to `true` on all nested properties', () => {
+    it('should update the `$dirty` state to `true` on all nested properties', async () => {
       const number = ref(1)
       const number2 = ref(1)
-      const { vm } = createSimpleWrapper(
+      const { vm } = await createSimpleWrapper(
         { parent: { number: { isEven } }, number2: { isEven } },
         { parent: { number }, number2 }
       )
@@ -99,10 +99,10 @@ describe('useVuelidate', () => {
       shouldBeInvalidValidationObject({ v: vm.v.number2, property: 'number2', propertyPath: 'number2', validatorName: 'isEven' })
     })
 
-    it('should not update the `$dirty` state on the property it wasnt used on', () => {
+    it('should not update the `$dirty` state on the property it wasnt used on', async () => {
       const numberA = ref(1)
       const numberB = ref(1)
-      const { vm } = createSimpleWrapper(
+      const { vm } = await createSimpleWrapper(
         { numberA: { isEven }, numberB: { isEven } },
         { numberA, numberB }
       )
@@ -125,10 +125,10 @@ describe('useVuelidate', () => {
       }])
     })
 
-    it('should update the `$dirty` state to `true` on all properties, when used on top level node', () => {
+    it('should update the `$dirty` state to `true` on all properties, when used on top level node', async () => {
       const number = ref(1)
       const number2 = ref(1)
-      const { vm } = createSimpleWrapper(
+      const { vm } = await createSimpleWrapper(
         { parent: { number: { isEven } }, number2: { isEven } },
         { parent: { number }, number2 }
       )
@@ -143,7 +143,7 @@ describe('useVuelidate', () => {
     it('should update the `$dirty` state even if being cached before hand', async () => {
       const { state, validations } = computedValidationsObjectWithRefs()
       const { number, conditional } = state
-      const { vm } = createSimpleWrapper(validations, { number })
+      const { vm } = await createSimpleWrapper(validations, { number })
       expect(vm.v.number).toHaveProperty('$dirty', false)
       conditional.value = 10
       // await the async watcher to pass
@@ -160,9 +160,9 @@ describe('useVuelidate', () => {
   })
 
   describe('.$reset', () => {
-    it('should update the $dirty state to false', () => {
+    it('should update the $dirty state to false', async () => {
       const number = ref(1)
-      const { vm } = createSimpleWrapper({ number: { isEven } }, { number })
+      const { vm } = await createSimpleWrapper({ number: { isEven } }, { number })
       shouldBeInvalidValidationObject({ v: vm.v.number, property: 'number', validatorName: 'isEven' })
 
       vm.v.number.$touch()
@@ -172,10 +172,10 @@ describe('useVuelidate', () => {
       shouldBeInvalidValidationObject({ v: vm.v.number, property: 'number', validatorName: 'isEven' })
     })
 
-    it('should update the $dirty state to false, only on the current property', () => {
+    it('should update the $dirty state to false, only on the current property', async () => {
       const numberA = ref(1)
       const numberB = ref(1)
-      const { vm } = createSimpleWrapper(
+      const { vm } = await createSimpleWrapper(
         {
           numberA: { isEven },
           numberB: { isEven }
@@ -196,10 +196,10 @@ describe('useVuelidate', () => {
       shouldBeErroredValidationObject({ v: vm.v.numberB, property: 'numberB', validatorName: 'isEven' })
     })
 
-    it('should reset all the properties back to pristine condition, including nested ones', () => {
+    it('should reset all the properties back to pristine condition, including nested ones', async () => {
       const numberA = ref(1)
       const numberB = ref(1)
-      const { vm } = createSimpleWrapper(
+      const { vm } = await createSimpleWrapper(
         {
           parent: { numberA: { isEven } },
           numberB: { isEven }
@@ -223,7 +223,7 @@ describe('useVuelidate', () => {
     it('should reset even after coming back from cache', async () => {
       const { state, validations } = computedValidationsObjectWithRefs()
       const { number, conditional } = state
-      const { vm } = createSimpleWrapper(validations, { number })
+      const { vm } = await createSimpleWrapper(validations, { number })
       vm.v.number.$touch()
       expect(vm.v.number).toHaveProperty('$dirty', true)
       conditional.value = 10
@@ -240,7 +240,7 @@ describe('useVuelidate', () => {
   describe('$autoDirty', () => {
     it('should update the $dirty state to true when value changes', async () => {
       const number = ref(1)
-      const { vm } = createSimpleWrapper({ number: { isEven, $autoDirty: true } }, { number })
+      const { vm } = await createSimpleWrapper({ number: { isEven, $autoDirty: true } }, { number })
       shouldBeInvalidValidationObject({ v: vm.v.number, property: 'number', validatorName: 'isEven' })
 
       number.value = 3
@@ -257,7 +257,8 @@ describe('useVuelidate', () => {
 
     it('when used at root with plain object, should update the $dirty state', async () => {
       const number = ref(1)
-      const { vm } = createSimpleWrapper({ number: { isEven } }, { number }, { $autoDirty: true })
+      const { vm } = await createSimpleWrapper({ number: { isEven } }, { number }, { $autoDirty: true })
+
       shouldBeInvalidValidationObject({ v: vm.v.number, property: 'number', validatorName: 'isEven' })
 
       number.value = 3
@@ -274,7 +275,7 @@ describe('useVuelidate', () => {
 
     it('when used at root with reactive object, should update the $dirty state', async () => {
       const { state, validations } = nestedReactiveObjectValidation()
-      const { vm } = createSimpleWrapper(validations, state, { $autoDirty: true })
+      const { vm } = await createSimpleWrapper(validations, state, { $autoDirty: true })
       shouldBePristineValidationObj(vm.v.level0)
 
       state.level0 = 3
@@ -293,7 +294,7 @@ describe('useVuelidate', () => {
   describe('$model', () => {
     it('should update the source value', async () => {
       const number = ref(1)
-      const { vm } = createSimpleWrapper({ number: { isEven } }, { number })
+      const { vm } = await createSimpleWrapper({ number: { isEven } }, { number })
 
       vm.v.number.$model = 3
       await vm.$nextTick()
@@ -302,7 +303,7 @@ describe('useVuelidate', () => {
 
     it('should update the $dirty state to true when $model value changes', async () => {
       const number = ref(2)
-      const { vm } = createSimpleWrapper({ number: { isEven } }, { number })
+      const { vm } = await createSimpleWrapper({ number: { isEven } }, { number })
       shouldBePristineValidationObj(vm.v.number)
 
       vm.v.number.$model = 3
@@ -317,9 +318,9 @@ describe('useVuelidate', () => {
       expect(vm.v.number).toHaveProperty('$invalid', false)
     })
 
-    it('works with `reactive`', () => {
+    it('works with `reactive`', async () => {
       const { state, validations } = nestedReactiveObjectValidation()
-      const { vm } = createSimpleWrapper(validations, state)
+      const { vm } = await createSimpleWrapper(validations, state)
       expect(vm.state.level0).toBe(0)
       expect(vm.v.level0.$model).toBe(0)
       vm.v.level0.$model = 5
@@ -333,9 +334,11 @@ describe('useVuelidate', () => {
     it('should collect child validations when they invalidate', async () => {
       const { state, parent } = nestedComponentValidation()
       const wrapper = mount(parent)
+      await nextTick()
+
       shouldBeInvalidValidationObject({ v: wrapper.vm.v, property: 'number', validatorName: 'isEven' })
       state.number.value = 3
-      await wrapper.vm.$nextTick()
+      await nextTick()
 
       expect(wrapper.vm.v.$errors).toEqual([{
         $message: '',
@@ -350,6 +353,7 @@ describe('useVuelidate', () => {
     it('should return false on $validate() if nested component validation is invalid', async () => {
       const { state, parent } = nestedComponentValidation()
       const wrapper = mount(parent)
+      await nextTick()
       shouldBeInvalidValidationObject({ v: wrapper.vm.v, property: 'number', validatorName: 'isEven' })
       // make the validation fail
       state.number.value = 3
@@ -363,6 +367,8 @@ describe('useVuelidate', () => {
     it('removes the child results if the child gets destroyed', async () => {
       const { childValidationRegisterName, parent, state } = nestedComponentValidation()
       const { vm } = mount(parent)
+      await nextTick()
+
       // make sure the validation object is clear
       shouldBeInvalidValidationObject({ v: vm.v, property: 'number', validatorName: 'isEven' })
       state.number.value = 3
@@ -381,6 +387,8 @@ describe('useVuelidate', () => {
     it('collects all child validation results, if parent `$scope` is not set', async () => {
       const { childValidationRegisterName, parent, state } = nestedComponentValidation({ childScope: 'child' })
       const { vm } = mount(parent)
+      await nextTick()
+
       shouldBeInvalidValidationObject({ v: vm.v, property: 'number', validatorName: 'isEven' })
       state.number.value = 3
       await vm.$nextTick()
@@ -392,6 +400,8 @@ describe('useVuelidate', () => {
     it('collects all child validation results, if both have the same `$scope`', async () => {
       const { childValidationRegisterName, parent, state } = nestedComponentValidation({ parentScope: 'sameScope', childScope: 'sameScope' })
       const { vm } = mount(parent)
+      await nextTick()
+
       shouldBeInvalidValidationObject({ v: vm.v, property: 'number', validatorName: 'isEven' })
       state.number.value = 3
       await vm.$nextTick()
@@ -403,6 +413,8 @@ describe('useVuelidate', () => {
     it('does not collect child validation results, if components have different `$scope`', async () => {
       const { childValidationRegisterName, parent, state } = nestedComponentValidation({ parentScope: 'parent', childScope: 'child' })
       const { vm } = mount(parent)
+      await nextTick()
+
       shouldBePristineValidationObj(vm.v)
       state.number.value = 3
       await vm.$nextTick()
@@ -414,9 +426,12 @@ describe('useVuelidate', () => {
     it('does not collect child validation, if child `$scope` is `COLLECT_NONE`', async () => {
       const { childValidationRegisterName, parent, state } = nestedComponentValidation({ childScope: CollectFlag.COLLECT_NONE })
       const { vm } = mount(parent)
+      await nextTick()
+
       shouldBePristineValidationObj(vm.v)
       state.number.value = 3
-      await vm.$nextTick()
+      await nextTick()
+
       const childState = vm.v.$getResultsForChild(childValidationRegisterName)
       expect(childState).toEqual(undefined)
       expect(vm.v.$errors).toEqual([])
@@ -425,6 +440,8 @@ describe('useVuelidate', () => {
     it('does not collect child validations, if parent `$scope` is `COLLECT_NONE`', async () => {
       const { childValidationRegisterName, parent, state } = nestedComponentValidation({ parentScope: CollectFlag.COLLECT_NONE })
       const { vm } = mount(parent)
+      await nextTick()
+
       shouldBePristineValidationObj(vm.v)
       state.number.value = 3
       await vm.$nextTick()
@@ -433,7 +450,7 @@ describe('useVuelidate', () => {
       expect(vm.v.$errors).toEqual([])
     })
 
-    it('stops the propagation of errors up the component chain', () => {
+    it('stops the propagation of errors up the component chain', async () => {
       const { state, validations } = simpleValidation()
       let $registerAs = 'componentC'
       const componentC = createSimpleComponent(() => useVuelidate(validations, state, { $registerAs }))
@@ -447,6 +464,8 @@ describe('useVuelidate', () => {
       }
       // mount the top most component
       const wrapper = mount(componentA)
+      await nextTick()
+
       // make sure it has no errors
       expect(wrapper.vm.v.$silentErrors).toHaveLength(0)
       // make sure the child component is not registered at all
@@ -464,9 +483,9 @@ describe('useVuelidate', () => {
   })
 
   describe('$error', () => {
-    it('returns `true` if both `$invalid` and $dirty` are true', () => {
+    it('returns `true` if both `$invalid` and $dirty` are true', async () => {
       const number = ref(1)
-      const { vm } = createSimpleWrapper({ number: { isEven } }, { number })
+      const { vm } = await createSimpleWrapper({ number: { isEven } }, { number })
       expect(vm.v.$invalid).toBe(true)
       expect(vm.v.$dirty).toBe(false)
       expect(vm.v.$error).toBe(false)
@@ -478,9 +497,9 @@ describe('useVuelidate', () => {
   })
 
   describe('$silentErrors', () => {
-    it('constructs an array of errors for invalid properties', () => {
+    it('constructs an array of errors for invalid properties', async () => {
       const { state, validations } = nestedReactiveObjectValidation()
-      const { vm } = createSimpleWrapper(validations, state)
+      const { vm } = await createSimpleWrapper(validations, state)
       expect(vm.v.$silentErrors).toEqual(expect.any(Array))
       expect(vm.v.$silentErrors).toHaveLength(1)
       expect(vm.v.$silentErrors[0]).toMatchSnapshot()
@@ -488,20 +507,22 @@ describe('useVuelidate', () => {
   })
 
   describe('$errors', () => {
-    it('constructs an array of errors for invalid AND drity properties', () => {
+    it('constructs an array of errors for invalid AND drity properties', async () => {
       const { state, validations } = nestedReactiveObjectValidation()
-      const { vm } = createSimpleWrapper(validations, state)
+      const { vm } = await createSimpleWrapper(validations, state)
       vm.v.$touch()
       expect(vm.v.$errors).toEqual(expect.any(Array))
       expect(vm.v.$errors).toHaveLength(1)
       expect(vm.v.$errors[0]).toMatchSnapshot()
     })
 
-    it('collects `$propertyPath` as of deeply nested properties', () => {
+    it('collects `$propertyPath` as of deeply nested properties', async () => {
       const { state, validations } = nestedReactiveObjectValidation()
-      const { vm } = createSimpleWrapper(validations, state)
+      const { vm } = await createSimpleWrapper(validations, state)
 
       vm.v.level1.level2.child.$model = 3
+      await nextTick()
+
       expect(vm.v.$errors.find(error => error.$propertyPath === 'level1.level2.child')).toBeTruthy()
     })
 
@@ -522,6 +543,8 @@ describe('useVuelidate', () => {
     it('returns the validation results for a child component', async () => {
       const { childValidationRegisterName, parent, state } = nestedComponentValidation()
       const { vm } = mount(parent)
+      await nextTick()
+
       shouldBeInvalidValidationObject({ v: vm.v, property: 'number', validatorName: 'isEven' })
       state.number.value = 3
       await vm.$nextTick()
@@ -537,9 +560,9 @@ describe('useVuelidate', () => {
       })
     })
 
-    it('is only preset at the top level', () => {
+    it('is only preset at the top level', async () => {
       const { state, validations } = nestedReactiveObjectValidation()
-      const { vm } = createSimpleWrapper(validations, state)
+      const { vm } = await createSimpleWrapper(validations, state)
       expect(vm.v).toHaveProperty('$getResultsForChild')
       expect(vm.v.level0).not.toHaveProperty('$getResultsForChild')
       expect(vm.v.level1).not.toHaveProperty('$getResultsForChild')
@@ -574,13 +597,13 @@ describe('useVuelidate', () => {
   describe('$validate', () => {
     it('returns the result of the validation', async () => {
       const { state, validations } = simpleValidation()
-      const { vm } = createSimpleWrapper(validations, state)
+      const { vm } = await createSimpleWrapper(validations, state)
       expect(await vm.v.$validate()).toBe(false)
     })
 
     it('returns a Promise<Boolean>, that resolves instantly if `$pending === false`', async () => {
       const { state, validations } = simpleValidation()
-      const { vm } = createSimpleWrapper(validations, state)
+      const { vm } = await createSimpleWrapper(validations, state)
       const promise = vm.v.$validate()
       expect(vm.v.$pending).toBe(false)
       await promise
@@ -589,15 +612,15 @@ describe('useVuelidate', () => {
 
     it('works with `lazy: true`', async () => {
       const { state, validations } = simpleValidation()
-      const { vm } = createSimpleWrapper(validations, state, { $lazy: true })
+      const { vm } = await createSimpleWrapper(validations, state, { $lazy: true })
       expect(await vm.v.$validate()).toBe(false)
       state.number.value = 2
       expect(await vm.v.$validate()).toBe(true)
     })
 
-    it('is only present at the top level', () => {
+    it('is only present at the top level', async () => {
       const { state, validations } = nestedReactiveObjectValidation()
-      const { vm } = createSimpleWrapper(validations, state)
+      const { vm } = await createSimpleWrapper(validations, state)
 
       expect(vm.v).toHaveProperty('$validate', expect.any(Function))
       expect(vm.v.level0).not.toHaveProperty('$validate')
@@ -629,7 +652,7 @@ describe('useVuelidate', () => {
       // TODO: This is a breaking change, big one. Better let ppl know
       const isFive = jest.fn((v) => v === 5)
       const number = ref(0)
-      const { vm } = createSimpleWrapper({ number: { isFive } }, { number }, { $lazy: true })
+      const { vm } = await createSimpleWrapper({ number: { isFive } }, { number }, { $lazy: true })
       expect(isFive).toHaveBeenCalledTimes(0)
       number.value = 10
       expect(isFive).toHaveBeenCalledTimes(0)
@@ -654,61 +677,61 @@ describe('useVuelidate', () => {
     it('supports async validators via `$async: true` object syntax', async () => {
       jest.useFakeTimers()
       const { state, validations } = asyncValidation()
-      const { vm } = createSimpleWrapper(validations, state)
+      const { vm } = await createSimpleWrapper(validations, state)
       vm.v.$touch()
-      await flushPromises()
+      await nextTick()
+      jest.advanceTimersByTime(6)
+      await nextTick()
       expect(vm.v.number.asyncIsEven.$pending).toBe(false)
       state.number.value = 6
+      await nextTick()
+
       expect(vm.v.number.asyncIsEven.$pending).toBe(true)
       expect(vm.v.number.$invalid).toBe(true)
-      await flushPromises()
+
+      jest.advanceTimersByTime(6)
+      await nextTick()
+
       expect(vm.v.number.asyncIsEven.$pending).toBe(false)
       expect(vm.v.number.$invalid).toBe(false)
       jest.useRealTimers()
     })
 
-    it('throws when passed an async validator directly', () => {
-      const asyncValidator = (v) => Promise.resolve(v)
-      const number = ref(0)
-      const component = {
-        template: '<div>Hello World</div>',
-        setup () {
-          const v = useVuelidate({ number: { asyncValidator } }, { number })
-          return { v }
-        }
-      }
-      const { vm } = mount(component)
-      // throws here, because we call the `$invalid` getter.
-      expect(() => vm.v.$touch).toThrowError()
-    })
-
-    // TODO: Fix this one
     it('allows multiple invocations of an async validator, the last one to resolve, sets the return value', async () => {
       // prepare async validator
       const validator = jest.fn().mockResolvedValue(true)
-      const asyncValidator = withAsync(validator)
       // prepare state
       const number = ref(0)
-      const { vm } = createSimpleWrapper({ number: { asyncValidator } }, { number })
+      const { vm } = await createSimpleWrapper({ number: { asyncValidator: validator } }, { number })
       // make sure the validator is armed
-      vm.v.$touch()
-      // assert its called once, for the dirty state change
       expect(validator).toHaveBeenCalledTimes(1)
+      vm.v.$touch()
+      await nextTick()
+      // assert its called once, for the dirty state change
+      expect(validator).toHaveBeenCalledTimes(2)
       // assert there is an error state
       expect(vm.v.number.asyncValidator.$invalid).toBe(true)
       expect(vm.v.number.$invalid).toBe(true)
+      expect(validator).toHaveBeenCalledTimes(2)
+
       // change it a few times
       number.value = 1
+      await nextTick()
       number.value = 2
+      await nextTick()
       validator.mockResolvedValueOnce(false)
       number.value = 3
       await flushPromises()
-      expect(validator).toHaveBeenCalledTimes(4)
+      expect(validator).toHaveBeenCalledTimes(5)
       // `invalid` is true, because the last invocation of the validator, is false
       expect(vm.v.number.asyncValidator.$invalid).toBe(true)
       number.value = 2
+      await nextTick()
+
       validator.mockResolvedValueOnce(true)
       number.value = 1
+      await nextTick()
+
       // await the last invocation to have been called
       await flushPromises()
       expect(validator).toHaveLastReturnedWith(Promise.resolve(true))
@@ -720,7 +743,7 @@ describe('useVuelidate', () => {
       it('allows passing a computed value as a validations object, with Refs', async () => {
         const { state, validations } = computedValidationsObjectWithRefs()
         const { number, conditional } = state
-        const { vm } = createSimpleWrapper(validations, state)
+        const { vm } = await createSimpleWrapper(validations, state)
         expect(vm.v.number).toHaveProperty('isOdd')
         vm.v.number.$touch()
         expect(vm.v.number.isOdd).toHaveProperty('$invalid', true)
@@ -737,19 +760,37 @@ describe('useVuelidate', () => {
         expect(vm.v.number.$invalid).toBe(false)
       })
 
-      it('allows passing a computed value as a validations object, with Reactive', () => {
+      it('allows passing a computed value as a validations object, with Reactive', async () => {
         const { state, validations } = computedValidationsObjectWithReactive()
-        const { vm } = createSimpleWrapper(validations, state)
+        const { vm } = await createSimpleWrapper(validations, state)
         expect(vm.v.number).toHaveProperty('isOdd')
         vm.v.number.$touch()
         expect(vm.v.number.isOdd).toHaveProperty('$invalid', true)
         state.number = 3
+        await nextTick()
+
         expect(vm.v.number.isOdd).toHaveProperty('$invalid', false)
+
+        state.number = 2
+        await nextTick()
+        expect(vm.v.number.isOdd).toHaveProperty('$invalid', true)
+        expect(vm.v.number.$error).toBe(true)
+
         // make sure the conditional is above the threshold
         state.conditional = 10
+        await nextTick()
+
         // assert it is no longer there
-        expect(vm.v.number).not.toHaveProperty('number')
+        expect(vm.v.number).not.toHaveProperty('isOdd')
         state.conditional = 3
+        await nextTick()
+        expect(vm.v.number).toHaveProperty('isOdd')
+        expect(vm.v.number.$invalid).toBe(true)
+        expect(vm.v.number.$error).toBe(true)
+        expect(vm.v.number).toHaveProperty('$dirty', true)
+        state.number = 3
+        await nextTick()
+
         expect(vm.v.number.$invalid).toBe(false)
       })
 
@@ -764,7 +805,7 @@ describe('useVuelidate', () => {
         const state = { number }
         const validations = { number: numberValidation }
 
-        const { vm } = createSimpleWrapper(validations, state)
+        const { vm } = await createSimpleWrapper(validations, state)
         shouldBePristineValidationObj(vm.v.number)
         vm.v.$touch()
         number.value = 3
@@ -790,7 +831,7 @@ describe('useVuelidate', () => {
       it('caches the `$dirty` state of a validator, if the validator gets removed and re-added', async () => {
         const { state, validations } = computedValidationsObjectWithRefs()
         const { number, conditional } = state
-        const { vm } = createSimpleWrapper(validations, { number })
+        const { vm } = await createSimpleWrapper(validations, { number })
         expect(vm.v.number).toHaveProperty('$dirty', false)
         vm.v.number.$touch()
         expect(vm.v.number).toHaveProperty('$dirty', true)
@@ -813,7 +854,7 @@ describe('useVuelidate', () => {
     it('trigger $dirty and $model reactions', async () => {
       const { state, validations } = nestedRefObjectValidation()
 
-      const { vm } = createSimpleWrapper(validations, state)
+      const { vm } = await createSimpleWrapper(validations, state)
 
       expect(vm.v.level1.level2.child).toHaveProperty('$model', 2)
       expect(vm.v.level1.level2.child).toHaveProperty('$dirty', false)
@@ -839,7 +880,7 @@ describe('useVuelidate', () => {
     it('trigger $invalid reactions', async () => {
       const { state, validations } = nestedRefObjectValidation()
 
-      const { vm } = createSimpleWrapper(validations, state)
+      const { vm } = await createSimpleWrapper(validations, state)
 
       vm.v.level1.level2.child.$touch()
       expect(vm.v.level1.level2.child).toHaveProperty('$invalid', false)
@@ -853,6 +894,7 @@ describe('useVuelidate', () => {
           }
         }
       }
+      await nextTick()
 
       expect(vm.v.level1.level2.child).toHaveProperty('$invalid', true)
     })
