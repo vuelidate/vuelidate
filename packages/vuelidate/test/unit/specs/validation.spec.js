@@ -1,4 +1,4 @@
-import { computed, ref, h } from 'vue-demi'
+import { computed, ref, h, nextTick } from 'vue-demi'
 import { mount, flushPromises } from '../test-utils'
 import { isEven } from '../validators.fixture'
 
@@ -19,7 +19,6 @@ import {
   createSimpleComponent
 } from '../utils'
 import useVuelidate, { CollectFlag } from '../../../src'
-import { nextTick } from 'vue'
 
 describe('useVuelidate', () => {
   it('should have a `v` key defined if used', async () => {
@@ -258,7 +257,8 @@ describe('useVuelidate', () => {
 
     it('when used at root with plain object, should update the $dirty state', async () => {
       const number = ref(1)
-      const { vm } = createSimpleWrapper({ number: { isEven } }, { number }, { $autoDirty: true })
+      const { vm } = await createSimpleWrapper({ number: { isEven } }, { number }, { $autoDirty: true })
+
       shouldBeInvalidValidationObject({ v: vm.v.number, property: 'number', validatorName: 'isEven' })
 
       number.value = 3
@@ -275,7 +275,7 @@ describe('useVuelidate', () => {
 
     it('when used at root with reactive object, should update the $dirty state', async () => {
       const { state, validations } = nestedReactiveObjectValidation()
-      const { vm } = createSimpleWrapper(validations, state, { $autoDirty: true })
+      const { vm } = await createSimpleWrapper(validations, state, { $autoDirty: true })
       shouldBePristineValidationObj(vm.v.level0)
 
       state.level0 = 3

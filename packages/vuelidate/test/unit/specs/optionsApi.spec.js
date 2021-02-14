@@ -1,4 +1,4 @@
-import { ref } from 'vue-demi'
+import { ref, nextTick } from 'vue-demi'
 import { isEven, isOdd } from '../validators.fixture'
 import {
   createOldApiSimpleWrapper,
@@ -13,8 +13,7 @@ import {
   nestedRefObjectValidation,
   nestedReactiveObjectValidation
 } from '../validations.fixture'
-import { flushPromises, mount } from '@vue/test-utils'
-import { nextTick } from 'vue'
+import { flushPromises, mount } from '../test-utils'
 
 describe('OptionsAPI validations', () => {
   it('should have a `v` key defined if used', async () => {

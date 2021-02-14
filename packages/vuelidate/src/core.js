@@ -1,6 +1,5 @@
 import { isFunction, unwrap, unwrapObj } from './utils'
-import { computed, isRef, reactive, ref, watch } from 'vue-demi'
-import { nextTick } from 'vue'
+import { computed, isRef, reactive, ref, watch, nextTick } from 'vue-demi'
 
 let ROOT_PATH = '__root'
 
