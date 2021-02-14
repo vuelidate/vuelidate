@@ -211,7 +211,10 @@ function createValidationResults (rules, model, key, resultsCache, path, config)
   if (cachedResult) {
     // if the rules are the same as before, use the cached results
     if (!cachedResult.$partial) return cachedResult
+    // remove old watchers
     cachedResult.$unwatch()
+    // invalidate the validators, as they are now unwatched
+    resultsCache.invalidateValidatorAt(path)
     // use the `$dirty.value`, so we dont save references by accident
     $dirty.value = cachedResult.$dirty.value
   }

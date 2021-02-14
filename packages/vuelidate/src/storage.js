@@ -13,6 +13,21 @@ export default class ResultsStorage {
     this.storage.set(path, { rules, result })
   }
 
+  invalidateValidatorAt (path) {
+    const storedRuleResultPair = this.storage.get(path)
+    if (!storedRuleResultPair) return undefined
+
+    const { result } = storedRuleResultPair
+
+    this.storage.set(path, {
+      rules: {},
+      result: {
+        $dirty: result.$dirty,
+        $unwatch: () => {}
+      }
+    })
+  }
+
   /**
    * Check if the stored `results` for the provided `path` have the same `rules` compared to 'storedRules'
    * @param {String} path

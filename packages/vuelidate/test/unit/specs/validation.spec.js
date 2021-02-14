@@ -774,6 +774,7 @@ describe('useVuelidate', () => {
         state.number = 2
         await nextTick()
         expect(vm.v.number.isOdd).toHaveProperty('$invalid', true)
+        expect(vm.v.number.$error).toBe(true)
 
         // make sure the conditional is above the threshold
         state.conditional = 10
@@ -783,6 +784,10 @@ describe('useVuelidate', () => {
         expect(vm.v.number).not.toHaveProperty('isOdd')
         state.conditional = 3
         await nextTick()
+        expect(vm.v.number).toHaveProperty('isOdd')
+        expect(vm.v.number.$invalid).toBe(true)
+        expect(vm.v.number.$error).toBe(true)
+        expect(vm.v.number).toHaveProperty('$dirty', true)
         state.number = 3
         await nextTick()
 
