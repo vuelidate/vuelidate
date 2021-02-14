@@ -1,11 +1,6 @@
-import { withAsync } from '@vuelidate/validators/src/common'
-
 export function toAsync (validator, time = 0) {
   return (value) => new Promise((resolve) =>
-    setTimeout(
-      resolve(validator(value)),
-      time
-    )
+    setTimeout(() => resolve(validator(value)), time)
   )
 }
 
@@ -14,5 +9,5 @@ export const isEven = (v) => {
 }
 export const isOdd = (v) => v % 2 === 1
 
-export const asyncIsEven = withAsync(toAsync(isEven, 5))
-export const asyncIsOdd = withAsync(toAsync(isOdd, 5))
+export const asyncIsEven = toAsync(isEven, 5)
+export const asyncIsOdd = toAsync(isOdd, 5)

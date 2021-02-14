@@ -1,4 +1,4 @@
-import { watch, computed, getCurrentInstance, inject, onBeforeMount, onBeforeUnmount, provide, isRef, ref, reactive } from 'vue-demi'
+import { watch, computed, getCurrentInstance, inject, onBeforeMount, onBeforeUnmount, provide, isRef, ref, reactive, isVue3 } from 'vue-demi'
 import { isFunction, unwrap, isProxy } from './utils'
 import { setValidations } from './core'
 import ResultsStorage from './storage'
@@ -95,7 +95,7 @@ export function useVuelidate (validations, state, globalConfig = {}) {
   let { $registerAs, $scope = CollectFlag.COLLECT_ALL, $stopPropagation } = globalConfig
 
   const instance = getCurrentInstance()
-
+  const componentOptions = isVue3 ? instance.type : instance.proxy.$options
   // if there is no registration name, add one.
   if (!$registerAs) {
     // NOTE:
@@ -110,8 +110,8 @@ export function useVuelidate (validations, state, globalConfig = {}) {
   const { childResults, sendValidationResultsToParent, removeValidationResultsFromParent } = nestedValidations({ $scope, $stopPropagation })
 
   // Options API
-  if (!validations && instance.type.validations) {
-    const rules = instance.type.validations
+  if (!validations && componentOptions.validations) {
+    const rules = componentOptions.validations
 
     state = ref({})
     onBeforeMount(() => {
@@ -143,7 +143,7 @@ export function useVuelidate (validations, state, globalConfig = {}) {
         }, { immediate: true })
     })
 
-    globalConfig = instance.type.validationsConfig || {}
+    globalConfig = componentOptions.validationsConfig || {}
   } else {
     const validationsWatchTarget = isRef(validations) || isProxy(validations)
       ? validations

@@ -54,7 +54,9 @@ export default class ResultsStorage {
 
     const isValidCache = this.checkRulesValidity(path, rules, storedRules)
 
-    if (!isValidCache) return { $dirty: result.$dirty, $partial: true }
+    const $unwatch = result.$unwatch ? result.$unwatch : () => ({})
+
+    if (!isValidCache) return { $dirty: result.$dirty, $partial: true, $unwatch }
     return result
   }
 }
