@@ -92,12 +92,11 @@ function normalizeValidatorResponse (result) {
  * @param {Ref<*>} model
  * @param {Ref<Boolean>} $pending
  * @param {Ref<Boolean>} $dirty
- * @param {Ref<Object> | Object} $params
  * @param {Object} config
  * @param {Ref<*>} $response
  * @return {Ref<Boolean>}
  */
-function createAsyncResult (rule, model, $pending, $dirty, $params, { $lazy }, $response) {
+function createAsyncResult (rule, model, $pending, $dirty, { $lazy }, $response) {
   const $invalid = ref(!!$dirty.value)
   const $pendingCounter = ref(0)
 
@@ -107,7 +106,14 @@ function createAsyncResult (rule, model, $pending, $dirty, $params, { $lazy }, $
     [model, $dirty],
     ([modelValue, dirty]) => {
       if ($lazy && !$dirty.value) return false
-      const ruleResult = callRule(rule, model)
+      let ruleResult
+      // make sure we dont break if a validator throws
+      try {
+        ruleResult = callRule(rule, model)
+      } catch (err) {
+        // convert to a promise, so we can handle it async
+        ruleResult = Promise.reject(err)
+      }
 
       $pendingCounter.value++
       $pending.value = !!$pendingCounter.value
@@ -120,10 +126,10 @@ function createAsyncResult (rule, model, $pending, $dirty, $params, { $lazy }, $
           $response.value = data
           $invalid.value = normalizeValidatorResponse(data)
         })
-        .catch(() => {
+        .catch((error) => {
           $pendingCounter.value--
           $pending.value = !!$pendingCounter.value
-          $response.value = null
+          $response.value = error
           $invalid.value = true
         })
     }, { immediate: true }
