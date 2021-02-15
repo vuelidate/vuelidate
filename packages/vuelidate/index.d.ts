@@ -153,6 +153,8 @@ interface GlobalConfig {
   $registerAs?: string
   $scope?: string | number | symbol
   $stopPropagation?: boolean
+  $autoDirty?: boolean
+  $lazy?: boolean
 }
 
 export function useVuelidate(globalConfig?: GlobalConfig): Ref<Validation>;
