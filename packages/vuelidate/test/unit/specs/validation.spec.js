@@ -9,7 +9,8 @@ import {
   nestedComponentValidation,
   nestedReactiveObjectValidation,
   simpleValidation,
-  nestedRefObjectValidation
+  nestedRefObjectValidation,
+  simpleErrorValidation
 } from '../validations.fixture'
 import {
   createSimpleWrapper,
@@ -18,6 +19,7 @@ import {
   shouldBeErroredValidationObject,
   createSimpleComponent
 } from '../utils'
+import { withMessage, withParams } from '@vuelidate/validators/src/common'
 import useVuelidate, { CollectFlag } from '../../../src'
 
 describe('useVuelidate', () => {
@@ -117,11 +119,12 @@ describe('useVuelidate', () => {
       expect(vm.v).toHaveProperty('$invalid', true)
       expect(vm.v.$errors).toEqual([{
         $message: '',
-        $params: {},
         $pending: false,
+        $params: {},
         $property: 'numberA',
         $propertyPath: 'numberA',
-        $validator: 'isEven'
+        $validator: 'isEven',
+        $response: false
       }])
     })
 
@@ -346,7 +349,8 @@ describe('useVuelidate', () => {
         $pending: false,
         $property: 'number',
         $propertyPath: 'number',
-        $validator: 'isEven'
+        $validator: 'isEven',
+        $response: false
       }])
     })
 
@@ -483,16 +487,24 @@ describe('useVuelidate', () => {
   })
 
   describe('$error', () => {
-    it('returns `true` if both `$invalid` and $dirty` are true', async () => {
-      const number = ref(1)
+    it('returns `true` if both `$invalid` and $dirty` are true, but initially false', async () => {
+      const number = ref(2)
       const { vm } = await createSimpleWrapper({ number: { isEven } }, { number })
+      expect(vm.v.$invalid).toBe(false)
+      expect(vm.v.$dirty).toBe(false)
+      expect(vm.v.$error).toBe(false)
+      expect(vm.v.number.$error).toBe(false)
+      number.value = 1
+      await nextTick()
       expect(vm.v.$invalid).toBe(true)
       expect(vm.v.$dirty).toBe(false)
       expect(vm.v.$error).toBe(false)
+      expect(vm.v.number.$error).toBe(false)
       vm.v.$touch()
       expect(vm.v.$invalid).toBe(true)
       expect(vm.v.$dirty).toBe(true)
       expect(vm.v.$error).toBe(true)
+      expect(vm.v.number.$error).toBe(true)
     })
   })
 
@@ -556,7 +568,8 @@ describe('useVuelidate', () => {
         '$pending': false,
         '$property': 'number',
         '$propertyPath': 'number',
-        '$validator': 'isEven'
+        '$validator': 'isEven',
+        $response: false
       })
     })
 
@@ -585,12 +598,57 @@ describe('useVuelidate', () => {
   })
 
   describe('$params', () => {
-    it('collects the `$params` passed to a validator via `withParams` or manually', () => {
-
+    it('collects the `$params` passed to a validator via `withParams`', async () => {
+      const isEvenValidator = withParams({ min: 4 }, isEven)
+      const state = { number: ref(1) }
+      const validations = { number: { isEvenValidator } }
+      const { vm } = await createSimpleWrapper(validations, state)
+      vm.v.$touch()
+      expect(vm.v.number.isEvenValidator).toHaveProperty('$params')
+      expect(vm.v.number.isEvenValidator.$params).toHaveProperty('min', 4)
     })
 
-    it('keeps `$params` reactive', () => {
+    it('keeps `$params` reactive', async () => {
+      const min = ref(4)
+      const isEvenValidator = withParams({ min }, isEven)
+      const state = { number: ref(1) }
+      const validations = { number: { isEvenValidator } }
+      const { vm } = await createSimpleWrapper(validations, state)
+      vm.v.$touch()
+      expect(vm.v.number.isEvenValidator.$params.min).toBe(4)
+      min.value = 10
+      expect(vm.v.number.isEvenValidator.$params.min).toBe(10)
+    })
 
+    it('collects plain validator response', async () => {
+      const isEvenValidator = withParams({ min: 4 }, (v) => ({
+        $invalid: isEven(v),
+        $data: { foo: 'foo' }
+      }))
+      const state = { number: ref(1) }
+      const validations = { number: { isEvenValidator } }
+      const { vm } = await createSimpleWrapper(validations, state)
+      vm.v.$touch()
+      expect(vm.v.number.isEvenValidator).toHaveProperty('$response', {
+        $invalid: false,
+        $data: { foo: 'foo' }
+      })
+    })
+
+    it('collects async validator response', async () => {
+      const isEvenValidator = withParams({ min: 4 }, (v) => Promise.resolve({
+        $invalid: isEven(v),
+        $data: { foo: 'foo' }
+      }))
+      const state = { number: ref(1) }
+      const validations = { number: { isEvenValidator } }
+      const { vm } = await createSimpleWrapper(validations, state)
+      vm.v.$touch()
+      await flushPromises()
+      expect(vm.v.number.isEvenValidator).toHaveProperty('$response', {
+        $invalid: false,
+        $data: { foo: 'foo' }
+      })
     })
   })
 
@@ -608,6 +666,20 @@ describe('useVuelidate', () => {
       expect(vm.v.$pending).toBe(false)
       await promise
       expect(vm.v.$pending).toBe(false)
+    })
+
+    it('returns a Promise<Boolean>, that resolves after async validators resolve', async () => {
+      const { state, validations } = asyncValidation()
+      const { vm } = await createSimpleWrapper(validations, state, { $lazy: true })
+      const promise = vm.v.$validate()
+      expect(vm.v.$pending).toBe(false)
+      expect(vm.v.$error).toBe(false)
+      await nextTick()
+      expect(vm.v.$pending).toBe(true)
+      expect(vm.v.$error).toBe(true)
+      await promise
+      expect(vm.v.$pending).toBe(false)
+      expect(vm.v.$error).toBe(true)
     })
 
     it('works with `lazy: true`', async () => {
@@ -630,20 +702,57 @@ describe('useVuelidate', () => {
   })
 
   describe('$message', () => {
-    it('collects the `$message` for a validator', () => {
-
+    it('collects the `$message` for a validator', async () => {
+      const validator = withMessage('Field is not Even', isEven)
+      const val = ref(1)
+      const { vm } = await createSimpleWrapper({ val: { validator } }, { val })
+      vm.v.$touch()
+      expect(vm.v.$errors[0]).toHaveProperty('$message', 'Field is not Even')
     })
 
-    it('keeps the `$message` reactive', () => {
-
+    it('allows `$message` to be a function', async () => {
+      const isEvenMessage = withMessage(() => `Field is not Even`, isEven)
+      const value = ref(1)
+      const { vm } = await createSimpleWrapper({ value: { isEvenMessage } }, { value })
+      vm.v.$touch()
+      expect(vm.v.$errors[0]).toHaveProperty('$message', 'Field is not Even')
     })
 
-    it('allows `$message` to be a function', () => {
-
+    it('keeps the `$message` reactive', async () => {
+      const isEvenMessage = withMessage(({ $model }) => `Field is not Even, given ${$model}`, isEven)
+      const value = ref(1)
+      const { vm } = await createSimpleWrapper({ value: { isEvenMessage } }, { value })
+      vm.v.$touch()
+      expect(vm.v.$errors[0]).toHaveProperty('$message', 'Field is not Even, given 1')
+      value.value = 5
+      expect(vm.v.$errors[0]).toHaveProperty('$message', 'Field is not Even, given 5')
     })
 
-    it('unwraps `$params` before sending to the $message function', () => {
+    it('unwraps `$params` before sending to the $message function', async () => {
+      const foo = ref('foo')
+      const validator = withParams({ foo }, isEven)
+      const isEvenMessage = withMessage(({ $params }) => `Field is not Even, param is ${$params.foo}`, validator)
+      const value = ref(1)
+      const { vm } = await createSimpleWrapper({ value: { isEvenMessage } }, { value })
+      vm.v.$touch()
+      expect(vm.v.$errors[0]).toHaveProperty('$message', 'Field is not Even, param is foo')
+      foo.value = 'bar'
+      expect(vm.v.$errors[0]).toHaveProperty('$message', 'Field is not Even, param is bar')
+    })
 
+    it('allows passing a message from a validator response', async () => {
+      const validator = (v) => ({
+        $invalid: isEven(v),
+        $message: v === 7 ? 'I dont like 7' : null
+      })
+      const isEvenMessage = withMessage(({ $response, $model }) => $response?.$message || `Field is not Even, ${$model} given`, validator)
+      const value = ref(1)
+      const { vm } = await createSimpleWrapper({ value: { isEvenMessage } }, { value })
+      vm.v.$touch()
+      expect(vm.v.$errors[0]).toHaveProperty('$message', 'Field is not Even, 1 given')
+      value.value = 7
+      await nextTick()
+      expect(vm.v.$errors[0]).toHaveProperty('$message', 'I dont like 7')
     })
   })
 
@@ -674,7 +783,7 @@ describe('useVuelidate', () => {
 
     })
 
-    it('supports async validators via `$async: true` object syntax', async () => {
+    it('supports async validators by default', async () => {
       jest.useFakeTimers()
       const { state, validations } = asyncValidation()
       const { vm } = await createSimpleWrapper(validations, state)
@@ -737,6 +846,39 @@ describe('useVuelidate', () => {
       expect(validator).toHaveLastReturnedWith(Promise.resolve(true))
       // last call to validator returned ture, so the invalid is false
       expect(vm.v.number.asyncValidator.$invalid).toBe(false)
+    })
+
+    it('handles throwing from sync validators', async () => {
+      const { errorObject, validations, state } = simpleErrorValidation()
+      const { vm } = await createSimpleWrapper(validations, state)
+      vm.v.noPromise.$touch()
+      await nextTick()
+      expect(vm.v.noPromise.$error).toBe(true)
+      // assert the `$response` is saved
+      expect(vm.v.noPromise.syncValidator).toHaveProperty('$response', errorObject)
+    })
+
+    it('handles throwing from async validators', async () => {
+      const { errorObject, validations, state } = simpleErrorValidation()
+      const { vm } = await createSimpleWrapper(validations, state)
+      vm.v.withPromise.$touch()
+      await nextTick()
+      expect(vm.v.withPromise.$error).toBe(true)
+      // assert the `$response` is saved
+      expect(vm.v.withPromise.asyncValidator).toHaveProperty('$response', errorObject)
+    })
+
+    it('handles a mix of async and sync validators, that throw errors', async () => {
+      const { errorObject, validations, state } = simpleErrorValidation()
+      const { vm } = await createSimpleWrapper(validations, state)
+      vm.v.combined.$touch()
+      await nextTick()
+      expect(vm.v.$invalid).toBe(true)
+      expect(vm.v.$errors).toHaveLength(2)
+      expect(vm.v.combined.$error).toBe(true)
+      // assert the `$response` is saved
+      expect(vm.v.combined.asyncValidator).toHaveProperty('$response', errorObject)
+      expect(vm.v.combined.syncValidator).toHaveProperty('$response', errorObject)
     })
 
     describe('dynamic rules', () => {

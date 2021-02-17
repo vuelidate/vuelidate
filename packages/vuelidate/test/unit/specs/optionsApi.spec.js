@@ -84,7 +84,8 @@ describe('OptionsAPI validations', () => {
         $pending: false,
         $property: 'number',
         $propertyPath: 'number',
-        $validator: 'isEven'
+        $validator: 'isEven',
+        $response: false
       }])
     })
 
@@ -140,7 +141,8 @@ describe('OptionsAPI validations', () => {
         '$pending': false,
         '$property': 'number',
         '$propertyPath': 'number',
-        '$validator': 'isEven'
+        '$validator': 'isEven',
+        $response: false
       })
     })
 

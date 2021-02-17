@@ -8,6 +8,7 @@ let ROOT_PATH = '__root'
  * @property {Validator} $validator
  * @property {String | Ref<String> | function(*): string} [$message]
  * @property {Object | Ref<Object>} [$params]
+ * @property {Object | Ref<Object>} [$async]
  */
 
 /**
@@ -92,9 +93,10 @@ function normalizeValidatorResponse (result) {
  * @param {Ref<Boolean>} $pending
  * @param {Ref<Boolean>} $dirty
  * @param {Object} config
+ * @param {Ref<*>} $response
  * @return {Ref<Boolean>}
  */
-function createAsyncResult (rule, model, $pending, $dirty, { $lazy }) {
+function createAsyncResult (rule, model, $pending, $dirty, { $lazy }, $response) {
   const $invalid = ref(!!$dirty.value)
   const $pendingCounter = ref(0)
 
@@ -104,7 +106,14 @@ function createAsyncResult (rule, model, $pending, $dirty, { $lazy }) {
     [model, $dirty],
     ([modelValue, dirty]) => {
       if ($lazy && !$dirty.value) return false
-      const ruleResult = callRule(rule, model)
+      let ruleResult
+      // make sure we dont break if a validator throws
+      try {
+        ruleResult = callRule(rule, model)
+      } catch (err) {
+        // convert to a promise, so we can handle it async
+        ruleResult = Promise.reject(err)
+      }
 
       $pendingCounter.value++
       $pending.value = !!$pendingCounter.value
@@ -114,11 +123,13 @@ function createAsyncResult (rule, model, $pending, $dirty, { $lazy }) {
         .then(data => {
           $pendingCounter.value--
           $pending.value = !!$pendingCounter.value
+          $response.value = data
           $invalid.value = normalizeValidatorResponse(data)
         })
-        .catch(() => {
+        .catch((error) => {
           $pendingCounter.value--
           $pending.value = !!$pendingCounter.value
+          $response.value = error
           $invalid.value = true
         })
     }, { immediate: true }
@@ -132,18 +143,21 @@ function createAsyncResult (rule, model, $pending, $dirty, { $lazy }) {
  * Detects async and sync validators.
  * @param {NormalizedValidator} rule
  * @param {Ref<*>} model
+ * @param {Ref<boolean>} $dirty
  * @param {Object} config
- * @return {{$params: *, $message: Ref<String>, $pending: Ref<Boolean>, $invalid: Ref<Boolean>}}
+ * @return {{$params: *, $message: Ref<String>, $pending: Ref<Boolean>, $invalid: Ref<Boolean>, $response: Ref<*>}}
  */
 function createValidatorResult (rule, model, $dirty, config) {
   const $pending = ref(false)
   const $params = rule.$params || {}
+  const $response = ref(null)
   const { $invalid, $unwatch } = createAsyncResult(
     rule.$validator,
     model,
     $pending,
     $dirty,
-    config
+    config,
+    $response
   )
 
   const message = rule.$message
@@ -154,7 +168,8 @@ function createValidatorResult (rule, model, $dirty, config) {
           $pending,
           $invalid,
           $params: unwrapObj($params), // $params can hold refs, so we unwrap them for easy access
-          $model: model
+          $model: model,
+          $response
         })
       ))
     : message || ''
@@ -164,6 +179,7 @@ function createValidatorResult (rule, model, $dirty, config) {
     $params,
     $pending,
     $invalid,
+    $response,
     $unwatch
   }
 }
@@ -199,6 +215,7 @@ function createValidatorResult (rule, model, $dirty, config) {
  * @param {String} key - Key for the current state tree
  * @param {ResultsStorage} [resultsCache] - A cache map of all the validators
  * @param {String} [path] - the current property path
+ * @param {Object} [config] - the config object
  * @return {ValidationResult | {}}
  */
 function createValidationResults (rules, model, key, resultsCache, path, config) {
@@ -267,6 +284,7 @@ function createValidationResults (rules, model, key, resultsCache, path, config)
         $validator: ruleKey,
         $message: res.$message,
         $params: res.$params,
+        $response: res.$response,
         $pending: res.$pending
       })
     })
@@ -291,7 +309,8 @@ function createValidationResults (rules, model, key, resultsCache, path, config)
  * @param {Object<NormalizedValidator|Function>} validations - The validation
  * @param {Object} nestedState - Current state
  * @param {String} path - Path to current property
- * @param {Map} resultsCache - Validations cache map
+ * @param {ResultsStorage} resultsCache - Validations cache map
+ * @param {Object} config - The config object
  * @return {{}}
  */
 function collectNestedValidationResults (validations, nestedState, path, resultsCache, config) {
@@ -458,7 +477,7 @@ function createMetaFields (results, nestedResults, childResults) {
  * @param {String} [params.key] - Current state property key. Used when being called on nested items
  * @param {String} [params.parentKey] - Parent state property key. Used when being called recursively
  * @param {Object<ValidationResult>} [params.childResults] - Used to collect child results.
- * @param {Map} resultsCache - The cached validation results
+ * @param {ResultsStorage} resultsCache - The cached validation results
  * @return {UnwrapNestedRefs<VuelidateState>}
  */
 export function setValidations ({

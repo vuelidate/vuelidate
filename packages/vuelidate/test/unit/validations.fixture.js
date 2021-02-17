@@ -125,3 +125,26 @@ export function asyncValidation () {
   const validations = { number: { asyncIsEven } }
   return { state, validations }
 }
+
+export function simpleErrorValidation () {
+  const errorObject = new Error('message')
+  const state = { withPromise: ref(1), noPromise: ref(1) }
+  const asyncValidator = () => Promise.reject(errorObject)
+
+  function syncValidator () {
+    throw errorObject
+  }
+
+  const validations = {
+    withPromise: {
+      asyncValidator
+    },
+    noPromise: {
+      syncValidator
+    },
+    combined: {
+      syncValidator, asyncValidator
+    }
+  }
+  return { state, validations, errorObject }
+}

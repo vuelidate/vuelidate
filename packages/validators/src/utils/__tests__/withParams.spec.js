@@ -62,22 +62,4 @@ describe('withParams validator modifier', () => {
       $validator: func
     })
   })
-
-  it.skip('should stack multiple $sub keys', () => {
-    const $params1 = { a: 0, c: 3 }
-    const $params2 = { a: 1, b: 2 }
-    const $params3 = { a: 2, b: 3 }
-    _setTarget({})
-    withParams($params1, (v) => {
-      const v1 = withParams($params2, func)(v)
-      const v2 = withParams($params3, func)(v)
-      return v1 && v2
-    })('test')
-
-    expect(target.$sub[0]).toEqual({
-      a: 0,
-      c: 3,
-      $sub: [{ a: 1, b: 2 }, { a: 2, b: 3 }]
-    })
-  })
 })

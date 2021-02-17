@@ -1,3 +1,5 @@
+import { unwrap } from './utils'
+
 export default class ResultsStorage {
   constructor () {
     this.storage = new Map()
@@ -31,9 +33,11 @@ export default class ResultsStorage {
 
     return newRulesKeys.every(ruleKey => {
       if (!rules[ruleKey].$params) return true
-      Object.keys(rules[ruleKey].$params).every(paramKey => {
-        return storedRules[ruleKey].$params[paramKey] === rules[ruleKey].$params[paramKey]
-      })
+      return Object.keys(rules[ruleKey].$params)
+        .every(paramKey => {
+          // make sure to unwrap before comparing
+          return unwrap(storedRules[ruleKey].$params[paramKey]) === unwrap(rules[ruleKey].$params[paramKey])
+        })
     })
   }
 

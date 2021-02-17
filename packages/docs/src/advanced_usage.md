@@ -187,3 +187,36 @@ export default {
   // ...other settings
 }
 ```
+
+## Returning extra data from validators
+
+In more advanced use cases, it is necessary for a validator to return more than just a boolean, extra data to help the user.
+In those cases, validators can return an object, which must have an `$invalid` key, and any other data, that the developer chooses.
+
+```js
+function validator (value) {
+  if(value === 'something') return true
+  return {
+    $invalid: true,
+    data: { message: 'The value must be "something"', extraParams: {} }
+  }
+}
+```
+
+The entire response can be accessed from `$response` property in the validation and error objects. We can use this to show a more custom error message.
+
+```js
+const validatorWithMessage = withMessage(({ $response }) => $response ? $response.data.message: 'Invalid Data', validator)
+```
+
+If you need to access the data, you can just go into the `$response` property.
+
+```js
+export default {
+  computed: {
+    someComputed() {
+      const params = this.v.someProperty.validatorName.$response
+    }
+  }
+}
+```
