@@ -206,7 +206,7 @@ function validator (value) {
 The entire response can be accessed from `$response` property in the validation and error objects. We can use this to show a more custom error message.
 
 ```js
-const validatorWithMessage = withMessage($params => _.get($params, '$response.data.message', 'Invalid data'), validator)
+const validatorWithMessage = withMessage(({ $response }) => $response ? $response.data.message: 'Invalid Data', validator)
 ```
 
 If you need to access the data, you can just go into the `$response` property.
