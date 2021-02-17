@@ -149,13 +149,22 @@ type ExtractState <Vargs extends ValidationArgs> = Vargs extends ValidationRuleC
 
 type ToRefs <T> = { [K in keyof T]: Ref<T[K]> };
 
-export const useVuelidate: <
+interface GlobalConfig {
+  $registerAs?: string
+  $scope?: string | number | symbol
+  $stopPropagation?: boolean
+  $autoDirty?: boolean
+  $lazy?: boolean
+}
+
+export function useVuelidate(globalConfig?: GlobalConfig): Ref<Validation>;
+export function useVuelidate<
   Vargs extends ValidationArgs,
   T extends ExtractState<Vargs>
 >(
   validationsArgs: Ref<Vargs> | Vargs,
   state: T | Ref<T> | ToRefs<T>,
-  registerAs?: string
-) => Ref<Validation<Vargs>>;
+  globalConfig?: GlobalConfig
+): Ref<Validation<Vargs>>;
 
 export default useVuelidate;
