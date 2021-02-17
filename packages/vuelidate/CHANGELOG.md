@@ -3,6 +3,33 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.0.0-alpha.12](https://github.com/vuelidate/vuelidate/compare/@vuelidate/core@2.0.0-alpha.11...@vuelidate/core@2.0.0-alpha.12) (2021-02-17)
+
+
+### Bug Fixes
+
+* **core:** add fixes for Vue 2 ([e4ce82d](https://github.com/vuelidate/vuelidate/commit/e4ce82d8428df24c6251cfcfa818e5fccd1e7783))
+* **types:** Updated useVuelidate global config types ([#804](https://github.com/vuelidate/vuelidate/issues/804)) ([4ef983b](https://github.com/vuelidate/vuelidate/commit/4ef983be4912a0dad6309ffd8ba21d48d4b70cba))
+
+
+### Code Refactoring
+
+* **core:** change all validators to be async, removes withAsync helper ([#795](https://github.com/vuelidate/vuelidate/issues/795)) ([3a76cd6](https://github.com/vuelidate/vuelidate/commit/3a76cd6f3da68d45e674f867506969b77428b2b8))
+
+
+### Features
+
+* **core:** Support returning none boolean data from validators. ([#739](https://github.com/vuelidate/vuelidate/issues/739)) ([caf0eb8](https://github.com/vuelidate/vuelidate/commit/caf0eb8b68247efef2e3bf86173a043eeda23570))
+
+
+### BREAKING CHANGES
+
+* **core:** Unit tests will require users to always use `nextTick` between changes.
+
+
+
+
+
 # [2.0.0-alpha.11](https://github.com/vuelidate/vuelidate/compare/@vuelidate/core@2.0.0-alpha.10...@vuelidate/core@2.0.0-alpha.11) (2021-02-10)
 
 

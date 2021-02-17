@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.4.0](https://github.com/vuelidate/vuelidate/compare/test-project@0.3.0...test-project@0.4.0) (2021-02-17)
+
+
+### Code Refactoring
+
+* **core:** change all validators to be async, removes withAsync helper ([#795](https://github.com/vuelidate/vuelidate/issues/795)) ([3a76cd6](https://github.com/vuelidate/vuelidate/commit/3a76cd6f3da68d45e674f867506969b77428b2b8))
+
+
+### BREAKING CHANGES
+
+* **core:** Unit tests will require users to always use `nextTick` between changes.
+
+
+
+
+
 # [0.3.0](https://github.com/vuelidate/vuelidate/compare/test-project@0.2.4...test-project@0.3.0) (2021-02-04)
 
 
