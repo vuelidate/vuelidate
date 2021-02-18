@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.0.0-alpha.11](https://github.com/vuelidate/vuelidate/compare/@vuelidate/validators@2.0.0-alpha.10...@vuelidate/validators@2.0.0-alpha.11) (2021-02-18)
+
+
+### Bug Fixes
+
+* **validators:** pass value to function in requiredIf and requiredUnless ([a311d22](https://github.com/vuelidate/vuelidate/commit/a311d22bf631105390a1c482eefdc12355f3b57f)), closes [#806](https://github.com/vuelidate/vuelidate/issues/806)
+
+
+
+
+
 # [2.0.0-alpha.10](https://github.com/vuelidate/vuelidate/compare/@vuelidate/validators@2.0.0-alpha.9...@vuelidate/validators@2.0.0-alpha.10) (2021-02-17)
 
 
