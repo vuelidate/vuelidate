@@ -38,6 +38,10 @@ export default {
 
 ## Composition API
 
+Vuelidate is primarily built on top of the Composition API, so its best suited to work with it.
+
+### Using an object of `refs`
+
 ```js
 import { ref, computed } from 'vue' // or '@vue/composition-api' in Vue 2.x
 import { useVuelidate } from '@vuelidate/core'
@@ -55,6 +59,33 @@ export default {
     }))
 
     const v$ = useVuelidate(rules, { name })
+
+    return { name, requiredNameLength, v$ }
+  }
+}
+```
+
+### Using `reactive` state
+
+```js
+import { ref, computed } from 'vue'
+import { useVuelidate } from '@vuelidate/core'
+import { minLength, required } from '@vuelidate/validators'
+
+export default {
+  setup () {
+    const state = reactive({
+      name: 'foo'
+    })
+    const requiredNameLength = ref(2)
+    const rules = computed(() => ({
+      name: {
+        required,
+        minLength: minLength(requiredNameLength.value)
+      },
+    }))
+
+    const v$ = useVuelidate(rules, state)
 
     return { name, requiredNameLength, v$ }
   }
