@@ -34,4 +34,11 @@ describe('requiredIf validator', () => {
   it('should NOT validate value if condition is a falsy promise', async () => {
     expect(await requiredIf(promiseF)('')).toBe(true)
   })
+
+  it('should pass the value to the validation function', () => {
+    const validator = jest.fn()
+    requiredIf(validator)('foo')
+    expect(validator).toHaveBeenCalledTimes(1)
+    expect(validator).toHaveBeenCalledWith('foo')
+  })
 })

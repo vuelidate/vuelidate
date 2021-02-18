@@ -11,4 +11,11 @@ describe('requiredUnless validator', () => {
     expect(requiredUnless(T)('')).toBe(true)
     expect(requiredUnless(T)('truthy value')).toBe(true)
   })
+
+  it('should pass the value to the validation function', () => {
+    const validator = jest.fn()
+    requiredUnless(validator)('foo')
+    expect(validator).toHaveBeenCalledTimes(1)
+    expect(validator).toHaveBeenCalledWith('foo')
+  })
 })
