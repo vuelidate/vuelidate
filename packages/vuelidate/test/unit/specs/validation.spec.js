@@ -622,7 +622,7 @@ describe('useVuelidate', () => {
 
     it('collects plain validator response', async () => {
       const isEvenValidator = withParams({ min: 4 }, (v) => ({
-        $invalid: isEven(v),
+        $valid: isEven(v),
         $data: { foo: 'foo' }
       }))
       const state = { number: ref(1) }
@@ -630,14 +630,14 @@ describe('useVuelidate', () => {
       const { vm } = await createSimpleWrapper(validations, state)
       vm.v.$touch()
       expect(vm.v.number.isEvenValidator).toHaveProperty('$response', {
-        $invalid: false,
+        $valid: false,
         $data: { foo: 'foo' }
       })
     })
 
     it('collects async validator response', async () => {
       const isEvenValidator = withParams({ min: 4 }, (v) => Promise.resolve({
-        $invalid: isEven(v),
+        $valid: isEven(v),
         $data: { foo: 'foo' }
       }))
       const state = { number: ref(1) }
@@ -646,7 +646,7 @@ describe('useVuelidate', () => {
       vm.v.$touch()
       await flushPromises()
       expect(vm.v.number.isEvenValidator).toHaveProperty('$response', {
-        $invalid: false,
+        $valid: false,
         $data: { foo: 'foo' }
       })
     })
@@ -742,7 +742,7 @@ describe('useVuelidate', () => {
 
     it('allows passing a message from a validator response', async () => {
       const validator = (v) => ({
-        $invalid: isEven(v),
+        $valid: isEven(v),
         $message: v === 7 ? 'I dont like 7' : null
       })
       const isEvenMessage = withMessage(({ $response, $model }) => $response?.$message || `Field is not Even, ${$model} given`, validator)
@@ -771,16 +771,36 @@ describe('useVuelidate', () => {
   })
 
   describe('validators', () => {
-    it('supports a validator to be a function, returning a boolean', () => {
-
+    it('supports a validator to be a function, returning a boolean', async () => {
+      const rule = (value) => value === 'foo'
+      const value = ref('1')
+      const { vm } = await createSimpleWrapper({ value: { rule } }, { value })
+      expect(vm.v.value).toHaveProperty('$invalid', true)
+      value.value = 'foo'
+      await nextTick()
+      expect(vm.v.value).toHaveProperty('$invalid', false)
     })
 
-    it('supports a validator to be a function, returning an object with `$invalid` property', () => {
-
+    it('supports a validator to be a function, returning an object with `$valid` property', async () => {
+      const rule = (value) => ({
+        $valid: value === 'foo'
+      })
+      const value = ref('1')
+      const { vm } = await createSimpleWrapper({ value: { rule } }, { value })
+      expect(vm.v.value).toHaveProperty('$invalid', true)
+      value.value = 'foo'
+      await nextTick()
+      expect(vm.v.value).toHaveProperty('$invalid', false)
     })
 
-    it('supports a validator to be an object with `$validator` function property', () => {
-
+    it('supports a validator to be an object with `$validator` function property', async () => {
+      const rule = (value) => value === 'foo'
+      const value = ref('1')
+      const { vm } = await createSimpleWrapper({ value: { rule: { $validator: rule } } }, { value })
+      expect(vm.v.value).toHaveProperty('$invalid', true)
+      value.value = 'foo'
+      await nextTick()
+      expect(vm.v.value).toHaveProperty('$invalid', false)
     })
 
     it('supports async validators by default', async () => {

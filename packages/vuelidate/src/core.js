@@ -14,7 +14,7 @@ let ROOT_PATH = '__root'
 /**
  * Response form a raw Validator function.
  * Should return a Boolean or an object with $invalid property.
- * @typedef {Boolean | { $invalid: Boolean }} ValidatorResponse
+ * @typedef {Boolean | { $valid: Boolean }} ValidatorResponse
  */
 
 /**
@@ -76,13 +76,13 @@ function callRule (rule, value) {
 
 /**
  * Normalizes the validator result
- * Allows passing a boolean of an object like `{ $invalid: Boolean }`
+ * Allows passing a boolean of an object like `{ $valid: Boolean }`
  * @param {ValidatorResponse} result - Validator result
  * @return {Boolean}
  */
 function normalizeValidatorResponse (result) {
-  return result.$invalid !== undefined
-    ? !result.$invalid
+  return result.$valid !== undefined
+    ? !result.$valid
     : !result
 }
 
