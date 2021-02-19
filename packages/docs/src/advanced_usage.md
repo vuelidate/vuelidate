@@ -222,13 +222,13 @@ export default {
 ## Returning extra data from validators
 
 In more advanced use cases, it is necessary for a validator to return more than just a boolean, extra data to help the user.
-In those cases, validators can return an object, which must have an `$invalid` key, and any other data, that the developer chooses.
+In those cases, validators can return an object, which must have an `$valid` key, and any other data, that the developer chooses.
 
 ```js
 function validator (value) {
   if(value === 'something') return true
   return {
-    $invalid: true,
+    $valid: true,
     data: { message: 'The value must be "something"', extraParams: {} }
   }
 }
