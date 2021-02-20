@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.0.0-alpha.13](https://github.com/vuelidate/vuelidate/compare/@vuelidate/core@2.0.0-alpha.12...@vuelidate/core@2.0.0-alpha.13) (2021-02-20)
+
+
+### Code Refactoring
+
+* rename $invalid response property to $valid ([#808](https://github.com/vuelidate/vuelidate/issues/808)) ([9f5d3e0](https://github.com/vuelidate/vuelidate/commit/9f5d3e09a20487340bc46fde2c3500b3db210686))
+
+
+### BREAKING CHANGES
+
+* It used to be $invalid, but that did not make any sense, as the return value was identical to boolean validators.
+
+
+
+
+
 # [2.0.0-alpha.12](https://github.com/vuelidate/vuelidate/compare/@vuelidate/core@2.0.0-alpha.11...@vuelidate/core@2.0.0-alpha.12) (2021-02-17)
 
 
