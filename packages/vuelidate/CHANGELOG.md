@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.0.0-alpha.14](https://github.com/vuelidate/vuelidate/compare/@vuelidate/core@2.0.0-alpha.13...@vuelidate/core@2.0.0-alpha.14) (2021-02-20)
+
+
+### Bug Fixes
+
+* **types:** make $validate and $getResultsForChild none optional ([7d3fcf4](https://github.com/vuelidate/vuelidate/commit/7d3fcf4573981c234e010533a85224c26f2309fb))
+
+
+
+
+
 # [2.0.0-alpha.13](https://github.com/vuelidate/vuelidate/compare/@vuelidate/core@2.0.0-alpha.12...@vuelidate/core@2.0.0-alpha.13) (2021-02-20)
 
 
