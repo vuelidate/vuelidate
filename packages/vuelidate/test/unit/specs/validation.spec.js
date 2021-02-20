@@ -561,6 +561,7 @@ describe('useVuelidate', () => {
       state.number.value = 3
       await vm.$nextTick()
       const childState = vm.v.$getResultsForChild(childValidationRegisterName)
+      expect(childState).toHaveProperty('$validate', expect.any(Function))
       expect(childState).toHaveProperty('$errors')
       expect(childState.$errors).toContainEqual({
         '$message': '',

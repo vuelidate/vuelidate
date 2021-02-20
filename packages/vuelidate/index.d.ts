@@ -124,8 +124,8 @@ type NestedValidations <Vargs extends ValidationArgs = ValidationArgs, T = unkno
 };
 
 interface ChildValidations {
-  readonly $validate?: () => Promise<boolean>
-  readonly $getResultsForChild?: (key: string) => (BaseValidation & ChildValidations) | undefined
+  readonly $validate: () => Promise<boolean>
+  readonly $getResultsForChild: (key: string) => (BaseValidation & ChildValidations) | undefined
 }
 
 export type Validation <Vargs extends ValidationArgs = ValidationArgs, T = unknown> =
