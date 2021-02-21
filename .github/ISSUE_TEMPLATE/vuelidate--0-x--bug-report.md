@@ -2,7 +2,7 @@
 name: Vuelidate (0.x) Bug report
 about: Use this if you would like to report an issue with Vuelidate (0.x)
 title: ''
-labels: ''
+labels: bug, 0.x
 assignees: ''
 
 ---

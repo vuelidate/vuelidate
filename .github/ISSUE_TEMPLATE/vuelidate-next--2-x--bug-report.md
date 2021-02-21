@@ -2,7 +2,7 @@
 name: Vuelidate Next (2.x) Bug report
 about: Use this if you would like to report an issue with Vuelidate Next (2.x)
 title: ''
-labels: ''
+labels: bug, 2.0
 assignees: ''
 
 ---
