@@ -1,6 +1,9 @@
 ---
 name: Issue Template
 about: Use this if you would like to report an issue with the library.
+title: 
+labels: ''
+assignees: ''
 
 ---
 
