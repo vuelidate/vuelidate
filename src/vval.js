@@ -1,4 +1,4 @@
-// a minimial single-layer implementation
+// a minimal single-layer implementation
 // of virtual-validation patching,
 // based on Vue's snabbdom clone
 
