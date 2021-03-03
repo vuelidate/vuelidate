@@ -79,7 +79,7 @@ function nestedValidations ({ $scope }) {
 /**
  * Composition API compatible Vuelidate
  * Use inside the `setup` lifecycle hook
- * @param {Object | GlobalConfig} validations - Validations Object or the globalConfig.
+ * @param {Object | GlobalConfig} [validations] - Validations Object or the globalConfig.
  * @param {Object} [state] - State object - required if `validations` is a validation object.
  * @param {GlobalConfig} [globalConfig] - Config Object
  * @return {UnwrapRef<*>}

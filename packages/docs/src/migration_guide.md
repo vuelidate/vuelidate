@@ -21,7 +21,7 @@ import useVuelidate from '@vuelidate/core'
 
 2. Change import location for validators
 ```js
-import { required, minLength } from vuelidate/lib/validators
+import { required, minLength } from 'vuelidate/lib/validators'
 ```
 with
 ```js
@@ -75,7 +75,7 @@ export default {
 
 #### Migration Strategy
 
-There is no direct migration path here. However, most problems that required the use of `$each` can now be solved with the new support for [nested validations](./advanced_usage.html#nested-validations).
+There is no direct migration path here. However, most problems that required the use of `$each` can now be solved with the new support for [nested validations](advanced_usage.md#nested-validations).
 The above example could be replaced with the following, given we create a separate component to handle each element of the `people` collection.
 
 Here’s the wrapper component.
@@ -122,7 +122,7 @@ export default {
 </script>
 ```
 
-And here we have the single person component that has it’s own validation rules.
+And here we have the single person component that has its own validation rules.
 
 ```vue
 <!-- PersonInput.vue -->
@@ -138,7 +138,7 @@ import useVuelidate from '@vuelidate/core'
 export default {
   props: {
     person: { type: Object, required: true },
-  }
+  },
   setup () {
     return { v$: useVuelidate() }
   },
@@ -155,4 +155,4 @@ export default {
 This might seem like a lot of overhead, but aside from simple examples like the above, is generally much more powerful. Here’s a list of reasons:
 1. It is not limited to only parent-child component relations, as the parent will collect all validation results from any descendant component.
 2. Each of those child components can control how their validation rules should look like.
-3. The parent component doesn’t need to know the object structure of the elements in the collection.
+3. The parent component doesn't need to know the object structure of the elements in the collection.
