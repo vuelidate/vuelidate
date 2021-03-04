@@ -158,7 +158,7 @@ type ToRefs <T> = { [K in keyof T]: Ref<T[K]> };
 
 interface GlobalConfig {
   $registerAs?: string
-  $scope?: string | number | symbol
+  $scope?: string | number | symbol | boolean
   $stopPropagation?: boolean
   $autoDirty?: boolean
   $lazy?: boolean
