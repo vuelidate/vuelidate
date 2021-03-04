@@ -125,10 +125,10 @@ export default {
 }
 ```
 
-## Accessing component (WIP)
+## Accessing component instance from validator
 
-In more complex cases when access to the whole model is necessary, like `sameAs`, make use of the function context (`this`) to access any value on
-your component or use provided `parentVm` to access sibling properties.
+In more complex cases when access to the whole model is necessary, you can make use of the function context (`this`), or the second parameter - `vm`
+to access any value on your component, this includes computed properties and data properties.
 
 ```js
 // both equivalent
@@ -139,6 +139,13 @@ function otherFieldContainsMe (value) {
   return this.other.nested.field.contains(value)
 }
 ```
+
+:::warning
+
+When using with Composition API, `vm` and `this` may not have your state on initial call. This is because the composition state has not yet been
+attached to the Vue instance yet. To work around this, you can either use the `$lazy` option, or use `await nextTick()` in your validator.
+
+:::
 
 ## regex based validator
 
@@ -186,11 +193,11 @@ const validations = {
   name: {
     minLength: helpers.withMessage(
       ({
-         $pending,
-         $invalid,
-         $params,
-         $model
-       }) => `This field has a value of '${$model}' but must have a min length of ${$params.min} so it is ${$invalid ? 'invalid' : 'valid'}`,
+        $pending,
+        $invalid,
+        $params,
+        $model
+      }) => `This field has a value of '${$model}' but must have a min length of ${$params.min} so it is ${$invalid ? 'invalid' : 'valid'}`,
       minLength(4),
     ),
   }
