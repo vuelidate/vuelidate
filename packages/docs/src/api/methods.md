@@ -6,7 +6,7 @@
 
 * **Usage:**
 
-  Triggers all validators if not triggered already. Returns a Promise with a boolean, which resolves once all validators finish.
+  Sets all properties as dirty, triggering all validators. Returns a Promise with a boolean, which resolves once all validators finish.
 
 ## $touch
 
@@ -29,4 +29,4 @@
 
 * **Usage:**
 
-  Resets the validation state of a validation tree.
+  Resets the `$dirty` state on all nested properties of a form.

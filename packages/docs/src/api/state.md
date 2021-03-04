@@ -57,13 +57,6 @@ The presence of those special reserved keywords means that you cannot specify yo
 
   Collection of all the error messages, collected for all child properties and nested forms (Vue components).
 
-## $anyError
-
-* **Type:** `Boolean`
-* **Details:**
-
-  Convenience flag to easily decide if a message should be displayed. A variant that considers error to be displayed when itself or **at least one** of its children has `$error` equal to `true`.
-
 ## $pending
 
 * **Type:** `Boolean`
@@ -85,3 +78,10 @@ The presence of those special reserved keywords means that you cannot specify yo
 * **Details:**
 
   Contains the response and rejections of a validator.
+
+## $path
+
+* **Type:** `String`
+* **Details:**
+
+  A dot notation nested path, of the current form leaf.
