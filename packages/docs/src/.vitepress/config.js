@@ -13,17 +13,39 @@ const config = {
   themeConfig: {
     repo: 'vuelidate/vuelidate',
     docsDir: 'docs',
-    sidebar: [
-      { text: 'Getting started', link: '/' },
-      { text: 'Guide', link: '/guide' },
-      { text: 'Advanced Usage', link: '/advanced_usage' },
-      { text: 'Examples (outdated)', link: '/examples' },
-      { text: 'API', link: '/api' },
-      { text: 'Built-in Validators', link: '/validators' },
-      { text: 'Custom Validators', link: '/custom_validators' },
-      { text: 'Migration Guide', link: '/migration_guide' },
-    ]
-  },
+    nav: [
+      { text: 'General Guide', link: '/', activeMatch: '^/(?!.*(api))' },
+      {
+        text: 'API Reference',
+        link: '/api/state',
+        activeMatch: '^/api/'
+      }
+    ],
+    sidebar: {
+      '/api/': getAPISidebar(),
+      '/': getGuideSidebar()
+    }
+  }
+}
+
+function getGuideSidebar () {
+  return [
+    { text: 'Getting started', link: '/' },
+    { text: 'Guide', link: '/guide' },
+    { text: 'Advanced Usage', link: '/advanced_usage' },
+    { text: 'Examples (outdated)', link: '/examples' },
+    { text: 'Built-in Validators', link: '/validators' },
+    { text: 'Custom Validators', link: '/custom_validators' },
+    { text: 'Migration Guide', link: '/migration_guide' }
+  ]
+}
+
+function getAPISidebar () {
+  return [
+    { text: 'Validation State', link: '/api/state' },
+    { text: 'Validation Methods', link: '/api/methods' },
+    { text: 'Validation Configuration', link: '/api/configuration' },
+  ]
 }
 
 module.exports = config
