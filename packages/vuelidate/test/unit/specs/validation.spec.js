@@ -934,6 +934,29 @@ describe('useVuelidate', () => {
       expect(validator.mock.instances[1]).toEqual(validator.mock.calls[1][1])
     })
 
+    it('does not trigger validators, if currentInstance changes', async () => {
+      const validator = jest.fn(async function (value, vm) {
+        // Await is needed, because `state` is not present on the initial pass. If we use `$lazy` this wont be necessary.
+        await nextTick()
+        return this.state.number === value && vm.state.number === value
+      })
+
+      const number = ref(2)
+      const someOtherState = ref(0)
+
+      const validation = {
+        number: { validator }
+      }
+      const wrapper = await createSimpleWrapper(validation, { number, someOtherState })
+
+      expect(validator).toHaveBeenCalledTimes(1)
+      // assert that the validator is called with the value and an object that is the VM
+      someOtherState.value = 1
+      await wrapper.vm.$nextTick()
+      // make sure the validator is called with the updated value and VM
+      expect(validator).toHaveBeenCalledTimes(1)
+    })
+
     describe('dynamic rules', () => {
       it('allows passing a computed value as a validations object, with Refs', async () => {
         const { state, validations } = computedValidationsObjectWithRefs()
