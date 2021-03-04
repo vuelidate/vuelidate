@@ -52,7 +52,7 @@
     "lerna:build": "lerna run build --parallel",
     "lerna:version": "lerna version --conventional-commits",
     "lerna:build-all": "yarn lerna:build && yarn build-docs",
-    "build-docs": "cd packages/docs && node build",
+    "build-docs": "cd packages/docs && yarn build:docs",
     "release": "yarn lerna:build && yarn lerna:publish",
     "release:dry": "yarn lerna:build && yarn lerna:version --no-push --no-git-tag-version",
     "test:unit": "npm run test:3",

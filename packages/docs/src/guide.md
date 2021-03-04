@@ -100,7 +100,7 @@ The properties you will check against most often are:
 ```
 
 This is just a subset of all the properties, but they are enough to get us started. To see all available properties, check
-the [Validation state API](./api.md#validation-state-values)
+the [Validation state API](./api/state.md)
 
 ## The dirty state
 

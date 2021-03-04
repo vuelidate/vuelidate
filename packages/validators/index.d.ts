@@ -46,7 +46,7 @@ export const sameAs: <E = unknown>(
 ) => ValidationRuleWithParams<{ equalTo: E, otherName: string }>;
 export const url: ValidationRuleWithoutParams;
 export const helpers: {
-  withParams: (message: string | Function, validator: ValidationRule) => ValidationRuleWithParams
+  withParams: (params: object, validator: ValidationRule) => ValidationRuleWithParams
   withMessage: (message: string | Function, validator: ValidationRule) => ValidationRuleWithParams
   req: Function
   len: Function

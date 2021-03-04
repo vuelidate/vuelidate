@@ -266,7 +266,7 @@ export default {
 
 You can provide global configs to your Vuelidate instance using the third parameter of `useVuelidate` or by using the `validationsConfig`. These
 config options are used to change some core Vuelidate functionality, like `autoDirty`, `lazy`, `scope` and more. Learn all about them
-in [Validation Configuration](./api.md#validation-configuration).
+in [Validation Configuration](./api/configuration.md).
 
 ### Config with Options API
 
