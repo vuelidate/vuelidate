@@ -76,7 +76,7 @@ function usePassword ({ minimumLength }) {
   }
 
   const vuelidate = useVuelidate(
-    rules, { password, repeatPassword }, 'usePassword'
+    rules, { password, repeatPassword }, { $registerAs: 'usePassword' }
   )
 
   return {
