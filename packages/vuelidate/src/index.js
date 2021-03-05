@@ -95,6 +95,7 @@ export function useVuelidate (validations, state, globalConfig = {}) {
   let { $registerAs, $scope = CollectFlag.COLLECT_ALL, $stopPropagation } = globalConfig
 
   const instance = getCurrentInstance()
+
   const componentOptions = isVue3 ? instance.type : instance.proxy.$options
   // if there is no registration name, add one.
   if (!$registerAs) {
@@ -138,7 +139,8 @@ export function useVuelidate (validations, state, globalConfig = {}) {
             state,
             childResults,
             resultsCache,
-            globalConfig
+            globalConfig,
+            instance: instance.proxy
           })
         }, { immediate: true })
     })
@@ -156,7 +158,8 @@ export function useVuelidate (validations, state, globalConfig = {}) {
         state,
         childResults,
         resultsCache,
-        globalConfig
+        globalConfig,
+        instance: instance.proxy
       })
     }, {
       immediate: true

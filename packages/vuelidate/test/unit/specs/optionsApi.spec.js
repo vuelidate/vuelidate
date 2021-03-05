@@ -260,6 +260,28 @@ describe('OptionsAPI validations', () => {
     //   await flushPromises()
     //   expect(vm.v.number.asyncValidator.$invalid).toBe(false)
     // })
+    it('passes the currentInstance to a validator', async () => {
+      const validator = jest.fn(function (value, vm) {
+        return this.number === value && vm.number === value
+      })
+
+      const validation = {
+        number: { validator }
+      }
+      const wrapper = await createOldApiSimpleWrapper(validation, { number: 2 })
+
+      expect(wrapper.vm.v).toHaveProperty('number', expect.any(Object))
+      // assert that `this` is the same as the second parameter
+      expect(validator.mock.instances[0]).toEqual(validator.mock.calls[0][1])
+      // assert that the validator is called with the value and an object that is the VM
+      expect(validator).toHaveBeenLastCalledWith(2, expect.objectContaining({ number: 2 }))
+      // assert the validator returned `true`
+      expect(validator).toHaveLastReturnedWith(true)
+      wrapper.vm.number = 5
+      await wrapper.vm.$nextTick()
+      // make sure the validator is called with the updated value and VM
+      expect(validator).toHaveBeenLastCalledWith(5, expect.objectContaining({ number: 5 }))
+    })
   })
 
   describe('deep changes in state', () => {

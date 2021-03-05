@@ -902,6 +902,61 @@ describe('useVuelidate', () => {
       expect(vm.v.combined.syncValidator).toHaveProperty('$response', errorObject)
     })
 
+    it('passes the currentInstance to a validator', async () => {
+      const validator = jest.fn(async function (value, vm) {
+        // Await is needed, because `state` is not present on the initial pass. If we use `$lazy` this wont be necessary.
+        await nextTick()
+        return this.state.number === value && vm.state.number === value
+      })
+
+      const number = ref(2)
+      const validation = {
+        number: { validator }
+      }
+      const wrapper = await createSimpleWrapper(validation, { number })
+
+      expect(wrapper.vm.v).toHaveProperty('number', expect.any(Object))
+      // assert that `this` is the same as the second parameter
+      expect(validator.mock.instances[0]).toEqual(validator.mock.calls[0][1])
+      // assert that the validator is called with the value and an object that is the VM
+      expect(validator.mock.calls[0][0]).toBe(2)
+      expect(validator.mock.calls[0][1]).toHaveProperty('state')
+      expect(validator.mock.calls[0][1].state).toHaveProperty('number', number)
+      // assert the validator returned `true`
+      expect(validator.mock.results[0].value).toEqual(Promise.resolve(true))
+      number.value = 5
+      await wrapper.vm.$nextTick()
+      // make sure the validator is called with the updated value and VM
+      expect(validator.mock.calls[1][0]).toBe(5)
+      expect(validator.mock.calls[1][1]).toHaveProperty('state')
+      expect(validator.mock.calls[1][1].state).toHaveProperty('number', number)
+      // make sure `this` and second parameter are still the same, on each call
+      expect(validator.mock.instances[1]).toEqual(validator.mock.calls[1][1])
+    })
+
+    it('does not trigger validators, if currentInstance changes', async () => {
+      const validator = jest.fn(async function (value, vm) {
+        // Await is needed, because `state` is not present on the initial pass. If we use `$lazy` this wont be necessary.
+        await nextTick()
+        return this.state.number === value && vm.state.number === value
+      })
+
+      const number = ref(2)
+      const someOtherState = ref(0)
+
+      const validation = {
+        number: { validator }
+      }
+      const wrapper = await createSimpleWrapper(validation, { number, someOtherState })
+
+      expect(validator).toHaveBeenCalledTimes(1)
+      // assert that the validator is called with the value and an object that is the VM
+      someOtherState.value = 1
+      await wrapper.vm.$nextTick()
+      // make sure the validator is called with the updated value and VM
+      expect(validator).toHaveBeenCalledTimes(1)
+    })
+
     describe('dynamic rules', () => {
       it('allows passing a computed value as a validations object, with Refs', async () => {
         const { state, validations } = computedValidationsObjectWithRefs()
