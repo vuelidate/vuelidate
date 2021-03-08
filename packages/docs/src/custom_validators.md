@@ -171,7 +171,7 @@ import { required, helpers, minLength } from '@vuelidate/validators'
 
 const validations = {
   name: {
-    required: helpers.withMessage('This field cannot be empty', required),
+    required: helpers.withMessage('This field cannot be empty', required.$validator),
   }
 };
 ```
