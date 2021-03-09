@@ -149,7 +149,7 @@ The `$scope` property has three main use cases:
 1. `true` (Collect all) - collect results from all and emits to all, this is the default setting. This means that each component that
    uses `useVuelidate`, can collect results from validation children, and emit to parent components.
 2. `false` (Collect none) - collect no validation results and emit none.
-3. `string` (Specific scope) - collect and emit results, only to/from components, that have the same scope.
+3. `string|number|symbol` (Specific scope) - collect and emit results, only to/from components, that have the same scope.
 
 **Example using $scope**
 
