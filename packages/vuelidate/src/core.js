@@ -76,8 +76,7 @@ function sortValidations (validationsRaw = {}) {
  * @return {Promise<ValidatorResponse> | ValidatorResponse}
  */
 function callRule (rule, value, instance, parentState) {
-  const v = unwrap(value)
-  return rule.call(instance, v, parentState, instance)
+  return rule.call(instance, unwrap(value), unwrap(parentState), instance)
 }
 
 /**

@@ -1,4 +1,4 @@
-import { computed, ref, h, nextTick, unref } from 'vue-demi'
+import { computed, ref, h, nextTick } from 'vue-demi'
 import { mount, flushPromises } from '../test-utils'
 import { isEven } from '../validators.fixture'
 
@@ -933,7 +933,7 @@ describe('useVuelidate', () => {
       expect(wrapper.vm.v).toHaveProperty('number', expect.any(Object))
       // assert that `this` is the same as the second parameter
       expect(validator.mock.calls[0][1]).toEqual(state)
-      expect(unref(nestedValidator.mock.calls[0][1])).toEqual(state.nested)
+      expect(nestedValidator.mock.calls[0][1]).toEqual(state.nested)
       expect(validator.mock.instances[0]).toEqual(validator.mock.calls[0][2])
       // assert that the validator is called with the value and an object that is the VM
       expect(validator.mock.calls[0][0]).toBe(2)
@@ -952,7 +952,7 @@ describe('useVuelidate', () => {
       expect(nestedValidator).toHaveBeenCalledTimes(1)
       nestedNumber.value = 10
       await wrapper.vm.$nextTick()
-      expect(unref(nestedValidator.mock.calls[1][1])).toEqual(state.nested)
+      expect(nestedValidator.mock.calls[1][1]).toEqual(state.nested)
     })
 
     it('does not trigger validators, if currentInstance changes', async () => {
