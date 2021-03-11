@@ -1,5 +1,5 @@
 import { isFunction, unwrap, unwrapObj } from './utils'
-import { computed, isRef, reactive, ref, watch, nextTick } from 'vue-demi'
+import { computed, isRef, nextTick, reactive, ref, watch } from 'vue-demi'
 
 let ROOT_PATH = '__root'
 
@@ -72,11 +72,12 @@ function sortValidations (validationsRaw = {}) {
  * @param {Validator} rule
  * @param {Ref} value
  * @param {VueInstance} instance
+ * @param {Object} parentState
  * @return {Promise<ValidatorResponse> | ValidatorResponse}
  */
-function callRule (rule, value, instance) {
+function callRule (rule, value, instance, parentState) {
   const v = unwrap(value)
-  return rule.call(instance, v, instance)
+  return rule.call(instance, v, parentState, instance)
 }
 
 /**
@@ -100,9 +101,10 @@ function normalizeValidatorResponse (result) {
  * @param {Object} config
  * @param {Ref<*>} $response
  * @param {VueInstance} instance
+ * @param {Object} parentState
  * @return {Ref<Boolean>}
  */
-function createAsyncResult (rule, model, $pending, $dirty, { $lazy }, $response, instance) {
+function createAsyncResult (rule, model, $pending, $dirty, { $lazy }, $response, instance, parentState) {
   const $invalid = ref(!!$dirty.value)
   const $pendingCounter = ref(0)
 
@@ -115,7 +117,7 @@ function createAsyncResult (rule, model, $pending, $dirty, { $lazy }, $response,
       let ruleResult
       // make sure we dont break if a validator throws
       try {
-        ruleResult = callRule(rule, model, instance)
+        ruleResult = callRule(rule, model, instance, parentState)
       } catch (err) {
         // convert to a promise, so we can handle it async
         ruleResult = Promise.reject(err)
@@ -152,9 +154,10 @@ function createAsyncResult (rule, model, $pending, $dirty, { $lazy }, $response,
  * @param {Ref<boolean>} $dirty
  * @param {Object} config
  * @param {VueInstance} instance
+ * @param {Object} parentState
  * @return {{$params: *, $message: Ref<String>, $pending: Ref<Boolean>, $invalid: Ref<Boolean>, $response: Ref<*>}}
  */
-function createValidatorResult (rule, model, $dirty, config, instance) {
+function createValidatorResult (rule, model, $dirty, config, instance, parentState) {
   const $pending = ref(false)
   const $params = rule.$params || {}
   const $response = ref(null)
@@ -165,7 +168,8 @@ function createValidatorResult (rule, model, $dirty, config, instance) {
     $dirty,
     config,
     $response,
-    instance
+    instance,
+    parentState
   )
 
   const message = rule.$message
@@ -225,9 +229,10 @@ function createValidatorResult (rule, model, $dirty, config, instance) {
  * @param {String} [path] - the current property path
  * @param {Object} [config] - the config object
  * @param {VueInstance} instance
+ * @param {Object} parentState
  * @return {ValidationResult | {}}
  */
-function createValidationResults (rules, model, key, resultsCache, path, config, instance) {
+function createValidationResults (rules, model, key, resultsCache, path, config, instance, parentState) {
   // collect the property keys
   const ruleKeys = Object.keys(rules)
 
@@ -268,7 +273,8 @@ function createValidationResults (rules, model, key, resultsCache, path, config,
       model,
       result.$dirty,
       config,
-      instance
+      instance,
+      parentState
     )
   })
 
@@ -521,7 +527,7 @@ export function setValidations ({
     : state
 
   // Use rules for the current state fragment and validate it
-  const results = createValidationResults(rules, nestedState, key, resultsCache, path, mergedConfig, instance)
+  const results = createValidationResults(rules, nestedState, key, resultsCache, path, mergedConfig, instance, state)
   // Use nested keys to repeat the process
   // *WARN*: This is recursive
   const nestedResults = collectNestedValidationResults(nestedValidators, nestedState, path, resultsCache, mergedConfig, instance)
