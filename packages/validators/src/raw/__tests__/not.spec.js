@@ -7,24 +7,34 @@ import {
   NormalizedF,
   NormalizedT,
   NormalizedValidatorResponseF,
-  NormalizedValidatorResponseT
+  NormalizedValidatorResponseT,
+  asyncT,
+  asyncF
 } from '../../../tests/fixtures'
 
 describe('not validator', () => {
   it('should not validate with true function', () => {
-    expect(not(T)('test')).toBe(false)
+    return expect(not(T)('test')).resolves.toBe(false)
   })
 
   it('should validate with true function on empty input', () => {
-    expect(not(T)('')).toBe(true)
+    return expect(not(T)('')).resolves.toBe(true)
+  })
+
+  it('should validate with async true function', () => {
+    return expect(not(asyncT)('')).resolves.toBe(true)
   })
 
   it('should validate with false function', () => {
-    expect(not(F)('test')).toBe(true)
+    return expect(not(F)('test')).resolves.toBe(true)
+  })
+
+  it('should validate with async false function', () => {
+    return expect(not(asyncF)('test')).resolves.toBe(true)
   })
 
   it('should validate with false function on empty input', () => {
-    expect(not(T)('')).toBe(true)
+    return expect(not(T)('')).resolves.toBe(true)
   })
 
   it('should pass values or model to function', () => {
@@ -33,16 +43,16 @@ describe('not validator', () => {
     expect(spy).toHaveBeenCalledWith(1, 2)
   })
 
-  it('should work with functions returning ValidatorResponse', () => {
-    expect(not(ValidatorResponseT)('test')).toBe(false)
-    expect(not(ValidatorResponseT)('')).toBe(true)
-    expect(not(ValidatorResponseF)('test')).toBe(true)
+  it('should work with functions returning ValidatorResponse', async () => {
+    await expect(not(ValidatorResponseT)('test')).resolves.toBe(false)
+    await expect(not(ValidatorResponseT)('')).resolves.toBe(true)
+    await expect(not(ValidatorResponseF)('test')).resolves.toBe(true)
   })
 
-  it('should work with Normalized Validators', () => {
-    expect(not(NormalizedT)('test')).toBe(false)
-    expect(not(NormalizedF)('')).toBe(true)
-    expect(not(NormalizedValidatorResponseT)('test')).toBe(false)
-    expect(not(NormalizedValidatorResponseF)('')).toBe(true)
+  it('should work with Normalized Validators', async () => {
+    await expect(not(NormalizedT)('test')).resolves.toBe(false)
+    await expect(not(NormalizedF)('')).resolves.toBe(true)
+    await expect(not(NormalizedValidatorResponseT)('test')).resolves.toBe(false)
+    await expect(not(NormalizedValidatorResponseF)('')).resolves.toBe(true)
   })
 })

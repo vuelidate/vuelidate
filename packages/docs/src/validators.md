@@ -1,11 +1,7 @@
 # Validators
 
 _Vuelidate 2_ does not bundle any validators, however it exposes them via a secondary package `@vuelidate/validators`. It consists of a set of
-validators and helpers, that you can just require and use, but it doesn't end there. All of those are just simple predicates - functions of data
-into `boolean`, which denotes if data is valid. You can easily write your own or use any function in this shape from any library you already have.
-
-This documentation presents every builtin validator with short description and presents an example custom validator implementation to help understand
-them and writing your own as easy as possible.
+validators and helpers, that you can just import and use.
 
 ## Using Builtin validators
 
@@ -27,59 +23,167 @@ import { required, maxLength } from '@vuelidate/validators/dist/raw.esm'
 
   Requires non-empty data. Checks for empty arrays and strings containing only whitespaces.
 
+```js
+export default {
+  validations () {
+    return {
+      name: { required }
+    }
+  }
+}
+```
+
 ## requiredIf
 
 * **Arguments:**
-  * `{Ref<Any> | Any} prop` - the property to base the required on.
+  * `{Ref<Any> | Any | Function} prop` - the property, to base the `required` validator on.
 
 * **Usage:**
 
-  Requires non-empty data only if provided property or predicate is true.
+  Requires non-empty data, only if provided data property, ref, or a function resolve to `true`.
+
+```js
+export default {
+  validations () {
+    return {
+      name: {
+        requiredIfFoo: requiredIf(this.foo),
+        requiredIfRef: requiredIf(someRef),
+        requiredIfFuction: requiredIf(someFunction),
+        requiredIfAsyncFuction: requiredIf(asyncFunction),
+      }
+    }
+  }
+}
+```
 
 ## requiredUnless
 
 * **Arguments:**
-  * `{Ref<Any> | Any} prop` - the property to base the required on.
+  * `{Ref<Any> | Any | Function} prop` - the property, to base the `required` validator on.
 
 * **Usage:**
 
-  Requires non-empty data only if provided property or predicate is false.
+  Requires non-empty data, only if provided data property, ref, or a function resolve to `false`.
+
+```js
+export default {
+  validations () {
+    return {
+      name: {
+        requiredIfFoo: requiredUnless(this.foo),
+        requiredIfRef: requiredUnless(someRef),
+        requiredIfFuction: requiredUnless(someFunction),
+        requiredIfAsyncFuction: requiredUnless(asyncFunction),
+      }
+    }
+  }
+}
+```
 
 ## minLength
 
 * **Arguments:**
   * `{Ref<Number> | Number} min`
 
+* **Works With:**
+  * `{Array | Object | String}`
+
 * **Usage:**
 
-  Requires the input value to have a minimum specified length, inclusive. Works with arrays.
+  Requires the input value to have a minimum specified length, inclusive. Works with arrays, objects and strings.
+
+```js
+export default {
+  validations () {
+    return {
+      name: {
+        minLength: minLength(this.foo),
+        minLengthRef: minLength(someRef),
+        minLengthValue: minLength(10),
+      }
+    }
+  }
+}
+```
 
 ## maxLength
 
 * **Arguments:**
   * `{Ref<Number> | Number} max`
 
+* **Works With:**
+  * `{Array | Object | String}`
+
 * **Usage:**
 
-  Requires the input to have a maximum specified length, inclusive. Works with arrays.
+  Requires the input value to have a maximum specified length, inclusive. Works with arrays, objects and strings.
+
+```js
+export default {
+  validations () {
+    return {
+      name: {
+        maxLength: maxLength(this.foo),
+        maxLengthRef: maxLength(someRef),
+        maxLengthValue: maxLength(10),
+      }
+    }
+  }
+}
+```
 
 ## minValue
 
 * **Arguments:**
   * `{Ref<Number> | Number} min`
 
+* **Works With:**
+  * `{Number | Date}`
+
 * **Usage:**
 
   Requires entry to have a specified minimum numeric value or Date.
+
+```js
+export default {
+  validations () {
+    return {
+      name: {
+        minValue: minValue(this.foo),
+        minValueRef: minValue(someRef),
+        minValueValue: minValue(10),
+      }
+    }
+  }
+}
+```
 
 ## maxValue
 
 * **Arguments:**
   * `{Ref<Number> | Number} max`
 
+* **Works With:**
+  * `{Number | Date}`
+
 * **Usage:**
 
   Requires entry to have a specified maximum numeric value or Date.
+
+```js
+export default {
+  validations () {
+    return {
+      name: {
+        maxValue: maxValue(this.foo),
+        maxValueRef: maxValue(someRef),
+        maxValueValue: maxValue(10),
+      }
+    }
+  }
+}
+```
 
 ## between
 
@@ -87,9 +191,26 @@ import { required, maxLength } from '@vuelidate/validators/dist/raw.esm'
   * `{Ref<Number> | Number} min`
   * `{Ref<Number> | Number} max`
 
+* **Works With:**
+  * `{Number | Date}`
+
 * **Usage:**
 
-  Checks if a number or Date is in specified bounds. Min and max are both inclusive
+  Checks if a number or Date is in specified bounds. `min` and `max` are both inclusive.
+
+```js
+export default {
+  validations () {
+    return {
+      name: {
+        between: between(this.foo, this.bar),
+        betweenRef: between(someFooRef, someBarRef),
+        betweenValue: between(10, 15),
+      }
+    }
+  }
+}
+```
 
 ## alpha
 
@@ -107,7 +228,7 @@ import { required, maxLength } from '@vuelidate/validators/dist/raw.esm'
 
 * **Usage:**
 
-  Accepts only numerics.
+  Accepts only numerics. String numbers are also numeric.
 
 ## integer
 
@@ -141,18 +262,43 @@ import { required, maxLength } from '@vuelidate/validators/dist/raw.esm'
 
 * **Usage:**
 
-  Accepts valid MAC addresses like *00:ff:
-  11:22:33:44:55*. Don't forget to call it `macAddress()`, as it has optional parameter. You can specify your own separator instead of `':'`. Provide
-  empty separator `macAddress('')` to validate MAC addresses like 00ff1122334455*.
+  Accepts valid MAC addresses like **00:ff:11:22:33:44:55**. Don't forget to call it as a function `macAddress()`, as it has an optional parameter.
+  You can specify your own separator instead of `':'`. Provide empty separator `macAddress('')` to validate MAC addresses like **00ff1122334455**.
+
+```js
+export default {
+  validations () {
+    return {
+      mac: {
+        macAddress: macAddress()
+      }
+    }
+  }
+}
+```
 
 ## sameAs
 
 * **Arguments:**
-  * `{Any} equalTo`
+  * `{String | Number| Boolean | Ref} equalTo`
 
 * **Usage:**
 
-  Checks for equality with a given property.
+  Checks for equality with a given property. Accepts a ref, a direct reference to a data property, or a raw value.
+
+```js
+export default {
+  validations () {
+    return {
+      confirmPassword: {
+        sameAsPassword: sameAs(this.password),
+        sameAsRef: sameAs(ref),
+        sameAsRaw: sameAs('foo')
+      }
+    }
+  }
+}
+```
 
 ## url
 
@@ -170,16 +316,41 @@ import { required, maxLength } from '@vuelidate/validators/dist/raw.esm'
 
 * **Usage:**
 
-  Passes when at least one of provided validators passes.
+  Passes when at least one of provided validators returns `true`.
+
+```js
+export default {
+  validations () {
+    return {
+      agree: {
+        shouldBeChecked: or(validatorOne, validatorTwo, validatorThree)
+      }
+    }
+  }
+}
+```
 
 ## and
 
 * **Arguments:**
-  * `{...(NormalizedValidator|Function)} validators`
+  * `{...(NormalizedValidator | Function | function(): Promise<boolean>)} validators`
 
 * **Usage:**
 
-  Passes when all of provided validators passes.
+  Passes when all of provided validators return `true`. A validator can return a Promise.
+
+```js
+export default {
+  validations () {
+    return {
+      agree: {
+        shouldBeChecked: and(validatorOne, validatorTwo, validatorThree)
+      }
+    }
+  }
+}
+```
+
 
 ## not
 
@@ -188,15 +359,17 @@ import { required, maxLength } from '@vuelidate/validators/dist/raw.esm'
 
 * **Usage:**
 
-  Passes when provided validator would not pass, fails otherwise. Can be chained with other validators like `not(sameAs('field'))`.
+  Passes when provided validator would not pass, fails otherwise. Can be chained with other validators.
 
-## withParams
-
-* **Arguments:**
-  * `{Ref<Object> | Object} params`
-  * `{Function | ValidatorObject} validator`
-
-* **Usage:**
-
-  Not really a validator, but a validator modifier. Adds a `$params` object to the provided validator. Can be used on validation functions or even
-  entire nested field validation objects. Useful for creating your own custom validators.
+```js
+export default {
+  validations () {
+    return {
+      name: {
+        otherProperty: not(sameAs(this.email)),
+        asyncFunction: not(sameAs(asyncFunction)),
+      }
+    }
+  }
+}
+```

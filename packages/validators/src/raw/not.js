@@ -1,4 +1,4 @@
-import { req } from '../common'
+import { req } from './core'
 import { unwrapNormalizedValidator, unwrapValidatorResponse } from '../utils/common'
 
 /**
@@ -7,7 +7,7 @@ import { unwrapNormalizedValidator, unwrapValidatorResponse } from '../utils/com
  * @returns {function(*=, *=): boolean}
  */
 export default function (validator) {
-  return function (value, vm) {
-    return !req(value) || !unwrapValidatorResponse(unwrapNormalizedValidator(validator).call(this, value, vm))
+  return async function (value, vm) {
+    return !req(value) || !unwrapValidatorResponse(await unwrapNormalizedValidator(validator).call(this, value, vm))
   }
 }
