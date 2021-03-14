@@ -1,0 +1,33 @@
+{
+  "name": "@vuelidate/components",
+  "version": "2.0.0-alpha.12",
+  "description": "Components for Vuelidate",
+  "main": "dist/index.js",
+  "types": "index.d.ts",
+  "module": "dist/index.esm.js",
+  "repository": "https://github.com/vuelidate/vuelidate",
+  "license": "MIT",
+  "scripts": {
+    "build": "bili src src/raw --format esm --format cjs",
+    "dev": "yarn build --watch",
+    "test:unit": "jest",
+    "lint": "eslint src"
+  },
+  "dependencies": {
+    "vue-demi": "^0.7.3"
+  },
+  "devDependencies": {
+    "bili": "^4.8.1",
+    "flush-promises": "^1.0.2"
+  },
+  "sideEffects": [
+    "./src/utils/common.js"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    "dist",
+    "index.d.ts"
+  ]
+}
