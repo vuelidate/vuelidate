@@ -273,7 +273,7 @@ function createValidationResults (rules, model, key, resultsCache, path, config,
       result.$dirty,
       config,
       instance,
-      parentState
+      siblingState
     )
   })
 
