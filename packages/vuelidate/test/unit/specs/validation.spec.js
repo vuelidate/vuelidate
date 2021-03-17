@@ -908,30 +908,51 @@ describe('useVuelidate', () => {
         await nextTick()
         return this.state.number === value && vm.state.number === value
       })
+      const nestedValidator = jest.fn().mockReturnValue(true)
 
       const number = ref(2)
+      const nestedNumber = ref(2)
       const validation = {
-        number: { validator }
+        number: {
+          validator
+        },
+        nested: {
+          nestedNumber: {
+            nestedValidator
+          }
+        }
       }
-      const wrapper = await createSimpleWrapper(validation, { number })
+      const state = {
+        number,
+        nested: {
+          nestedNumber
+        }
+      }
+      const wrapper = await createSimpleWrapper(validation, state)
 
       expect(wrapper.vm.v).toHaveProperty('number', expect.any(Object))
       // assert that `this` is the same as the second parameter
-      expect(validator.mock.instances[0]).toEqual(validator.mock.calls[0][1])
+      expect(validator.mock.calls[0][1]).toEqual(state)
+      expect(nestedValidator.mock.calls[0][1]).toEqual(state.nested)
+      expect(validator.mock.instances[0]).toEqual(validator.mock.calls[0][2])
       // assert that the validator is called with the value and an object that is the VM
       expect(validator.mock.calls[0][0]).toBe(2)
-      expect(validator.mock.calls[0][1]).toHaveProperty('state')
-      expect(validator.mock.calls[0][1].state).toHaveProperty('number', number)
+      expect(validator.mock.calls[0][1]).toHaveProperty('number', number)
+      expect(validator.mock.calls[0][2]).toHaveProperty('state')
+      expect(validator.mock.calls[0][2].state).toHaveProperty('number', number)
       // assert the validator returned `true`
       expect(validator.mock.results[0].value).toEqual(Promise.resolve(true))
       number.value = 5
       await wrapper.vm.$nextTick()
       // make sure the validator is called with the updated value and VM
       expect(validator.mock.calls[1][0]).toBe(5)
-      expect(validator.mock.calls[1][1]).toHaveProperty('state')
-      expect(validator.mock.calls[1][1].state).toHaveProperty('number', number)
+      expect(validator.mock.calls[1][1]).toHaveProperty('number', number)
       // make sure `this` and second parameter are still the same, on each call
-      expect(validator.mock.instances[1]).toEqual(validator.mock.calls[1][1])
+      expect(validator.mock.instances[1]).toEqual(validator.mock.calls[1][2])
+      expect(nestedValidator).toHaveBeenCalledTimes(1)
+      nestedNumber.value = 10
+      await wrapper.vm.$nextTick()
+      expect(nestedValidator.mock.calls[1][1]).toEqual(state.nested)
     })
 
     it('does not trigger validators, if currentInstance changes', async () => {
