@@ -44,7 +44,7 @@ export function isPromise (object) {
  * @return {boolean}
  */
 export function unwrapValidatorResponse (result) {
-  if (typeof result === 'object') return result.$invalid
+  if (typeof result === 'object') return result.$valid
   return result
 }
 

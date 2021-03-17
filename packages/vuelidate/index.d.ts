@@ -36,7 +36,7 @@ type Component = ReturnType<typeof defineComponent>;
  */
 
 export interface ValidatorResponse {
-  $invalid: boolean
+  $valid: boolean
   [key: string]: any
 }
 
