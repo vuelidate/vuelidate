@@ -72,11 +72,11 @@ function sortValidations (validationsRaw = {}) {
  * @param {Validator} rule
  * @param {Ref} value
  * @param {VueInstance} instance
- * @param {Object} parentState
+ * @param {Object} siblingState
  * @return {Promise<ValidatorResponse> | ValidatorResponse}
  */
-function callRule (rule, value, instance, parentState) {
-  return rule.call(instance, unwrap(value), unwrap(parentState), instance)
+function callRule (rule, value, instance, siblingState) {
+  return rule.call(instance, unwrap(value), unwrap(siblingState), instance)
 }
 
 /**
@@ -100,10 +100,10 @@ function normalizeValidatorResponse (result) {
  * @param {Object} config
  * @param {Ref<*>} $response
  * @param {VueInstance} instance
- * @param {Object} parentState
+ * @param {Object} siblingState
  * @return {Ref<Boolean>}
  */
-function createAsyncResult (rule, model, $pending, $dirty, { $lazy }, $response, instance, parentState) {
+function createAsyncResult (rule, model, $pending, $dirty, { $lazy }, $response, instance, siblingState) {
   const $invalid = ref(!!$dirty.value)
   const $pendingCounter = ref(0)
 
@@ -116,7 +116,7 @@ function createAsyncResult (rule, model, $pending, $dirty, { $lazy }, $response,
       let ruleResult
       // make sure we dont break if a validator throws
       try {
-        ruleResult = callRule(rule, model, instance, parentState)
+        ruleResult = callRule(rule, model, instance, siblingState)
       } catch (err) {
         // convert to a promise, so we can handle it async
         ruleResult = Promise.reject(err)
@@ -153,10 +153,10 @@ function createAsyncResult (rule, model, $pending, $dirty, { $lazy }, $response,
  * @param {Ref<boolean>} $dirty
  * @param {Object} config
  * @param {VueInstance} instance
- * @param {Object} parentState
+ * @param {Object} siblingState
  * @return {{$params: *, $message: Ref<String>, $pending: Ref<Boolean>, $invalid: Ref<Boolean>, $response: Ref<*>}}
  */
-function createValidatorResult (rule, model, $dirty, config, instance, parentState) {
+function createValidatorResult (rule, model, $dirty, config, instance, siblingState) {
   const $pending = ref(false)
   const $params = rule.$params || {}
   const $response = ref(null)
@@ -168,7 +168,7 @@ function createValidatorResult (rule, model, $dirty, config, instance, parentSta
     config,
     $response,
     instance,
-    parentState
+    siblingState
   )
 
   const message = rule.$message
@@ -228,10 +228,10 @@ function createValidatorResult (rule, model, $dirty, config, instance, parentSta
  * @param {String} [path] - the current property path
  * @param {Object} [config] - the config object
  * @param {VueInstance} instance
- * @param {Object} parentState
+ * @param {Object} siblingState
  * @return {ValidationResult | {}}
  */
-function createValidationResults (rules, model, key, resultsCache, path, config, instance, parentState) {
+function createValidationResults (rules, model, key, resultsCache, path, config, instance, siblingState) {
   // collect the property keys
   const ruleKeys = Object.keys(rules)
 
