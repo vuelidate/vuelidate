@@ -94,11 +94,13 @@ export function useVuelidate (validations, state, globalConfig = {}) {
   }
   let { $registerAs, $scope = CollectFlag.COLLECT_ALL, $stopPropagation } = globalConfig
 
-  const instance = getCurrentInstance()
+  let instance = getCurrentInstance()
 
-  const componentOptions = isVue3 ? instance.type : instance.proxy.$options
+  const componentOptions = instance
+    ? (isVue3 ? instance.type : instance.proxy.$options)
+    : {}
   // if there is no registration name, add one.
-  if (!$registerAs) {
+  if (!$registerAs && instance) {
     // NOTE:
     // ._uid // Vue 2.x Composition-API plugin
     // .uid // Vue 3.0
@@ -108,7 +110,13 @@ export function useVuelidate (validations, state, globalConfig = {}) {
   const validationResults = ref({})
   const resultsCache = new ResultsStorage()
 
-  const { childResults, sendValidationResultsToParent, removeValidationResultsFromParent } = nestedValidations({ $scope, $stopPropagation })
+  const {
+    childResults,
+    sendValidationResultsToParent,
+    removeValidationResultsFromParent
+  } = instance
+    ? nestedValidations({ $scope })
+    : { childResults: ref('') }
 
   // Options API
   if (!validations && componentOptions.validations) {
@@ -159,17 +167,19 @@ export function useVuelidate (validations, state, globalConfig = {}) {
         childResults,
         resultsCache,
         globalConfig,
-        instance: instance.proxy
+        instance: instance ? instance.proxy : {}
       })
     }, {
       immediate: true
     })
   }
 
-  // send all the data to the parent when the function is invoked inside setup.
-  sendValidationResultsToParent(validationResults, { $registerAs, $scope, $stopPropagation })
-  // before this component is destroyed, remove all the data from the parent.
-  onBeforeUnmount(() => removeValidationResultsFromParent($registerAs))
+  if (instance) {
+    // send all the data to the parent when the function is invoked inside setup.
+    sendValidationResultsToParent(validationResults, { $registerAs, $scope, $stopPropagation })
+    // before this component is destroyed, remove all the data from the parent.
+    onBeforeUnmount(() => removeValidationResultsFromParent($registerAs))
+  }
 
   // TODO: Change into reactive + watch
   return computed(() => {
