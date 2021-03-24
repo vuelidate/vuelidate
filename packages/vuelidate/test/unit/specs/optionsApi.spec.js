@@ -284,6 +284,40 @@ describe('OptionsAPI validations', () => {
     })
   })
 
+  it('saves external results', async () => {
+    const validation = {
+      number: { isEven }
+    }
+    const { vm } = await createOldApiSimpleWrapper(validation, { number: 1, vuelidateExternalResults: { number: '' } })
+
+    vm.v.$touch()
+    expect(vm.vuelidateExternalResults).toEqual({ number: '' })
+
+    expect(vm.v).toHaveProperty('number', expect.any(Object))
+    expect(vm.v.number.$externalResults).toEqual([])
+    // set an external validation result
+    vm.vuelidateExternalResults.number = ['foo']
+    // assert
+    const externalErrorObject = {
+      '$message': 'foo',
+      '$property': 'number',
+      '$propertyPath': 'number',
+      '$validator': '$externalResults'
+    }
+    expect(vm.v.number.$externalResults).toEqual([externalErrorObject])
+    expect(vm.v.number.$error).toBe(true)
+    expect(vm.v.number.$silentErrors).toHaveLength(2)
+    expect(vm.v.number.$silentErrors).toContainEqual(externalErrorObject)
+    vm.v.number.$model = 2
+    await nextTick()
+    expect(vm.v.number.$error).toBe(true)
+    expect(vm.v.number.$silentErrors).toHaveLength(1)
+    expect(vm.v.number.$silentErrors).toEqual([externalErrorObject])
+    vm.vuelidateExternalResults.number = []
+    expect(vm.v.number.$error).toBe(false)
+    expect(vm.v.number.$silentErrors).toEqual([])
+  })
+
   describe('deep changes in state', () => {
     it('trigger $dirty and $model reactions', async () => {
       const { state, validations } = nestedRefObjectValidation()

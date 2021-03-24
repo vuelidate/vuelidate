@@ -1,4 +1,4 @@
-import { computed, ref, h, nextTick } from 'vue-demi'
+import { computed, ref, h, nextTick, reactive } from 'vue-demi'
 import { mount, flushPromises } from '../test-utils'
 import { isEven } from '../validators.fixture'
 
@@ -21,6 +21,7 @@ import {
 } from '../utils'
 import { withMessage, withParams } from '@vuelidate/validators/src/common'
 import useVuelidate, { CollectFlag } from '../../../src'
+import { toRef } from '@vue/composition-api'
 
 describe('useVuelidate', () => {
   it('should have a `v` key defined if used', async () => {
@@ -1115,6 +1116,102 @@ describe('useVuelidate', () => {
       await nextTick()
 
       expect(vm.v.level1.level2.child).toHaveProperty('$invalid', true)
+    })
+  })
+
+  describe('$externalResults', () => {
+    it('accepts a ref object, with a string as an error', async () => {
+      const $externalResults = ref({})
+      const { state, validations } = simpleValidation()
+      const { vm } = await createSimpleWrapper(validations, state, { $externalResults })
+      shouldBeInvalidValidationObject({ v: vm.v.number, property: 'number', validatorName: 'isEven' })
+      vm.v.$touch()
+      $externalResults.value = {
+        number: 'External Error'
+      }
+      let externalErrorObject = {
+        '$message': 'External Error',
+        '$property': 'number',
+        '$propertyPath': 'number',
+        '$validator': '$externalResults'
+      }
+      expect(vm.v.number.$error).toBe(true)
+      expect(vm.v.number.$externalResults).toEqual([externalErrorObject])
+      expect(vm.v.number.$silentErrors).toHaveLength(2)
+      expect(vm.v.number.$silentErrors).toContainEqual(externalErrorObject)
+      // remove the validation error
+      state.number.value = 2
+      await nextTick()
+      expect(vm.v.number.$error).toBe(true)
+      expect(vm.v.number.$silentErrors).toHaveLength(1)
+      expect(vm.v.number.$silentErrors).toEqual([externalErrorObject])
+      $externalResults.value = {}
+      expect(vm.v.number.$error).toBe(false)
+    })
+
+    it('accepts a ref object, with an array as an error', async () => {
+      const $externalResults = ref({})
+      const { state, validations } = simpleValidation()
+      const { vm } = await createSimpleWrapper(validations, state, { $externalResults })
+      shouldBeInvalidValidationObject({ v: vm.v.number, property: 'number', validatorName: 'isEven' })
+      vm.v.$touch()
+      $externalResults.value = {
+        number: ['External Error 1', 'External Error 2']
+      }
+      let externalErrorObjectOne = {
+        '$message': 'External Error 1',
+        '$property': 'number',
+        '$propertyPath': 'number',
+        '$validator': '$externalResults'
+      }
+      let externalErrorObjectTwo = {
+        '$message': 'External Error 2',
+        '$property': 'number',
+        '$propertyPath': 'number',
+        '$validator': '$externalResults'
+      }
+      expect(vm.v.number.$error).toBe(true)
+      expect(vm.v.number.$externalResults).toEqual([externalErrorObjectOne, externalErrorObjectTwo])
+      expect(vm.v.number.$silentErrors).toHaveLength(3)
+      expect(vm.v.number.$silentErrors).toContainEqual(externalErrorObjectOne)
+      expect(vm.v.number.$silentErrors).toContainEqual(externalErrorObjectTwo)
+      // remove the validation error
+      state.number.value = 2
+      await nextTick()
+      expect(vm.v.number.$error).toBe(true)
+      expect(vm.v.number.$silentErrors).toHaveLength(2)
+      expect(vm.v.number.$silentErrors).toEqual([externalErrorObjectOne, externalErrorObjectTwo])
+      $externalResults.value = {}
+      expect(vm.v.number.$error).toBe(false)
+    })
+
+    it('accepts a reactive object', async () => {
+      const $externalResults = reactive({ number: '' })
+      const { state, validations } = simpleValidation()
+      const { vm } = await createSimpleWrapper(validations, state, { $externalResults })
+      shouldBeInvalidValidationObject({ v: vm.v.number, property: 'number', validatorName: 'isEven' })
+      vm.v.$touch()
+      $externalResults.number = 'External Error'
+
+      let externalErrorObject = {
+        '$message': 'External Error',
+        '$property': 'number',
+        '$propertyPath': 'number',
+        '$validator': '$externalResults'
+      }
+      expect(vm.v.number.$error).toBe(true)
+      expect(vm.v.number.$externalResults).toEqual([externalErrorObject])
+      expect(vm.v.number.$silentErrors).toHaveLength(2)
+      expect(vm.v.number.$silentErrors).toContainEqual(externalErrorObject)
+      // remove the validation error
+      state.number.value = 2
+      await nextTick()
+      expect(vm.v.number.$error).toBe(true)
+      expect(vm.v.number.$silentErrors).toHaveLength(1)
+      expect(vm.v.number.$silentErrors).toEqual([externalErrorObject])
+      $externalResults.number = undefined
+      expect(vm.v.number.$error).toBe(false)
+      expect(vm.v.number.$silentErrors).toEqual([])
     })
   })
 

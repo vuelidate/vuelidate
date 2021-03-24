@@ -74,6 +74,7 @@ function nestedValidations ({ $scope }) {
  * @property {String} [$registerAs] - Config Object
  * @property {String | Number | Symbol} [$scope] - A scope to limit child component registration
  * @property {Boolean} [$stopPropagation] - Tells a Vue component to stop sending it's results up to the parent
+ * @property {Ref<Object>} [$externalResults] - External error messages, like from server validation.
  */
 
 /**
@@ -92,7 +93,7 @@ export function useVuelidate (validations, state, globalConfig = {}) {
     validations = undefined
     state = undefined
   }
-  let { $registerAs, $scope = CollectFlag.COLLECT_ALL, $stopPropagation } = globalConfig
+  let { $registerAs, $scope = CollectFlag.COLLECT_ALL, $stopPropagation, $externalResults } = globalConfig
 
   const instance = getCurrentInstance()
 
@@ -140,7 +141,8 @@ export function useVuelidate (validations, state, globalConfig = {}) {
             childResults,
             resultsCache,
             globalConfig,
-            instance: instance.proxy
+            instance: instance.proxy,
+            externalResults: instance.proxy.vuelidateExternalResults
           })
         }, { immediate: true })
     })
@@ -159,7 +161,8 @@ export function useVuelidate (validations, state, globalConfig = {}) {
         childResults,
         resultsCache,
         globalConfig,
-        instance: instance.proxy
+        instance: instance.proxy,
+        externalResults: $externalResults
       })
     }, {
       immediate: true

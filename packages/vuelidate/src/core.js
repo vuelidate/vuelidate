@@ -227,7 +227,7 @@ function createValidatorResult (rule, model, $dirty, config, instance) {
  * @param {VueInstance} instance
  * @return {ValidationResult | {}}
  */
-function createValidationResults (rules, model, key, resultsCache, path, config, instance) {
+function createValidationResults (rules, model, key, resultsCache, path, config, instance, externalResults) {
   // collect the property keys
   const ruleKeys = Object.keys(rules)
 
@@ -272,7 +272,18 @@ function createValidationResults (rules, model, key, resultsCache, path, config,
     )
   })
 
+  result.$externalResults = computed(() => {
+    if (!externalResults.value) return []
+    return [].concat(externalResults.value).map((stringError) => ({
+      $propertyPath: path,
+      $property: key,
+      $validator: '$externalResults',
+      $message: stringError
+    }))
+  })
+
   result.$invalid = computed(() =>
+    !!result.$externalResults.value.length ||
     ruleKeys.some(ruleKey => unwrap(result[ruleKey].$invalid))
   )
 
@@ -298,6 +309,7 @@ function createValidationResults (rules, model, key, resultsCache, path, config,
         $pending: res.$pending
       })
     })
+    .concat(result.$externalResults.value)
   )
 
   result.$errors = computed(() => result.$dirty.value
@@ -323,7 +335,7 @@ function createValidationResults (rules, model, key, resultsCache, path, config,
  * @param {Object} config - The config object
  * @return {{}}
  */
-function collectNestedValidationResults (validations, nestedState, path, resultsCache, config, instance) {
+function collectNestedValidationResults (validations, nestedState, path, resultsCache, config, instance, nestedExternalResults) {
   const nestedValidationKeys = Object.keys(validations)
 
   // if we have no state, return empty object
@@ -338,7 +350,8 @@ function collectNestedValidationResults (validations, nestedState, path, results
       parentKey: path,
       resultsCache,
       globalConfig: config,
-      instance
+      instance,
+      externalResults: nestedExternalResults
     })
     return results
   }, {})
@@ -500,7 +513,8 @@ export function setValidations ({
   childResults,
   resultsCache,
   globalConfig = {},
-  instance
+  instance,
+  externalResults
 }) {
   const path = parentKey ? `${parentKey}.${key}` : key
 
@@ -520,11 +534,17 @@ export function setValidations ({
     })
     : state
 
+  const nestedExternalResults = computed(() => {
+    const results = unwrap(externalResults)
+    if (!key) return results
+    return results ? unwrap(results[key]) : undefined
+  })
+
   // Use rules for the current state fragment and validate it
-  const results = createValidationResults(rules, nestedState, key, resultsCache, path, mergedConfig, instance)
+  const results = createValidationResults(rules, nestedState, key, resultsCache, path, mergedConfig, instance, nestedExternalResults)
   // Use nested keys to repeat the process
   // *WARN*: This is recursive
-  const nestedResults = collectNestedValidationResults(nestedValidators, nestedState, path, resultsCache, mergedConfig, instance)
+  const nestedResults = collectNestedValidationResults(nestedValidators, nestedState, path, resultsCache, mergedConfig, instance, nestedExternalResults)
 
   // Collect and merge this level validation results
   // with all nested validation results
