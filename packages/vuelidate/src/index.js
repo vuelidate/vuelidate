@@ -116,7 +116,7 @@ export function useVuelidate (validations, state, globalConfig = {}) {
     removeValidationResultsFromParent
   } = instance
     ? nestedValidations({ $scope })
-    : { childResults: ref('') }
+    : { childResults: ref({}) }
 
   // Options API
   if (!validations && componentOptions.validations) {
