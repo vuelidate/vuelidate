@@ -17,7 +17,8 @@ import {
   shouldBePristineValidationObj,
   shouldBeInvalidValidationObject,
   shouldBeErroredValidationObject,
-  createSimpleComponent
+  createSimpleComponent,
+  shouldBeValidValidationObj
 } from '../utils'
 import { withMessage, withParams } from '@vuelidate/validators/src/common'
 import useVuelidate, { CollectFlag } from '../../../src'
@@ -1115,6 +1116,26 @@ describe('useVuelidate', () => {
       await nextTick()
 
       expect(vm.v.level1.level2.child).toHaveProperty('$invalid', true)
+    })
+  })
+
+  describe('Usage outside of Vue components', () => {
+    it('does not throw', () => {
+      const { validations, state } = simpleValidation()
+      expect(() => useVuelidate(validations, state)).not.toThrow()
+    })
+
+    it('returns a reactive Vuelidate state', async () => {
+      const { validations, state } = simpleValidation()
+      const v = useVuelidate(validations, state)
+      expect(v).toHaveProperty('value')
+      await nextTick()
+      shouldBeInvalidValidationObject({ v: v.value, property: 'number', validatorName: 'isEven' })
+      v.value.$touch()
+      shouldBeErroredValidationObject({ v: v.value, property: 'number', validatorName: 'isEven' })
+      v.value.number.$model = 6
+      await nextTick()
+      shouldBeValidValidationObj(v.value.number)
     })
   })
 
