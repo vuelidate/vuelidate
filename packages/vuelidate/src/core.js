@@ -138,7 +138,7 @@ function createAsyncResult (rule, model, $pending, $dirty, { $lazy }, $response,
           $response.value = error
           $invalid.value = true
         })
-    }, { immediate: true }
+    }, { immediate: true, deep: true }
   )
 
   return { $invalid, $unwatch }
