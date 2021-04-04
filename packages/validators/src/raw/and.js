@@ -2,14 +2,14 @@ import { unwrapNormalizedValidator, unwrapValidatorResponse } from '../utils/com
 
 /**
  * Returns true when all validators are truthy
- * @param {...(NormalizedValidator|Function)} validators
+ * @param {...(NormalizedValidator | Function | function(): Promise<boolean>)} validators
  * @return {function(...[*]=): boolean}
  */
-export default function (...validators) {
-  return function (...args) {
+export default function and (...validators) {
+  return function andInternal (...args) {
     return (
       validators.length > 0 &&
-      validators.reduce((valid, fn) => valid && unwrapValidatorResponse(unwrapNormalizedValidator(fn).apply(this, args)), true)
+      validators.reduce(async (valid, fn) => await valid && unwrapValidatorResponse(await unwrapNormalizedValidator(fn).apply(this, args)), Promise.resolve(true))
     )
   }
 }

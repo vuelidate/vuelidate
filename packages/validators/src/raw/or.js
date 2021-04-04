@@ -5,11 +5,11 @@ import { unwrapNormalizedValidator, unwrapValidatorResponse } from '../utils/com
  * @param {...(NormalizedValidator|Function)} validators
  * @return {function(...[*]=): boolean}
  */
-export default function (...validators) {
-  return function (...args) {
+export default function or (...validators) {
+  return function orInternal (...args) {
     return (
       validators.length > 0 &&
-      validators.reduce((valid, fn) => valid || unwrapValidatorResponse(unwrapNormalizedValidator(fn).apply(this, args)), false)
+      validators.reduce(async (valid, fn) => await valid || unwrapValidatorResponse(await unwrapNormalizedValidator(fn).apply(this, args)), Promise.resolve(false))
     )
   }
 }
