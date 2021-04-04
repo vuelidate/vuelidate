@@ -6,19 +6,19 @@ const promiseF = () => Promise.resolve(false)
 
 describe('requiredIf validator', () => {
   it('should not validate empty string when functional condition is met', () => {
-    expect(requiredIf(T)('')).toBe(false)
+    expect(requiredIf(T)('')).resolves.toBe(false)
   })
 
   it('should validate empty string when functional condition not met', () => {
-    expect(requiredIf(F)('')).toBe(true)
+    expect(requiredIf(F)('')).resolves.toBe(true)
   })
 
   it('should not validate empty string when simple boolean condition is met', () => {
-    expect(requiredIf('prop')('')).toBe(false)
+    expect(requiredIf('prop')('')).resolves.toBe(false)
   })
 
   it('should validate empty string when simple boolean condition not met', () => {
-    expect(requiredIf('')('')).toBe(true)
+    expect(requiredIf('')('')).resolves.toBe(true)
   })
 
   it('should return a promise when passed a promise condition', () => {
@@ -37,8 +37,8 @@ describe('requiredIf validator', () => {
 
   it('should pass the value to the validation function', () => {
     const validator = jest.fn()
-    requiredIf(validator)('foo')
+    requiredIf(validator)('foo', 'bar')
     expect(validator).toHaveBeenCalledTimes(1)
-    expect(validator).toHaveBeenCalledWith('foo')
+    expect(validator).toHaveBeenCalledWith('foo', 'bar')
   })
 })

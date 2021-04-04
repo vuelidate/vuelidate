@@ -7,7 +7,9 @@ import {
   NormalizedValidatorResponseF,
   NormalizedValidatorResponseT,
   ValidatorResponseF,
-  ValidatorResponseT
+  ValidatorResponseT,
+  asyncF,
+  asyncT
 } from '../../../tests/fixtures'
 
 describe('or validator', () => {
@@ -16,40 +18,48 @@ describe('or validator', () => {
   })
 
   it('should not validate single false function', () => {
-    expect(or(F)()).toBe(false)
+    return expect(or(F)()).resolves.toBe(false)
   })
 
   it('should validate single true function', () => {
-    expect(or(T)()).toBe(true)
+    return expect(or(T)()).resolves.toBe(true)
   })
 
   it('should validate all true functions', () => {
-    expect(or(T, T, T)()).toBe(true)
+    return expect(or(T, T, T)()).resolves.toBe(true)
+  })
+
+  it('should validate all true functions, when mixed with async', () => {
+    return expect(or(T, asyncT, T)()).resolves.toBe(true)
   })
 
   it('should validate some true functions', () => {
-    expect(or(T, F, T)()).toBe(true)
+    return expect(or(T, F, T)()).resolves.toBe(true)
+  })
+
+  it('should validate some true functions, when mixed with async', () => {
+    return expect(or(T, asyncF, T)()).resolves.toBe(true)
   })
 
   it('should not validate all false functions', () => {
-    expect(or(F, F, F)()).toBe(false)
+    return expect(or(F, F, F)()).resolves.toBe(false)
   })
 
-  it('should pass values or model to function', () => {
+  it('should pass values or model to function', async () => {
     const spy = jest.fn()
-    or(spy)(1, 2)
+    await or(spy)(1, 2)
     expect(spy).toHaveBeenCalledWith(1, 2)
   })
 
-  it('should work with functions returning ValidatorResponse', () => {
-    expect(or(ValidatorResponseT, ValidatorResponseF, ValidatorResponseF)()).toBe(true)
-    expect(or(ValidatorResponseF, ValidatorResponseF, ValidatorResponseF)()).toBe(false)
+  it('should work with functions returning ValidatorResponse', async () => {
+    await expect(or(ValidatorResponseT, ValidatorResponseF, ValidatorResponseF)()).resolves.toBe(true)
+    await expect(or(ValidatorResponseF, ValidatorResponseF, ValidatorResponseF)()).resolves.toBe(false)
   })
 
-  it('should work with Normalized Validators', () => {
-    expect(or(NormalizedT, NormalizedT)()).toBe(true)
-    expect(or(NormalizedF, NormalizedT)()).toBe(true)
-    expect(or(NormalizedValidatorResponseT, NormalizedValidatorResponseT)()).toBe(true)
-    expect(or(NormalizedValidatorResponseF, NormalizedValidatorResponseT)()).toBe(true)
+  it('should work with Normalized Validators', async () => {
+    await expect(or(NormalizedT, NormalizedT)()).resolves.toBe(true)
+    await expect(or(NormalizedF, NormalizedT)()).resolves.toBe(true)
+    await expect(or(NormalizedValidatorResponseT, NormalizedValidatorResponseT)()).resolves.toBe(true)
+    await expect(or(NormalizedValidatorResponseF, NormalizedValidatorResponseT)()).resolves.toBe(true)
   })
 })

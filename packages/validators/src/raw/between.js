@@ -1,4 +1,4 @@
-import { req } from '../common'
+import { req } from './core'
 import { unwrap } from '../utils/common'
 
 /**

@@ -6,3 +6,5 @@ export const NormalizedT = { $validator: T }
 export const NormalizedF = { $validator: F }
 export const NormalizedValidatorResponseT = { $validator: ValidatorResponseT }
 export const NormalizedValidatorResponseF = { $validator: ValidatorResponseF }
+export const asyncT = () => Promise.resolve(true)
+export const asyncF = () => Promise.resolve(false)
