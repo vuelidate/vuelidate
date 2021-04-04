@@ -1,4 +1,4 @@
-import { computed, ref, h, nextTick, reactive } from 'vue-demi'
+import { computed, ref, h, nextTick, reactive, set } from 'vue-demi'
 import { mount, flushPromises } from '../test-utils'
 import { isEven } from '../validators.fixture'
 
@@ -1172,23 +1172,23 @@ describe('useVuelidate', () => {
       }
       const rules = {
         object: {
-          hasC: v => v.hasOwnProperty('b')
+          hasB: v => v.hasOwnProperty('b')
         }
       }
       const { vm } = await createSimpleWrapper(rules, state)
-      shouldBeInvalidValidationObject({ v: vm.v.object, validatorName: 'hasC', property: 'object' })
-      vm.v.object.$model.b = 'b'
+      shouldBeInvalidValidationObject({ v: vm.v.object, validatorName: 'hasB', property: 'object' })
+      set(state.object.value, 'b', 'b')
       await flushPromises()
       expect(state.object.value).toEqual({ a: 'a', b: 'b' })
       shouldBeValidValidationObj(vm.v.object)
       vm.v.object.$model = { c: 'c' }
       await flushPromises()
       expect(state.object.value).toEqual({ c: 'c' })
-      shouldBeErroredValidationObject({ v: vm.v.object, validatorName: 'hasC', property: 'object' })
+      shouldBeErroredValidationObject({ v: vm.v.object, validatorName: 'hasB', property: 'object' })
       vm.v.object.$model = {}
       await flushPromises()
       expect(state.object.value).toEqual({})
-      shouldBeErroredValidationObject({ v: vm.v.object, validatorName: 'hasC', property: 'object' })
+      shouldBeErroredValidationObject({ v: vm.v.object, validatorName: 'hasB', property: 'object' })
     })
 
     it('should track changes to reactive objects', async () => {
@@ -1202,7 +1202,7 @@ describe('useVuelidate', () => {
       }
       const { vm } = await createSimpleWrapper(rules, state)
       shouldBeInvalidValidationObject({ v: vm.v.object, validatorName: 'hasC', property: 'object' })
-      vm.v.object.$model.b = 'b'
+      set(vm.v.object.$model, 'b', 'b')
       await flushPromises()
       expect(state.object).toEqual({ a: 'a', b: 'b' })
       shouldBeValidValidationObj(vm.v.object)
