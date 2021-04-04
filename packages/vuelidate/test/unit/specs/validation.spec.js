@@ -1,4 +1,4 @@
-import { computed, ref, h, nextTick } from 'vue-demi'
+import { computed, ref, h, nextTick, reactive, set } from 'vue-demi'
 import { mount, flushPromises } from '../test-utils'
 import { isEven } from '../validators.fixture'
 
@@ -17,7 +17,8 @@ import {
   shouldBePristineValidationObj,
   shouldBeInvalidValidationObject,
   shouldBeErroredValidationObject,
-  createSimpleComponent
+  createSimpleComponent,
+  shouldBeValidValidationObj
 } from '../utils'
 import { withMessage, withParams } from '@vuelidate/validators/src/common'
 import useVuelidate, { CollectFlag } from '../../../src'
@@ -1136,6 +1137,166 @@ describe('useVuelidate', () => {
       await nextTick()
 
       expect(vm.v.level1.level2.child).toHaveProperty('$invalid', true)
+    })
+  })
+
+  describe('Usage outside of Vue components', () => {
+    it('does not throw', () => {
+      const { validations, state } = simpleValidation()
+      expect(() => useVuelidate(validations, state)).not.toThrow()
+    })
+
+    it('returns a reactive Vuelidate state', async () => {
+      const { validations, state } = simpleValidation()
+      const v = useVuelidate(validations, state)
+      expect(v).toHaveProperty('value')
+      await nextTick()
+      shouldBeInvalidValidationObject({ v: v.value, property: 'number', validatorName: 'isEven' })
+      v.value.$touch()
+      shouldBeErroredValidationObject({ v: v.value, property: 'number', validatorName: 'isEven' })
+      v.value.number.$model = 6
+      await nextTick()
+      shouldBeValidValidationObj(v.value.number)
+    })
+  })
+
+  describe('track collections', () => {
+    it('should track changes to ref array properties', async () => {
+      const state = {
+        array: ref([])
+      }
+      const rules = {
+        array: {
+          minLength: v => v.length > 1
+        }
+      }
+      const { vm } = await createSimpleWrapper(rules, state)
+      shouldBeInvalidValidationObject({ v: vm.v.array, validatorName: 'minLength', property: 'array' })
+      vm.v.array.$model.push('a')
+      vm.v.array.$model.push('b')
+      await flushPromises()
+      expect(state.array.value).toEqual(['a', 'b'])
+      shouldBeValidValidationObj(vm.v.array)
+      vm.v.array.$model = ['a']
+      await flushPromises()
+      expect(state.array.value).toEqual(['a'])
+      shouldBeErroredValidationObject({ v: vm.v.array, validatorName: 'minLength', property: 'array' })
+      vm.v.array.$model = []
+      await flushPromises()
+      expect(state.array.value).toEqual([])
+      shouldBeErroredValidationObject({ v: vm.v.array, validatorName: 'minLength', property: 'array' })
+    })
+
+    it('should track changes to ref objects', async () => {
+      const state = {
+        object: ref({ a: 'a' })
+      }
+      const rules = {
+        object: {
+          hasB: v => v.hasOwnProperty('b')
+        }
+      }
+      const { vm } = await createSimpleWrapper(rules, state)
+      shouldBeInvalidValidationObject({ v: vm.v.object, validatorName: 'hasB', property: 'object' })
+      set(state.object.value, 'b', 'b')
+      await flushPromises()
+      expect(state.object.value).toEqual({ a: 'a', b: 'b' })
+      shouldBeValidValidationObj(vm.v.object)
+      vm.v.object.$model = { c: 'c' }
+      await flushPromises()
+      expect(state.object.value).toEqual({ c: 'c' })
+      shouldBeErroredValidationObject({ v: vm.v.object, validatorName: 'hasB', property: 'object' })
+      vm.v.object.$model = {}
+      await flushPromises()
+      expect(state.object.value).toEqual({})
+      shouldBeErroredValidationObject({ v: vm.v.object, validatorName: 'hasB', property: 'object' })
+    })
+
+    it('should track changes to reactive objects', async () => {
+      const state = reactive({
+        object: { a: 'a' }
+      })
+      const rules = {
+        object: {
+          hasC: v => v.hasOwnProperty('b')
+        }
+      }
+      const { vm } = await createSimpleWrapper(rules, state)
+      shouldBeInvalidValidationObject({ v: vm.v.object, validatorName: 'hasC', property: 'object' })
+      set(vm.v.object.$model, 'b', 'b')
+      await flushPromises()
+      expect(state.object).toEqual({ a: 'a', b: 'b' })
+      shouldBeValidValidationObj(vm.v.object)
+      vm.v.object.$model = { c: 'c' }
+      await flushPromises()
+      expect(state.object).toEqual({ c: 'c' })
+      shouldBeErroredValidationObject({ v: vm.v.object, validatorName: 'hasC', property: 'object' })
+      vm.v.object.$model = {}
+      await flushPromises()
+      expect(state.object).toEqual({})
+      shouldBeErroredValidationObject({ v: vm.v.object, validatorName: 'hasC', property: 'object' })
+    })
+
+    it('should track changes to reactive array properties', async () => {
+      const state = reactive({
+        array: []
+      })
+      const rules = {
+        array: {
+          minLength: v => v.length > 1
+        }
+      }
+      const { vm } = await createSimpleWrapper(rules, state)
+      shouldBeInvalidValidationObject({ v: vm.v.array, validatorName: 'minLength', property: 'array' })
+      vm.v.array.$model.push('a')
+      vm.v.array.$model.push('b')
+      await flushPromises()
+      expect(state.array).toEqual(['a', 'b'])
+      shouldBeValidValidationObj(vm.v.array)
+      vm.v.array.$model = ['a']
+      await flushPromises()
+      expect(state.array).toEqual(['a'])
+      shouldBeErroredValidationObject({ v: vm.v.array, validatorName: 'minLength', property: 'array' })
+      vm.v.array.$model = []
+      await flushPromises()
+      expect(state.array).toEqual([])
+      shouldBeErroredValidationObject({ v: vm.v.array, validatorName: 'minLength', property: 'array' })
+    })
+
+    it('should not call sibling validators, more times than necessary', async () => {
+      const state = reactive({
+        parent: {
+          child1: 'foo',
+          child2: 'bar'
+        }
+      })
+      const isFoo = jest.fn(v => v === 'foo')
+      const isBar = jest.fn(v => v === 'bar')
+
+      const rules = {
+        parent: {
+          child1: { isFoo },
+          child2: { isBar }
+        }
+      }
+      const { vm } = await createSimpleWrapper(rules, state)
+      expect(isFoo).toHaveBeenCalledTimes(1)
+      expect(isBar).toHaveBeenCalledTimes(1)
+
+      state.parent.child1 = 'bar'
+
+      await flushPromises()
+      expect(isFoo).toHaveBeenCalledTimes(2)
+      expect(isBar).toHaveBeenCalledTimes(1)
+
+      state.parent.child2 = 'foo'
+
+      await flushPromises()
+      expect(isFoo).toHaveBeenCalledTimes(2)
+      expect(isBar).toHaveBeenCalledTimes(2)
+
+      shouldBeInvalidValidationObject({ v: vm.v.parent.child1, validatorName: 'isFoo', property: 'child1', propertyPath: 'parent.child1' })
+      shouldBeInvalidValidationObject({ v: vm.v.parent.child2, validatorName: 'isBar', property: 'child2', propertyPath: 'parent.child2' })
     })
   })
 

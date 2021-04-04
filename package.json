@@ -28,7 +28,6 @@
     "core-js": "^3.6.4",
     "cz-conventional-changelog": "^3.1.0",
     "eslint": "^6.7.2",
-    "flush-promises": "^1.0.2",
     "eslint-config-standard": "^12.0.0",
     "eslint-plugin-import": "^2.18.2",
     "eslint-plugin-jest": "^23.18.0",
@@ -36,14 +35,15 @@
     "eslint-plugin-promise": "^4.2.1",
     "eslint-plugin-standard": "^4.0.1",
     "eslint-plugin-vue": "^6.1.2",
+    "flush-promises": "^1.0.2",
     "husky": "^3.1.0",
     "jest": "^26.1.0",
     "jest-serializer-vue": "^2.0.2",
     "lerna": "^3.18.3",
     "standard-version": "^7.0.1",
     "vue": "^3.0.1",
-    "vue2": "npm:vue@2",
-    "vue-template-compiler": "^2.6.12"
+    "vue-template-compiler": "^2.6.12",
+    "vue2": "npm:vue@2"
   },
   "scripts": {
     "lerna:publish": "lerna publish --conventional-commits",

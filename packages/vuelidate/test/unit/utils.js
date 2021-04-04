@@ -46,7 +46,6 @@ export async function createOldApiSimpleWrapper (rules, state, config = {}) {
 
 export const shouldBePristineValidationObj = (v) => {
   expect(v).toHaveProperty('$error', false)
-  expect(v).toHaveProperty('$error', false)
   expect(v).toHaveProperty('$errors', [])
   expect(v).toHaveProperty('$silentErrors', [])
   expect(v).toHaveProperty('$invalid', false)
@@ -55,6 +54,14 @@ export const shouldBePristineValidationObj = (v) => {
   expect(v).toHaveProperty('$anyDirty', false)
   expect(v).toHaveProperty('$touch', expect.any(Function))
   expect(v).toHaveProperty('$reset', expect.any(Function))
+}
+
+export const shouldBeValidValidationObj = (v) => {
+  expect(v).toHaveProperty('$error', false)
+  expect(v).toHaveProperty('$errors', [])
+  expect(v).toHaveProperty('$silentErrors', [])
+  expect(v).toHaveProperty('$invalid', false)
+  expect(v).toHaveProperty('$pending', false)
 }
 
 export const shouldBeInvalidValidationObject = ({ v, property, propertyPath = property, validatorName }) => {

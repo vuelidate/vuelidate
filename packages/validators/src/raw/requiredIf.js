@@ -1,23 +1,17 @@
-import { req } from '../common'
-import { isPromise } from '../utils/common'
+import { req } from './core'
 
 const validate = (prop, val) => prop ? req(val) : true
 /**
  * Returns required if the passed property is truthy
- * @param {Boolean | String | function(any): (Boolean | Promise<boolean>)} prop
+ * @param {Boolean | String | function(any): (Boolean | Promise<boolean>)} propOrFunction
  * @return {function(*): (Boolean | Promise<Boolean>)}
  */
-export default function (prop) {
-  return (value) => {
-    if (typeof prop !== 'function') {
-      return validate(prop, value)
+export default function requiredIf (propOrFunction) {
+  return async function requiredIfInternal (value, parentVM) {
+    if (typeof propOrFunction !== 'function') {
+      return validate(propOrFunction, value)
     }
-    const result = prop(value)
-    if (isPromise(result)) {
-      return result.then((response) => {
-        return validate(response, value)
-      })
-    }
+    const result = await propOrFunction.call(this, value, parentVM)
     return validate(result, value)
   }
 }

@@ -139,7 +139,7 @@ function createAsyncResult (rule, model, $pending, $dirty, { $lazy }, $response,
           $response.value = error
           $invalid.value = true
         })
-    }, { immediate: true }
+    }, { immediate: true, deep: typeof model === 'object' }
   )
 
   return { $invalid, $unwatch }
