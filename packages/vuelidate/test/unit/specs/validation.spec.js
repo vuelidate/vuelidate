@@ -1306,7 +1306,7 @@ describe('useVuelidate', () => {
       expect(vm.v.number.$error).toBe(true)
       expect(vm.v.number.$silentErrors).toHaveLength(1)
       expect(vm.v.number.$silentErrors).toEqual([externalErrorObject])
-      $externalResults.value = {}
+      vm.v.$clearExternalResults()
       expect(vm.v.number.$error).toBe(false)
     })
 
@@ -1342,7 +1342,7 @@ describe('useVuelidate', () => {
       expect(vm.v.number.$error).toBe(true)
       expect(vm.v.number.$silentErrors).toHaveLength(2)
       expect(vm.v.number.$silentErrors).toEqual([externalErrorObjectOne, externalErrorObjectTwo])
-      $externalResults.value = {}
+      vm.v.$clearExternalResults()
       expect(vm.v.number.$error).toBe(false)
     })
 
@@ -1370,8 +1370,10 @@ describe('useVuelidate', () => {
       expect(vm.v.number.$error).toBe(true)
       expect(vm.v.number.$silentErrors).toHaveLength(1)
       expect(vm.v.number.$silentErrors).toEqual([externalErrorObject])
-      $externalResults.number = undefined
+      // assert it clears out results
+      vm.v.$clearExternalResults()
       expect(vm.v.number.$error).toBe(false)
+      expect(vm.v.number.$externalResults).toEqual([])
       expect(vm.v.number.$silentErrors).toEqual([])
     })
   })

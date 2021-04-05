@@ -1,5 +1,5 @@
 import { isFunction, unwrap, unwrapObj } from './utils'
-import { computed, isRef, reactive, ref, watch, nextTick } from 'vue-demi'
+import { computed, isRef, reactive, ref, watch, nextTick, del } from 'vue-demi'
 
 let ROOT_PATH = '__root'
 
@@ -614,6 +614,16 @@ export function setValidations ({
     return (childResults.value || {})[key]
   }
 
+  function $clearExternalResults () {
+    Object.keys(unwrap(externalResults)).forEach((key) => {
+      if (isRef(externalResults)) {
+        del(externalResults.value, key)
+      } else {
+        del(externalResults, key)
+      }
+    })
+  }
+
   return reactive({
     ...results,
     // NOTE: The order here is very important, since we want to override
@@ -633,7 +643,8 @@ export function setValidations ({
     // if there are no child results, we are inside a nested property
     ...(childResults && {
       $getResultsForChild,
-      $validate
+      $validate,
+      $clearExternalResults
     }),
     // add each nested property's state
     ...nestedResults

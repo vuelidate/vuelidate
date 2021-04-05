@@ -224,9 +224,10 @@ export default {
 }
 ```
 
-:::tip
-You can pass validation configs as a single parameter to `useVuelidate` - [Passing a single parameter to useVuelidate](#passing-a-single-parameter-to-usevuelidate)
-:::
+:::tip You can pass validation configs as a single parameter to `useVuelidate`
+
+- [Passing a single parameter to useVuelidate](#passing-a-single-parameter-to-usevuelidate)
+  :::
 
 ## Returning extra data from validators
 
@@ -273,6 +274,7 @@ in [Validation Configuration](./api/configuration.md).
 If you prefer the Options API, you can specify a `validationConfig` object, that Vuelidate will read configs from.
 
 ```vue
+
 <script>
 import { useVuelidate } from '@vuelidate/core'
 
@@ -324,5 +326,89 @@ import FormB from '@/componnets/FormB'
 export default {
   components: { FormA, FormB },
   setup: () => ({ v$: useVuelidate({ $stopPropagation: true }) })
+}
+```
+
+## Providing external validations, server side validation
+
+To provide validation messages from an external source, like from a server side validation response, you can use the `externalResults` feature. Each
+property in the validated state can have one or array of messages. This works with both Composition API and Options API.
+
+### External results with Composition API
+
+When using the Composition API, you can pass a `reactive` object, or a `ref` object, to the `$externalResults` global config.
+
+```js
+// inside setup
+const state = reactive({ foo: '' });
+const $externalResults = reactive({})
+// you can also use a ref
+// const $externalResults = ref({})
+const rules = { foo: { someValidation } }
+const v = useVuelidate(rules, state, { $externalResults })
+
+// validate method
+async function validate () {
+  // check if everything is valid
+  if (!await v.value.$validate()) return
+  // do server validation, and assume we have these errors
+  const errors = {
+    foo: ['Error one', 'Error Two']
+  }
+  // merge the errors into the external results object
+  Object.assign($externalResults, errors)
+}
+
+return { v, validate }
+```
+
+To clear out the external results, you should use the handy `$clearExternalResults()` method, that Vuelidate provides. It will properly handle
+both `ref` and `reactive` objects.
+
+```js
+async function validate () {
+  // clear out old external results
+  v.$clearExternalResults()
+  // check if everything is valid
+  if (!await v.value.$validate()) return
+  //
+}
+```
+
+### External results with Options API
+
+When using the Options API, you just need to assign the results to the `vuelidateExternalResults` data property.
+
+```js
+export default {
+  data () {
+    return {
+      foo: '',
+      vuelidateExternalResults: {}
+    }
+  },
+  validations () {
+    return {
+      foo: { someValidation }
+    }
+  },
+  methods: {
+    validate () {
+      // perform validations
+      const errors = { foo: ['Error one', 'Error Two'] }
+      // merge the errors into the validation results
+      Object.assign(this.vuelidateExternalResults, errors)
+    }
+  }
+}
+```
+
+To clear out the external results, you can again, use the `$clearExternalResults()` method
+
+```js
+async validate () {
+  this.$clearExternalResults()
+  // perform validations
+  const result = await this.runAsyncValidators()
 }
 ```
