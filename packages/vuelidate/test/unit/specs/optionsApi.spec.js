@@ -285,7 +285,7 @@ describe('OptionsAPI validations', () => {
   })
 
   describe('external results', () => {
-    it('saves external results', async () => {
+    it('saves external results, by changing individual properties', async () => {
       const validation = {
         number: { isEven }
       }
@@ -319,14 +319,15 @@ describe('OptionsAPI validations', () => {
       expect(vm.v.number.$silentErrors).toEqual([])
     })
 
-    it('works with replacing the entire state', async () => {
+    it('works by replacing the entire external state, with pre-definition', async () => {
       const validation = {
         number: { isEven }
       }
-      const { vm } = await createOldApiSimpleWrapper(validation, { number: 1, vuelidateExternalResults: {} })
+      const vuelidateExternalResults = { number: '' }
+      const { vm } = await createOldApiSimpleWrapper(validation, { number: 1, vuelidateExternalResults })
 
       vm.v.$touch()
-      expect(vm.vuelidateExternalResults).toEqual({})
+      expect(vm.vuelidateExternalResults).toEqual({ number: '' })
 
       expect(vm.v).toHaveProperty('number', expect.any(Object))
       expect(vm.v.number.$externalResults).toEqual([])
@@ -349,8 +350,18 @@ describe('OptionsAPI validations', () => {
       expect(vm.v.number.$silentErrors).toHaveLength(1)
       expect(vm.v.number.$silentErrors).toEqual([externalErrorObject])
       vm.v.$clearExternalResults()
+      expect(vm.vuelidateExternalResults).toEqual(vuelidateExternalResults)
+      expect(vm.v.number.$externalResults).toEqual([])
       expect(vm.v.number.$error).toBe(false)
       expect(vm.v.number.$silentErrors).toEqual([])
+      // trigger again
+      Object.assign(vm.vuelidateExternalResults, { number: ['bar'] })
+      expect(vm.v.number.$externalResults).toEqual([{
+        $message: 'bar',
+        $property: 'number',
+        $propertyPath: 'number',
+        $validator: '$externalResults'
+      }])
     })
   })
 

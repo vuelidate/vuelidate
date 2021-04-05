@@ -534,6 +534,9 @@ export function setValidations ({
     })
     : state
 
+  // cache the external results, so we can revert back to them
+  const cachedExternalResults = { ...(unwrap(externalResults) || {}) }
+
   const nestedExternalResults = computed(() => {
     const results = unwrap(externalResults)
     if (!key) return results
@@ -615,13 +618,19 @@ export function setValidations ({
   }
 
   function $clearExternalResults () {
-    Object.keys(unwrap(externalResults)).forEach((key) => {
-      if (isRef(externalResults)) {
-        del(externalResults.value, key)
+    if (isRef(externalResults)) {
+      externalResults.value = cachedExternalResults
+    } else {
+      // if the external results state was empty, we need to delete every property, one by one
+      if (Object.keys(cachedExternalResults).length === 0) {
+        Object.keys(externalResults).forEach((k) => {
+          delete externalResults[k]
+        })
       } else {
-        del(externalResults, key)
+        // state was not empty, so we just assign it back into the current state
+        Object.assign(externalResults, cachedExternalResults)
       }
-    })
+    }
   }
 
   return reactive({

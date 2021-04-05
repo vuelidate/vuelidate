@@ -1,5 +1,5 @@
 import { computed, ref, h, nextTick, reactive, set } from 'vue-demi'
-import { mount, flushPromises } from '../test-utils'
+import { mount, flushPromises, ifVue3 } from '../test-utils'
 import { isEven } from '../validators.fixture'
 
 import {
@@ -1310,7 +1310,7 @@ describe('useVuelidate', () => {
       expect(vm.v.number.$error).toBe(false)
     })
 
-    it('accepts a ref object, with an array as an error', async () => {
+    it('accepts a ref object, with an array as an error, without pre-definition', async () => {
       const $externalResults = ref({})
       const { state, validations } = simpleValidation()
       const { vm } = await createSimpleWrapper(validations, state, { $externalResults })
@@ -1346,7 +1346,7 @@ describe('useVuelidate', () => {
       expect(vm.v.number.$error).toBe(false)
     })
 
-    it('accepts a reactive object', async () => {
+    it('accepts a reactive object, with pre-definition', async () => {
       const $externalResults = reactive({ number: '' })
       const { state, validations } = simpleValidation()
       const { vm } = await createSimpleWrapper(validations, state, { $externalResults })
@@ -1374,6 +1374,37 @@ describe('useVuelidate', () => {
       vm.v.$clearExternalResults()
       expect(vm.v.number.$error).toBe(false)
       expect(vm.v.number.$externalResults).toEqual([])
+      expect(vm.v.number.$silentErrors).toEqual([])
+    })
+
+    ifVue3('accepts a reactive object, without pre-definition', async () => {
+      const $externalResults = reactive({})
+      const { state, validations } = simpleValidation()
+      const { vm } = await createSimpleWrapper(validations, state, { $externalResults })
+      shouldBeInvalidValidationObject({ v: vm.v.number, property: 'number', validatorName: 'isEven' })
+      vm.v.$touch()
+      $externalResults.number = 'External Error'
+
+      let externalErrorObject = {
+        '$message': 'External Error',
+        '$property': 'number',
+        '$propertyPath': 'number',
+        '$validator': '$externalResults'
+      }
+      expect(vm.v.number.$error).toBe(true)
+      expect(vm.v.number.$externalResults).toEqual([externalErrorObject])
+      expect(vm.v.number.$silentErrors).toHaveLength(2)
+      expect(vm.v.number.$silentErrors).toContainEqual(externalErrorObject)
+      // remove the validation error
+      state.number.value = 2
+      await nextTick()
+      expect(vm.v.number.$error).toBe(true)
+      expect(vm.v.number.$silentErrors).toHaveLength(1)
+      expect(vm.v.number.$silentErrors).toEqual([externalErrorObject])
+      // assert it clears out results
+      vm.v.$clearExternalResults()
+      expect(vm.v.number.$externalResults).toEqual([])
+      expect(vm.v.number.$error).toBe(false)
       expect(vm.v.number.$silentErrors).toEqual([])
     })
   })
