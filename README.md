@@ -211,7 +211,7 @@ You can also check for errors on each form property:
 </p>
 ```
 
-For more info, visit the [Vuelidate Docs](https://vuelidate-next.netlify.org).
+For more info, visit the [Vuelidate Docs](https://vuelidate-next.netlify.app).
 
 ## Development
 
