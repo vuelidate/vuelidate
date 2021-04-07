@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.0.0-alpha.13](https://github.com/vuelidate/vuelidate/compare/@vuelidate/validators@2.0.0-alpha.12...@vuelidate/validators@2.0.0-alpha.13) (2021-04-07)
+
+
+### Bug Fixes
+
+* **validators:** allow not, and, or to accept async validators ([#823](https://github.com/vuelidate/vuelidate/issues/823)) ([d7ae436](https://github.com/vuelidate/vuelidate/commit/d7ae4368c608bf9b431b0435fdf12f9ac5997798))
+* replace $invalid with $valid for validator response ([#822](https://github.com/vuelidate/vuelidate/issues/822)) ([d7c6c00](https://github.com/vuelidate/vuelidate/commit/d7c6c003cf891c53cb3908ad5dc04a447e8c879e))
+
+
+
+
+
 # [2.0.0-alpha.12](https://github.com/vuelidate/vuelidate/compare/@vuelidate/validators@2.0.0-alpha.11...@vuelidate/validators@2.0.0-alpha.12) (2021-02-20)
 
 **Note:** Version bump only for package @vuelidate/validators
