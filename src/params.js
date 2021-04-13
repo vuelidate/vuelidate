@@ -1,22 +1,29 @@
 const stack = []
 
+// set root for ssr
+let root = null
+try {
+  root = window
+} catch (error) {
+  root = {}
+}
+root.target = null
 // exported for tests
-window.target = null
-export let target = window.target
+export let target = root.target
 export const _setTarget = (x) => {
-  window.target = x
+  root.target = x
 }
 
 export function pushParams() {
-  if (window.target !== null) {
-    stack.push(window.target)
+  if (root.target !== null) {
+    stack.push(root.target)
   }
-  window.target = {}
+  root.target = target = {}
 }
 
 export function popParams() {
-  const lastTarget = window.target
-  const newTarget = (window.target = stack.pop() || null)
+  const lastTarget = root.target
+  const newTarget = (root.target = target = stack.pop() || null)
   if (newTarget) {
     if (!Array.isArray(newTarget.$sub)) {
       newTarget.$sub = []
@@ -28,7 +35,7 @@ export function popParams() {
 
 function addParams(params) {
   if (typeof params === 'object' && !Array.isArray(params)) {
-    window.target = { ...window.target, ...params }
+    root.target = target = { ...root.target, ...params }
   } else {
     throw new Error('params must be an object')
   }
