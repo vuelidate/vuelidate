@@ -1,21 +1,22 @@
 const stack = []
 
 // exported for tests
-export let target = null
+window.target = null
+export let target = window.target
 export const _setTarget = (x) => {
-  target = x
+  window.target = x
 }
 
 export function pushParams() {
-  if (target !== null) {
-    stack.push(target)
+  if (window.target !== null) {
+    stack.push(window.target)
   }
-  target = {}
+  window.target = {}
 }
 
 export function popParams() {
-  const lastTarget = target
-  const newTarget = (target = stack.pop() || null)
+  const lastTarget = window.target
+  const newTarget = (window.target = stack.pop() || null)
   if (newTarget) {
     if (!Array.isArray(newTarget.$sub)) {
       newTarget.$sub = []
@@ -27,7 +28,7 @@ export function popParams() {
 
 function addParams(params) {
   if (typeof params === 'object' && !Array.isArray(params)) {
-    target = { ...target, ...params }
+    window.target = { ...window.target, ...params }
   } else {
     throw new Error('params must be an object')
   }
