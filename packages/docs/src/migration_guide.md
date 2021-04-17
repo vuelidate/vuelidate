@@ -92,7 +92,7 @@ Here’s the wrapper component.
     />
     <!-- This list will include all errors,
          both from this component and errors from every <PersonInput> -->
-    <div v-for="(error, index) of v$.$errors" :key="index">
+    <div v-for="error of v$.$errors" :key="error.$uid">
       {{ error.$message }}
     </div>
   </div>

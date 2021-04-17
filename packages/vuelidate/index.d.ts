@@ -87,7 +87,8 @@ export interface ErrorObject {
   readonly $message: string | Ref<string>
   readonly $params: object
   readonly $pending: boolean
-  readonly $response: any
+  readonly $response: any,
+  readonly $uid: string,
 }
 
 type BaseValidation <
@@ -102,6 +103,7 @@ type BaseValidation <
   readonly $dirty: boolean
   readonly $error: boolean
   readonly $errors: ErrorObject[]
+  readonly $silentErrors: ErrorObject[]
   readonly $invalid: boolean
   readonly $anyDirty: boolean
   readonly $pending: boolean

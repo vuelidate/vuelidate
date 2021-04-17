@@ -145,7 +145,7 @@ Now that we understand the basic content of the error objects, we can build our 
 ```html
 <div :class="{ error: v$.name.$errors.length }">
   <input v-model="name">
-  <div class="input-errors" v-for="(error, index) of v$.name.$errors">
+  <div class="input-errors" v-for="error of v$.name.$errors" :key="error.$uid">
     <div class="error-msg">{{ error.$message }}</div>
   </div>
 </div>

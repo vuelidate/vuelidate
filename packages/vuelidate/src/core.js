@@ -200,6 +200,7 @@ function createValidatorResult (rule, model, $dirty, config, instance) {
  * @property {String} $property - State key
  * @property {String} $propertyPath - Dot notation path to state
  * @property {String} $validator - Validator name
+ * @property {String} $uid - Unique identifier
  */
 
 /**
@@ -292,6 +293,7 @@ function createValidationResults (rules, model, key, resultsCache, path, config,
         $propertyPath: path,
         $property: key,
         $validator: ruleKey,
+        $uid: `${path}-${ruleKey}`,
         $message: res.$message,
         $params: res.$params,
         $response: res.$response,
