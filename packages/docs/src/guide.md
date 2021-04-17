@@ -176,7 +176,8 @@ triggers `$touch()` for that property.
 
 ### Setting dirty state with `$autoDirty`
 
-It is quite common to forget to use `$model` or `$touch`. If you want to ensure dirty state is always tracked, you can use the `$autoDirty` config param, when defining your validation rules.
+It is quite common to forget to use `$model` or `$touch`. If you want to ensure dirty state is always tracked, you can use the `$autoDirty` config
+param, when defining your validation rules.
 
 ```js
 import useVuelidate from '@vuelidate/core'
@@ -195,7 +196,8 @@ export default {
 }
 ```
 
-This will create an internal watcher, that will update `$dirty`, the moment that field property is changed. It will ensure the validator tracks it's bound data, and sets the dirty state accordingly.
+This will create an internal watcher, that will update `$dirty`, the moment that field property is changed. It will ensure the validator tracks it's
+bound data, and sets the dirty state accordingly.
 
 You can then change your field's `v-model` expression to just the data property:
 
@@ -203,8 +205,8 @@ You can then change your field's `v-model` expression to just the data property:
 <input v-model="name">
 ```
 
-:::tip
-You can pass `$autoDirty` to all validators, by defining it in the global config - [Providing global config to your Vuelidate instance](./advanced_usage.md#providing-global-config-to-your-vuelidate-instance)
+:::tip You can pass `$autoDirty` to all validators, by defining it in the global config
+- [Providing global config to your Vuelidate instance](./advanced_usage.md#providing-global-config-to-your-vuelidate-instance)
 :::
 
 ### Lazy validations
@@ -231,8 +233,8 @@ export default {
 }
 ```
 
-:::tip
-You can pass `$lazy` to all validators, by defining it in the global config - [Providing global config to your Vuelidate instance](./advanced_usage.md#providing-global-config-to-your-vuelidate-instance)
+:::tip You can pass `$lazy` to all validators, by defining it in the global config
+- [Providing global config to your Vuelidate instance](./advanced_usage.md#providing-global-config-to-your-vuelidate-instance)
 :::
 
 ### Resetting dirty state
@@ -287,8 +289,7 @@ flexibility when trying to display error state.
 
 ## Displaying error messages
 
-::: tip NEW IN v2.0
-The built-in validators now all include error messages.
+::: tip NEW IN v2.0 The built-in validators now all include error messages.
 :::
 
 The validation state holds useful data, like the invalid state of each property validator, along with extra properties, like an error message or extra
@@ -298,11 +299,12 @@ Error messages come out of the box with the bundled validators in `@vuelidate/va
 the [Custom Validators page](./custom_validators.md)
 
 The easiest way to display errors is to use the form's top level `$errors` property. It is an array of validation objects, that you can iterate over.
+Use the `$uid` property for your `key`.
 
 ```vue
 <p
-  v-for="(error, index) of v$.$errors"
-  :key="index"
+  v-for="error of v$.$errors"
+  :key="error.$uid"
 >
 <strong>{{ error.$validator }}</strong>
 <small> on property</small>
@@ -316,8 +318,8 @@ You can also check for errors on each form property:
 
 ```vue
 <p
-  v-for="(error, index) of v$.name.$errors"
-  :key="index"
+  v-for="error of v$.name.$errors"
+  :key="error.$uid"
 >
 <!-- Same as above -->
 </p>

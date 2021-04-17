@@ -8,6 +8,7 @@ Object {
   "$property": "child",
   "$propertyPath": "level1.child",
   "$response": false,
+  "$uid": "level1.child-isEven",
   "$validator": "isEven",
 }
 `;
@@ -20,6 +21,7 @@ Object {
   "$property": "child",
   "$propertyPath": "level1.child",
   "$response": false,
+  "$uid": "level1.child-isEven",
   "$validator": "isEven",
 }
 `;

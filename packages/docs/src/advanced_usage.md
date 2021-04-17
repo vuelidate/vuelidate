@@ -105,7 +105,7 @@ This is the recommended approach when handling collections. Create a new, nested
     <CompB />
 
     <!-- this will contain all $errors and $silentErrors from both <CompA> and <CompB>-->
-    <p v-for="(error, index) of v.$errors" :key="index">
+    <p v-for="error of v.$errors" :key="error.$uid">
       {{ error.$message }}
     </p>
   </div>
