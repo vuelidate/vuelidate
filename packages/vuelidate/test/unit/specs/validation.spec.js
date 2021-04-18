@@ -776,6 +776,16 @@ describe('useVuelidate', () => {
   })
 
   describe('validators', () => {
+    it('accepts a computed as validator', async () => {
+      const number = ref(0)
+      const isTwo = computed(() => number.value === 2)
+      const { vm } = await createSimpleWrapper({ number: { isTwo } }, { number })
+      expect(vm.v.number.$invalid).toBe(true)
+      number.value = 2
+      await nextTick()
+      expect(vm.v.number.$invalid).toBe(false)
+    })
+
     it('supports a validator to be a function, returning a boolean', async () => {
       const rule = (value) => value === 'foo'
       const value = ref('1')

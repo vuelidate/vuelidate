@@ -1,5 +1,5 @@
 import { isFunction, unwrap, unwrapObj } from './utils'
-import { computed, isRef, reactive, ref, watch, nextTick } from 'vue-demi'
+import { computed, isRef, reactive, ref, watch, nextTick, toRaw } from 'vue-demi'
 
 let ROOT_PATH = '__root'
 
@@ -10,6 +10,7 @@ let ROOT_PATH = '__root'
 /**
  * @typedef NormalizedValidator
  * @property {Validator} $validator
+ * @property {ComputedRef<Promise<ValidatorResponse> | ValidatorResponse>} $computedValidator
  * @property {String | Ref<String> | function(*): string} [$message]
  * @property {Object | Ref<Object>} [$params]
  * @property {Object | Ref<Object>} [$async]
@@ -41,7 +42,7 @@ function sortValidations (validationsRaw = {}) {
   const config = {}
 
   validationKeys.forEach(key => {
-    const v = validations[key]
+    const v = toRaw(validations)[key]
 
     switch (true) {
       // If it is already normalized, use it
@@ -52,6 +53,12 @@ function sortValidations (validationsRaw = {}) {
       // into { $validator: <Fun> }
       case isFunction(v):
         rules[key] = { $validator: v }
+        break
+      case isRef(v):
+        rules[key] = { $computedValidator: v }
+        break
+      case isRef(v.$validator):
+        rules[key] = { $computedValidator: v.$validator }
         break
       // Catch $-prefixed properties as config
       case key.startsWith('$'):
@@ -100,7 +107,7 @@ function normalizeValidatorResponse (result) {
  * @param {Object} config
  * @param {Ref<*>} $response
  * @param {VueInstance} instance
- * @return {Ref<Boolean>}
+ * @return {{ $invalid: Ref<Boolean>, $unwatch: Function }}
  */
 function createAsyncResult (rule, model, $pending, $dirty, { $lazy }, $response, instance) {
   const $invalid = ref(!!$dirty.value)
@@ -158,15 +165,24 @@ function createValidatorResult (rule, model, $dirty, config, instance) {
   const $pending = ref(false)
   const $params = rule.$params || {}
   const $response = ref(null)
-  const { $invalid, $unwatch } = createAsyncResult(
-    rule.$validator,
-    model,
-    $pending,
-    $dirty,
-    config,
-    $response,
-    instance
-  )
+  let $invalid = ref(false)
+  let $unwatch
+  if (rule.$computedValidator) {
+    $unwatch = watch(rule.$computedValidator, (result) => {
+      $response.value = result
+      $invalid.value = normalizeValidatorResponse(result)
+    }, { immediate: true })
+  } else {
+    ({ $invalid, $unwatch } = createAsyncResult(
+      rule.$validator,
+      model,
+      $pending,
+      $dirty,
+      config,
+      $response,
+      instance
+    ))
+  }
 
   const message = rule.$message
   const $message = isFunction(message)
