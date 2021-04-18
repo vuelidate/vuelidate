@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.0.0-alpha.19](https://github.com/vuelidate/vuelidate/compare/@vuelidate/docs@2.0.0-alpha.18...@vuelidate/docs@2.0.0-alpha.19) (2021-04-18)
+
+
+### Features
+
+* **core:** adds an $uid property to the $errors objects, fix [#843](https://github.com/vuelidate/vuelidate/issues/843)  ([#844](https://github.com/vuelidate/vuelidate/issues/844)) ([cb3ca06](https://github.com/vuelidate/vuelidate/commit/cb3ca063afd7bd57389f3e6ab9255b2c75641eb0))
+
+
+
+
+
 # [2.0.0-alpha.18](https://github.com/vuelidate/vuelidate/compare/@vuelidate/docs@2.0.0-alpha.17...@vuelidate/docs@2.0.0-alpha.18) (2021-04-07)
 
 
