@@ -7,7 +7,7 @@ import { unwrapNormalizedValidator, unwrapValidatorResponse } from '../utils/com
  * @returns {function(*=, *=): boolean}
  */
 export default function (validator) {
-  return async function (value, vm) {
+  return async (value, vm) => {
     return !req(value) || !unwrapValidatorResponse(await unwrapNormalizedValidator(validator).call(this, value, vm))
   }
 }

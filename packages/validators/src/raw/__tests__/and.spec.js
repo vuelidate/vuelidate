@@ -66,4 +66,15 @@ describe('and validator', () => {
     await expect(and(NormalizedValidatorResponseT, NormalizedValidatorResponseT)()).resolves.toBe(true)
     await expect(and(NormalizedValidatorResponseF, NormalizedValidatorResponseF)()).resolves.toBe(false)
   })
+
+  it('calls the functions with the correct `this` context', async () => {
+    const context = { foo: 'foo' }
+
+    const v1 = jest.fn(function () { return this === context })
+
+    const result = await and.call(context, v1)('value', 'vm')
+    expect(v1).toHaveReturnedWith(true)
+    expect(v1).toHaveBeenCalledWith('value', 'vm')
+    expect(result).toEqual(true)
+  })
 })

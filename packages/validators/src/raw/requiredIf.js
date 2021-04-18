@@ -7,7 +7,7 @@ const validate = (prop, val) => prop ? req(val) : true
  * @return {function(*): (Boolean | Promise<Boolean>)}
  */
 export default function requiredIf (propOrFunction) {
-  return async function requiredIfInternal (value, parentVM) {
+  return async (value, parentVM) => {
     if (typeof propOrFunction !== 'function') {
       return validate(propOrFunction, value)
     }
