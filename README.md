@@ -51,7 +51,8 @@
 
 ## Demo & docs
 
-[https://vuelidate.js.org/](https://vuelidate.js.org/)
+[https://vuelidate.js.org/](https://vuelidate.js.org/)  
+[Tutorial: Learn form validation in Vue in 10 minutes with Vuelidate](https://aaqibqs.medium.com/learn-form-validation-in-vue-3-in-10-minutes-with-vuelidate-8929c5059e66)
 
 ## Vue 3 support
 
