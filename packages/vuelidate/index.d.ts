@@ -40,7 +40,7 @@ export interface ValidatorResponse {
   [key: string]: any
 }
 
-export type ValidatorFn <T = unknown> = (value: T) => boolean | ValidatorResponse;
+export type ValidatorFn <T = unknown> = (value: T) => boolean | Promise<boolean> | ValidatorResponse;
 
 export interface ValidationRuleWithoutParams <T = unknown> {
   $validator: ValidatorFn<T>
