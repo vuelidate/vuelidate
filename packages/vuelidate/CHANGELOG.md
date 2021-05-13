@@ -3,6 +3,35 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.0.0-alpha.16](https://github.com/vuelidate/vuelidate/compare/@vuelidate/core@2.0.0-alpha.15...@vuelidate/core@2.0.0-alpha.16) (2021-04-18)
+
+
+### Features
+
+* **core:** adds an $uid property to the $errors objects, fix [#843](https://github.com/vuelidate/vuelidate/issues/843)  ([#844](https://github.com/vuelidate/vuelidate/issues/844)) ([cb3ca06](https://github.com/vuelidate/vuelidate/commit/cb3ca063afd7bd57389f3e6ab9255b2c75641eb0))
+
+
+
+
+
+# [2.0.0-alpha.15](https://github.com/vuelidate/vuelidate/compare/@vuelidate/core@2.0.0-alpha.14...@vuelidate/core@2.0.0-alpha.15) (2021-04-07)
+
+
+### Bug Fixes
+
+* replace $invalid with $valid for validator response ([#822](https://github.com/vuelidate/vuelidate/issues/822)) ([d7c6c00](https://github.com/vuelidate/vuelidate/commit/d7c6c003cf891c53cb3908ad5dc04a447e8c879e))
+* watch changes to arrays and objects deeply, closes [#832](https://github.com/vuelidate/vuelidate/issues/832) ([#833](https://github.com/vuelidate/vuelidate/issues/833)) ([f33ffbc](https://github.com/vuelidate/vuelidate/commit/f33ffbc979ac0ff4f278fdc8035944cac3a494d8))
+* **types:** add boolean to the $scope config ([8486deb](https://github.com/vuelidate/vuelidate/commit/8486deb353c793ac04a4b97352f364154858b63e))
+
+
+### Features
+
+* allow usage of Vuelidate outside Vue components ([#828](https://github.com/vuelidate/vuelidate/issues/828)) ([4816b7d](https://github.com/vuelidate/vuelidate/commit/4816b7d11800edd2d342b539215c57ac54994ce2))
+
+
+
+
+
 # [2.0.0-alpha.14](https://github.com/vuelidate/vuelidate/compare/@vuelidate/core@2.0.0-alpha.13...@vuelidate/core@2.0.0-alpha.14) (2021-02-20)
 
 

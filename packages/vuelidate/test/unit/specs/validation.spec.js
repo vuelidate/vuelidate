@@ -125,7 +125,8 @@ describe('useVuelidate', () => {
         $property: 'numberA',
         $propertyPath: 'numberA',
         $validator: 'isEven',
-        $response: false
+        $response: false,
+        $uid: 'numberA-isEven'
       }])
     })
 
@@ -351,7 +352,8 @@ describe('useVuelidate', () => {
         $property: 'number',
         $propertyPath: 'number',
         $validator: 'isEven',
-        $response: false
+        $response: false,
+        $uid: 'number-isEven'
       }])
     })
 
@@ -571,7 +573,8 @@ describe('useVuelidate', () => {
         '$property': 'number',
         '$propertyPath': 'number',
         '$validator': 'isEven',
-        $response: false
+        $response: false,
+        $uid: 'number-isEven'
       })
     })
 

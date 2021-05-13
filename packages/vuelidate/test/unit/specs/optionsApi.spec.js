@@ -85,7 +85,8 @@ describe('OptionsAPI validations', () => {
         $property: 'number',
         $propertyPath: 'number',
         $validator: 'isEven',
-        $response: false
+        $response: false,
+        $uid: 'number-isEven'
       }])
     })
 
@@ -142,7 +143,8 @@ describe('OptionsAPI validations', () => {
         '$property': 'number',
         '$propertyPath': 'number',
         '$validator': 'isEven',
-        $response: false
+        $response: false,
+        $uid: 'number-isEven'
       })
     })
 

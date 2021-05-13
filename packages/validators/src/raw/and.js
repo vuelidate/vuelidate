@@ -6,7 +6,7 @@ import { unwrapNormalizedValidator, unwrapValidatorResponse } from '../utils/com
  * @return {function(...[*]=): boolean}
  */
 export default function and (...validators) {
-  return function andInternal (...args) {
+  return (...args) => {
     return (
       validators.length > 0 &&
       validators.reduce(async (valid, fn) => await valid && unwrapValidatorResponse(await unwrapNormalizedValidator(fn).apply(this, args)), Promise.resolve(true))

@@ -55,4 +55,15 @@ describe('not validator', () => {
     await expect(not(NormalizedValidatorResponseT)('test')).resolves.toBe(false)
     await expect(not(NormalizedValidatorResponseF)('')).resolves.toBe(true)
   })
+
+  it('calls with correct `this` context', async () => {
+    const context = { foo: 'foo' }
+
+    const validator = jest.fn(function () { return this === context })
+
+    const result = await not.call(context, validator)('test', 'vm')
+    expect(validator).toHaveReturnedWith(true)
+    expect(validator).toHaveBeenLastCalledWith('test', 'vm')
+    expect(result).toBe(false)
+  })
 })
