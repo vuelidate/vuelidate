@@ -9,6 +9,6 @@ export default function (prop) {
   return {
     $validator: requiredIf(prop),
     $message: 'The value is required',
-    $params: { isRequired: prop }
+    $params: { isRequired: !!prop }
   }
 }
