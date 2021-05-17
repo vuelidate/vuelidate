@@ -13,7 +13,7 @@ export default function withParams ($params, $validator) {
   const validatorObj = normalizeValidatorObject($validator)
 
   validatorObj.$params = {
-    ...validatorObj.$params,
+    ...(validatorObj.$params || {}),
     ...$params
   }
 
