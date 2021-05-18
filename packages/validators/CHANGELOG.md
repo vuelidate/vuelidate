@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.0.0-alpha.14](https://github.com/vuelidate/vuelidate/compare/@vuelidate/validators@2.0.0-alpha.13...@vuelidate/validators@2.0.0-alpha.14) (2021-05-18)
+
+
+### Bug Fixes
+
+* **validators:** properly pass the this context to validators ([#845](https://github.com/vuelidate/vuelidate/issues/845)) ([93f57a6](https://github.com/vuelidate/vuelidate/commit/93f57a6f7eabe1cf25b3d587c9286cfa215bac9b))
+
+
+
+
+
 # [2.0.0-alpha.13](https://github.com/vuelidate/vuelidate/compare/@vuelidate/validators@2.0.0-alpha.12...@vuelidate/validators@2.0.0-alpha.13) (2021-04-07)
 
 

@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.0.0-alpha.17](https://github.com/vuelidate/vuelidate/compare/@vuelidate/core@2.0.0-alpha.16...@vuelidate/core@2.0.0-alpha.17) (2021-05-18)
+
+
+### Bug Fixes
+
+* **types:**  add async custom validator response type ([#855](https://github.com/vuelidate/vuelidate/issues/855)), closes [#854](https://github.com/vuelidate/vuelidate/issues/854) ([0b2c4b7](https://github.com/vuelidate/vuelidate/commit/0b2c4b7cc97c22698f706ebbdab6a8e05118e295))
+
+
+
+
+
 # [2.0.0-alpha.16](https://github.com/vuelidate/vuelidate/compare/@vuelidate/core@2.0.0-alpha.15...@vuelidate/core@2.0.0-alpha.16) (2021-04-18)
 
 

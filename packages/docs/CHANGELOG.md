@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.0.0-alpha.20](https://github.com/vuelidate/vuelidate/compare/@vuelidate/docs@2.0.0-alpha.19...@vuelidate/docs@2.0.0-alpha.20) (2021-05-18)
+
+**Note:** Version bump only for package @vuelidate/docs
+
+
+
+
+
 # [2.0.0-alpha.19](https://github.com/vuelidate/vuelidate/compare/@vuelidate/docs@2.0.0-alpha.18...@vuelidate/docs@2.0.0-alpha.19) (2021-04-18)
 
 
