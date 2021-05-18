@@ -156,3 +156,23 @@ This might seem like a lot of overhead, but aside from simple examples like the 
 1. It is not limited to only parent-child component relations, as the parent will collect all validation results from any descendant component.
 2. Each of those child components can control how their validation rules should look like.
 3. The parent component doesn't need to know the object structure of the elements in the collection.
+
+## Async validators need to be wrapped in withAsync
+
+All validators are expected to be synchronous. They are most common, and we use `computed` under the hood to track all possible reactive deps.
+
+### Migration strategy
+
+If a validators needs to be async, just use the `withAsync` helper to wrap your validators, that return a Promise. This is necessary in order to tell
+Vuelidate to await this validator to resolve.
+
+```js
+import { helpers } from '@vuelidate/validators'
+
+const { withAsync } = helpers
+export default {
+  validations: {
+    foo: { asyncValidator: withAsync(asyncValidator) }
+  }
+}
+```
