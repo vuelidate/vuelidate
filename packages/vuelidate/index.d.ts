@@ -1,4 +1,4 @@
-import { Ref, defineComponent, App } from 'vue-demi';
+import { Ref, defineComponent, App, ComponentPublicInstance } from 'vue-demi';
 type Component = ReturnType<typeof defineComponent>;
 
 /*
@@ -40,7 +40,7 @@ export interface ValidatorResponse {
   [key: string]: any
 }
 
-export type ValidatorFn <T = unknown> = (value: T) => boolean | ValidatorResponse | Promise<boolean | ValidatorResponse>;
+export type ValidatorFn <T = unknown> = (value: T, siblingState: object, instance: ComponentPublicInstance) => boolean | ValidatorResponse | Promise<boolean | ValidatorResponse>;
 
 export interface ValidationRuleWithoutParams <T = unknown> {
   $validator: ValidatorFn<T>
