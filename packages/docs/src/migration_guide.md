@@ -161,7 +161,7 @@ This might seem like a lot of overhead, but aside from simple examples like the 
 
 All validators are expected to be synchronous. They are most common, and we use `computed` under the hood to track all possible reactive deps.
 
-### Migration strategy
+#### Migration strategy
 
 If a validators needs to be async, just use the `withAsync` helper to wrap your validators, that return a Promise. This is necessary in order to tell
 Vuelidate to await this validator to resolve.

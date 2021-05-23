@@ -42,7 +42,9 @@ import { ref, reactive, computed } from 'vue'
 import useVuelidate from '@vuelidate/core'
 import { required, helpers, minLength } from '@vuelidate/validators'
 
-const asyncValidator = {
+const { withAsync } = helpers
+
+const asyncValidator = withAsync({
   $message: 'Should be aaaa',
   $validator: (v) => {
     return new Promise(resolve => {
@@ -53,7 +55,7 @@ const asyncValidator = {
       }, 2000)
     })
   }
-}
+})
 
 export default {
   name: 'SimpleForm',

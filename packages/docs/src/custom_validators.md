@@ -227,7 +227,7 @@ export default {
 
 When your async validator depends internally on other properties, you can pass those as a second parameter to the `withAsync` helper.
 
-Such scenarios can be, when accessing some external refs or reactive stores.
+Such scenarios are common, when relying on some reactive data, different from the validated property.
 
 ```js
 const foo = ref('')
@@ -238,29 +238,39 @@ function validator (value) {
 }
 
 const asyncValidator = withAsync(validator, foo) // here we pass in the `foo` ref as an extra watch target.
+
+const validations = {
+  someProperty: { asyncValidator }
+}
 ```
 
-### Passing multiple values
+### Watching multiple extra values
 
-You can pass multiple extra values to track, by passing an array of refs.
+You can pass multiple extra dependencies to track, by passing an array of refs to `withAsync`.
 
 ```js
 const foo = ref('')
 const bar = reaf(false)
+const validator = () => true
 
-const asyncValidator = withAsync(validator, [foo, bar]) // here we pass in the `foo` ref as an extra watch target.
+const asyncValidator = withAsync(validator, [foo, bar]) // here we pass in the `foo` and `bar` refs, as extra watch targets.
 ```
 
 ### Passing a reactive property
 
-If you want to pass a reactive property, be it when using the Options API, or a `reactive` property, you can just pass a function, or a computed
-property
+To pass a `reactive` property, when using the Options or Composition APis, you can just pass a function returning the correct value, or a computed
+property, returning that value:
 
 ```js
 const store = reactive({ foo: '' })
 
 // when using Composition API
 const asyncValidator = withAsync(validator, () => store.foo)
+
+// or a computed property
+const getter = computed(() => store.foo)
+const asyncValidator = withAsync(validator, getter)
+
 // when using Options API
 export default {
   validatons () {
