@@ -1,4 +1,4 @@
-import { computed, ref, h, nextTick, reactive, set } from 'vue-demi'
+import { computed, ref, h, nextTick, reactive } from 'vue-demi'
 import { mount, flushPromises } from '../test-utils'
 import { isEven } from '../validators.fixture'
 
@@ -22,6 +22,7 @@ import {
 } from '../utils'
 import { withMessage, withParams } from '@vuelidate/validators/src/common'
 import useVuelidate, { CollectFlag } from '../../../src'
+import withAsync from '@vuelidate/validators/src/utils/withAsync'
 
 describe('useVuelidate', () => {
   it('should have a `v` key defined if used', async () => {
@@ -641,10 +642,10 @@ describe('useVuelidate', () => {
     })
 
     it('collects async validator response', async () => {
-      const isEvenValidator = withParams({ min: 4 }, (v) => Promise.resolve({
+      const isEvenValidator = withParams({ min: 4 }, withAsync((v) => Promise.resolve({
         $valid: isEven(v),
         $data: { foo: 'foo' }
-      }))
+      })))
       const state = { number: ref(1) }
       const validations = { number: { isEvenValidator } }
       const { vm } = await createSimpleWrapper(validations, state)
@@ -810,6 +811,7 @@ describe('useVuelidate', () => {
 
     it('supports async validators by default', async () => {
       jest.useFakeTimers()
+
       const { state, validations } = asyncValidation()
       const { vm } = await createSimpleWrapper(validations, state)
       vm.v.$touch()
@@ -831,12 +833,64 @@ describe('useVuelidate', () => {
       jest.useRealTimers()
     })
 
+    it('allows providing a ref as `watchTargets`', async () => {
+      const state = {
+        number: ref(0),
+        enable: ref(false)
+      }
+      const validator = jest.fn((v) => {
+        return state.enable.value ? isEven(v) : false
+      })
+      const validations = {
+        number: {
+          isEvenAsync: withAsync(validator, [state.enable])
+        }
+      }
+      const { vm } = await createSimpleWrapper(validations, state)
+      shouldBeInvalidValidationObject({
+        v: vm.v.number,
+        property: 'number',
+        validatorName: 'isEvenAsync'
+      })
+      expect(validator).toHaveBeenCalledTimes(1)
+      state.enable.value = true
+      await flushPromises()
+      shouldBeValidValidationObj(vm.v.number)
+      expect(validator).toHaveBeenCalledTimes(2)
+    })
+
+    it('allows providing a `computed` as `watchTargets`', async () => {
+      const state = reactive({
+        number: 0,
+        enable: false
+      })
+      const validator = jest.fn((v) => {
+        return state.enable ? isEven(v) : false
+      })
+      const validations = {
+        number: {
+          isEvenAsync: withAsync(validator, [computed(() => state.enable)])
+        }
+      }
+      const { vm } = await createSimpleWrapper(validations, state)
+      shouldBeInvalidValidationObject({
+        v: vm.v.number,
+        property: 'number',
+        validatorName: 'isEvenAsync'
+      })
+      expect(validator).toHaveBeenCalledTimes(1)
+      state.enable = true
+      await flushPromises()
+      shouldBeValidValidationObj(vm.v.number)
+      expect(validator).toHaveBeenCalledTimes(2)
+    })
+
     it('allows multiple invocations of an async validator, the last one to resolve, sets the return value', async () => {
       // prepare async validator
       const validator = jest.fn().mockResolvedValue(true)
       // prepare state
       const number = ref(0)
-      const { vm } = await createSimpleWrapper({ number: { asyncValidator: validator } }, { number })
+      const { vm } = await createSimpleWrapper({ number: { asyncValidator: withAsync(validator) } }, { number })
       // make sure the validator is armed
       expect(validator).toHaveBeenCalledTimes(1)
       vm.v.$touch()
@@ -1180,7 +1234,7 @@ describe('useVuelidate', () => {
       }
       const { vm } = await createSimpleWrapper(rules, state)
       shouldBeInvalidValidationObject({ v: vm.v.object, validatorName: 'hasB', property: 'object' })
-      set(state.object.value, 'b', 'b')
+      state.object.value = { a: 'a', b: 'b' }
       await flushPromises()
       expect(state.object.value).toEqual({ a: 'a', b: 'b' })
       shouldBeValidValidationObj(vm.v.object)
@@ -1200,23 +1254,23 @@ describe('useVuelidate', () => {
       })
       const rules = {
         object: {
-          hasC: v => v.hasOwnProperty('b')
+          hasB: v => v.hasOwnProperty('b')
         }
       }
       const { vm } = await createSimpleWrapper(rules, state)
-      shouldBeInvalidValidationObject({ v: vm.v.object, validatorName: 'hasC', property: 'object' })
-      set(vm.v.object.$model, 'b', 'b')
+      shouldBeInvalidValidationObject({ v: vm.v.object, validatorName: 'hasB', property: 'object' })
+      state.object = { b: 'b', a: 'a' }
       await flushPromises()
       expect(state.object).toEqual({ a: 'a', b: 'b' })
       shouldBeValidValidationObj(vm.v.object)
       vm.v.object.$model = { c: 'c' }
       await flushPromises()
       expect(state.object).toEqual({ c: 'c' })
-      shouldBeErroredValidationObject({ v: vm.v.object, validatorName: 'hasC', property: 'object' })
+      shouldBeErroredValidationObject({ v: vm.v.object, validatorName: 'hasB', property: 'object' })
       vm.v.object.$model = {}
       await flushPromises()
       expect(state.object).toEqual({})
-      shouldBeErroredValidationObject({ v: vm.v.object, validatorName: 'hasC', property: 'object' })
+      shouldBeErroredValidationObject({ v: vm.v.object, validatorName: 'hasB', property: 'object' })
     })
 
     it('should track changes to reactive array properties', async () => {

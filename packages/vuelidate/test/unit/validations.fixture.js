@@ -2,6 +2,7 @@ import { computed, h, ref, reactive } from 'vue-demi'
 import { asyncIsEven, isEven, isOdd } from './validators.fixture'
 import { createSimpleComponent } from './utils'
 import { useVuelidate } from '../../src'
+import withAsync from '../../../validators/src/utils/withAsync'
 
 export function nestedReactiveObjectValidation () {
   const state = reactive({
@@ -129,7 +130,7 @@ export function asyncValidation () {
 export function simpleErrorValidation () {
   const errorObject = new Error('message')
   const state = { withPromise: ref(1), noPromise: ref(1) }
-  const asyncValidator = () => Promise.reject(errorObject)
+  const asyncValidator = withAsync(() => Promise.reject(errorObject))
 
   function syncValidator () {
     throw errorObject
