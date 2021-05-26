@@ -13,9 +13,7 @@ import requiredUnless from './requiredUnless'
 import sameAs from './sameAs'
 import url from './url'
 import or from './or'
-import asyncOr from './asyncOr'
 import and from './and'
-import asyncAnd from './asyncAnd'
 import not from './not'
 import minValue from './minValue'
 import maxValue from './maxValue'
@@ -39,9 +37,7 @@ export {
   sameAs,
   url,
   or,
-  asyncOr,
   and,
-  asyncAnd,
   not,
   minValue,
   maxValue,
