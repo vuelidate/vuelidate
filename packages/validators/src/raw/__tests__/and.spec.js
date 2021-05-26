@@ -7,7 +7,11 @@ import {
   NormalizedF,
   NormalizedT,
   NormalizedValidatorResponseF,
-  NormalizedValidatorResponseT
+  NormalizedValidatorResponseT,
+  NormalizedAsyncT,
+  NormalizedAsyncF,
+  NormalizedAsyncValidatorResponseT,
+  NormalizedAsyncValidatorResponseF
 } from '../../../tests/fixtures'
 
 describe('and validator', () => {
@@ -25,6 +29,18 @@ describe('and validator', () => {
 
   it('should validate all true functions', () => {
     expect(and(T, T, T)()).toBe(true)
+  })
+
+  it('should validate as a promise, if some functions are async', () => {
+    return expect(and(T, NormalizedAsyncT, T)()).resolves.toBe(true)
+  })
+
+  it('should not validate some true functions, when mixed function types', () => {
+    return expect(and(T, NormalizedAsyncF, T)()).resolves.toBe(false)
+  })
+
+  it('should not validate all false functions, when async', () => {
+    return expect(and(NormalizedAsyncF, NormalizedAsyncF, NormalizedAsyncF)()).resolves.toBe(false)
   })
 
   it('should not validate some true functions', () => {
@@ -51,6 +67,13 @@ describe('and validator', () => {
     expect(and(NormalizedF, NormalizedF)()).toBe(false)
     expect(and(NormalizedValidatorResponseT, NormalizedValidatorResponseT)()).toBe(true)
     expect(and(NormalizedValidatorResponseF, NormalizedValidatorResponseF)()).toBe(false)
+  })
+
+  it('should work with Normalized Async Validators', async () => {
+    await expect(and(NormalizedAsyncT, NormalizedAsyncT)()).resolves.toBe(true)
+    await expect(and(NormalizedAsyncF, NormalizedAsyncF)()).resolves.toBe(false)
+    await expect(and(NormalizedAsyncValidatorResponseT, NormalizedAsyncValidatorResponseT)()).resolves.toBe(true)
+    await expect(and(NormalizedAsyncValidatorResponseF, NormalizedAsyncValidatorResponseF)()).resolves.toBe(false)
   })
 
   it('calls the functions with the correct `this` context', () => {

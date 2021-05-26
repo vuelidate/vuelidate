@@ -7,7 +7,9 @@ import {
   NormalizedValidatorResponseF,
   NormalizedValidatorResponseT,
   ValidatorResponseF,
-  ValidatorResponseT
+  ValidatorResponseT,
+  NormalizedAsyncF,
+  NormalizedAsyncT, asyncF, NormalizedAsyncValidatorResponseT, NormalizedAsyncValidatorResponseF
 } from '../../../tests/fixtures'
 
 describe('or validator', () => {
@@ -60,5 +62,25 @@ describe('or validator', () => {
     expect(or(NormalizedF, NormalizedT)()).toBe(true)
     expect(or(NormalizedValidatorResponseT, NormalizedValidatorResponseT)()).toBe(true)
     expect(or(NormalizedValidatorResponseF, NormalizedValidatorResponseT)()).toBe(true)
+  })
+
+  describe('async', () => {
+    it('should validate all true functions, when mixed with async', () => {
+      return expect(or(T, NormalizedAsyncT, T)()).resolves.toBe(true)
+    })
+    it('should validate some true functions, when mixed with async', () => {
+      return expect(or(T, NormalizedAsyncF, T)()).resolves.toBe(true)
+    })
+
+    it('should not validate all false functions', () => {
+      return expect(or(NormalizedAsyncF, NormalizedAsyncF, NormalizedAsyncF)()).resolves.toBe(false)
+    })
+
+    it('should work with Normalized Async Validators', async () => {
+      await expect(or(NormalizedAsyncT, NormalizedAsyncT)()).resolves.toBe(true)
+      await expect(or(NormalizedAsyncF, NormalizedAsyncT)()).resolves.toBe(true)
+      await expect(or(NormalizedAsyncValidatorResponseT, NormalizedAsyncValidatorResponseT)()).resolves.toBe(true)
+      await expect(or(NormalizedAsyncValidatorResponseF, NormalizedAsyncValidatorResponseT)()).resolves.toBe(true)
+    })
   })
 })
