@@ -6,6 +6,7 @@
         <li><router-link to="/old-api">Old api</router-link></li>
         <li><router-link to="/nested-validations">Nested Validations</router-link></li>
         <li><router-link to="/nested-ref">Nested Ref</router-link></li>
+        <li><router-link to="/component-helper">Component Helper</router-link></li>
       </ul>
     </div>
     <router-view />

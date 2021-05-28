@@ -3,8 +3,8 @@ import { isFunction, unwrap, isProxy } from './utils'
 import { setValidations } from './core'
 import ResultsStorage from './storage'
 
-const VuelidateInjectChildResults = Symbol('vuelidate#injectChiildResults')
-const VuelidateRemoveChildResults = Symbol('vuelidate#removeChiildResults')
+const VuelidateInjectChildResults = 'vuelidate#injectChiildResults'
+const VuelidateRemoveChildResults = 'vuelidate#removeChiildResults'
 
 export const CollectFlag = {
   COLLECT_ALL: true,
