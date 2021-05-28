@@ -7,7 +7,7 @@ import and from '../raw/and'
  */
 export default function (...validators) {
   return {
-    $validator: and(...validators),
+    ...and(...validators),
     $message: 'The value does not match all of the provided validators'
   }
 }

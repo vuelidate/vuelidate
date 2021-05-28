@@ -7,7 +7,7 @@ import or from '../raw/or'
  */
 export default function (...validators) {
   return {
-    $validator: or(...validators),
+    ...or(...validators),
     $message: 'The value does not match any of the provided validators'
   }
 }
