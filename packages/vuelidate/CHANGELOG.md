@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.0.0-alpha.19](https://github.com/vuelidate/vuelidate/compare/@vuelidate/core@2.0.0-alpha.18...@vuelidate/core@2.0.0-alpha.19) (2021-06-04)
+
+
+### Bug Fixes
+
+* **types:** export ValidationArgs, closes [#869](https://github.com/vuelidate/vuelidate/issues/869) ([8e89256](https://github.com/vuelidate/vuelidate/commit/8e89256f464228aecd3b5aa3a9c2115ed2a37345))
+
+
+
+
+
 # [2.0.0-alpha.18](https://github.com/vuelidate/vuelidate/compare/@vuelidate/core@2.0.0-alpha.17...@vuelidate/core@2.0.0-alpha.18) (2021-05-23)
 
 

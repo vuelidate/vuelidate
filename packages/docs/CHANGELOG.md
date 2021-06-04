@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.0.0-alpha.22](https://github.com/vuelidate/vuelidate/compare/@vuelidate/docs@2.0.0-alpha.21...@vuelidate/docs@2.0.0-alpha.22) (2021-06-04)
+
+
+### Features
+
+* enable algolia search ([d0b99de](https://github.com/vuelidate/vuelidate/commit/d0b99dec172d8f096a8d39a96a4a1d0bc0a9b9da))
+
+
+
+
+
 # [2.0.0-alpha.21](https://github.com/vuelidate/vuelidate/compare/@vuelidate/docs@2.0.0-alpha.20...@vuelidate/docs@2.0.0-alpha.21) (2021-05-23)
 
 
