@@ -189,7 +189,7 @@ function createSyncResult (rule, model, $dirty, { $lazy }, $response, instance) 
  * @param {VueInstance} instance
  * @return {{ $params: *, $message: Ref<String>, $pending: Ref<Boolean>, $invalid: Ref<Boolean>, $response: Ref<*>, $unwatch: WatchStopHandle }}
  */
-function createValidatorResult (rule, model, $dirty, config, instance) {
+function createValidatorResult (rule, model, $dirty, config, instance, validatorName, propertyKey, propertyPath) {
   const $pending = ref(false)
   const $params = rule.$params || {}
   const $response = ref(null)
@@ -227,7 +227,10 @@ function createValidatorResult (rule, model, $dirty, config, instance) {
           $invalid,
           $params: unwrapObj($params), // $params can hold refs, so we unwrap them for easy access
           $model: model,
-          $response
+          $response,
+          $validator: validatorName,
+          $propertyPath: propertyPath,
+          $property: propertyKey
         })
       ))
     : message || ''
@@ -319,7 +322,10 @@ function createValidationResults (rules, model, key, resultsCache, path, config,
       model,
       result.$dirty,
       config,
-      instance
+      instance,
+      ruleKey,
+      key,
+      path
     )
   })
 
