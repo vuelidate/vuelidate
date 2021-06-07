@@ -8,73 +8,139 @@ import {
   NormalizedT,
   NormalizedValidatorResponseF,
   NormalizedValidatorResponseT,
+  NormalizedAsyncT,
+  NormalizedAsyncF,
+  NormalizedAsyncValidatorResponseT,
+  NormalizedAsyncValidatorResponseF,
+  asyncT,
   asyncF,
-  asyncT
+  trueValidatorResponse,
+  falseValidatorResponse
 } from '../../../tests/fixtures'
+import { withAsync } from '../../common'
+import flushPromises from 'flush-promises'
 
 describe('and validator', () => {
   it('should not validate no functions', () => {
-    expect(and()()).toBe(false)
+    const result = and()
+    expect(result).toEqual({
+      $async: false,
+      $validator: expect.any(Function),
+      $watchTargets: []
+    })
+    expect(result.$validator()).toBe(false)
   })
 
   it('should not validate single false function', () => {
-    return expect(and(F)()).resolves.toBe(false)
+    expect(and(F).$validator()).toBe(false)
   })
 
   it('should validate single true function', () => {
-    return expect(and(T)()).resolves.toBe(true)
+    expect(and(T).$validator()).toBe(true)
   })
 
   it('should validate all true functions', () => {
-    return expect(and(T, T, T)()).resolves.toBe(true)
-  })
-
-  it('should validate all to true, when mixed function types', () => {
-    return expect(and(T, asyncT, T)()).resolves.toBe(true)
+    const result = and(T, T, T)
+    expect(result).toEqual({
+      $async: false,
+      $validator: expect.any(Function),
+      $watchTargets: []
+    })
+    expect(result.$validator()).toBe(true)
   })
 
   it('should not validate some true functions', () => {
-    return expect(and(T, F, T)()).resolves.toBe(false)
+    expect(and(T, F, T).$validator()).toBe(false)
   })
 
-  it('should not validate some true functions, when mixed function types', () => {
-    expect(and(T, asyncF, T)()).resolves.toBe(false)
+  it('should not validate all false functions', () => {
+    expect(and(F, F, F).$validator()).toBe(false)
   })
 
-  it('should not validate all false functions', async () => {
-    await expect(and(F, F, F)()).resolves.toBe(false)
-  })
-
-  it('should not validate all false functions, when async', async () => {
-    await expect(and(asyncF, asyncF, asyncF)()).resolves.toBe(false)
-  })
-
-  it('should pass values and model to function', async () => {
+  it('should pass values and model to function', () => {
     const spy = jest.fn()
-    await and(spy)(1, 2)
+    and(spy).$validator(1, 2)
     expect(spy).toHaveBeenCalledWith(1, 2)
   })
 
-  it('should work with functions returning ValidatorResponse', async () => {
-    await expect(and(ValidatorResponseT, ValidatorResponseT, ValidatorResponseT)()).resolves.toBe(true)
-    await expect(and(ValidatorResponseF, ValidatorResponseF, ValidatorResponseF)()).resolves.toBe(false)
+  it('should work with functions returning ValidatorResponse objects', () => {
+    let result = and(ValidatorResponseT, ValidatorResponseT, ValidatorResponseT)
+    expect(result).toEqual({
+      $async: false,
+      $validator: expect.any(Function),
+      $watchTargets: []
+    })
+    expect(result.$validator()).toEqual(trueValidatorResponse)
+    expect(and(ValidatorResponseF, ValidatorResponseF, ValidatorResponseF).$validator()).toEqual(falseValidatorResponse)
   })
 
-  it('should work with Normalized Validators', async () => {
-    await expect(and(NormalizedT, NormalizedT)()).resolves.toBe(true)
-    await expect(and(NormalizedF, NormalizedF)()).resolves.toBe(false)
-    await expect(and(NormalizedValidatorResponseT, NormalizedValidatorResponseT)()).resolves.toBe(true)
-    await expect(and(NormalizedValidatorResponseF, NormalizedValidatorResponseF)()).resolves.toBe(false)
+  it('should work with Normalized Validators', () => {
+    expect(and(NormalizedT, NormalizedT).$validator()).toBe(true)
+    expect(and(NormalizedF, NormalizedF).$validator()).toBe(false)
+    expect(and(NormalizedValidatorResponseT, NormalizedValidatorResponseT).$validator()).toEqual(trueValidatorResponse)
+    expect(and(NormalizedValidatorResponseF, NormalizedValidatorResponseF).$validator()).toEqual(falseValidatorResponse)
   })
 
-  it('calls the functions with the correct `this` context', async () => {
+  it('calls the functions with the correct `this` context', () => {
     const context = { foo: 'foo' }
 
     const v1 = jest.fn(function () { return this === context })
 
-    const result = await and.call(context, v1)('value', 'vm')
+    const result = and(v1).$validator.call(context, 'value', 'vm')
     expect(v1).toHaveReturnedWith(true)
     expect(v1).toHaveBeenCalledWith('value', 'vm')
     expect(result).toEqual(true)
+  })
+
+  describe('withAsync', () => {
+    it('should validate as a promise, if some functions are async', () => {
+      const v = and(T, NormalizedAsyncT, T)
+      expect(v).toHaveProperty('$async', true)
+      return expect(v.$validator()).resolves.toBe(true)
+    })
+
+    it('should call next async validator, when previous returns truthy', async () => {
+      const v1 = jest.fn().mockResolvedValue(false)
+      const v2 = jest.fn().mockResolvedValue(true)
+      const promise = and(withAsync(v1), withAsync(v2)).$validator()
+      await flushPromises()
+      expect(v1).toHaveBeenCalled()
+      expect(v2).not.toHaveBeenCalled()
+      expect(await promise).toEqual(false)
+      expect(v2).not.toHaveBeenCalled()
+    })
+
+    it('should work with Normalized Async Validators', async () => {
+      const r = and(NormalizedAsyncT, NormalizedAsyncT)
+      expect(r).toEqual({
+        $async: true,
+        $validator: expect.any(Function),
+        $watchTargets: []
+      })
+      await expect(r.$validator()).resolves.toBe(true)
+      await expect(and(NormalizedAsyncF, NormalizedAsyncF).$validator()).resolves.toBe(false)
+      await expect(and(NormalizedAsyncValidatorResponseT, NormalizedAsyncValidatorResponseT).$validator()).resolves.toEqual(trueValidatorResponse)
+      await expect(and(NormalizedAsyncValidatorResponseF, NormalizedAsyncValidatorResponseF).$validator()).resolves.toEqual(falseValidatorResponse)
+    })
+
+    it('should not validate some true functions, when mixed function types', () => {
+      return expect(and(T, NormalizedAsyncF, T).$validator()).resolves.toBe(false)
+    })
+
+    it('should not validate all false functions, when async', () => {
+      return expect(and(NormalizedAsyncF, NormalizedAsyncF, NormalizedAsyncF).$validator()).resolves.toBe(false)
+    })
+
+    it('should combine $watchTargets', () => {
+      const targets = ['foo']
+      const targets2 = ['bar']
+      let v = and(withAsync(asyncT, targets), withAsync(asyncF, targets2), NormalizedAsyncF)
+      expect(v).toMatchObject({
+        $async: true,
+        $validator: expect.any(Function),
+        $watchTargets: [].concat(targets, targets2)
+      })
+      return expect(v.$validator()).resolves.toBe(false)
+    })
   })
 })
