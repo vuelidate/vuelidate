@@ -13,6 +13,10 @@ const config = {
   themeConfig: {
     repo: 'vuelidate/vuelidate',
     docsDir: 'docs',
+    algolia: {
+      apiKey: 'f3200469da216e2a8bfd46e2eab6552f',
+      indexName: 'vuelidate-next'
+    },
     nav: [
       { text: 'General Guide', link: '/', activeMatch: '^/(?!.*(api))' },
       {

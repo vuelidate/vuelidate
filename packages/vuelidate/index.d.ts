@@ -57,7 +57,7 @@ export type ValidationRule <T = unknown> = ValidationRuleWithParams<any, T> | Va
 
 type ValidationRuleCollection <T = unknown> = Record<string, ValidationRule<T>>;
 
-interface ValidationArgs {
+export interface ValidationArgs {
   [K: string]: ValidationRule | ValidationArgs
 }
 

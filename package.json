@@ -9,7 +9,7 @@
     ]
   },
   "dependencies": {
-    "vue-demi": "^0.6.0"
+    "vue-demi": "^0.9.1"
   },
   "optionalDependencies": {
     "@vue/composition-api": "^1.0.0-rc.1"

@@ -1,6 +1,6 @@
 {
   "name": "@vuelidate/validators",
-  "version": "2.0.0-alpha.15",
+  "version": "2.0.0-alpha.16",
   "description": "Validators for Vuelidate",
   "main": "dist/index.js",
   "types": "index.d.ts",
@@ -14,7 +14,7 @@
     "lint": "eslint src"
   },
   "dependencies": {
-    "vue-demi": "^0.6.0"
+    "vue-demi": "^0.9.1"
   },
   "devDependencies": {
     "bili": "^4.8.1",
