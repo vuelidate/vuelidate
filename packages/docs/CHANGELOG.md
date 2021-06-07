@@ -3,6 +3,23 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.0.0-alpha.23](https://github.com/vuelidate/vuelidate/compare/@vuelidate/docs@2.0.0-alpha.22...@vuelidate/docs@2.0.0-alpha.23) (2021-06-07)
+
+
+### Bug Fixes
+
+* **validators:** async handling of `and`, `or`. Change `requiredIf` and `requiredUnless` to sync only  ([#864](https://github.com/vuelidate/vuelidate/issues/864)) ([6e7eedb](https://github.com/vuelidate/vuelidate/commit/6e7eedbcbec968d74050f98c325ef589bdeb7a37))
+
+
+### BREAKING CHANGES
+
+* **validators:** 1. Async validators passed to `and` and `or` must be wrapped in `withAsync`.
+2. `requiredIf` and `requiredUnless` no longer work with functions, returning a Promise.
+
+
+
+
+
 # [2.0.0-alpha.22](https://github.com/vuelidate/vuelidate/compare/@vuelidate/docs@2.0.0-alpha.21...@vuelidate/docs@2.0.0-alpha.22) (2021-06-04)
 
 
