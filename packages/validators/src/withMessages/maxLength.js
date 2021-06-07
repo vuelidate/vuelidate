@@ -9,6 +9,6 @@ export default function (max) {
   return {
     $validator: maxLength(max),
     $message: ({ $params }) => `The maximum length allowed is ${$params.max}`,
-    $params: { max }
+    $params: { max, type: 'maxLength' }
   }
 }

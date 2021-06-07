@@ -8,6 +8,7 @@ import requiredIf from '../raw/requiredIf'
 export default function (prop) {
   return {
     $validator: requiredIf(prop),
-    $message: 'The value is required'
+    $message: 'The value is required',
+    $params: { type: 'requiredIf', prop }
   }
 }

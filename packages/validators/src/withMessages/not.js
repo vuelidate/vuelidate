@@ -8,6 +8,9 @@ import not from '../raw/not'
 export default function (validator) {
   return {
     $validator: not(validator),
-    $message: `The value does not match the provided validator`
+    $message: `The value does not match the provided validator`,
+    $params: {
+      type: 'not'
+    }
   }
 }
