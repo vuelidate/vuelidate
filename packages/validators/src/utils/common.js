@@ -18,7 +18,7 @@ export function isObject (o) {
  */
 export function normalizeValidatorObject (validator) {
   return isFunction(validator.$validator)
-    ? validator
+    ? { ...validator }
     : {
       $validator: validator
     }

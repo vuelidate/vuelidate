@@ -316,7 +316,8 @@ export default {
 
 * **Usage:**
 
-  Passes when at least one of provided validators returns `true`.
+  Passes when at least one of the provided validators returns `true` or `{ $valid: true }`. Validators can return more data, when using the object
+  response.
 
 ```js
 export default {
@@ -330,14 +331,30 @@ export default {
 }
 ```
 
+### Async or
+
+`or` can also accept a mix of sync and async validators. Async ones that return a promise, should be wrapped in `withAsync`.
+
+```js
+export default {
+  validations () {
+    return {
+      agree: {
+        shouldBeCheckedAsync: or(withAsync(asyncOne), withAsync(asyncTwo), validatorThree)
+      }
+    }
+  }
+}
+```
+
 ## and
 
 * **Arguments:**
-  * `{...(NormalizedValidator | Function | function(): Promise<boolean>)} validators`
+  * `{...(NormalizedValidator | Function)} validators`
 
 * **Usage:**
 
-  Passes when all of provided validators return `true`. A validator can return a Promise.
+  Passes when all of provided validators return `true` or `{ $valid: true }`.
 
 ```js
 export default {
@@ -351,6 +368,21 @@ export default {
 }
 ```
 
+### Async and
+
+`and` can also accept a mix of sync and async validators. Async ones that return a promise, should be wrapped in `withAsync`.
+
+```js
+export default {
+  validations () {
+    return {
+      agree: {
+        shouldBeChecked: and(withAsync(validatorOne), validatorTwo, withAsync(validatorThree))
+      }
+    }
+  }
+}
+```
 
 ## not
 

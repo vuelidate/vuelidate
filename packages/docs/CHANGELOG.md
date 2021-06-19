@@ -3,6 +3,80 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.0.0-alpha.23](https://github.com/vuelidate/vuelidate/compare/@vuelidate/docs@2.0.0-alpha.22...@vuelidate/docs@2.0.0-alpha.23) (2021-06-07)
+
+
+### Bug Fixes
+
+* **validators:** async handling of `and`, `or`. Change `requiredIf` and `requiredUnless` to sync only  ([#864](https://github.com/vuelidate/vuelidate/issues/864)) ([6e7eedb](https://github.com/vuelidate/vuelidate/commit/6e7eedbcbec968d74050f98c325ef589bdeb7a37))
+
+
+### BREAKING CHANGES
+
+* **validators:** 1. Async validators passed to `and` and `or` must be wrapped in `withAsync`.
+2. `requiredIf` and `requiredUnless` no longer work with functions, returning a Promise.
+
+
+
+
+
+# [2.0.0-alpha.22](https://github.com/vuelidate/vuelidate/compare/@vuelidate/docs@2.0.0-alpha.21...@vuelidate/docs@2.0.0-alpha.22) (2021-06-04)
+
+
+### Features
+
+* enable algolia search ([d0b99de](https://github.com/vuelidate/vuelidate/commit/d0b99dec172d8f096a8d39a96a4a1d0bc0a9b9da))
+
+
+
+
+
+# [2.0.0-alpha.21](https://github.com/vuelidate/vuelidate/compare/@vuelidate/docs@2.0.0-alpha.20...@vuelidate/docs@2.0.0-alpha.21) (2021-05-23)
+
+
+### Code Refactoring
+
+* **core:** revert back to assuming sync validators via computed and using withAsync for async validators ([#860](https://github.com/vuelidate/vuelidate/issues/860)) ([d45ea36](https://github.com/vuelidate/vuelidate/commit/d45ea3636c3fb5fc4c3133ce1717fd66c89ca121))
+
+
+### BREAKING CHANGES
+
+* **core:** Async validators must be wrapped in `withAsync`
+
+
+
+
+
+# [2.0.0-alpha.20](https://github.com/vuelidate/vuelidate/compare/@vuelidate/docs@2.0.0-alpha.19...@vuelidate/docs@2.0.0-alpha.20) (2021-05-18)
+
+**Note:** Version bump only for package @vuelidate/docs
+
+
+
+
+
+# [2.0.0-alpha.19](https://github.com/vuelidate/vuelidate/compare/@vuelidate/docs@2.0.0-alpha.18...@vuelidate/docs@2.0.0-alpha.19) (2021-04-18)
+
+
+### Features
+
+* **core:** adds an $uid property to the $errors objects, fix [#843](https://github.com/vuelidate/vuelidate/issues/843)  ([#844](https://github.com/vuelidate/vuelidate/issues/844)) ([cb3ca06](https://github.com/vuelidate/vuelidate/commit/cb3ca063afd7bd57389f3e6ab9255b2c75641eb0))
+
+
+
+
+
+# [2.0.0-alpha.18](https://github.com/vuelidate/vuelidate/compare/@vuelidate/docs@2.0.0-alpha.17...@vuelidate/docs@2.0.0-alpha.18) (2021-04-07)
+
+
+### Bug Fixes
+
+* **validators:** allow not, and, or to accept async validators ([#823](https://github.com/vuelidate/vuelidate/issues/823)) ([d7ae436](https://github.com/vuelidate/vuelidate/commit/d7ae4368c608bf9b431b0435fdf12f9ac5997798))
+
+
+
+
+
 # [2.0.0-alpha.17](https://github.com/vuelidate/vuelidate/compare/@vuelidate/docs@2.0.0-alpha.16...@vuelidate/docs@2.0.0-alpha.17) (2021-02-20)
 
 **Note:** Version bump only for package @vuelidate/docs

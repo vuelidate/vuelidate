@@ -40,7 +40,7 @@ export interface ValidatorResponse {
   [key: string]: any
 }
 
-export type ValidatorFn <T = unknown> = (value: T) => boolean | ValidatorResponse;
+export type ValidatorFn <T = unknown> = (value: T) => boolean | ValidatorResponse | Promise<boolean | ValidatorResponse>;
 
 export interface ValidationRuleWithoutParams <T = unknown> {
   $validator: ValidatorFn<T>
@@ -57,7 +57,7 @@ export type ValidationRule <T = unknown> = ValidationRuleWithParams<any, T> | Va
 
 type ValidationRuleCollection <T = unknown> = Record<string, ValidationRule<T>>;
 
-interface ValidationArgs {
+export interface ValidationArgs {
   [K: string]: ValidationRule | ValidationArgs
 }
 
@@ -87,7 +87,8 @@ export interface ErrorObject {
   readonly $message: string | Ref<string>
   readonly $params: object
   readonly $pending: boolean
-  readonly $response: any
+  readonly $response: any,
+  readonly $uid: string,
 }
 
 type BaseValidation <
@@ -102,6 +103,7 @@ type BaseValidation <
   readonly $dirty: boolean
   readonly $error: boolean
   readonly $errors: ErrorObject[]
+  readonly $silentErrors: ErrorObject[]
   readonly $invalid: boolean
   readonly $anyDirty: boolean
   readonly $pending: boolean

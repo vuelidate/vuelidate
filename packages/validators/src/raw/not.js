@@ -1,5 +1,5 @@
 import { req } from './core'
-import { unwrapNormalizedValidator, unwrapValidatorResponse } from '../utils/common'
+import { isPromise, unwrapNormalizedValidator, unwrapValidatorResponse } from '../utils/common'
 
 /**
  * Swaps the result of a value
@@ -7,7 +7,10 @@ import { unwrapNormalizedValidator, unwrapValidatorResponse } from '../utils/com
  * @returns {function(*=, *=): boolean}
  */
 export default function (validator) {
-  return async function (value, vm) {
-    return !req(value) || !unwrapValidatorResponse(await unwrapNormalizedValidator(validator).call(this, value, vm))
+  return function (value, vm) {
+    if (!req(value)) return true
+    const response = unwrapNormalizedValidator(validator).call(this, value, vm)
+    if (!isPromise(response)) return !unwrapValidatorResponse(response)
+    return response.then(r => !unwrapValidatorResponse(r))
   }
 }

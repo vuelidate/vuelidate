@@ -9,6 +9,6 @@ export default function (min) {
   return {
     $validator: minValue(min),
     $message: ({ $params }) => `The minimum value allowed is ${$params.min}`,
-    $params: { min }
+    $params: { min, type: 'minValue' }
   }
 }

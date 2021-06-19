@@ -23,11 +23,21 @@ describe('withParams validator modifier', () => {
     expect(() => withParams({}, [])).toThrowError('Validator must be a function or object with $validator parameter')
   })
 
-  it('should return an object', () => {
-    expect(withParams({}, func)).toEqual({
+  it('should return an object, attaching provided params', () => {
+    const params = {}
+    expect(withParams(params, func)).toEqual({
       $validator: func,
-      $params: {}
+      $params: params
     })
+  })
+
+  it('should not mutate validators', () => {
+    const validator = {
+      $validator: func,
+      $message: 'some message'
+    }
+    withParams({}, validator)
+    expect(validator).not.toHaveProperty('$params')
   })
 
   it('should allow a Validator object to be passed', () => {
@@ -48,7 +58,6 @@ describe('withParams validator modifier', () => {
     expect(fn).not.toHaveBeenCalled()
   })
 
-  // TODO: This changes from $sub to combining into $params. Do we want this?
   it('should stack combining params', () => {
     const $params1 = { a: 0, c: 3 }
     const $params2 = { a: 1, b: 2 }

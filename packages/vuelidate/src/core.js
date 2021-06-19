@@ -6,6 +6,12 @@ let ROOT_PATH = '__root'
 /**
  * @typedef {import('vue-demi').ComponentPublicInstance} VueInstance
  */
+/**
+ * @typedef {import('vue-demi').ComputedRef} ComputedRef
+ */
+/**
+ * @typedef {import('vue-demi').WatchStopHandle} WatchStopHandle
+ */
 
 /**
  * @typedef NormalizedValidator
@@ -13,6 +19,7 @@ let ROOT_PATH = '__root'
  * @property {String | Ref<String> | function(*): string} [$message]
  * @property {Object | Ref<Object>} [$params]
  * @property {Object | Ref<Object>} [$async]
+ * @property {Ref<*>[]} [$watchTargets]
  */
 
 /**
@@ -83,7 +90,7 @@ function callRule (rule, value, instance) {
  * Normalizes the validator result
  * Allows passing a boolean of an object like `{ $valid: Boolean }`
  * @param {ValidatorResponse} result - Validator result
- * @return {Boolean}
+ * @return {boolean}
  */
 function normalizeValidatorResponse (result) {
   return result.$valid !== undefined
@@ -93,24 +100,25 @@ function normalizeValidatorResponse (result) {
 
 /**
  * Returns the result of an async validator.
- * @param {Function} rule
+ * @param {Validator} rule
  * @param {Ref<*>} model
  * @param {Ref<Boolean>} $pending
  * @param {Ref<Boolean>} $dirty
  * @param {Object} config
  * @param {Ref<*>} $response
  * @param {VueInstance} instance
- * @return {Ref<Boolean>}
+ * @param {Ref<*>[]} watchTargets
+ * @return {{ $invalid: Ref<Boolean>, $unwatch: WatchStopHandle }}
  */
-function createAsyncResult (rule, model, $pending, $dirty, { $lazy }, $response, instance) {
+function createAsyncResult (rule, model, $pending, $dirty, { $lazy }, $response, instance, watchTargets = []) {
   const $invalid = ref(!!$dirty.value)
   const $pendingCounter = ref(0)
 
   $pending.value = false
 
   const $unwatch = watch(
-    [model, $dirty],
-    ([modelValue, dirty]) => {
+    [model, $dirty].concat(watchTargets),
+    () => {
       if ($lazy && !$dirty.value) return false
       let ruleResult
       // make sure we dont break if a validator throws
@@ -145,6 +153,33 @@ function createAsyncResult (rule, model, $pending, $dirty, { $lazy }, $response,
 }
 
 /**
+ * Returns the result of a sync validator
+ * @param {Validator} rule
+ * @param {Ref<*>} model
+ * @param {Ref<Boolean>} $dirty
+ * @param {Object} config
+ * @param {Boolean} config.$lazy
+ * @param {Ref<*>} $response
+ * @param {VueInstance} instance
+ * @return {{$unwatch: (function(): {}), $invalid: ComputedRef<boolean>}}
+ */
+function createSyncResult (rule, model, $dirty, { $lazy }, $response, instance) {
+  const $unwatch = () => ({})
+  const $invalid = computed(() => {
+    if ($lazy && !$dirty.value) return false
+    try {
+      const result = callRule(rule, model, instance)
+      $response.value = result
+      return normalizeValidatorResponse(result)
+    } catch (err) {
+      $response.value = err
+    }
+    return true
+  })
+  return { $unwatch, $invalid }
+}
+
+/**
  * Returns the validation result.
  * Detects async and sync validators.
  * @param {NormalizedValidator} rule
@@ -152,21 +187,36 @@ function createAsyncResult (rule, model, $pending, $dirty, { $lazy }, $response,
  * @param {Ref<boolean>} $dirty
  * @param {Object} config
  * @param {VueInstance} instance
- * @return {{$params: *, $message: Ref<String>, $pending: Ref<Boolean>, $invalid: Ref<Boolean>, $response: Ref<*>}}
+ * @return {{ $params: *, $message: Ref<String>, $pending: Ref<Boolean>, $invalid: Ref<Boolean>, $response: Ref<*>, $unwatch: WatchStopHandle }}
  */
 function createValidatorResult (rule, model, $dirty, config, instance) {
   const $pending = ref(false)
   const $params = rule.$params || {}
   const $response = ref(null)
-  const { $invalid, $unwatch } = createAsyncResult(
-    rule.$validator,
-    model,
-    $pending,
-    $dirty,
-    config,
-    $response,
-    instance
-  )
+  let $invalid
+  let $unwatch
+
+  if (rule.$async) {
+    ({ $invalid, $unwatch } = createAsyncResult(
+      rule.$validator,
+      model,
+      $pending,
+      $dirty,
+      config,
+      $response,
+      instance,
+      rule.$watchTargets
+    ))
+  } else {
+    ({ $invalid, $unwatch } = createSyncResult(
+      rule.$validator,
+      model,
+      $dirty,
+      config,
+      $response,
+      instance
+    ))
+  }
 
   const message = rule.$message
   const $message = isFunction(message)
@@ -200,6 +250,7 @@ function createValidatorResult (rule, model, $dirty, config, instance) {
  * @property {String} $property - State key
  * @property {String} $propertyPath - Dot notation path to state
  * @property {String} $validator - Validator name
+ * @property {String} $uid - Unique identifier
  */
 
 /**
@@ -303,6 +354,7 @@ function createValidationResults (rules, model, key, resultsCache, path, config,
         $propertyPath: path,
         $property: key,
         $validator: ruleKey,
+        $uid: `${path}-${ruleKey}`,
         $message: res.$message,
         $params: res.$params,
         $response: res.$response,

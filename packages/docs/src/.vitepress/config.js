@@ -13,6 +13,10 @@ const config = {
   themeConfig: {
     repo: 'vuelidate/vuelidate',
     docsDir: 'docs',
+    algolia: {
+      apiKey: 'f3200469da216e2a8bfd46e2eab6552f',
+      indexName: 'vuelidate-next'
+    },
     nav: [
       { text: 'General Guide', link: '/', activeMatch: '^/(?!.*(api))' },
       {
@@ -44,6 +48,7 @@ function getAPISidebar () {
   return [
     { text: 'Validation State', link: '/api/state' },
     { text: 'Validation Methods', link: '/api/methods' },
+    { text: 'Validation Error Object', link: '/api/error_object' },
     { text: 'Validation Configuration', link: '/api/configuration' },
   ]
 }

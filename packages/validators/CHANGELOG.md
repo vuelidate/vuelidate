@@ -3,6 +3,70 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.0.0-alpha.17](https://github.com/vuelidate/vuelidate/compare/@vuelidate/validators@2.0.0-alpha.16...@vuelidate/validators@2.0.0-alpha.17) (2021-06-07)
+
+
+### Bug Fixes
+
+* **validators:** async handling of `and`, `or`. Change `requiredIf` and `requiredUnless` to sync only  ([#864](https://github.com/vuelidate/vuelidate/issues/864)) ([6e7eedb](https://github.com/vuelidate/vuelidate/commit/6e7eedbcbec968d74050f98c325ef589bdeb7a37))
+
+
+### BREAKING CHANGES
+
+* **validators:** 1. Async validators passed to `and` and `or` must be wrapped in `withAsync`.
+2. `requiredIf` and `requiredUnless` no longer work with functions, returning a Promise.
+
+
+
+
+
+# [2.0.0-alpha.16](https://github.com/vuelidate/vuelidate/compare/@vuelidate/validators@2.0.0-alpha.15...@vuelidate/validators@2.0.0-alpha.16) (2021-06-04)
+
+**Note:** Version bump only for package @vuelidate/validators
+
+
+
+
+
+# [2.0.0-alpha.15](https://github.com/vuelidate/vuelidate/compare/@vuelidate/validators@2.0.0-alpha.14...@vuelidate/validators@2.0.0-alpha.15) (2021-05-23)
+
+
+### Code Refactoring
+
+* **core:** revert back to assuming sync validators via computed and using withAsync for async validators ([#860](https://github.com/vuelidate/vuelidate/issues/860)) ([d45ea36](https://github.com/vuelidate/vuelidate/commit/d45ea3636c3fb5fc4c3133ce1717fd66c89ca121))
+
+
+### BREAKING CHANGES
+
+* **core:** Async validators must be wrapped in `withAsync`
+
+
+
+
+
+# [2.0.0-alpha.14](https://github.com/vuelidate/vuelidate/compare/@vuelidate/validators@2.0.0-alpha.13...@vuelidate/validators@2.0.0-alpha.14) (2021-05-18)
+
+
+### Bug Fixes
+
+* **validators:** properly pass the this context to validators ([#845](https://github.com/vuelidate/vuelidate/issues/845)) ([93f57a6](https://github.com/vuelidate/vuelidate/commit/93f57a6f7eabe1cf25b3d587c9286cfa215bac9b))
+
+
+
+
+
+# [2.0.0-alpha.13](https://github.com/vuelidate/vuelidate/compare/@vuelidate/validators@2.0.0-alpha.12...@vuelidate/validators@2.0.0-alpha.13) (2021-04-07)
+
+
+### Bug Fixes
+
+* **validators:** allow not, and, or to accept async validators ([#823](https://github.com/vuelidate/vuelidate/issues/823)) ([d7ae436](https://github.com/vuelidate/vuelidate/commit/d7ae4368c608bf9b431b0435fdf12f9ac5997798))
+* replace $invalid with $valid for validator response ([#822](https://github.com/vuelidate/vuelidate/issues/822)) ([d7c6c00](https://github.com/vuelidate/vuelidate/commit/d7c6c003cf891c53cb3908ad5dc04a447e8c879e))
+
+
+
+
+
 # [2.0.0-alpha.12](https://github.com/vuelidate/vuelidate/compare/@vuelidate/validators@2.0.0-alpha.11...@vuelidate/validators@2.0.0-alpha.12) (2021-02-20)
 
 **Note:** Version bump only for package @vuelidate/validators
