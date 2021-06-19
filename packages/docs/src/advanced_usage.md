@@ -388,10 +388,9 @@ export default {
 }
 ```
 
-:::tip **Note:**You can pass validation configs as a single parameter to `useVuelidate`
-
-- [Passing a single parameter to useVuelidate](#passing-a-single-parameter-to-usevuelidate)
-  :::
+:::tip
+**Note:** You can pass validation configs as a single parameter to `useVuelidate` - [Passing a single parameter to useVuelidate](#passing-a-single-parameter-to-usevuelidate)
+:::
 
 ## Returning extra data from validators
 
