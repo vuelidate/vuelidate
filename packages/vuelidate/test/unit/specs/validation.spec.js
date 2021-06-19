@@ -1347,10 +1347,14 @@ describe('useVuelidate', () => {
         number: 'External Error'
       }
       let externalErrorObject = {
-        '$message': 'External Error',
-        '$property': 'number',
-        '$propertyPath': 'number',
-        '$validator': '$externalResults'
+        $message: 'External Error',
+        $params: {},
+        $pending: false,
+        $property: 'number',
+        $propertyPath: 'number',
+        $response: null,
+        $uid: 'number-0',
+        $validator: '$externalResults'
       }
       expect(vm.v.number.$error).toBe(true)
       expect(vm.v.number.$externalResults).toEqual([externalErrorObject])
@@ -1376,16 +1380,24 @@ describe('useVuelidate', () => {
         number: ['External Error 1', 'External Error 2']
       }
       let externalErrorObjectOne = {
-        '$message': 'External Error 1',
-        '$property': 'number',
-        '$propertyPath': 'number',
-        '$validator': '$externalResults'
+        $message: 'External Error 1',
+        $property: 'number',
+        $propertyPath: 'number',
+        $validator: '$externalResults',
+        $params: {},
+        $pending: false,
+        $response: null,
+        $uid: 'number-0'
       }
       let externalErrorObjectTwo = {
-        '$message': 'External Error 2',
-        '$property': 'number',
-        '$propertyPath': 'number',
-        '$validator': '$externalResults'
+        $message: 'External Error 2',
+        $property: 'number',
+        $propertyPath: 'number',
+        $validator: '$externalResults',
+        $params: {},
+        $pending: false,
+        $response: null,
+        $uid: 'number-1'
       }
       expect(vm.v.number.$error).toBe(true)
       expect(vm.v.number.$externalResults).toEqual([externalErrorObjectOne, externalErrorObjectTwo])
@@ -1402,7 +1414,7 @@ describe('useVuelidate', () => {
       expect(vm.v.number.$error).toBe(false)
     })
 
-    it('accepts a reactive object, with pre-definition', async () => {
+    it('accepts a reactive object, with pre-defined properties', async () => {
       const $externalResults = reactive({ number: '' })
       const { state, validations } = simpleValidation()
       const { vm } = await createSimpleWrapper(validations, state, { $externalResults })
@@ -1411,11 +1423,16 @@ describe('useVuelidate', () => {
       $externalResults.number = 'External Error'
 
       let externalErrorObject = {
-        '$message': 'External Error',
-        '$property': 'number',
-        '$propertyPath': 'number',
-        '$validator': '$externalResults'
+        $message: 'External Error',
+        $property: 'number',
+        $propertyPath: 'number',
+        $validator: '$externalResults',
+        $params: {},
+        $pending: false,
+        $response: null,
+        $uid: 'number-0'
       }
+
       expect(vm.v.number.$error).toBe(true)
       expect(vm.v.number.$externalResults).toEqual([externalErrorObject])
       expect(vm.v.number.$silentErrors).toHaveLength(2)
@@ -1431,8 +1448,52 @@ describe('useVuelidate', () => {
       expect(vm.v.number.$error).toBe(false)
       expect(vm.v.number.$externalResults).toEqual([])
       expect(vm.v.number.$silentErrors).toEqual([])
+
+      // test what happens after we clear
+      $externalResults.number = 'External Error'
+
+      expect(vm.v.number.$error).toBe(true)
+      expect(vm.v.number.$externalResults).toEqual([externalErrorObject])
+      expect(vm.v.number.$silentErrors).toHaveLength(1)
+      expect(vm.v.number.$silentErrors).toEqual([externalErrorObject])
     })
 
+    it('accepts a ref object, with deeply nested validations', async () => {
+      const $externalResults = ref({})
+      const { state, validations } = nestedRefObjectValidation()
+      const { vm } = await createSimpleWrapper(validations, state, { $externalResults })
+      vm.v.$touch()
+      $externalResults.value = {
+        level1: {
+          child: ['External Error 1', 'External Error 2']
+        }
+      }
+      const externalErrorObjectOne = {
+        $message: 'External Error 1',
+        $property: 'child',
+        $propertyPath: 'level1.child',
+        $validator: '$externalResults',
+        $params: {},
+        $pending: false,
+        $response: null,
+        $uid: 'level1.child-0'
+      }
+      const externalErrorObjectTwo = {
+        $message: 'External Error 2',
+        $property: 'child',
+        $propertyPath: 'level1.child',
+        $validator: '$externalResults',
+        $params: {},
+        $pending: false,
+        $response: null,
+        $uid: 'level1.child-1'
+      }
+
+      expect(vm.v.$errors).toHaveLength(3)
+      expect(vm.v.$errors).toEqual(expect.arrayContaining([externalErrorObjectOne, externalErrorObjectTwo]))
+    })
+
+    // reactive does not work in Vue 2, without pre-defining your keys.
     ifVue3('accepts a reactive object, without pre-definition', async () => {
       const $externalResults = reactive({})
       const { state, validations } = simpleValidation()
@@ -1442,10 +1503,14 @@ describe('useVuelidate', () => {
       $externalResults.number = 'External Error'
 
       let externalErrorObject = {
-        '$message': 'External Error',
-        '$property': 'number',
-        '$propertyPath': 'number',
-        '$validator': '$externalResults'
+        $message: 'External Error',
+        $property: 'number',
+        $propertyPath: 'number',
+        $validator: '$externalResults',
+        $params: {},
+        $pending: false,
+        $response: null,
+        $uid: 'number-0'
       }
       expect(vm.v.number.$error).toBe(true)
       expect(vm.v.number.$externalResults).toEqual([externalErrorObject])

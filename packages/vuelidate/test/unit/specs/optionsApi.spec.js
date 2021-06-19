@@ -15,7 +15,6 @@ import {
 } from '../validations.fixture'
 import { flushPromises, mount } from '../test-utils'
 import withAsync from '@vuelidate/validators/src/utils/withAsync'
-import { toRef } from '@vue/composition-api'
 
 describe('OptionsAPI validations', () => {
   it('should have a `v` key defined if used', async () => {
@@ -329,10 +328,14 @@ describe('OptionsAPI validations', () => {
       vm.vuelidateExternalResults.number = ['foo']
       // assert
       const externalErrorObject = {
-        '$message': 'foo',
-        '$property': 'number',
-        '$propertyPath': 'number',
-        '$validator': '$externalResults'
+        $message: 'foo',
+        $params: {},
+        $pending: false,
+        $property: 'number',
+        $propertyPath: 'number',
+        $response: null,
+        $uid: 'number-0',
+        $validator: '$externalResults'
       }
       expect(vm.v.number.$externalResults).toEqual([externalErrorObject])
       expect(vm.v.number.$error).toBe(true)
@@ -364,10 +367,14 @@ describe('OptionsAPI validations', () => {
       Object.assign(vm.vuelidateExternalResults, { number: ['foo'] })
       // assert
       const externalErrorObject = {
-        '$message': 'foo',
-        '$property': 'number',
-        '$propertyPath': 'number',
-        '$validator': '$externalResults'
+        $message: 'foo',
+        $params: {},
+        $pending: false,
+        $property: 'number',
+        $propertyPath: 'number',
+        $response: null,
+        $uid: 'number-0',
+        $validator: '$externalResults'
       }
       expect(vm.v.number.$externalResults).toEqual([externalErrorObject])
       expect(vm.v.number.$error).toBe(true)
@@ -387,8 +394,12 @@ describe('OptionsAPI validations', () => {
       Object.assign(vm.vuelidateExternalResults, { number: ['bar'] })
       expect(vm.v.number.$externalResults).toEqual([{
         $message: 'bar',
+        $params: {},
+        $pending: false,
         $property: 'number',
         $propertyPath: 'number',
+        $response: null,
+        $uid: 'number-0',
         $validator: '$externalResults'
       }])
     })

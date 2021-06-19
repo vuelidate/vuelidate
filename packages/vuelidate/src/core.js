@@ -1,5 +1,5 @@
 import { isFunction, unwrap, unwrapObj } from './utils'
-import { computed, isRef, reactive, ref, watch, nextTick, del } from 'vue-demi'
+import { computed, isRef, reactive, ref, watch, nextTick } from 'vue-demi'
 
 let ROOT_PATH = '__root'
 
@@ -37,7 +37,7 @@ let ROOT_PATH = '__root'
 /**
  * Sorts the validators for a state tree branch
  * @param {Object<NormalizedValidator|Function>} validationsRaw
- * @return {{ rules: Object<NormalizedValidator>, nestedValidators: Object, config: Object }}
+ * @return {{ rules: Object<NormalizedValidator>, nestedValidators: Object, config: GlobalConfig }}
  */
 function sortValidations (validationsRaw = {}) {
   const validations = unwrap(validationsRaw)
@@ -104,7 +104,8 @@ function normalizeValidatorResponse (result) {
  * @param {Ref<*>} model
  * @param {Ref<Boolean>} $pending
  * @param {Ref<Boolean>} $dirty
- * @param {Object} config
+ * @param {GlobalConfig} config
+ * @param {boolean} config.$lazy
  * @param {Ref<*>} $response
  * @param {VueInstance} instance
  * @param {Ref<*>[]} watchTargets
@@ -157,7 +158,7 @@ function createAsyncResult (rule, model, $pending, $dirty, { $lazy }, $response,
  * @param {Validator} rule
  * @param {Ref<*>} model
  * @param {Ref<Boolean>} $dirty
- * @param {Object} config
+ * @param {GlobalConfig} config
  * @param {Boolean} config.$lazy
  * @param {Ref<*>} $response
  * @param {VueInstance} instance
@@ -185,7 +186,7 @@ function createSyncResult (rule, model, $dirty, { $lazy }, $response, instance) 
  * @param {NormalizedValidator} rule
  * @param {Ref<*>} model
  * @param {Ref<boolean>} $dirty
- * @param {Object} config
+ * @param {GlobalConfig} config
  * @param {VueInstance} instance
  * @return {{ $params: *, $message: Ref<String>, $pending: Ref<Boolean>, $invalid: Ref<Boolean>, $response: Ref<*>, $unwatch: WatchStopHandle }}
  */
@@ -274,8 +275,9 @@ function createValidatorResult (rule, model, $dirty, config, instance) {
  * @param {String} key - Key for the current state tree
  * @param {ResultsStorage} [resultsCache] - A cache map of all the validators
  * @param {String} [path] - the current property path
- * @param {Object} [config] - the config object
+ * @param {GlobalConfig} [config] - the config object
  * @param {VueInstance} instance
+ * @param {ComputedRef<Object>} externalResults
  * @return {ValidationResult | {}}
  */
 function createValidationResults (rules, model, key, resultsCache, path, config, instance, externalResults) {
@@ -325,11 +327,15 @@ function createValidationResults (rules, model, key, resultsCache, path, config,
 
   result.$externalResults = computed(() => {
     if (!externalResults.value) return []
-    return [].concat(externalResults.value).map((stringError) => ({
+    return [].concat(externalResults.value).map((stringError, index) => ({
       $propertyPath: path,
       $property: key,
       $validator: '$externalResults',
-      $message: stringError
+      $uid: `${path}-${index}`,
+      $message: stringError,
+      $params: {},
+      $response: null,
+      $pending: false
     }))
   })
 
@@ -384,7 +390,9 @@ function createValidationResults (rules, model, key, resultsCache, path, config,
  * @param {Object} nestedState - Current state
  * @param {String} path - Path to current property
  * @param {ResultsStorage} resultsCache - Validations cache map
- * @param {Object} config - The config object
+ * @param {GlobalConfig} config - The config object
+ * @param {VueInstance} instance - The current Vue instance
+ * @param {ComputedRef<object>} nestedExternalResults - The external results for this nested collection
  * @return {{}}
  */
 function collectNestedValidationResults (validations, nestedState, path, resultsCache, config, instance, nestedExternalResults) {
@@ -412,8 +420,8 @@ function collectNestedValidationResults (validations, nestedState, path, results
 /**
  * Generates the Meta fields from the results
  * @param {ValidationResult|{}} results
- * @param {Object<ValidationResult>[]} nestedResults
- * @param {Object<ValidationResult>[]} childResults
+ * @param {Object.<string, ValidationResult>[]} nestedResults
+ * @param {Object.<string, ValidationResult>[]} childResults
  * @return {{$anyDirty: Ref<Boolean>, $error: Ref<Boolean>, $invalid: Ref<Boolean>, $errors: Ref<ErrorObject[]>, $dirty: Ref<Boolean>, $touch: Function, $reset: Function }}
  */
 function createMetaFields (results, nestedResults, childResults) {
@@ -553,8 +561,10 @@ function createMetaFields (results, nestedResults, childResults) {
  * @param {String} [params.key] - Current state property key. Used when being called on nested items
  * @param {String} [params.parentKey] - Parent state property key. Used when being called recursively
  * @param {Object<ValidationResult>} [params.childResults] - Used to collect child results.
- * @param {ResultsStorage} resultsCache - The cached validation results
- * @param {VueInstance} instance - The current Vue instance
+ * @param {ResultsStorage} params.resultsCache - The cached validation results
+ * @param {VueInstance} params.instance - The current Vue instance
+ * @param {GlobalConfig} params.globalConfig - The validation config, passed to this setValidations instance.
+ * @param {Reactive<object> | Ref<Object>} params.externalResults - External validation results
  * @return {UnwrapNestedRefs<VuelidateState>}
  */
 export function setValidations ({
