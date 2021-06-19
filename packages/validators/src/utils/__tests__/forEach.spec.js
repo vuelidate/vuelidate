@@ -50,7 +50,7 @@ describe('forEach', () => {
     expect(isFoo).toHaveBeenCalledWith(state[1].name, 'foo', 'bar', 'baz')
   })
 
-  it('returns the a validation result object, with $data, $messages and $valid', () => {
+  it('returns the a validation result object, with $data, $errors and $valid', () => {
     expect(forEach(rules).$validator(state)).toEqual({
       $data: [
         {
@@ -66,15 +66,31 @@ describe('forEach', () => {
           }
         }
       ],
-      $messages: [
+      $errors: [
         {
-          name: {
-            isFoo: rules.name.isFoo.$message,
-            required: rules.name.required.$message
-          }
+          name: [
+            {
+              $message: 'Not Foo',
+              $model: '',
+              $params: {},
+              $pending: false,
+              $property: 'name',
+              $response: false,
+              $validator: 'isFoo'
+            },
+            {
+              $message: 'Is Required',
+              $model: '',
+              $params: {},
+              $pending: false,
+              $property: 'name',
+              $response: false,
+              $validator: 'required'
+            }
+          ]
         },
         {
-          name: {}
+          name: []
         }
       ],
       $valid: false
@@ -82,27 +98,88 @@ describe('forEach', () => {
   })
 
   it('does not collect error messages, if validation passes', () => {
-    expect(forEach(rules).$validator([{ name: '' }]).$messages).toEqual([{
-      name: {
-        isFoo: rules.name.isFoo.$message,
-        required: rules.name.required.$message
-      }
+    expect(forEach(rules).$validator([{ name: '' }]).$errors).toEqual([{
+      name: [
+        {
+          $message: 'Not Foo',
+          $model: '',
+          $params: {},
+          $pending: false,
+          $property: 'name',
+          $response: false,
+          $validator: 'isFoo'
+        },
+        {
+          $message: 'Is Required',
+          $model: '',
+          $params: {},
+          $pending: false,
+          $property: 'name',
+          $response: false,
+          $validator: 'required'
+        }
+      ]
     }])
 
-    expect(forEach(rules).$validator([{ name: 'F' }]).$messages).toEqual([{
-      name: {
-        isFoo: rules.name.isFoo.$message
-      }
+    expect(forEach(rules).$validator([{ name: 'F' }]).$errors).toEqual([{
+      name: [
+        {
+          $message: 'Not Foo',
+          $model: 'F',
+          $params: {},
+          $pending: false,
+          $property: 'name',
+          $response: false,
+          $validator: 'isFoo'
+        }
+      ]
     }])
 
-    expect(forEach(rules).$validator([{ name: 'Foo' }]).$messages).toEqual([{
-      name: {}
+    expect(forEach(rules).$validator([{ name: 'Foo' }]).$errors).toEqual([{
+      name: []
     }])
   })
 
-  it('has a `$message` method that just returns the `$messages` from the `$response`', () => {
-    const $messages = { foo: '' }
-    expect(forEach(rules).$message({ $response: { $messages } })).toEqual($messages)
+  it('has a `$message` method that just returns the `$errors` from the `$response`', () => {
+    const $errors = [
+      {
+        name: [
+          {
+            $message: 'Not Foo',
+            $model: '',
+            $params: {},
+            $pending: false,
+            $property: 'name',
+            $response: false,
+            $validator: 'isFoo'
+          },
+          {
+            $message: 'Is Required',
+            $model: '',
+            $params: {},
+            $pending: false,
+            $property: 'name',
+            $response: false,
+            $validator: 'required'
+          }
+        ]
+      },
+      {
+        name: [{
+          $message: 'Is Bar',
+          $model: '',
+          $params: {},
+          $pending: false,
+          $property: 'name',
+          $response: false,
+          $validator: 'required'
+        }]
+      }
+    ]
+    expect(forEach(rules).$message({ $response: { $errors } })).toEqual([
+      ['Not Foo', 'Is Required'],
+      ['Is Bar']
+    ])
   })
 
   it('supports $message as a function, passing all the necessary params', () => {

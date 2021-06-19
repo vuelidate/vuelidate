@@ -26,21 +26,19 @@
     <div
       v-for="(input, index) in v$.collectionForEach.$model"
       :key="index"
+      :class="{
+        error: v$.collectionForEach.$each.$response.$errors[index].name.length,
+      }"
     >
       <input
         v-model="input.name"
         type="text"
       >
       <div
-        v-for="(message, mIndex) in v$.collectionForEach.$each.$message[index]"
-        :key="mIndex"
+        v-for="error in v$.collectionForEach.$each.$response.$errors[index].name"
+        :key="error"
       >
-        <div
-          v-for="string in message"
-          :key="string"
-        >
-          {{ string }}
-        </div>
+        {{ error.$message }}
       </div>
     </div>
     <button @click="addItems">

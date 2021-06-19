@@ -2,11 +2,14 @@
 import { useVuelidate } from '@vuelidate/core'
 
 export default {
-  name: 'EachProvider',
+  name: 'ValidateEach',
   props: ['rules', 'state', 'options'],
-  setup (props, { slots }) {
+  setup (props) {
     const v = useVuelidate(props.rules, props.state, props.options)
-    return () => slots.default({ v: v.value })
+    return { v }
+  },
+  render () {
+    return ('$scopedSlots' in this ? this.$scopedSlots : this.$slots).default({ v: this.v })
   }
 }
 </script>
