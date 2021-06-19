@@ -1,10 +1,6 @@
-import { isRef, computed, ref, isReactive, isReadonly } from 'vue-demi'
+import { isRef, computed, ref, isReactive, isReadonly, unref as unwrap } from 'vue-demi'
 
-export function unwrap (val) {
-  return isRef(val)
-    ? val.value
-    : val
-}
+export { unwrap }
 
 export function unwrapObj (obj, ignoreKeys = []) {
   return Object.keys(obj).reduce((o, k) => {
