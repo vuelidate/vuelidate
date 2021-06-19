@@ -10,6 +10,6 @@ export default function (equalTo, otherName = 'other') {
   return {
     $validator: sameAs(equalTo),
     $message: ({ $params }) => `The value must be equal to the ${otherName} value`,
-    $params: { equalTo, otherName }
+    $params: { equalTo, otherName, type: 'sameAs' }
   }
 }

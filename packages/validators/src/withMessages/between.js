@@ -10,6 +10,6 @@ export default function (min, max) {
   return {
     $validator: between(min, max),
     $message: ({ $params }) => `The value must be between ${$params.min} and ${$params.max}`,
-    $params: { min, max }
+    $params: { min, max, type: 'between' }
   }
 }

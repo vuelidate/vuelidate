@@ -57,7 +57,7 @@ export type ValidationRule <T = unknown> = ValidationRuleWithParams<any, T> | Va
 
 type ValidationRuleCollection <T = unknown> = Record<string, ValidationRule<T>>;
 
-interface ValidationArgs {
+export interface ValidationArgs {
   [K: string]: ValidationRule | ValidationArgs
 }
 
@@ -104,6 +104,7 @@ type BaseValidation <
   readonly $error: boolean
   readonly $errors: ErrorObject[]
   readonly $silentErrors: ErrorObject[]
+  readonly $externalResults: ({ $validator: '$externalResults', $response: null, $pending: false, $params: {} } & ErrorObject)[]
   readonly $invalid: boolean
   readonly $anyDirty: boolean
   readonly $pending: boolean
@@ -128,6 +129,7 @@ type NestedValidations <Vargs extends ValidationArgs = ValidationArgs, T = unkno
 interface ChildValidations {
   readonly $validate: () => Promise<boolean>
   readonly $getResultsForChild: (key: string) => (BaseValidation & ChildValidations) | undefined
+  readonly $clearExternalResults: () => void
 }
 
 export type Validation <Vargs extends ValidationArgs = ValidationArgs, T = unknown> =
@@ -158,12 +160,17 @@ type ExtractState <Vargs extends ValidationArgs> = Vargs extends ValidationRuleC
 
 type ToRefs <T> = { [K in keyof T]: Ref<T[K]> };
 
+interface ServerErrors {
+  [key: string]: string | string[] | ServerErrors
+}
+
 interface GlobalConfig {
   $registerAs?: string
   $scope?: string | number | symbol | boolean
   $stopPropagation?: boolean
   $autoDirty?: boolean
-  $lazy?: boolean
+  $lazy?: boolean,
+  $externalResults: ServerErrors
 }
 
 export function useVuelidate(globalConfig?: GlobalConfig): Ref<Validation>;

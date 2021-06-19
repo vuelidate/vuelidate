@@ -30,3 +30,9 @@
 * **Usage:**
 
   Resets the `$dirty` state on all nested properties of a form.
+
+## $clearExternalResults
+
+* **Usage:**
+
+  Clears the `$externalResults` state back to an empty object.

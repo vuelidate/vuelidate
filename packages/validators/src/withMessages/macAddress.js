@@ -7,6 +7,7 @@ import macAddress from '../raw/macAddress'
 export default function (separator) {
   return {
     $validator: macAddress(separator),
-    $message: 'The value is not a valid MAC Address'
+    $message: 'The value is not a valid MAC Address',
+    $params: { type: 'macAddress' }
   }
 }

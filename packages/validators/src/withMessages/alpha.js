@@ -6,5 +6,8 @@ import alpha from '../raw/alpha'
  */
 export default {
   $validator: alpha,
-  $message: 'The value is not alphabetical'
+  $message: 'The value is not alphabetical',
+  $params: {
+    type: 'alpha'
+  }
 }

@@ -15,7 +15,6 @@ import {
 } from '../validations.fixture'
 import { flushPromises, mount } from '../test-utils'
 import withAsync from '@vuelidate/validators/src/utils/withAsync'
-import { toRef } from '@vue/composition-api'
 
 describe('OptionsAPI validations', () => {
   it('should have a `v` key defined if used', async () => {
@@ -310,6 +309,99 @@ describe('OptionsAPI validations', () => {
       vm.enabled = false
       await flushPromises()
       expect(vm.v.number).toHaveProperty('$invalid', true)
+    })
+  })
+
+  describe('external results', () => {
+    it('saves external results, by changing individual properties', async () => {
+      const validation = {
+        number: { isEven }
+      }
+      const { vm } = await createOldApiSimpleWrapper(validation, { number: 1, vuelidateExternalResults: { number: '' } })
+
+      vm.v.$touch()
+      expect(vm.vuelidateExternalResults).toEqual({ number: '' })
+
+      expect(vm.v).toHaveProperty('number', expect.any(Object))
+      expect(vm.v.number.$externalResults).toEqual([])
+      // set an external validation result
+      vm.vuelidateExternalResults.number = ['foo']
+      // assert
+      const externalErrorObject = {
+        $message: 'foo',
+        $params: {},
+        $pending: false,
+        $property: 'number',
+        $propertyPath: 'number',
+        $response: null,
+        $uid: 'number-0',
+        $validator: '$externalResults'
+      }
+      expect(vm.v.number.$externalResults).toEqual([externalErrorObject])
+      expect(vm.v.number.$error).toBe(true)
+      expect(vm.v.number.$silentErrors).toHaveLength(2)
+      expect(vm.v.number.$silentErrors).toContainEqual(externalErrorObject)
+      vm.v.number.$model = 2
+      await nextTick()
+      expect(vm.v.number.$error).toBe(true)
+      expect(vm.v.number.$silentErrors).toHaveLength(1)
+      expect(vm.v.number.$silentErrors).toEqual([externalErrorObject])
+      vm.vuelidateExternalResults.number = []
+      expect(vm.v.number.$error).toBe(false)
+      expect(vm.v.number.$silentErrors).toEqual([])
+    })
+
+    it('works by replacing the entire external state, with pre-definition', async () => {
+      const validation = {
+        number: { isEven }
+      }
+      const vuelidateExternalResults = { number: '' }
+      const { vm } = await createOldApiSimpleWrapper(validation, { number: 1, vuelidateExternalResults })
+
+      vm.v.$touch()
+      expect(vm.vuelidateExternalResults).toEqual({ number: '' })
+
+      expect(vm.v).toHaveProperty('number', expect.any(Object))
+      expect(vm.v.number.$externalResults).toEqual([])
+      // set an external validation result
+      Object.assign(vm.vuelidateExternalResults, { number: ['foo'] })
+      // assert
+      const externalErrorObject = {
+        $message: 'foo',
+        $params: {},
+        $pending: false,
+        $property: 'number',
+        $propertyPath: 'number',
+        $response: null,
+        $uid: 'number-0',
+        $validator: '$externalResults'
+      }
+      expect(vm.v.number.$externalResults).toEqual([externalErrorObject])
+      expect(vm.v.number.$error).toBe(true)
+      expect(vm.v.number.$silentErrors).toHaveLength(2)
+      expect(vm.v.number.$silentErrors).toContainEqual(externalErrorObject)
+      vm.v.number.$model = 2
+      await nextTick()
+      expect(vm.v.number.$error).toBe(true)
+      expect(vm.v.number.$silentErrors).toHaveLength(1)
+      expect(vm.v.number.$silentErrors).toEqual([externalErrorObject])
+      vm.v.$clearExternalResults()
+      expect(vm.vuelidateExternalResults).toEqual(vuelidateExternalResults)
+      expect(vm.v.number.$externalResults).toEqual([])
+      expect(vm.v.number.$error).toBe(false)
+      expect(vm.v.number.$silentErrors).toEqual([])
+      // trigger again
+      Object.assign(vm.vuelidateExternalResults, { number: ['bar'] })
+      expect(vm.v.number.$externalResults).toEqual([{
+        $message: 'bar',
+        $params: {},
+        $pending: false,
+        $property: 'number',
+        $propertyPath: 'number',
+        $response: null,
+        $uid: 'number-0',
+        $validator: '$externalResults'
+      }])
     })
   })
 
