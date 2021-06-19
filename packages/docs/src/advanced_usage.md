@@ -235,13 +235,13 @@ const $message = [
 ]
 ```
 
-### Using our ValidateEach component
+### Using the ValidateEach component
 
-A simple validator provider like the shown `ValidateEach` component below comes in handy, when you just want to have a quick collection validation,
-without the need for dedicated form components, and still have all the rules and collection state defined near your form data.
+A simple validator provider like the `ValidateEach` component below comes in handy, when you just want to have a quick collection validation, without
+the need for dedicated form components, and still have all the rules and collection state defined near your form data.
 
 ```vue
-<!--YourForm.vue-->
+
 <template>
   <ValidateEach
     v-for="(item, index) in collection"
@@ -265,11 +265,12 @@ without the need for dedicated form components, and still have all the rules and
     </template>
   </ValidateEach>
 </template>
+
 <script>
 import { reactive } from 'vue'
-import { minLength, required } from '@vuelidate/validators'
 import useVuelidate from '@vuelidate/core'
-import ValidateEach from '@/components/ValidateEach'
+import { ValidateEach } from '@vuelidate/components'
+import { minLength, required } from '@vuelidate/validators'
 
 export default {
   components: { ValidateEach },
@@ -295,26 +296,7 @@ export default {
 The `ValidateEach` component is just a simple wrapper, without any template of its own. Its sole purpose is to create Vuelidate instances and pass
 them to its parent.
 
-You can just copy/paste it from below, into your project, and it should work in both Vue 2 and Vue 3.
-
-```vue
-
-<script>
-import { useVuelidate } from '@vuelidate/core'
-
-export default {
-  name: 'ValidateEach',
-  props: ['rules', 'state', 'options'],
-  setup (props) {
-    const v = useVuelidate(props.rules, props.state, props.options)
-    return { v }
-  },
-  render () {
-    return ('$scopedSlots' in this ? this.$scopedSlots : this.$slots).default({ v: this.v })
-  }
-}
-</script>
-```
+You have to can install the `@vuelidate/components` package, in order to use `ValidateEach`.
 
 ## Validation scopes
 

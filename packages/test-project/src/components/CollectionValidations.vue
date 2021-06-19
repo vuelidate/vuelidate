@@ -73,7 +73,7 @@
 import { reactive } from 'vue'
 import useVuelidate from '@vuelidate/core'
 import { required, minLength, helpers } from '@vuelidate/validators'
-import ValidateEach from './utils/ValidateEach.vue'
+import { ValidateEach } from '@vuelidate/components'
 
 const { forEach } = helpers
 export default {
