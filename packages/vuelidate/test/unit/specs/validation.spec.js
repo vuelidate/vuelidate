@@ -716,12 +716,54 @@ describe('useVuelidate', () => {
       expect(vm.v.$errors[0]).toHaveProperty('$message', 'Field is not Even')
     })
 
-    it('allows `$message` to be a function', async () => {
-      const isEvenMessage = withMessage(() => `Field is not Even`, isEven)
+    it('allows `$message` to be constructed from a function', async () => {
+      const message = `Field is not Even`
+      const isEvenMessage = withMessage(() => message, isEven)
       const value = ref(1)
       const { vm } = await createSimpleWrapper({ value: { isEvenMessage } }, { value })
       vm.v.$touch()
-      expect(vm.v.$errors[0]).toHaveProperty('$message', 'Field is not Even')
+      expect(vm.v.$errors[0]).toHaveProperty('$message', message)
+    })
+
+    it('passes extra parameters to the `$message` function', async () => {
+      const messageFunc = jest.fn().mockReturnValue('Message')
+      const nestedMessage = jest.fn().mockReturnValue('Nested Message')
+      const isEvenMessage = withMessage(messageFunc, isEven)
+
+      const value = ref(1)
+      const foo = ref('')
+
+      const { vm } = await createSimpleWrapper(
+        {
+          value: { isEvenMessage },
+          child: {
+            foo: { validator: withMessage(nestedMessage, isEven) }
+          }
+        },
+        { value, child: { foo } }
+      )
+
+      vm.v.$touch()
+      expect(messageFunc).toHaveBeenCalledWith({
+        $invalid: true,
+        $model: 1,
+        $params: {},
+        $pending: false,
+        $property: 'value',
+        $propertyPath: 'value',
+        $response: false,
+        $validator: 'isEvenMessage'
+      })
+      expect(nestedMessage).toHaveBeenCalledWith({
+        $invalid: false,
+        $model: '',
+        $params: {},
+        $pending: false,
+        $property: 'foo',
+        $propertyPath: 'child.foo',
+        $response: true,
+        $validator: 'validator'
+      })
     })
 
     it('keeps the `$message` reactive', async () => {

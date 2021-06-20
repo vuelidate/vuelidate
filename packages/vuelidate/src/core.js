@@ -186,8 +186,11 @@ function createSyncResult (rule, model, $dirty, { $lazy }, $response, instance) 
  * @param {NormalizedValidator} rule
  * @param {Ref<*>} model
  * @param {Ref<boolean>} $dirty
- * @param {GlobalConfig} config
- * @param {VueInstance} instance
+ * @param {GlobalConfig} config - Vuelidate config
+ * @param {VueInstance} instance - component instance
+ * @param {string} validatorName - name of the current validator
+ * @param {string} propertyKey - the current property we are validating
+ * @param {string} propertyPath - the deep path to the validated property
  * @return {{ $params: *, $message: Ref<String>, $pending: Ref<Boolean>, $invalid: Ref<Boolean>, $response: Ref<*>, $unwatch: WatchStopHandle }}
  */
 function createValidatorResult (rule, model, $dirty, config, instance, validatorName, propertyKey, propertyPath) {
