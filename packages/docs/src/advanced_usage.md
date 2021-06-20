@@ -411,9 +411,69 @@ export default {
 To clear out the external results, you can again, use the `$clearExternalResults()` method
 
 ```js
-async function validate() {
+async function validate () {
   this.$v.$clearExternalResults()
   // perform validations
   const result = await this.runAsyncValidators()
+}
+```
+
+## i18n support
+
+Validator messages are very flexible. You can wrap each validator with your own helper, that returns a translated error message, based on the
+validator name. Let's define a few validators:
+
+```js
+// @/utils/validators.js
+import { withI18nMessage } from '@/utils/withI18nMessage'
+import * as validators from '@vuelidate/validators'
+
+export const required = withI18nMessage(validators.required)
+export const minLength = withI18nMessage(validators.minLength)
+```
+
+Now lets see how that `withI18nMessage` helpers would look like:
+
+```js
+// @/utils/withI18nMessage.js
+import { i18n } from "@/i18n"
+
+const { t } = i18n.global || i18n // this should work for both Vue 2 and Vue 3 versions of vue-i18n
+
+export const withI18nMessage = (validator) => helpers.withMessage((props) => t(`messages.${props.$validator}`, {
+  model: props.$model,
+  property: props.$property,
+  ...props.$params
+}), validator)
+```
+
+We can now use the validators as we normally do
+
+```vue
+
+<script>
+import { required } from '@/utils/validators'
+
+export default {
+  validations () {
+    return {
+      name: { required }
+    }
+  }
+}
+</script>
+```
+
+One drawback is that Vuelidate params passed to `$message` are prefixed with `$`, which Vue-i18n does not allow. So we would have to manually map any
+parameter we need, to a new name parameter without `$`.
+
+We can now define our validator messages, with optional data inside each message.
+
+```json
+{
+  "messages": {
+    "required": "The field {property} is required.",
+    "minLength": "The {property} field has a value of '{model}', but it must have a min length of {min}."
+  }
 }
 ```
