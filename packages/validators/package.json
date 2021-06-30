@@ -8,7 +8,7 @@
   "repository": "https://github.com/vuelidate/vuelidate",
   "license": "MIT",
   "scripts": {
-    "build": "bili src src/raw --format esm --format cjs",
+    "build": "bili src src/raw",
     "dev": "yarn build --watch",
     "test:unit": "jest",
     "lint": "eslint src"

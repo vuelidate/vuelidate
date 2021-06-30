@@ -3,6 +3,6 @@ module.exports = {
   input: 'src/index.js',
   output: {
     format: ['es', 'cjs', 'umd'],
-    moduleName: 'Vuelidate'
+    moduleName: 'Validators'
   }
 }
