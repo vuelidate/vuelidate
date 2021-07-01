@@ -238,7 +238,7 @@ const $message = [
 ### Using the ValidateEach component
 
 A simple validator provider like the `ValidateEach` component below comes in handy, when you just want to have a quick collection validation, without
-the need for dedicated form components, and still have all the rules and collection state defined near your form data.
+the need for dedicated form components. This would allow you to keep all the rules and state defined near your form data.
 
 ```vue
 
@@ -294,9 +294,9 @@ export default {
 ```
 
 The `ValidateEach` component is just a simple wrapper, without any template of its own. Its sole purpose is to create Vuelidate instances and pass
-them to its parent.
+them to its parent, and children as scoped slot parameters.
 
-You have to can install the `@vuelidate/components` package, in order to use `ValidateEach`.
+You can find `ValidateEach` inside the `@vuelidate/components` package.
 
 ## Validation scopes
 
