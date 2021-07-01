@@ -155,7 +155,7 @@ includes handling optional fields and `$params`.
 ```js
 import { helpers } from 'vuelidate/lib/validators'
 
-const alpha = helpers.regex('alpha', /^[a-zA-Z]*$/)
+const alpha = helpers.regex(/^[a-zA-Z]*$/)
 ```
 
 ## Custom error messages
