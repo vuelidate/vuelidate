@@ -186,11 +186,14 @@ function createSyncResult (rule, model, $dirty, { $lazy }, $response, instance) 
  * @param {NormalizedValidator} rule
  * @param {Ref<*>} model
  * @param {Ref<boolean>} $dirty
- * @param {GlobalConfig} config
- * @param {VueInstance} instance
+ * @param {GlobalConfig} config - Vuelidate config
+ * @param {VueInstance} instance - component instance
+ * @param {string} validatorName - name of the current validator
+ * @param {string} propertyKey - the current property we are validating
+ * @param {string} propertyPath - the deep path to the validated property
  * @return {{ $params: *, $message: Ref<String>, $pending: Ref<Boolean>, $invalid: Ref<Boolean>, $response: Ref<*>, $unwatch: WatchStopHandle }}
  */
-function createValidatorResult (rule, model, $dirty, config, instance) {
+function createValidatorResult (rule, model, $dirty, config, instance, validatorName, propertyKey, propertyPath) {
   const $pending = ref(false)
   const $params = rule.$params || {}
   const $response = ref(null)
@@ -228,7 +231,10 @@ function createValidatorResult (rule, model, $dirty, config, instance) {
           $invalid,
           $params: unwrapObj($params), // $params can hold refs, so we unwrap them for easy access
           $model: model,
-          $response
+          $response,
+          $validator: validatorName,
+          $propertyPath: propertyPath,
+          $property: propertyKey
         })
       ))
     : message || ''
@@ -321,7 +327,10 @@ function createValidationResults (rules, model, key, resultsCache, path, config,
       model,
       result.$dirty,
       config,
-      instance
+      instance,
+      ruleKey,
+      key,
+      path
     )
   })
 
