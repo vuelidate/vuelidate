@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.0.0-alpha.18](https://github.com/vuelidate/vuelidate/compare/@vuelidate/validators@2.0.0-alpha.17...@vuelidate/validators@2.0.0-alpha.18) (2021-07-01)
+
+
+### Features
+
+* **validators:** add a new forEach helper, and @vuelidate/components package ([#880](https://github.com/vuelidate/vuelidate/issues/880)) ([102c6cd](https://github.com/vuelidate/vuelidate/commit/102c6cde3deb5ead7da157d00ac7a964ae596a96))
+
+
+
+
+
 # [2.0.0-alpha.17](https://github.com/vuelidate/vuelidate/compare/@vuelidate/validators@2.0.0-alpha.16...@vuelidate/validators@2.0.0-alpha.17) (2021-06-07)
 
 
