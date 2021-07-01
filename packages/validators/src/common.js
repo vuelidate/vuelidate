@@ -1,5 +1,6 @@
 export { default as withParams } from './utils/withParams'
 export { default as withMessage } from './utils/withMessage'
 export { default as withAsync } from './utils/withAsync'
+export { default as forEach } from './utils/forEach'
 export { req, len, regex } from './raw/core'
-export { unwrap } from './utils/common'
+export { unwrap, unwrapNormalizedValidator, unwrapValidatorResponse, normalizeValidatorObject } from './utils/common'

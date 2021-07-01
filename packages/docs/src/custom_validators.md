@@ -283,6 +283,25 @@ export default {
 }
 ```
 
+## forEach helper
+
+The `forEach` helper is added for cases where you might need a very simple collection validation, but don't want to go into defining new components.
+Please read [Validating Collections](./advanced_usage.md#validating-collections) carefully, before using it.
+
+```js
+import { helpers } from '@vuelidate/validators'
+
+const rules = {
+  collection: {
+    $each: helpers.forEach({
+      name: {
+        required
+      }
+    })
+  }
+}
+```
+
 ## List of helpers
 
 This table contains all helpers that can be used to help you with writing your own validators. You can import them from validators library
@@ -296,6 +315,7 @@ import { helpers } from '@vuelidate/validators'
 | `withParams` | Allows adding `$params` metadata to your validation function.                                                                                 |
 | `withMessage` | Allows adding custom error messages to built-in or custom validators                                                                         |
 | `withAsync`  | Specifies that a validator returns a promise.                                                                         |
+| `forEach`    | Helper to migrate from old `$each` helper more easily.                                                                         |
 | `req`        | Minimal version of `required` validator. Use it to make your validator accept optional fields                                                 |
 | `len`        | Get length of any kind value, whatever makes sense in the context. This can mean array length, string length, or number of keys on the object |
 | `regex`      | Useful for quick creation of regex based validators.                                                                                          |

@@ -131,8 +131,172 @@ export default {
 ## Validating Collections
 
 ::: warning
-**BREAKING CHANGE:** The `$each` helper has been removed. Use the above solution (nested validations) instead.
+**BREAKING CHANGE:** The `$each` helper has been removed from Vuelidate 2, we recommend using [Nested validations](#nested-validations) instead. If
+you cannot migrate to it at this time, here are some workarounds:
 :::
+
+### Using the new forEach helper
+
+Using the `forEach` helper from `@vuelidate/validators`, you can easily validate all properties inside a collection, without any extra components.
+
+::: warning
+**Note:** This helper will re-run every validator, for every property, in every item in your collection, on every change in the collection. This may
+cause performance issues in more complex scenarios. Refer to [Nested Validators](#nested-validations) in those cases.
+:::
+
+```vue
+
+<template>
+  <div
+    v-for="(input, index) in state.collection"
+    :key="index"
+    :class="{
+        error: v$.collection.$each.$response.$errors[index].name.length,
+      }"
+  >
+    <input v-model="input.name" type="text" />
+    <div
+      v-for="error in v$.collection.$each.$response.$errors[index].name"
+      :key="error"
+    >
+      {{ error.$message }}
+    </div>
+  </div>
+</template>
+<script>
+// setup in a component
+import { helpers, required } from '@vuelidate/validators'
+import useVuelidate from '@vuelidate/core'
+import { reactive } from 'vue'
+
+export default {
+  setup () {
+    const rules = {
+      collection: {
+        $each: helpers.forEach({
+          name: {
+            required
+          }
+        })
+      }
+    }
+    const state = reactive({
+      collection: [
+        { name: '' }, { name: 'bar' }
+      ]
+    })
+    const v = useVuelidate(rules, state)
+    return { v, state }
+  }
+}
+
+</script>
+```
+
+The `$response` for the validator follows the schema below, so you can use it as you wish:
+
+```js
+const result = {
+  $data: [
+    {
+      propertyToValidate: {
+        validator: boolean,
+      }
+    },
+  ],
+  $errors: [
+    {
+      propertyToValidate: [
+        {
+          $message: string, // the validator error
+          $model: '', // the model that was validated
+          $params: {}, // params, if validator has any
+          $pending: false, // always false, no async support.
+          $property: string, // the property to validate
+          $response: boolean, // response
+          $validator: string // validator name
+        },
+      ]
+    },
+    {
+      name: []
+    }
+  ],
+  $valid: boolean
+}
+```
+
+The `$message` of the validator is just a two-dimensional array.
+
+```js
+const $message = [
+  ['Collection 1 - Error 1', 'Collection 1 - Error 2'],
+  ['Collection 2 - Error 1']
+]
+```
+
+### Using the ValidateEach component
+
+A simple validator provider like the `ValidateEach` component below comes in handy, when you just want to have a quick collection validation, without
+the need for dedicated form components. This would allow you to keep all the rules and state defined near your form data.
+
+```vue
+
+<template>
+  <ValidateEach
+    v-for="(item, index) in collection"
+    :key="index"
+    :state="item"
+    :rules="rules"
+  >
+    <template #default="{ v }">
+      <div>
+        <input
+          v-model="v.name.$model"
+          type="text"
+        >
+        <div
+          v-for="(error, errorIndex) in v.name.$errors"
+          :key="errorIndex"
+        >
+          {{ error.$message }}
+        </div>
+      </div>
+    </template>
+  </ValidateEach>
+</template>
+
+<script>
+import { reactive } from 'vue'
+import useVuelidate from '@vuelidate/core'
+import { ValidateEach } from '@vuelidate/components'
+import { minLength, required } from '@vuelidate/validators'
+
+export default {
+  components: { ValidateEach },
+  setup () {
+    const rules = {
+      name: {
+        required,
+        minLength: minLength(10)
+      }
+    }
+    const collection = reactive([
+      { name: 'foo' },
+      { name: 'bar' }
+    ])
+    const v = useVuelidate()
+
+    return { rules, collection, v }
+  }
+}
+</script>
+```
+
+The `ValidateEach` component is just a simple wrapper, without any template of its own. Its sole purpose is to create Vuelidate instances and pass
+them to its parent, and children as scoped slot parameters.
+
+You can find `ValidateEach` inside the `@vuelidate/components` package.
 
 ## Validation scopes
 
@@ -225,8 +389,7 @@ export default {
 ```
 
 :::tip
-**Note:** You can pass validation configs as a single parameter to `useVuelidate`
-- [Passing a single parameter to useVuelidate](#passing-a-single-parameter-to-usevuelidate)
+**Note:** You can pass validation configs as a single parameter to `useVuelidate` - [Passing a single parameter to useVuelidate](#passing-a-single-parameter-to-usevuelidate)
 :::
 
 ## Returning extra data from validators
