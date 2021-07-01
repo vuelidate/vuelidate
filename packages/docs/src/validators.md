@@ -284,16 +284,16 @@ export default {
 
 * **Usage:**
 
-  Checks for equality with a given property. Accepts a ref, a direct reference to a data property, or a raw value.
+  Checks for equality with a given property. Accepts a ref, a direct reference to a data property, or a raw value to compare to it directly.
 
 ```js
 export default {
   validations () {
     return {
       confirmPassword: {
-        sameAsPassword: sameAs(this.password),
-        sameAsRef: sameAs(ref),
-        sameAsRaw: sameAs('foo')
+        sameAsPassword: sameAs(this.password), // can be a reference to a field or computed property
+        sameAsRef: sameAs(ref), // can be passed a ref to compare
+        sameAsRawValue: sameAs('foo') // this will compare if `sameAsRawValue` equals to "foo"
       }
     }
   }
