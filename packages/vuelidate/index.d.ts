@@ -160,7 +160,7 @@ type ExtractState <Vargs extends ValidationArgs> = Vargs extends ValidationRuleC
 
 type ToRefs <T> = { [K in keyof T]: Ref<T[K]> };
 
-interface ServerErrors {
+export interface ServerErrors {
   [key: string]: string | string[] | ServerErrors
 }
 
@@ -170,7 +170,7 @@ interface GlobalConfig {
   $stopPropagation?: boolean
   $autoDirty?: boolean
   $lazy?: boolean,
-  $externalResults: ServerErrors
+  $externalResults?: ServerErrors
 }
 
 export function useVuelidate(globalConfig?: GlobalConfig): Ref<Validation>;
