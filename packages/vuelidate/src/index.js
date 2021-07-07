@@ -59,11 +59,11 @@ function nestedValidations ({ $scope }) {
 
   // inject the `injectChildResultsIntoParent` method, into the current scope
   const sendValidationResultsToParent = inject(VuelidateInjectChildResults, () => {})
-  // provide to all of it's children the send results to parent function
+  // provide to all of its children the send results to parent function
   provide(VuelidateInjectChildResults, injectChildResultsIntoParent)
 
   const removeValidationResultsFromParent = inject(VuelidateRemoveChildResults, () => {})
-  // provide to all of it's children the remove results  function
+  // provide to all of its children the remove results  function
   provide(VuelidateRemoveChildResults, removeChildResultsFromParent)
 
   return { childResults, sendValidationResultsToParent, removeValidationResultsFromParent }
@@ -73,7 +73,7 @@ function nestedValidations ({ $scope }) {
  * @typedef GlobalConfig
  * @property {String} [$registerAs] - Config Object
  * @property {String | Number | Symbol} [$scope] - A scope to limit child component registration
- * @property {Boolean} [$stopPropagation] - Tells a Vue component to stop sending it's results up to the parent
+ * @property {Boolean} [$stopPropagation] - Tells a Vue component to stop sending its results up to the parent
  * @property {Ref<Object>} [$externalResults] - External error messages, like from server validation.
  */
 

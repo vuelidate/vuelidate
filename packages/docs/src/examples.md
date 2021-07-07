@@ -26,7 +26,7 @@ You can nest validators to match your data as deep as you want. Parent validator
 
 ## $error vs $anyError
 
-There are two common ways of considering if an error should be displayed. It is important to understand which one suits your use case better. You can use either `$error` or `$anyError` validation property, or by extension, the low-level variants: `$dirty` or `$anyDirty`. Note that this documentation uses mainly `$error` variant in it's examples, but the choice is yours to make.
+There are two common ways of considering if an error should be displayed. It is important to understand which one suits your use case better. You can use either `$error` or `$anyError` validation property, or by extension, the low-level variants: `$dirty` or `$anyDirty`. Note that this documentation uses mainly `$error` variant in its examples, but the choice is yours to make.
 
 > Example
 
