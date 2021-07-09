@@ -57,7 +57,7 @@
 <script>
 import { ref, reactive, computed } from 'vue'
 import useVuelidate from '@vuelidate/core'
-import { required, helpers, minLength } from '@vuelidate/validators'
+import { required, helpers, minLength, createI18nMessage } from '@vuelidate/validators'
 import { i18n } from '../i18n'
 
 const { global: { t } } = i18n
@@ -71,12 +71,10 @@ const asyncValidator = withAsync((v) => {
   })
 })
 
-const withI18nMessage = (validator) => helpers.withMessage((props) => t(`messages.${props.$validator}`, {
-  model: props.$model,
-  property: props.$property,
-  ...props.$params
-}), validator)
+const withI18nMessage = createI18nMessage({ t })
 
+const minLengthT = withI18nMessage(minLength)
+const req = withI18nMessage(required)
 export default {
   name: 'I18nForm',
   setup () {
@@ -89,8 +87,9 @@ export default {
     let v$ = useVuelidate(
       {
         name: {
-          required: withI18nMessage(required),
-          asyncValidator: withI18nMessage(asyncValidator)
+          required: req,
+          asyncValidator: withI18nMessage(asyncValidator),
+          minLength: minLengthT(10)
         },
         social: {
           github: { minLength: withI18nMessage(minLength(computed(() => social.twitter.length))) },

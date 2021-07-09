@@ -2,8 +2,8 @@ import {
   ValidationRuleWithoutParams,
   ValidationRuleWithParams,
   ValidationRule,
-  ValidationArgs
-} from '@vuelidate/core';
+  ValidationArgs, ValidatorFn
+} from '@vuelidate/core'
 import { Ref } from 'vue-demi';
 
 // Rules
@@ -56,3 +56,5 @@ export const helpers: {
   withAsync: Function,
   forEach: (validators: ValidationArgs) => { $validator: ValidationRule, $message: () => string }
 }
+export function createI18nMessage({ t: Function }): (validator: (param: Ref<unknown> | unknown) => ValidationRule) => (...args) => ValidationRuleWithParams
+export function createI18nMessage({ t: Function }): (validator: (ValidationRuleWithParams | ValidationRuleWithoutParams)) => ValidationRuleWithParams
