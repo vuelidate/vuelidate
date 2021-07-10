@@ -98,7 +98,7 @@ type BaseValidation <
   Vrules extends ValidationRuleCollection<T>
     ? ExtractRulesResults<T, Vrules>
     : unknown) & {
-  readonly $model: T
+  $model: T
   // const validationGetters
   readonly $dirty: boolean
   readonly $error: boolean
