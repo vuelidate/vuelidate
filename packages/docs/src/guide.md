@@ -5,7 +5,7 @@
 As we mentioned in the [getting started guide](/#getting-started-2), validation rules are defined inside the object returned by the `validations`
 method. We will refer to those as just _validations_ from now on.
 
-You can access the component's instance, and it's properties via `this` when writing more complicated validation rules.
+You can access the component's instance, and its properties via `this` when writing more complicated validation rules.
 
 ::: warning
 **Note:** Pre Vuelidate 2 `validations` was allowed to be an object as well as a function. This is still available, for backwards compatibility
@@ -196,7 +196,7 @@ export default {
 }
 ```
 
-This will create an internal watcher, that will update `$dirty`, the moment that field property is changed. It will ensure the validator tracks it's
+This will create an internal watcher, that will update `$dirty`, the moment that field property is changed. It will ensure the validator tracks its
 bound data, and sets the dirty state accordingly.
 
 You can then change your field's `v-model` expression to just the data property:
@@ -284,7 +284,7 @@ As you can see, the `name` field has its own `$dirty`, `$error` among other attr
 The root properties like, `$dirty`, `$error` and `$invalid` are all collective computed properties, meaning their value changes depending on the
 nested children's state.
 
-**Example:** If a form has 10 fields and one of them has it's `$error: true`, then the root `$error` will also be `true`, giving additional
+**Example:** If a form has 10 fields and one of them has its `$error: true`, then the root `$error` will also be `true`, giving additional
 flexibility when trying to display error state.
 
 ## Displaying error messages
