@@ -14,6 +14,11 @@ export default function createI18nMessage ({
       return t(messagePath(props), {
         model: props.$model,
         property: props.$property,
+        pending: props.$pending,
+        invalid: props.$invalid,
+        response: props.$response,
+        validator: props.$validator,
+        propertyPath: props.$propertyPath,
         ...props.$params
       })
     }

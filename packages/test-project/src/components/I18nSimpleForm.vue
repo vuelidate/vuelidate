@@ -71,10 +71,11 @@ const asyncValidator = withAsync((v) => {
   })
 })
 
-const withI18nMessage = createI18nMessage({ t })
+const withI18nMessage = createI18nMessage({ t, messagePath: ({ $validator }) => `messages.${$validator}` })
 
-const minLengthT = withI18nMessage(minLength)
+const minLen = withI18nMessage(minLength, true)
 const req = withI18nMessage(required)
+
 export default {
   name: 'I18nForm',
   setup () {
@@ -89,7 +90,7 @@ export default {
         name: {
           required: req,
           asyncValidator: withI18nMessage(asyncValidator),
-          minLength: minLengthT(10)
+          minLength: minLen(10)
         },
         social: {
           github: { minLength: withI18nMessage(minLength(computed(() => social.twitter.length))) },

@@ -70,7 +70,7 @@ export interface MessageProps {
 
 export type ValidatorWrapper = (...args: unknown[]) => ValidationRuleWithParams
 
-export default function createI18nMessage({ t, messagePath }: {
+export function createI18nMessage({ t, messagePath }: {
   t: typeof TranslationFunction;
   messagePath?: typeof pathGenerator;
 }): (validator: ValidationRule | ValidatorWrapper, withArguments?: boolean) =>
