@@ -48,7 +48,7 @@ export const sameAs: <E = unknown>(
 export const url: ValidationRuleWithoutParams;
 export const helpers: {
   withParams: (params: object, validator: ValidationRule) => ValidationRuleWithParams
-  withMessage: (message: string | Function, validator: ValidationRule) => ValidationRuleWithParams
+  withMessage: (message: string | ((params: MessageProps) => string), validator: ValidationRule) => ValidationRuleWithParams
   req: Function
   len: Function
   regex: Function
@@ -56,5 +56,23 @@ export const helpers: {
   withAsync: Function,
   forEach: (validators: ValidationArgs) => { $validator: ValidationRule, $message: () => string }
 }
-export function createI18nMessage({ t: Function }): (validator: (param: Ref<unknown> | unknown) => ValidationRule) => (...args) => ValidationRuleWithParams
-export function createI18nMessage({ t: Function }): (validator: (ValidationRuleWithParams | ValidationRuleWithoutParams)) => ValidationRuleWithParams
+
+export function TranslationFunction (path: string, params: { model: string, property: string, [key: string]: any }): string
+
+export function pathGenerator({ $validator }: MessageProps): string;
+
+export interface MessageProps {
+  $model: string;
+  $property: string;
+  $params: object;
+  $validator: string;
+}
+
+export type ValidatorWrapper = (...args: unknown[]) => ValidationRuleWithParams
+
+export default function createI18nMessage({ t, messagePath }: {
+  t: typeof TranslationFunction;
+  messagePath?: typeof pathGenerator;
+}): (validator: ValidationRule | ValidatorWrapper, withArguments?: boolean) =>
+      ValidationRuleWithParams |
+      ((...args: unknown[]) => ValidationRuleWithParams)

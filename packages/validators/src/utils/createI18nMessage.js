@@ -1,15 +1,27 @@
 import withMessage from './withMessage'
 
-export default function createI18nMessage ({ t }) {
-  const withI18nMessage = (validator, args = null) => {
-    if (typeof validator === 'function' && args === null) {
-      return (...args) => withI18nMessage(validator, args)
+/**
+ * Creates a translatable version of `withMessage` helper.
+ * @param {function} t - the translation function of your choice
+ * @param {function} [messagePath] - a function to generate the message path for each validator. By default it is `validations.${$validator}`
+ */
+export default function createI18nMessage ({
+  t,
+  messagePath = ({ $validator }) => `validations.${$validator}`
+}) {
+  return function withI18nMessage (validator, withArguments = false) {
+    function message (props) {
+      return t(messagePath(props), {
+        model: props.$model,
+        property: props.$property,
+        ...props.$params
+      })
     }
-    return withMessage((props) => t(`messages.${props.$validator}`, {
-      model: props.$model,
-      property: props.$property,
-      ...props.$params
-    }), args === null ? validator : validator(...args))
+
+    if (withArguments && typeof validator === 'function') {
+      return (...args) => withMessage(message, validator(...args))
+    }
+
+    return withMessage(message, validator)
   }
-  return withI18nMessage
 }
