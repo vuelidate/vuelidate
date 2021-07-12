@@ -19,6 +19,8 @@ import minValue from './minValue'
 import maxValue from './maxValue'
 import integer from './integer'
 import decimal from './decimal'
+import createI18nMessage from '../utils/createI18nMessage'
+
 export * as helpers from '../common'
 
 export {
@@ -42,5 +44,6 @@ export {
   minValue,
   maxValue,
   integer,
-  decimal
+  decimal,
+  createI18nMessage
 }
