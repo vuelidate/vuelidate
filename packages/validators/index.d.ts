@@ -32,15 +32,15 @@ export const minLength: (
 ) => ValidationRuleWithParams<{ length: number }>;
 export const minValue: (
   min: number | Ref<number> | string | Ref<string>
-) => ValidationRuleWithParams<{ min: number }>;
-export const not: (validator: ValidationRule) => ValidationRuleWithoutParams;
-export const numeric: ValidationRuleWithoutParams;
+) => ValidationRuleWithParams<{ min: number }>
+export const not: (validator: ValidationRule) => ValidationRuleWithoutParams
+export const numeric: ValidationRuleWithoutParams
 export const or: (
   ...validators: ValidationRule[]
-) => ValidationRuleWithoutParams;
-export const required: ValidationRuleWithoutParams;
-export const requiredIf: (prop: boolean | string | (() => boolean | Promise<boolean>)) => ValidationRuleWithoutParams;
-export const requiredUnless: (prop: boolean | string | (() => boolean | Promise<boolean>)) => ValidationRuleWithoutParams;
+) => ValidationRuleWithoutParams
+export const required: ValidationRuleWithoutParams
+export const requiredIf: (prop: boolean | string | (() => boolean | Promise<boolean>)) => ValidationRuleWithoutParams
+export const requiredUnless: (prop: boolean | string | (() => boolean | Promise<boolean>)) => ValidationRuleWithoutParams
 export const sameAs: <E = unknown>(
   equalTo: E,
   otherName?: string
@@ -57,22 +57,43 @@ export const helpers: {
   forEach: (validators: ValidationArgs) => { $validator: ValidationRule, $message: () => string }
 }
 
-export function TranslationFunction (path: string, params: { model: string, property: string, [key: string]: any }): string
+export function TranslationFunction(path: string, params: { model: string, property: string, [key: string]: any }): string
 
-export function pathGenerator({ $validator }: MessageProps): string;
+export function messagePathGenerator(params: MessageProps): string;
+
+export function messageObjectGenerator(params: {
+  model: unknown,
+  property: string,
+  invalid: boolean,
+  pending: boolean,
+  propertyPath: string,
+  response: unknown,
+  validator: string,
+}): string;
 
 export interface MessageProps {
   $model: string;
   $property: string;
   $params: object;
   $validator: string;
+  $pending: boolean,
+  $invalid: boolean,
+  $response: unknown,
+  $propertyPath: string,
 }
 
 export type ValidatorWrapper = (...args: unknown[]) => ValidationRuleWithParams
 
-export function createI18nMessage({ t, messagePath }: {
+export function createI18nMessage({ t, messagePath, messageParams }: {
   t: typeof TranslationFunction;
-  messagePath?: typeof pathGenerator;
-}): (validator: ValidationRule | ValidatorWrapper, withArguments?: boolean) =>
-      ValidationRuleWithParams |
-      ((...args: unknown[]) => ValidationRuleWithParams)
+  messagePath?: typeof messagePathGenerator;
+  messageParams?: typeof messageObjectGenerator;
+}): (
+  validator: ValidationRule | ValidatorWrapper,
+  options?: {
+    withArguments?: boolean,
+    messagePath?: typeof messagePathGenerator,
+    messageParams?: typeof messageObjectGenerator,
+  }) =>
+  ValidationRuleWithParams |
+  ((...args: unknown[]) => ValidationRuleWithParams)

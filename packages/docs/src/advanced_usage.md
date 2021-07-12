@@ -389,7 +389,8 @@ export default {
 ```
 
 :::tip
-**Note:** You can pass validation configs as a single parameter to `useVuelidate` - [Passing a single parameter to useVuelidate](#passing-a-single-parameter-to-usevuelidate)
+**Note:** You can pass validation configs as a single parameter to `useVuelidate`
+- [Passing a single parameter to useVuelidate](#passing-a-single-parameter-to-usevuelidate)
 :::
 
 ## Returning extra data from validators
@@ -594,17 +595,17 @@ import { i18n } from "@/i18n"
 // or import { createI18nMessage } from '@vuelidate/validators'
 const { createI18nMessage } = validators
 
-// extract the `t` helper
-const { t } = i18n.global || i18n // this should work for both Vue 2 and Vue 3 versions of vue-i18n
+// extract the `t` helper, should work for both Vue 2 and Vue 3 versions of vue-i18n
+const { t } = i18n.global || i18n
 
-// create your i18n message instance
+// pass `t` and create your i18n message instance
 const withI18nMessage = createI18nMessage({ t })
 
 // wrap each validator.
 export const required = withI18nMessage(validators.required)
-// validators that expect a parameter should have `true` passed as a second parameter, to annotate they should be wrapped
-export const minLength = withI18nMessage(validators.minLength, true)
-// or you can provide the param at definition
+// validators that expect a parameter should have `{ withArguments: true }` passed as a second parameter, to annotate they should be wrapped
+export const minLength = withI18nMessage(validators.minLength, { withArguments: true })
+// or you can provide the param at definition, statically
 export const maxLength = withI18nMessage(validators.maxLength(10))
 ```
 
@@ -643,7 +644,7 @@ The `t` function is responsible for doing the actual translation. It gets two pa
 1. The path is a `string`, representing the path for the validation message, it looks like `validations.${validator}`. This means that by default,
    validation messages, are expected to live under the `validations` key in your translations.
 
-2. The second parameter is an object, with the similar properties as the one passed to `withMessage` functions. Mind that properties do not have `$`
+2. The second parameter is an object, with similar properties as the one passed to `withMessage` functions. Mind that properties do not have `$`
    prefixed, this is intentional, as vue-i18n does not like those.
 
 ```
@@ -670,4 +671,12 @@ const withI18nMessage = createI18nMessage({ t, messagePath })
 
 const required = withI18nMessage(validators.required)
 
+```
+
+:::tip
+**Note:** You can also pass a `messagePath` or `messageParams` function to `withI18nMessage` to override the global ones, on a per validator basis.
+:::
+
+```js
+const required = withI18nMessage(validators.required, { messagePath: () => 'overrides.required' })
 ```

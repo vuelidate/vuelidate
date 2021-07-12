@@ -76,7 +76,7 @@ describe('createI18nMessage', () => {
 
     const localValidator = jest.fn()
     const wrappedValidator = jest.fn().mockReturnValue(localValidator)
-    const v = i18n(wrappedValidator, true)
+    const v = i18n(wrappedValidator, { withArguments: true })
 
     expect(v).toBeInstanceOf(Function)
     const result = v(1, 2, 3)
@@ -88,7 +88,7 @@ describe('createI18nMessage', () => {
     expect(result.$message(params)).toEqual('validations.foo')
   })
 
-  it('allows overriding the messagePath', () => {
+  it('allows overriding the messagePath, globally', () => {
     const messagePath = jest.fn().mockReturnValue('overridden')
     const i18n = createI18nMessage({ t, messagePath })
     const v = i18n(validatorObject)
@@ -106,6 +106,68 @@ describe('createI18nMessage', () => {
     })
   })
 
+  it('allows overriding the messagePath, locally', () => {
+    const messagePath = jest.fn().mockReturnValue('overridden')
+    const localMessagePath = jest.fn().mockReturnValue('overridden')
+    const i18n = createI18nMessage({ t, messagePath })
+    const v = i18n(validatorObject, { messagePath: localMessagePath })
+    expect(v.$message(params)).toEqual('overridden')
+    expect(messagePath).toHaveBeenCalledTimes(0)
+    expect(localMessagePath).toHaveBeenCalledWith(params)
+    expect(t).toHaveBeenCalledWith('overridden', {
+      model: params.$model,
+      property: params.$property,
+      invalid: true,
+      pending: false,
+      propertyPath: 'property.path',
+      response: false,
+      validator: 'foo',
+      ...params.$params
+    })
+  })
+
+  it('allows overriding the messageParams, globally', () => {
+    const messageParams = jest.fn().mockReturnValue({ foo: 'foo' })
+    const i18n = createI18nMessage({ t, messageParams })
+    const v = i18n(validatorObject)
+    expect(v.$message(params)).toEqual('validations.foo')
+    expect(messageParams).toHaveBeenCalledWith({
+      model: params.$model,
+      property: params.$property,
+      invalid: true,
+      pending: false,
+      propertyPath: 'property.path',
+      response: false,
+      validator: 'foo',
+      ...params.$params
+    })
+    expect(t).toHaveBeenCalledWith('validations.foo', {
+      foo: 'foo'
+    })
+  })
+
+  it('allows overriding the messageParams, locally', () => {
+    const messageParams = jest.fn().mockReturnValue({ foo: 'foo' })
+    const localMessageParams = jest.fn().mockReturnValue({ foo: 'foo' })
+    const i18n = createI18nMessage({ t, messageParams })
+    const v = i18n(validatorObject, { messageParams: localMessageParams })
+    expect(v.$message(params)).toEqual('validations.foo')
+    expect(messageParams).toHaveBeenCalledTimes(0)
+    expect(localMessageParams).toHaveBeenCalledWith({
+      model: params.$model,
+      property: params.$property,
+      invalid: true,
+      pending: false,
+      propertyPath: 'property.path',
+      response: false,
+      validator: 'foo',
+      ...params.$params
+    })
+    expect(t).toHaveBeenCalledWith('validations.foo', {
+      foo: 'foo'
+    })
+  })
+
   it('passes the correct context, for objects', () => {
     const i18n = createI18nMessage({ t })
     const v = i18n(validatorObject)
@@ -117,7 +179,7 @@ describe('createI18nMessage', () => {
 
   it('passes the correct context, for functions', () => {
     const i18n = createI18nMessage({ t })
-    const v = i18n(() => validator, true)
+    const v = i18n(() => validator, { withArguments: true })
 
     const context = { foo: 'foo' }
     v(1).$validator.call(context, true)
