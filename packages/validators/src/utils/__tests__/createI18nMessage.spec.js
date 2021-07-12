@@ -12,6 +12,10 @@ const params = {
   $validator: 'foo',
   $model: 'model',
   $property: 'property',
+  $invalid: true,
+  $pending: false,
+  $propertyPath: 'property.path',
+  $response: false,
   $params: {
     foo: 'foo'
   }
@@ -37,6 +41,11 @@ describe('createI18nMessage', () => {
     expect(t).toHaveBeenCalledWith('validations.foo', {
       model: params.$model,
       property: params.$property,
+      invalid: true,
+      pending: false,
+      propertyPath: 'property.path',
+      response: false,
+      validator: 'foo',
       ...params.$params
     })
   })
@@ -53,6 +62,11 @@ describe('createI18nMessage', () => {
     expect(t).toHaveBeenCalledWith('validations.foo', {
       model: params.$model,
       property: params.$property,
+      invalid: true,
+      pending: false,
+      propertyPath: 'property.path',
+      response: false,
+      validator: 'foo',
       ...params.$params
     })
   })
@@ -81,7 +95,14 @@ describe('createI18nMessage', () => {
     expect(v.$message(params)).toEqual('overridden')
     expect(messagePath).toHaveBeenCalledWith(params)
     expect(t).toHaveBeenCalledWith('overridden', {
-      model: params.$model, property: params.$property, ...params.$params
+      model: params.$model,
+      property: params.$property,
+      invalid: true,
+      pending: false,
+      propertyPath: 'property.path',
+      response: false,
+      validator: 'foo',
+      ...params.$params
     })
   })
 
