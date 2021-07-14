@@ -170,7 +170,7 @@ interface GlobalConfig {
   $stopPropagation?: boolean
   $autoDirty?: boolean
   $lazy?: boolean,
-  $externalResults?: ServerErrors
+  $externalResults?: ServerErrors | Ref<ServerErrors>
 }
 
 export function useVuelidate(globalConfig?: GlobalConfig): Ref<Validation>;
