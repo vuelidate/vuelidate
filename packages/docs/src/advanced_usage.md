@@ -603,11 +603,17 @@ import { i18n } from "@/i18n"
 
 const { t } = i18n.global || i18n // this should work for both Vue 2 and Vue 3 versions of vue-i18n
 
-export const withI18nMessage = (validator) => helpers.withMessage((props) => t(`messages.${props.$validator}`, {
-  model: props.$model,
-  property: props.$property,
-  ...props.$params
-}), validator)
+export const withI18nMessage = (validator, args = null) => {
+  if (validator instanceof Function && args === null) {
+    return (...args) => withI18nMessage(validator, args)
+  }
+
+  return validators.helpers.withMessage((props) => t(`messages.${props.$validator}`, {
+    model: props.$model,
+    property: props.$property,
+    ...props.$params
+  }), args === null ? validator : validator(...args))
+}
 ```
 
 We can now use the validators as we normally do
@@ -615,12 +621,12 @@ We can now use the validators as we normally do
 ```vue
 
 <script>
-import { required } from '@/utils/validators'
+import { required, minLength } from '@/utils/validators'
 
 export default {
   validations () {
     return {
-      name: { required }
+      name: { required, minLength: minLength(3) }
     }
   }
 }
