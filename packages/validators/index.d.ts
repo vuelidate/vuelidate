@@ -59,9 +59,9 @@ export const helpers: {
 
 export function TranslationFunction(path: string, params: { model: string, property: string, [key: string]: any }): string
 
-export function messagePathGenerator(params: MessageProps): string;
+export function messagePathFactory(params: MessageProps): string;
 
-export function messageObjectGenerator(params: {
+export function messageParamsFactory(params: {
   model: unknown,
   property: string,
   invalid: boolean,
@@ -69,6 +69,7 @@ export function messageObjectGenerator(params: {
   propertyPath: string,
   response: unknown,
   validator: string,
+  [key: string]: any
 }): string;
 
 export interface MessageProps {
@@ -86,14 +87,14 @@ export type ValidatorWrapper = (...args: unknown[]) => ValidationRuleWithParams
 
 export function createI18nMessage({ t, messagePath, messageParams }: {
   t: typeof TranslationFunction;
-  messagePath?: typeof messagePathGenerator;
-  messageParams?: typeof messageObjectGenerator;
+  messagePath?: typeof messagePathFactory;
+  messageParams?: typeof messageParamsFactory;
 }): (
   validator: ValidationRule | ValidatorWrapper,
   options?: {
     withArguments?: boolean,
-    messagePath?: typeof messagePathGenerator,
-    messageParams?: typeof messageObjectGenerator,
+    messagePath?: typeof messagePathFactory,
+    messageParams?: typeof messageParamsFactory,
   }) =>
   ValidationRuleWithParams |
   ((...args: unknown[]) => ValidationRuleWithParams)
