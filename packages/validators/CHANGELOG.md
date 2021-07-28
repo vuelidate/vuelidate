@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.0.0-alpha.19](https://github.com/vuelidate/vuelidate/compare/@vuelidate/validators@2.0.0-alpha.18...@vuelidate/validators@2.0.0-alpha.19) (2021-07-28)
+
+
+### Bug Fixes
+
+* email validation with uppercase domain ([#888](https://github.com/vuelidate/vuelidate/issues/888)) ([d028e16](https://github.com/vuelidate/vuelidate/commit/d028e164e0781ed2e716dbac77228a1443222366))
+
+
+### Features
+
+* **validators:** add i18n message helper ([#894](https://github.com/vuelidate/vuelidate/issues/894)) ([d5f6d32](https://github.com/vuelidate/vuelidate/commit/d5f6d322a50dfcf218e98a21c12e962e3f25b202))
+
+
+
+
+
 # [2.0.0-alpha.18](https://github.com/vuelidate/vuelidate/compare/@vuelidate/validators@2.0.0-alpha.17...@vuelidate/validators@2.0.0-alpha.18) (2021-07-01)
 
 

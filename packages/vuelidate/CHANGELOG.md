@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.0.0-alpha.22](https://github.com/vuelidate/vuelidate/compare/@vuelidate/core@2.0.0-alpha.21...@vuelidate/core@2.0.0-alpha.22) (2021-07-28)
+
+
+### Bug Fixes
+
+* **types:** allow reactive ServerErrors in GlobalConfig ([#901](https://github.com/vuelidate/vuelidate/issues/901)) ([2515777](https://github.com/vuelidate/vuelidate/commit/25157771d38806826a81b8bdf5c162a6c9952077))
+* **types:** writable $model, closes vuelidate[#892](https://github.com/vuelidate/vuelidate/issues/892) ([#893](https://github.com/vuelidate/vuelidate/issues/893)) ([bb545d8](https://github.com/vuelidate/vuelidate/commit/bb545d8d9db9c270324a91e353fbdecf24a9dc13))
+
+
+
+
+
 # [2.0.0-alpha.21](https://github.com/vuelidate/vuelidate/compare/@vuelidate/core@2.0.0-alpha.20...@vuelidate/core@2.0.0-alpha.21) (2021-07-02)
 
 
