@@ -1,4 +1,4 @@
-import { Ref, defineComponent, App } from 'vue-demi';
+import { Ref, UnwrapRef, defineComponent, App } from 'vue-demi';
 type Component = ReturnType<typeof defineComponent>;
 
 /*
@@ -170,7 +170,7 @@ interface GlobalConfig {
   $stopPropagation?: boolean
   $autoDirty?: boolean
   $lazy?: boolean,
-  $externalResults?: ServerErrors
+  $externalResults?: ServerErrors | Ref<ServerErrors> | UnwrapRef<ServerErrors>
 }
 
 export function useVuelidate(globalConfig?: GlobalConfig): Ref<Validation>;
