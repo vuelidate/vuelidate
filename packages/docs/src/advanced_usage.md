@@ -389,7 +389,8 @@ export default {
 ```
 
 :::tip
-**Note:** You can pass validation configs as a single parameter to `useVuelidate` - [Passing a single parameter to useVuelidate](#passing-a-single-parameter-to-usevuelidate)
+**Note:** You can pass validation configs as a single parameter to `useVuelidate`
+- [Passing a single parameter to useVuelidate](#passing-a-single-parameter-to-usevuelidate)
 :::
 
 ## Returning extra data from validators
@@ -583,60 +584,99 @@ async function validate () {
 
 ## i18n support
 
-Validator messages are very flexible. You can wrap each validator with your own helper, that returns a translated error message, based on the
-validator name. Let's define a few validators:
+Validator messages are very flexible. You can wrap each validator with a helper, that returns a translated error message, based on the validator name.
+Vuelidate already exports one for you, but you are free to create your own.
 
 ```js
-// @/utils/validators.js
-import { withI18nMessage } from '@/utils/withI18nMessage'
+// @/utils/i18n-validators.js
 import * as validators from '@vuelidate/validators'
-
-export const required = withI18nMessage(validators.required)
-export const minLength = withI18nMessage(validators.minLength)
-```
-
-Now lets see how that `withI18nMessage` helpers would look like:
-
-```js
-// @/utils/withI18nMessage.js
 import { i18n } from "@/i18n"
 
-const { t } = i18n.global || i18n // this should work for both Vue 2 and Vue 3 versions of vue-i18n
+// or import { createI18nMessage } from '@vuelidate/validators'
+const { createI18nMessage } = validators
 
-export const withI18nMessage = (validator) => helpers.withMessage((props) => t(`messages.${props.$validator}`, {
-  model: props.$model,
-  property: props.$property,
-  ...props.$params
-}), validator)
+// extract the `t` helper, should work for both Vue 2 and Vue 3 versions of vue-i18n
+const { t } = i18n.global || i18n
+
+// pass `t` and create your i18n message instance
+const withI18nMessage = createI18nMessage({ t })
+
+// wrap each validator.
+export const required = withI18nMessage(validators.required)
+// validators that expect a parameter should have `{ withArguments: true }` passed as a second parameter, to annotate they should be wrapped
+export const minLength = withI18nMessage(validators.minLength, { withArguments: true })
+// or you can provide the param at definition, statically
+export const maxLength = withI18nMessage(validators.maxLength(10))
 ```
 
-We can now use the validators as we normally do
+We can now use the validators as we normally do:
 
 ```vue
 
 <script>
-import { required } from '@/utils/validators'
+import { required, minLength } from '@/utils/i18n-validators'
 
 export default {
   validations () {
     return {
-      name: { required }
+      name: { required, minLength: minLength(10) }
     }
   }
 }
 </script>
 ```
 
-One drawback is that Vuelidate params passed to `$message` are prefixed with `$`, which Vue-i18n does not allow. So we would have to manually map any
-parameter we need, to a new name parameter without `$`.
+The translations for the validation messages, with optional data inside each message can be defined like this:
 
-We can now define our validator messages, with optional data inside each message.
-
-```json
+```en.json
 {
-  "messages": {
+  "validations": {
     "required": "The field {property} is required.",
     "minLength": "The {property} field has a value of '{model}', but it must have a min length of {min}."
   }
 }
+```
+
+### Customising the i18n message
+
+The `t` function is responsible for doing the actual translation. It gets two parameters, a path and an object.
+
+1. The path is a `string`, representing the path for the validation message, it looks like `validations.${validator}`. This means that by default,
+   validation messages, are expected to live under the `validations` key in your translations.
+
+2. The second parameter is an object, with similar properties as the one passed to `withMessage` functions. Mind that properties do not have `$`
+   prefixed, this is intentional, as vue-i18n does not like those.
+
+```
+{
+    model: any,
+    property: string,
+    pending: boolean,
+    invalid: boolean,
+    response: any,
+    validator: string,
+    propertyPath: string,
+    ...props.$params
+}
+```
+
+If you wish to change the way `t` retrieves validation messages, you can pass a `messagePath` property to `createI18nMessage`. It will allow you to
+specify your own translation message paths. It gets access to the same params as the `withMessage` function, like the validator name, model etc.
+
+```js
+// change the path for fetching validator messages
+const messagePath = ({ $validator }) => `messages.${$validator}`
+
+const withI18nMessage = createI18nMessage({ t, messagePath })
+
+const required = withI18nMessage(validators.required)
+
+```
+
+:::tip
+**Note:** You can also pass a `messagePath` or `messageParams` function to `withI18nMessage` to override the global ones, on a per validator basis.
+:::
+
+```js
+const required = withI18nMessage(validators.required, { messagePath: () => 'overrides.required' })
 ```
