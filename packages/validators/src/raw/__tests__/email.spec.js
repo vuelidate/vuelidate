@@ -62,5 +62,6 @@ describe('email validator', () => {
     expect(email('"some one"@gmail.com')).toBe(true)
     expect(email('user.name+tag+sorting@example.com')).toBe(true)
     expect(email('"john..doe"@example.org')).toBe(true)
+    expect(email('someone@Example.com')).toBe(true)
   })
 })

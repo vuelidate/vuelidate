@@ -75,7 +75,7 @@ function sortValidations (validationsRaw = {}) {
 }
 
 /**
- * Calls a validation rule by unwrapping it's value first from a ref.
+ * Calls a validation rule by unwrapping its value first from a ref.
  * @param {Validator} rule
  * @param {Ref} value
  * @param {VueInstance} instance

@@ -533,7 +533,7 @@ both `ref` and `reactive` objects.
 ```js
 async function validate () {
   // clear out old external results
-  v.$clearExternalResults()
+  v.value.$clearExternalResults()
   // check if everything is valid
   if (!await v.value.$validate()) return
   //
@@ -576,7 +576,7 @@ To clear out the external results, you can again, use the `$clearExternalResults
 
 ```js
 async function validate () {
-  this.$v.$clearExternalResults()
+  this.$v.value.$clearExternalResults()
   // perform validations
   const result = await this.runAsyncValidators()
 }
