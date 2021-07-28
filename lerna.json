@@ -6,6 +6,7 @@
   "version": "independent",
   "command": {
     "version": {
+      "private": false,
       "message": "chore(release): publish"
     }
   },
