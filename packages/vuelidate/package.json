@@ -5,7 +5,11 @@
   "main": "dist/index.js",
   "types": "index.d.ts",
   "module": "dist/index.esm.js",
-  "repository": "https://github.com/vuelidate/vuelidate",
+  "repository": {
+    "url": "https://github.com/vuelidate/vuelidate",
+    "type": "git",
+    "directory": "packages/vuelidate"
+  },
   "license": "MIT",
   "files": [
     "dist",
