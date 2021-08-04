@@ -132,7 +132,8 @@ function createAsyncResult (rule, model, $pending, $dirty, { $lazy }, $response,
 
       $pendingCounter.value++
       $pending.value = !!$pendingCounter.value
-      $invalid.value = true
+      // ensure $invalid is false, while validator is resolving
+      $invalid.value = false
 
       Promise.resolve(ruleResult)
         .then(data => {
@@ -358,7 +359,7 @@ function createValidationResults (rules, model, key, resultsCache, path, config,
   )
 
   result.$error = computed(() =>
-    result.$invalid.value && result.$dirty.value
+    result.$dirty.value ? result.$pending.value || result.$invalid.value : false
   )
 
   result.$silentErrors = computed(() => ruleKeys
@@ -506,7 +507,7 @@ function createMetaFields (results, nestedResults, childResults) {
     $dirty.value
   )
 
-  const $error = computed(() => ($invalid.value && $dirty.value) || false)
+  const $error = computed(() => $dirty.value ? $pending.value || $invalid.value : false)
 
   const $touch = () => {
     // call the root $touch

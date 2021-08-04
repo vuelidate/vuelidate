@@ -865,13 +865,17 @@ describe('useVuelidate', () => {
       await nextTick()
 
       expect(vm.v.number.asyncIsEven.$pending).toBe(true)
-      expect(vm.v.number.$invalid).toBe(true)
+      expect(vm.v.number.asyncIsEven.$invalid).toBe(false)
+
+      expect(vm.v.number.$invalid).toBe(false)
+      expect(vm.v.number.$error).toBe(true)
 
       jest.advanceTimersByTime(6)
       await nextTick()
 
       expect(vm.v.number.asyncIsEven.$pending).toBe(false)
       expect(vm.v.number.$invalid).toBe(false)
+      expect(vm.v.number.$error).toBe(false)
       jest.useRealTimers()
     })
 
@@ -940,9 +944,12 @@ describe('useVuelidate', () => {
       // assert its called once, for the dirty state change
       expect(validator).toHaveBeenCalledTimes(2)
       // assert there is an error state
-      expect(vm.v.number.asyncValidator.$invalid).toBe(true)
-      expect(vm.v.number.$invalid).toBe(true)
-      expect(validator).toHaveBeenCalledTimes(2)
+      expect(vm.v.number.asyncValidator.$invalid).toBe(false)
+      // $error is true, because its pending
+      expect(vm.v.number.$error).toBe(true)
+      expect(vm.v.number.$pending).toBe(true)
+      // invalid is false, as we are not sure about the validator result
+      expect(vm.v.number.$invalid).toBe(false)
 
       // change it a few times
       number.value = 1
@@ -955,6 +962,7 @@ describe('useVuelidate', () => {
       expect(validator).toHaveBeenCalledTimes(5)
       // `invalid` is true, because the last invocation of the validator, is false
       expect(vm.v.number.asyncValidator.$invalid).toBe(true)
+      expect(vm.v.number.asyncValidator.$pending).toBe(false) // it completed
       number.value = 2
       await nextTick()
 
@@ -967,6 +975,7 @@ describe('useVuelidate', () => {
       expect(validator).toHaveLastReturnedWith(Promise.resolve(true))
       // last call to validator returned ture, so the invalid is false
       expect(vm.v.number.asyncValidator.$invalid).toBe(false)
+      expect(vm.v.number.asyncValidator.$pending).toBe(false)
     })
 
     it('handles throwing from sync validators', async () => {
@@ -995,8 +1004,17 @@ describe('useVuelidate', () => {
       vm.v.combined.$touch()
       await nextTick()
       expect(vm.v.$invalid).toBe(true)
-      expect(vm.v.$errors).toHaveLength(2)
       expect(vm.v.combined.$error).toBe(true)
+      expect(vm.v.combined.$pending).toBe(true)
+      // combined has async and sync, but async one is still resolving
+      expect(vm.v.$errors).toHaveLength(1)
+      // $error is false on the parent, because not everything is `touched`.
+      expect(vm.v.$error).toBe(false)
+      expect(vm.v.combined.asyncValidator.$invalid).toBe(false)
+      await flushPromises()
+      expect(vm.v.combined.asyncValidator.$invalid).toBe(true)
+      expect(vm.v.$errors).toHaveLength(2)
+      expect(vm.v.combined.$pending).toBe(false)
       // assert the `$response` is saved
       expect(vm.v.combined.asyncValidator).toHaveProperty('$response', errorObject)
       expect(vm.v.combined.syncValidator).toHaveProperty('$response', errorObject)
