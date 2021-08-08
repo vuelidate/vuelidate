@@ -223,7 +223,8 @@ describe('OptionsAPI validations', () => {
       await nextTick()
 
       expect(vm.v.number.asyncIsEven.$pending).toBe(true)
-      expect(vm.v.number.$invalid).toBe(true)
+      expect(vm.v.number.$invalid).toBe(false)
+      expect(vm.v.number.$error).toBe(true)
 
       jest.advanceTimersByTime(6)
       await nextTick()
