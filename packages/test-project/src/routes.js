@@ -4,6 +4,7 @@ import OldApiExample from './components/OldApiExample.vue'
 import ChainOfRefs from './components/ChainOfRefs.vue'
 import CollectionValidations from './components/CollectionValidations.vue'
 import I18nSimpleForm from './components/I18nSimpleForm.vue'
+import ExternalValidationsForm from './components/ExternalValidationsForm.vue'
 
 export const routes = [
   {
@@ -29,5 +30,9 @@ export const routes = [
   {
     path: '/collection-validations',
     component: CollectionValidations
+  },
+  {
+    path: '/external-validations',
+    component: ExternalValidationsForm
   }
 ]

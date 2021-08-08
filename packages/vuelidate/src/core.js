@@ -340,7 +340,7 @@ function createValidationResults (rules, model, key, resultsCache, path, config,
       $propertyPath: path,
       $property: key,
       $validator: '$externalResults',
-      $uid: `${path}-${index}`,
+      $uid: `${path}-externalResult-${index}`,
       $message: stringError,
       $params: {},
       $response: null,
@@ -643,6 +643,10 @@ export function setValidations ({
     set: val => {
       $dirty.value = true
       const s = unwrap(state)
+      const external = unwrap(externalResults)
+      if (external) {
+        external[key] = cachedExternalResults[key]
+      }
       if (isRef(s[key])) {
         s[key].value = val
       } else {
@@ -652,12 +656,12 @@ export function setValidations ({
   }) : null
 
   if (key && mergedConfig.$autoDirty) {
-    const $unwatch = watch(nestedState, () => {
-      const autoDirtyPath = `_${path}_$watcher_`
-      const cachedAutoDirty = resultsCache.get(autoDirtyPath, {})
+    watch(nestedState, () => {
       if (!$dirty.value) $touch()
-      if (cachedAutoDirty) cachedAutoDirty.$unwatch()
-      resultsCache.set(autoDirtyPath, {}, { $unwatch })
+      const external = unwrap(externalResults)
+      if (external) {
+        external[key] = cachedExternalResults[key]
+      }
     }, { flush: 'sync' })
   }
 

@@ -18,9 +18,10 @@ export const createSimpleComponent = (getVuelidateResults, state) => ({
   }
 })
 
-export const createOldApiSimpleComponent = (validations, state, config) => ({
+export const createOldApiSimpleComponent = (validations, state, validationsConfig) => ({
   name: 'childComp',
   validations,
+  validationsConfig,
   setup () {
     return { v: useVuelidate() }
   },
