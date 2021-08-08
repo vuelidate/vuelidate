@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.0.0-alpha.20](https://github.com/vuelidate/vuelidate/compare/@vuelidate/validators@2.0.0-alpha.19...@vuelidate/validators@2.0.0-alpha.20) (2021-08-08)
+
+**Note:** Version bump only for package @vuelidate/validators
+
+
+
+
+
 # [2.0.0-alpha.19](https://github.com/vuelidate/vuelidate/compare/@vuelidate/validators@2.0.0-alpha.18...@vuelidate/validators@2.0.0-alpha.19) (2021-07-28)
 
 
