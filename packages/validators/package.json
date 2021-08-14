@@ -18,10 +18,10 @@
     "lint": "eslint src"
   },
   "dependencies": {
-    "vue-demi": "^0.9.1"
+    "vue-demi": "^0.11.3"
   },
   "devDependencies": {
-    "bili": "^4.8.1",
+    "bili": "^5.0.5",
     "flush-promises": "^1.0.2"
   },
   "sideEffects": [

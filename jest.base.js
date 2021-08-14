@@ -6,7 +6,8 @@ module.exports = {
   transform: {
     '^.+\\.js$': ['babel-jest', { cwd: __dirname }]
   },
-  'snapshotSerializers': [
+  snapshotSerializers: [
     dir('node_modules/jest-serializer-vue')
-  ]
+  ],
+  testEnvironment: 'jsdom'
 }

@@ -15,6 +15,6 @@
     "@vuelidate/validators": "^2.0.0-alpha.18"
   },
   "devDependencies": {
-    "vitepress": "^0.12.2"
+    "vitepress": "^0.16.1"
   }
 }
