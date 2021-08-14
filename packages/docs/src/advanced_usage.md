@@ -518,26 +518,16 @@ async function validate () {
   await doAsyncStuff()
   // do server validation, and assume we have these errors
   const errors = {
+    // foo: 'error', is also supported
     foo: ['Error one', 'Error Two']
   }
   // add the errors into the external results object
-  $externalResults.value = errors // if using a `reactive` object instead, use `Object.assign($externalResults, errors)`
+  $externalResults.value = errors
+  // if using a `reactive` object instead,
+  // Object.assign($externalResults, errors)
 }
 
 return { v, validate }
-```
-
-To clear out the external results, you should use the handy `$clearExternalResults()` method, that Vuelidate provides. It will properly handle
-both `ref` and `reactive` objects.
-
-```js
-async function validate () {
-  // clear out old external results
-  v.value.$clearExternalResults()
-  // check if everything is valid
-  if (!await v.value.$validate()) return
-  //
-}
 ```
 
 ### External results with Options API
@@ -579,6 +569,26 @@ async function validate () {
   this.$v.value.$clearExternalResults()
   // perform validations
   const result = await this.runAsyncValidators()
+}
+```
+
+### Clearing $externalResults
+
+If you are using `$model` to modify your form state, Vuelidate automatically will clear any corresponding external results.
+
+If you are using `$autoDirty: true`, then Vuelidate will track any changes to your form state and reset the external results as well, no need to
+use `$model`
+
+If you need to clear the entire object, use the handy `$clearExternalResults()` method, that Vuelidate provides. It will properly handle both `ref`
+and `reactive` objects.
+
+```js
+async function validate () {
+  // clear out old external results
+  v.value.$clearExternalResults()
+  // check if everything is valid
+  if (!await v.value.$validate()) return
+  //
 }
 ```
 
