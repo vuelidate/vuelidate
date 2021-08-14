@@ -314,75 +314,82 @@ describe('OptionsAPI validations', () => {
   })
 
   describe('external results', () => {
-    it('saves external results, by changing individual properties', async () => {
+    const externalErrorObject = {
+      $message: 'foo',
+      $params: {},
+      $pending: false,
+      $property: 'number',
+      $propertyPath: 'number',
+      $response: null,
+      $uid: 'number-externalResult-0',
+      $validator: '$externalResults'
+    }
+
+    it('saves external results, by changing individual properties, using `$model` to track changes', async () => {
       const validation = {
         number: { isEven }
       }
-      const { vm } = await createOldApiSimpleWrapper(validation, { number: 1, vuelidateExternalResults: { number: '' } })
+      const vuelidateExternalResults = { number: '' }
+
+      const { vm } = await createOldApiSimpleWrapper(validation, { number: 1, vuelidateExternalResults })
 
       vm.v.$touch()
-      expect(vm.vuelidateExternalResults).toEqual({ number: '' })
+      expect(vm.vuelidateExternalResults).toEqual(vuelidateExternalResults)
 
       expect(vm.v).toHaveProperty('number', expect.any(Object))
       expect(vm.v.number.$externalResults).toEqual([])
       // set an external validation result
       vm.vuelidateExternalResults.number = ['foo']
       // assert
-      const externalErrorObject = {
-        $message: 'foo',
-        $params: {},
-        $pending: false,
-        $property: 'number',
-        $propertyPath: 'number',
-        $response: null,
-        $uid: 'number-0',
-        $validator: '$externalResults'
-      }
       expect(vm.v.number.$externalResults).toEqual([externalErrorObject])
       expect(vm.v.number.$error).toBe(true)
       expect(vm.v.number.$silentErrors).toHaveLength(2)
       expect(vm.v.number.$silentErrors).toContainEqual(externalErrorObject)
       vm.v.number.$model = 2
       await nextTick()
+      // assert that changing `$model` resets the $externalResults
+      expect(vm.v.number.$error).toBe(false)
+      expect(vm.v.number.$externalResults).toHaveLength(0)
+      // add back the externalError
+      vm.vuelidateExternalResults.number = 'foo'
+      // assert the error is back
       expect(vm.v.number.$error).toBe(true)
       expect(vm.v.number.$silentErrors).toHaveLength(1)
       expect(vm.v.number.$silentErrors).toEqual([externalErrorObject])
+      expect(vm.v.number.$externalResults).toEqual([externalErrorObject])
       vm.vuelidateExternalResults.number = []
       expect(vm.v.number.$error).toBe(false)
       expect(vm.v.number.$silentErrors).toEqual([])
     })
 
-    it('works by replacing the entire external state, with pre-definition', async () => {
+    it('works by replacing the entire external state, with pre-definition, using `$autoDirty` to track changes', async () => {
       const validation = {
         number: { isEven }
       }
       const vuelidateExternalResults = { number: '' }
-      const { vm } = await createOldApiSimpleWrapper(validation, { number: 1, vuelidateExternalResults })
+      const { vm } = await createOldApiSimpleWrapper(validation, { number: 1, vuelidateExternalResults }, { $autoDirty: true })
 
       vm.v.$touch()
-      expect(vm.vuelidateExternalResults).toEqual({ number: '' })
+      expect(vm.vuelidateExternalResults).toEqual(vuelidateExternalResults)
 
       expect(vm.v).toHaveProperty('number', expect.any(Object))
       expect(vm.v.number.$externalResults).toEqual([])
       // set an external validation result
       Object.assign(vm.vuelidateExternalResults, { number: ['foo'] })
       // assert
-      const externalErrorObject = {
-        $message: 'foo',
-        $params: {},
-        $pending: false,
-        $property: 'number',
-        $propertyPath: 'number',
-        $response: null,
-        $uid: 'number-0',
-        $validator: '$externalResults'
-      }
       expect(vm.v.number.$externalResults).toEqual([externalErrorObject])
       expect(vm.v.number.$error).toBe(true)
       expect(vm.v.number.$silentErrors).toHaveLength(2)
       expect(vm.v.number.$silentErrors).toContainEqual(externalErrorObject)
-      vm.v.number.$model = 2
+      vm.number = 2
       await nextTick()
+      // assert the externalResults was reset
+      expect(vm.v.number.$error).toBe(false)
+      expect(vm.v.number.$externalResults).toHaveLength(0)
+      // revert the external results error
+      Object.assign(vm.vuelidateExternalResults, { number: ['foo'] })
+      await nextTick()
+      // assert errors are visible again
       expect(vm.v.number.$error).toBe(true)
       expect(vm.v.number.$silentErrors).toHaveLength(1)
       expect(vm.v.number.$silentErrors).toEqual([externalErrorObject])
@@ -394,14 +401,8 @@ describe('OptionsAPI validations', () => {
       // trigger again
       Object.assign(vm.vuelidateExternalResults, { number: ['bar'] })
       expect(vm.v.number.$externalResults).toEqual([{
-        $message: 'bar',
-        $params: {},
-        $pending: false,
-        $property: 'number',
-        $propertyPath: 'number',
-        $response: null,
-        $uid: 'number-0',
-        $validator: '$externalResults'
+        ...externalErrorObject,
+        $message: 'bar'
       }])
     })
   })

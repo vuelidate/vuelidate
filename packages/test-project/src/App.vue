@@ -8,6 +8,7 @@
         <li><router-link to="/nested-validations">Nested Validations</router-link></li>
         <li><router-link to="/nested-ref">Nested Ref</router-link></li>
         <li><router-link to="/collection-validations">Collection Validations</router-link></li>
+        <li><router-link to="/external-validations">External Validations</router-link></li>
       </ul>
     </div>
     <router-view />
