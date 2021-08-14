@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.0.0-alpha.24](https://github.com/vuelidate/vuelidate/compare/@vuelidate/core@2.0.0-alpha.23...@vuelidate/core@2.0.0-alpha.24) (2021-08-14)
+
+
+### Bug Fixes
+
+* **core:** reset the $externalResults key for a changed property, closes [#891](https://github.com/vuelidate/vuelidate/issues/891) ([#916](https://github.com/vuelidate/vuelidate/issues/916)) ([67d56d7](https://github.com/vuelidate/vuelidate/commit/67d56d78e0c792c0e0e0e6e8a8249a1f924f7096))
+
+
+
+
+
 # [2.0.0-alpha.23](https://github.com/vuelidate/vuelidate/compare/@vuelidate/core@2.0.0-alpha.22...@vuelidate/core@2.0.0-alpha.23) (2021-08-08)
 
 
