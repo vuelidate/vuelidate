@@ -8,6 +8,10 @@
       "packages/*"
     ]
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/vuelidate/vuelidate.git"
+  },
   "dependencies": {
     "vue-demi": "^0.9.1"
   },
