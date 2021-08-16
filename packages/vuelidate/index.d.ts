@@ -40,22 +40,37 @@ export interface ValidatorResponse {
   [key: string]: any
 }
 
-export type ValidatorFn <T = unknown> = (value: T) => boolean | ValidatorResponse | Promise<boolean | ValidatorResponse>;
+export type ValidatorFn<T = unknown, V = unknown> =
+  | ValidatorFnSimple<T>
+  | ValidatorFnWithVm<T, V>
 
-export interface ValidationRuleWithoutParams <T = unknown> {
-  $validator: ValidatorFn<T>
+export type ValidatorFnSimple <T = unknown> = (value: T) => boolean | ValidatorResponse | Promise<boolean | ValidatorResponse>;
+
+export type ValidatorFnWithVm<T = unknown, V = unknown> = (
+  value: T,
+  vm: V
+) => boolean | ValidatorResponse | Promise<boolean | ValidatorResponse>
+
+export interface ValidationRuleWithoutParams <T = unknown, V = unknown> {
+  $validator: ValidatorFn<T, V>
   $message?: string | Ref<string> | (() => string)
 }
 
-export interface ValidationRuleWithParams<P extends object = object, T = unknown> {
-  $validator: ValidatorFn<T>
+export interface ValidationRuleWithParams<P extends object = object, T = unknown, V = unknown> {
+  $validator: ValidatorFn<T, V>
   $message: (input: { $params: P }) => string
   $params: P
 }
 
-export type ValidationRule <T = unknown> = ValidationRuleWithParams<any, T> | ValidationRuleWithoutParams<T> | ValidatorFn<T>;
+export type ValidationRule<T = unknown, V = unknown> =
+  | ValidationRuleWithParams<any, T>
+  | ValidationRuleWithoutParams<T>
+  | ValidatorFn<T, V>
 
-type ValidationRuleCollection <T = unknown> = Record<string, ValidationRule<T>>;
+type ValidationRuleCollection<T = unknown, V = unknown> = Record<
+  string,
+  ValidationRule<T, V>
+>
 
 export interface ValidationArgs {
   [K: string]: ValidationRule | ValidationArgs
