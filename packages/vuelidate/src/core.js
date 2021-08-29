@@ -1,7 +1,7 @@
 import { isFunction, unwrap, unwrapObj } from './utils'
 import { computed, isRef, reactive, ref, watch, nextTick } from 'vue-demi'
 
-let ROOT_PATH = '__root'
+const ROOT_PATH = '__root'
 
 /**
  * @typedef {import('vue-demi').ComponentPublicInstance} VueInstance
@@ -292,7 +292,7 @@ function createValidationResults (rules, model, key, resultsCache, path, config,
   const ruleKeys = Object.keys(rules)
 
   const cachedResult = resultsCache.get(path, rules)
-  let $dirty = ref(false)
+  const $dirty = ref(false)
 
   if (cachedResult) {
     // if the rules are the same as before, use the cached results
@@ -639,22 +639,24 @@ export function setValidations ({
    * If we have no `key`, this is the top level state
    * We dont need `$model` there.
    */
-  const $model = key ? computed({
-    get: () => unwrap(nestedState),
-    set: val => {
-      $dirty.value = true
-      const s = unwrap(state)
-      const external = unwrap(externalResults)
-      if (external) {
-        external[key] = cachedExternalResults[key]
+  const $model = key
+    ? computed({
+      get: () => unwrap(nestedState),
+      set: val => {
+        $dirty.value = true
+        const s = unwrap(state)
+        const external = unwrap(externalResults)
+        if (external) {
+          external[key] = cachedExternalResults[key]
+        }
+        if (isRef(s[key])) {
+          s[key].value = val
+        } else {
+          s[key] = val
+        }
       }
-      if (isRef(s[key])) {
-        s[key].value = val
-      } else {
-        s[key] = val
-      }
-    }
-  }) : null
+    })
+    : null
 
   if (key && mergedConfig.$autoDirty) {
     watch(nestedState, () => {
@@ -670,11 +672,11 @@ export function setValidations ({
    * Executes the validators and returns the result.
    * @return {Promise<boolean>}
    */
-  function $validate () {
-    return new Promise(async (resolve) => {
-      if (!$dirty.value) $touch()
-      // await the watchers
-      await nextTick()
+  async function $validate () {
+    if (!$dirty.value) $touch()
+    // await the watchers
+    await nextTick()
+    return new Promise((resolve) => {
       // return whether it is valid or not
       if (!$pending.value) return resolve(!$invalid.value)
       const unwatch = watch($pending, () => {
@@ -725,10 +727,10 @@ export function setValidations ({
     $reset,
     $path: path || ROOT_PATH,
     $silentErrors,
+    $validate,
     // if there are no child results, we are inside a nested property
     ...(childResults && {
       $getResultsForChild,
-      $validate,
       $clearExternalResults
     }),
     // add each nested property's state
