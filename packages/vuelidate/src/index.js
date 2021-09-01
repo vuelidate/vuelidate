@@ -75,6 +75,8 @@ function nestedValidations ({ $scope }) {
  * @property {String | Number | Symbol} [$scope] - A scope to limit child component registration
  * @property {Boolean} [$stopPropagation] - Tells a Vue component to stop sending its results up to the parent
  * @property {Ref<Object>} [$externalResults] - External error messages, like from server validation.
+ * @property {Boolean} [$autoDirty] - Should the form watch for state changed, and automatically set `$dirty` to true.
+ * @property {Boolean} [$lazy] - Should the validations be lazy, and run only after they are dirty
  */
 
 /**
@@ -150,12 +152,12 @@ export function useVuelidate (validations, state, globalConfig = {}) {
             resultsCache,
             globalConfig,
             instance: instance.proxy,
-            externalResults: instance.proxy.vuelidateExternalResults
+            externalResults: $externalResults || instance.proxy.vuelidateExternalResults
           })
         }, { immediate: true })
     })
 
-    globalConfig = componentOptions.validationsConfig || {}
+    globalConfig = componentOptions.validationsConfig || globalConfig
   } else {
     const validationsWatchTarget = isRef(validations) || isProxy(validations)
       ? validations

@@ -390,8 +390,9 @@ export default {
 
 :::tip
 **Note:** You can pass validation configs as a single parameter to `useVuelidate`
+
 - [Passing a single parameter to useVuelidate](#passing-a-single-parameter-to-usevuelidate)
-:::
+  :::
 
 ## Returning extra data from validators
 
@@ -429,13 +430,15 @@ export default {
 
 ## Providing global config to your Vuelidate instance
 
-You can provide global configs to your Vuelidate instance using the third parameter of `useVuelidate` or by using the `validationsConfig`. These
-config options are used to change some core Vuelidate functionality, like `autoDirty`, `lazy`, `scope` and more. Learn all about them
+You can provide configurations to your Vuelidate instance using the third parameter of `useVuelidate` or by using the `validationsConfig` for Options
+API. These config options are used to change some core Vuelidate functionality, like `$autoDirty`, `$lazy`, `$scope` and more. Read about each one
 in [Validation Configuration](./api/configuration.md).
 
 ### Config with Options API
 
-If you prefer the Options API, you can specify a `validationConfig` object, that Vuelidate will read configs from.
+#### Using `validationConfig`
+
+If you are using the Options API, you can specify a `validationConfig` object, that Vuelidate will read configs from.
 
 ```vue
 
@@ -457,9 +460,32 @@ export default {
 </script>
 ```
 
+#### Using the config object of useVuelidate
+
+An alternative is to use the first parameter of `useVuelidate` to pass a config object,
+see [Passing a single parameter to useVuelidate](#passing-a-single-parameter-to-usevuelidate) for more info.
+
+```vue
+
+<script>
+import { useVuelidate } from '@vuelidate/core'
+
+export default {
+  data () {
+    return { ...state }
+  },
+  validations () {
+    return { ...validations }
+  },
+  setup: () => ({ v$: useVuelidate({ $lazy: true, $autoDirty: true, $scope: 'foo' }) }),
+}
+</script>
+```
+
 ### Config with Composition API
 
-When using the Composition API, you can pass your configuration object as the third parameter to `useVuelidate`.
+When using the Composition API, you can pass your configuration object as the third parameter to `useVuelidate`, or as the first one, if the component
+is just a collector, see [Passing a single parameter to useVuelidate](#passing-a-single-parameter-to-usevuelidate).
 
 ```js
 import { reactive } from 'vue' // or '@vue/composition-api' in Vue 2.x
@@ -480,7 +506,7 @@ export default {
 #### Passing a single parameter to useVuelidate
 
 A common scenario is to call `useVuelidate()` without passing any state or validations, usually in validation collector components. In such cases you
-can pass global configs like `$scope` or `$stopPropagation` as a single parameter to `useVuelidate()`.
+can pass global configs like `$scope`, `$stopPropagation` as a single parameter to `useVuelidate()`.
 
 ```js
 import { useVuelidate } from '@vuelidate/core'
@@ -489,7 +515,7 @@ import FormB from '@/componnets/FormB'
 
 export default {
   components: { FormA, FormB },
-  setup: () => ({ v$: useVuelidate({ $stopPropagation: true }) })
+  setup: () => ({ v$: useVuelidate({ $stopPropagation: true, $scope: 'foo' }) })
 }
 ```
 
@@ -532,9 +558,12 @@ return { v, validate }
 
 ### External results with Options API
 
-When using the Options API, you just need to define a `vuelidateExternalResults` data property, and assign the errors to it.
+When using the Options API, you can either define a `vuelidateExternalResults` data property, and assign the errors to it. You can also pass
+an `$externalResults` property to the `useVuelidate` config object.
 
 It is a good practice to pre-define your external results keys, to match your form structure, otherwise Vue may have a hard time tracking changes.
+
+#### Using `vuelidateExternalResults` property
 
 ```js
 export default {
@@ -562,13 +591,31 @@ export default {
 }
 ```
 
-To clear out the external results, you can again, use the `$clearExternalResults()` method
+#### Using `$externalResults` config
 
 ```js
-async function validate () {
-  this.$v.value.$clearExternalResults()
-  // perform validations
-  const result = await this.runAsyncValidators()
+export default {
+  data: () => ({ foo: '' }),
+  validations () {
+    return {
+      foo: { someValidation }
+    }
+  },
+  setup: () => {
+    const externalResults = ref()
+    return {
+      externalResults,
+      v: useVuelidate({ $externalResults: externalResults })
+    }
+  },
+  methods: {
+    validate () {
+      // perform validations
+      const errors = { foo: ['Error one', 'Error Two'] }
+      // merge the errors into the validation results
+      Object.assign(this.externalResults, errors)
+    }
+  }
 }
 ```
 
