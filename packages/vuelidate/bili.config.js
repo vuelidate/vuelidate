@@ -2,7 +2,7 @@
 module.exports = {
   input: 'src/index.js',
   output: {
-    format: ['es', 'cjs'],
+    format: ['esm', 'cjs'],
     moduleName: 'Vuelidate'
   }
 }
