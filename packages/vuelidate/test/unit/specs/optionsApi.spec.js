@@ -13,7 +13,7 @@ import {
   nestedRefObjectValidation,
   nestedReactiveObjectValidation
 } from '../validations.fixture'
-import { flushPromises, mount } from '../test-utils'
+import { flushPromises, ifVue3, mount } from '../test-utils'
 import withAsync from '@vuelidate/validators/src/utils/withAsync'
 import { useVuelidate } from '../../../src'
 
@@ -407,9 +407,8 @@ describe('OptionsAPI validations', () => {
       }])
     })
 
-    it('allows passing externalResults in the setup as a ref', async () => {
-      const $externalResults = ref({})
-      const Component = {
+    describe('allows passing externalResults in the setup as a ref', () => {
+      const genComponent = ({ $externalResults }) => ({
         name: 'childComp',
         validations: () => ({
           number: { isEven }
@@ -423,15 +422,34 @@ describe('OptionsAPI validations', () => {
         render () {
           return h('pre', {}, JSON.stringify(this.v))
         }
-      }
-      const wrapper = mount(Component)
-      await wrapper.vm.$nextTick()
-      expect(wrapper.vm.v.number.$invalid).toBe(true)
-      wrapper.vm.v.number.$model = 2
-      expect(wrapper.vm.v.number.$invalid).toBe(false)
-      $externalResults.value.number = 'Invalid External'
-      expect(wrapper.vm.v.number.$invalid).toBe(true)
-      expect(wrapper.vm.v.number.$externalResults).toHaveLength(1)
+      })
+      ifVue3('as an empty ref', async () => {
+        const $externalResults = ref({})
+        const Component = genComponent({ $externalResults })
+        const wrapper = mount(Component)
+        await wrapper.vm.$nextTick()
+        expect(wrapper.vm.v.number.$invalid).toBe(true)
+        wrapper.vm.v.number.$model = 2
+        expect(wrapper.vm.v.number.$invalid).toBe(false)
+        $externalResults.value.number = 'Invalid External'
+        expect(wrapper.vm.v.number.$invalid).toBe(true)
+        expect(wrapper.vm.v.number.$externalResults).toHaveLength(1)
+      })
+
+      it('as a pre-defined ref', async () => {
+        const $externalResults = ref({
+          number: ''
+        })
+        const Component = genComponent({ $externalResults })
+        const wrapper = mount(Component)
+        await wrapper.vm.$nextTick()
+        expect(wrapper.vm.v.number.$invalid).toBe(true)
+        wrapper.vm.v.number.$model = 2
+        expect(wrapper.vm.v.number.$invalid).toBe(false)
+        $externalResults.value.number = 'Invalid External'
+        expect(wrapper.vm.v.number.$invalid).toBe(true)
+        expect(wrapper.vm.v.number.$externalResults).toHaveLength(1)
+      })
     })
   })
 
