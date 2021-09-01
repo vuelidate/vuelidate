@@ -1,4 +1,4 @@
-import { ref, nextTick } from 'vue-demi'
+import { ref, nextTick, h } from 'vue-demi'
 import { isEven, isOdd } from '../validators.fixture'
 import {
   createOldApiSimpleWrapper,
@@ -13,8 +13,9 @@ import {
   nestedRefObjectValidation,
   nestedReactiveObjectValidation
 } from '../validations.fixture'
-import { flushPromises, mount } from '../test-utils'
+import { flushPromises, ifVue3, mount } from '../test-utils'
 import withAsync from '@vuelidate/validators/src/utils/withAsync'
+import { useVuelidate } from '../../../src'
 
 describe('OptionsAPI validations', () => {
   it('should have a `v` key defined if used', async () => {
@@ -138,12 +139,12 @@ describe('OptionsAPI validations', () => {
       const childState = vm.v.$getResultsForChild(childValidationRegisterName)
       expect(childState).toHaveProperty('$errors')
       expect(childState.$errors).toContainEqual({
-        '$message': '',
-        '$params': {},
-        '$pending': false,
-        '$property': 'number',
-        '$propertyPath': 'number',
-        '$validator': 'isEven',
+        $message: '',
+        $params: {},
+        $pending: false,
+        $property: 'number',
+        $propertyPath: 'number',
+        $validator: 'isEven',
         $response: false,
         $uid: 'number-isEven'
       })
@@ -405,6 +406,51 @@ describe('OptionsAPI validations', () => {
         $message: 'bar'
       }])
     })
+
+    describe('allows passing externalResults in the setup as a ref', () => {
+      const genComponent = ({ $externalResults }) => ({
+        name: 'childComp',
+        validations: () => ({
+          number: { isEven }
+        }),
+        setup: () => ({ v: useVuelidate({ $externalResults }) }),
+        data () {
+          return {
+            number: 1
+          }
+        },
+        render () {
+          return h('pre', {}, JSON.stringify(this.v))
+        }
+      })
+      ifVue3('as an empty ref', async () => {
+        const $externalResults = ref({})
+        const Component = genComponent({ $externalResults })
+        const wrapper = mount(Component)
+        await wrapper.vm.$nextTick()
+        expect(wrapper.vm.v.number.$invalid).toBe(true)
+        wrapper.vm.v.number.$model = 2
+        expect(wrapper.vm.v.number.$invalid).toBe(false)
+        $externalResults.value.number = 'Invalid External'
+        expect(wrapper.vm.v.number.$invalid).toBe(true)
+        expect(wrapper.vm.v.number.$externalResults).toHaveLength(1)
+      })
+
+      it('as a pre-defined ref', async () => {
+        const $externalResults = ref({
+          number: ''
+        })
+        const Component = genComponent({ $externalResults })
+        const wrapper = mount(Component)
+        await wrapper.vm.$nextTick()
+        expect(wrapper.vm.v.number.$invalid).toBe(true)
+        wrapper.vm.v.number.$model = 2
+        expect(wrapper.vm.v.number.$invalid).toBe(false)
+        $externalResults.value.number = 'Invalid External'
+        expect(wrapper.vm.v.number.$invalid).toBe(true)
+        expect(wrapper.vm.v.number.$externalResults).toHaveLength(1)
+      })
+    })
   })
 
   describe('deep changes in state', () => {
@@ -454,6 +500,35 @@ describe('OptionsAPI validations', () => {
       await vm.$nextTick()
 
       expect(vm.v.level1.level2.child).toHaveProperty('$invalid', true)
+    })
+  })
+
+  describe('validationsConfig', () => {
+    it('allows passing `validationsConfig` via the useVuelidate first parameter', async () => {
+      const validator = jest.fn((v) => v === 2)
+      const Component = {
+        name: 'childComp',
+        validations: () => ({
+          number: { validator }
+        }),
+        setup: () => ({ v: useVuelidate({ $autoDirty: true, $lazy: true }) }),
+        data () {
+          return {
+            number: 1
+          }
+        },
+        render () {
+          return h('pre', {}, JSON.stringify(this.v))
+        }
+      }
+      const wrapper = mount(Component)
+      await wrapper.vm.$nextTick()
+      expect(validator).not.toHaveBeenCalled()
+      expect(wrapper.vm.v.number.$dirty).toBe(false)
+      wrapper.vm.number = 2
+      await wrapper.vm.$nextTick()
+      expect(validator).toHaveBeenCalledTimes(1)
+      expect(wrapper.vm.v.number.$dirty).toBe(true)
     })
   })
 })

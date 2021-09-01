@@ -97,7 +97,7 @@ export default {
 ## Providing global config to your Vuelidate instance
 
 You can provide global configs to your Vuelidate instance using the third parameter of `useVuelidate` or by using the `validationsConfig`. These
-config options are used to change some core Vuelidate functionality, like `autoDirty`, `lazy`, `scope` and more. Learn all about them
+config options are used to change some core Vuelidate functionality, like `$autoDirty`, `$lazy`, `$scope` and more. Learn all about them
 in [Validation Configuration](https://vuelidate-next.netlify.app/api.html#validation-configuration).
 
 ### Config with Options API

@@ -50,3 +50,24 @@
 
   Allow assigning a custom component registration name to a Vuelidate instance. This is used when a validation is registered in a parent validation
   form.
+
+## $externalResults
+
+* **Type:** `ServerErrors | Ref<ServerErrors> | UnwrapRef<ServerErrors>`
+
+* **Usage:**
+
+  Pass an object, matching your state, that holds external validation errors. These can be from a backend validations or something else.
+
+* **Example:**
+
+```js
+const $externalResults = reactive({})
+const state = { number: 0 }
+const validations = { number: { required } }
+const v$ = useVuelidate(validations, state, { $externalResults })
+// some other logic
+$externalResults.number = ['One error', 'Two Errors']
+// setting a value in `$externalResults` for the `number` property would cause that property to become invalid.
+expect(v$.value.number.$invalid).toBe(true)
+```
