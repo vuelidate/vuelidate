@@ -715,14 +715,18 @@ describe('useVuelidate', () => {
       expect(await vm.v.$validate()).toBe(true)
     })
 
-    it('is only present at the top level', async () => {
+    it('is allows validating a child leaf only', async () => {
       const { state, validations } = nestedReactiveObjectValidation()
       const { vm } = await createSimpleWrapper(validations, state)
 
       expect(vm.v).toHaveProperty('$validate', expect.any(Function))
-      expect(vm.v.level0).not.toHaveProperty('$validate')
-      expect(vm.v.level1).not.toHaveProperty('$validate')
-      expect(vm.v.level1.level2).not.toHaveProperty('$validate')
+      expect(vm.v.level0).toHaveProperty('$validate')
+      expect(vm.v.level1).toHaveProperty('$validate')
+      expect(await vm.v.level1.$validate()).toBe(false)
+      expect(vm.v.level1.$dirty).toBe(true)
+      expect(vm.v.level1.level2.$dirty).toBe(true)
+      expect(vm.v.level1.level2.child.$dirty).toBe(true)
+      expect(vm.v.level0.$dirty).toBe(false)
     })
   })
 

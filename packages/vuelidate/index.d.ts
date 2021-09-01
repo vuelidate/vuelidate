@@ -112,6 +112,7 @@ type BaseValidation <
   // const validationMethods
   readonly $touch: () => void
   readonly $reset: () => void
+  readonly $validate: () => Promise<boolean>
 };
 
 type NestedValidations <Vargs extends ValidationArgs = ValidationArgs, T = unknown> = {
@@ -127,7 +128,6 @@ type NestedValidations <Vargs extends ValidationArgs = ValidationArgs, T = unkno
 };
 
 interface ChildValidations {
-  readonly $validate: () => Promise<boolean>
   readonly $getResultsForChild: (key: string) => (BaseValidation & ChildValidations) | undefined
   readonly $clearExternalResults: () => void
 }
