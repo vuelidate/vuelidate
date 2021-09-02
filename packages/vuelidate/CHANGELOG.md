@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.0.0-alpha.25](https://github.com/vuelidate/vuelidate/compare/@vuelidate/core@2.0.0-alpha.24...@vuelidate/core@2.0.0-alpha.25) (2021-09-02)
+
+
+### Features
+
+* **core:** add the $validate method to every validation leaf ([#926](https://github.com/vuelidate/vuelidate/issues/926)) ([0738621](https://github.com/vuelidate/vuelidate/commit/07386213e7389ea755c3d3b8395f925e432d10c6))
+* **core:** allow passing configs in OptionsApi directly to `useVuelidate`, closes [#922](https://github.com/vuelidate/vuelidate/issues/922) ([#927](https://github.com/vuelidate/vuelidate/issues/927)) ([e14fba9](https://github.com/vuelidate/vuelidate/commit/e14fba946fde7afd82fb97fe328f16e7073a44cc))
+
+
+
+
+
 # [2.0.0-alpha.24](https://github.com/vuelidate/vuelidate/compare/@vuelidate/core@2.0.0-alpha.23...@vuelidate/core@2.0.0-alpha.24) (2021-08-14)
 
 
