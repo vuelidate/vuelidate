@@ -8,7 +8,7 @@ export default function forEach (validators) {
         // go over each property
         const collectionEntryResult = Object.entries(object).reduce((all, [key, $model]) => {
           // get the validators for this property
-          const innerValidators = validators[key]
+          const innerValidators = validators[key] || {}
           // go over each validator and run it
           const propertyResult = Object.entries(innerValidators).reduce((all, [validatorName, currentValidator]) => {
             // extract the validator. Supports simple and extended validators.

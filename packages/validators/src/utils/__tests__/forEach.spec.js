@@ -35,6 +35,51 @@ describe('forEach', () => {
     expect(required).toHaveBeenCalledWith('Foo')
   })
 
+  it('does not throw, if a property does not have a validator', () => {
+    expect(forEach(rules).$validator([{
+      name: '',
+      surname: '' // surname has no validator, but it should not cause errors
+    }])).toEqual({
+      $data: [
+        {
+          name: {
+            isFoo: false,
+            required: false
+          },
+          surname: {}
+        }
+      ],
+      $errors: [
+        {
+          name: [
+            {
+              $message: 'Not Foo',
+              $model: '',
+              $params: {},
+              $pending: false,
+              $property: 'name',
+              $response: false,
+              $validator: 'isFoo'
+            },
+            {
+              $message: 'Is Required',
+              $model: '',
+              $params: {},
+              $pending: false,
+              $property: 'name',
+              $response: false,
+              $validator: 'required'
+            }
+          ],
+          surname: []
+        }
+      ],
+      $valid: false
+    })
+    expect(isFoo).toHaveBeenCalledTimes(1)
+    expect(required).toHaveBeenCalledTimes(1)
+  })
+
   it('passes the correct this context', () => {
     const context = {
       foo: 'bar'
