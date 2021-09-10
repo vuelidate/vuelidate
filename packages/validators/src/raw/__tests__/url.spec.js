@@ -10,6 +10,11 @@ describe('url validator', () => {
     'HTTP://FOO.COM/BLAH_BLAH',
     'HTTP://FOO.COM/blah_blah',
     'http://foo.com/blah_blah/',
+    /** domains ending with a dot at the end are valid, {@see http://www.dns-sd.org/trailingdotsindomainnames.html} */
+    'http://www.foo.bar./',
+    'http://www.foo.bar.',
+    'http://foo.bar.',
+    'http://foo.bar./',
     'http://foo.com/blah_blah_(wikipedia)',
     'http://foo.com/blah_blah_(wikipedia)_(again)',
     'http://www.example.com/wpstyle/?p=364',
@@ -40,7 +45,7 @@ describe('url validator', () => {
     'http://مثال.إختبار',
     'http://例子.测试',
     'http://उदाहरण.परीक्षा',
-    "http://-.~_!$&'()*+,;=:%40:80%2f::::::@example.com",
+    'http://-.~_!$&\'()*+,;=:%40:80%2f::::::@example.com',
     'http://1337.net',
     'http://a.b-c.de',
     'http://223.255.255.254'
@@ -80,21 +85,16 @@ describe('url validator', () => {
     'http://123.123.123',
     'http://3628126748',
     'http://.www.foo.bar/',
-    'http://www.foo.bar./',
     'http://.www.foo.bar./',
     'http://10.1.1.1',
     'http://10.1.1.254'
   ]
 
-  correctUrls.forEach((urlString) => {
-    it(`should validate correct url ${urlString}`, () => {
-      expect(url(urlString)).toBe(true)
-    })
+  it.each(correctUrls)('should validate correct url %s', (urlString) => {
+    expect(url(urlString)).toBe(true)
   })
 
-  incorrectUrls.forEach((urlString) => {
-    it(`should not validate incorrect url ${urlString}`, () => {
-      expect(url(urlString)).toBe(false)
-    })
+  it.each(incorrectUrls)('should not validate incorrect url %s', (urlString) => {
+    expect(url(urlString)).toBe(false)
   })
 })
