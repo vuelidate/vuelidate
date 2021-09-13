@@ -434,7 +434,7 @@ The entire response can be accessed from `$response` property in the validation 
 We can use this to show a more custom error message.
 
 ```js
-const validatorWithMessage = withMessage(({ $response }) => $response.message || 'Invalid Data', validator)
+const validatorWithMessage = withMessage(({ $response }) => $response?.message || 'Invalid Data', validator)
 ```
 
 If you need to access the data, you can just go into the `$response` property.
