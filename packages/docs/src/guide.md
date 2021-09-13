@@ -289,13 +289,14 @@ flexibility when trying to display error state.
 
 ## Displaying error messages
 
-::: tip NEW IN v2.0 The built-in validators now all include error messages.
+::: tip
+All validators in Vuelidate 2 include error messages.
 :::
 
 The validation state holds useful data, like the invalid state of each property validator, along with extra properties, like an error message or extra
 parameters.
 
-Error messages come out of the box with the bundled validators in `@vuelidate/validators` package. You can check how change those them over at
+Error messages come out of the box with the bundled validators in `@vuelidate/validators` package. You can see how to customise error messages at
 the [Custom Validators page](./custom_validators.md)
 
 The easiest way to display errors is to use the form's top level `$errors` property. It is an array of validation objects, that you can iterate over.
@@ -327,30 +328,17 @@ You can also check for errors on each form property:
 
 ## Validating forms before submitting
 
-To submit a form, you often need to validate it first. In most cases, you can just check for the `$invalid` status of the form or `$error` if you want
-to only consider `$dirty` fields. It is a good practice to `$touch` the form first, so all validators (including those with `$lazy: true`) are run.
-This will also cause all the errors to show up that were hidden due to `$dirty` state being `false`.
+To submit a form, you often need to validate it first. It is a good practice to call the `$validate` method on the form first, so all validators (including those
+with `$lazy: true`) are run. This will also cause all the errors to show up that were hidden due to `$dirty` state being `false`.
 
-```js
-export default {
-  methods: {
-    submitForm () {
-      this.v$.$touch()
-      if (this.v$.$error) return
-      // actually submit form
-    }
-  }
-}
-```
-
-This is good for the general case, but what if you have async validators? You can use the `$validate` method, which returns a promise. That promise
-resolves with a boolean, depending on what the validation status is.
+It returns a promise, which resolves with a boolean when all validators resolve, depending on the validation status.
 
 ```js
 export default {
   methods: {
     async submitForm () {
       const isFormCorrect = await this.v$.$validate()
+      // you can show some extra alert to the user or just leave the each field to show it's `$errors`.
       if (!isFormCorrect) return
       // actually submit form
     }

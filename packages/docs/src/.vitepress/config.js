@@ -1,6 +1,7 @@
 /** @type {import('vitepress').UserConfig} */
 const config = {
   title: 'Vuelidate',
+  description: 'A simple, but powerful, lightweight model-based validation for Vue.js 3 and 2.',
   head: [
     ['link', { rel: 'apple-touch-icon', sizes: '120x120' }],
     ['link', { rel: 'icon', type: 'image/png', sizes: '32x32', href: 'favicons/favicon-32x32.png' }],
@@ -19,6 +20,7 @@ const config = {
     },
     nav: [
       { text: 'General Guide', link: '/', activeMatch: '^/(?!.*(api))' },
+      { text: 'Vuelidate 0.x', link: 'https://vuelidate.js.org' },
       {
         text: 'API Reference',
         link: '/api/state',
@@ -49,7 +51,7 @@ function getAPISidebar () {
     { text: 'Validation State', link: '/api/state' },
     { text: 'Validation Methods', link: '/api/methods' },
     { text: 'Validation Error Object', link: '/api/error_object' },
-    { text: 'Validation Configuration', link: '/api/configuration' },
+    { text: 'Validation Configuration', link: '/api/configuration' }
   ]
 }
 

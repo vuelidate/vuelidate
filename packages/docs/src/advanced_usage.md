@@ -396,24 +396,45 @@ export default {
 
 ## Returning extra data from validators
 
-In more advanced use cases, it is necessary for a validator to return more than just a boolean, extra data to help the user. In those cases,
-validators can return an object, which must have a `$valid` key, and any other data, that the developer chooses.
+In more advanced use cases, a validator needs to return more than just a boolean, rather extra data to help the user understand the error. In those
+cases, validators can return an object, which must have a `$valid` key, and any other data, that the developer chooses.
 
 ```js
 function validator (value) {
-  if (value === 'something') return true
+  if (value === 'something') return { $valid: true }
   return {
     $valid: false,
-    data: { message: 'The value must be "something"', extraParams: {} }
+    message: 'The value must be "something"',
+    extraParams: {}
   }
 }
 ```
 
-The entire response can be accessed from `$response` property in the validation and error objects. We can use this to show a more custom error
-message.
+The entire response can be accessed from `$response` property in the validation and error objects.
+
+```json5
+{
+  "v$": {
+    "name": {
+      "validator": {
+        "$error": true,
+        "$invalid": true,
+        "$dirty": true,
+        "$response": {
+          "$valid": false,
+          "message": "The value must be 'something'",
+          "extraParams": {}
+        },
+        // other properties
+      }
+    }
+  }
+}
+```
+We can use this to show a more custom error message.
 
 ```js
-const validatorWithMessage = withMessage(({ $response }) => $response ? $response.data.message : 'Invalid Data', validator)
+const validatorWithMessage = withMessage(({ $response }) => $response?.message || 'Invalid Data', validator)
 ```
 
 If you need to access the data, you can just go into the `$response` property.
@@ -422,7 +443,7 @@ If you need to access the data, you can just go into the `$response` property.
 export default {
   computed: {
     someComputed () {
-      const params = this.v.someProperty.validatorName.$response
+      const params = this.v$.name.validatorName.$response
     }
   }
 }
@@ -431,7 +452,7 @@ export default {
 ## Providing global config to your Vuelidate instance
 
 You can provide configurations to your Vuelidate instance using the third parameter of `useVuelidate` or by using the `validationsConfig` for Options
-API. These config options are used to change some core Vuelidate functionality, like `$autoDirty`, `$lazy`, `$scope` and more. Read about each one
+API. These config options can be used to change some core Vuelidate functionality, like `$autoDirty`, `$lazy`, `$scope` and more. Read about each one
 in [Validation Configuration](./api/configuration.md).
 
 ### Config with Options API
