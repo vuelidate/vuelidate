@@ -2,11 +2,13 @@
 
 ![Vuelidate Logotype](/logotype.png)
 
-**Vuelidate 2** is a simple, but powerful, lightweight model-based validation for Vue.js 3 and Vue 2.x.
+**Vuelidate 2** is a simple, but powerful, lightweight model-based validation for Vue.js 3 and 2.
 
 Vuelidate is considered _model-based_ because the validation rules are defined next to your data, and the validation tree structure matches the data model structure.
 
-**Vuelidate v2.0 supports both Vue 3.0 and Vue 2.x**
+::: tip
+Vuelidate v2.0 supports both Vue 3.0 and Vue 2.x**
+:::
 
 ## Installation
 
