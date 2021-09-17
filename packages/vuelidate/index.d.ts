@@ -55,7 +55,7 @@ export interface ValidationRuleWithParams<P extends object = object, T = unknown
 
 export type ValidationRule <T = unknown> = ValidationRuleWithParams<any, T> | ValidationRuleWithoutParams<T> | ValidatorFn<T>;
 
-type ValidationRuleCollection <T = unknown> = Record<string, ValidationRule<T>>;
+export type ValidationRuleCollection <T = unknown> = Record<string, ValidationRule<T>>;
 
 export interface ValidationArgs {
   [K: string]: ValidationRule | ValidationArgs
@@ -115,7 +115,7 @@ type BaseValidation <
   readonly $validate: () => Promise<boolean>
 };
 
-type NestedValidations <Vargs extends ValidationArgs = ValidationArgs, T = unknown> = {
+export type NestedValidations <Vargs extends ValidationArgs = ValidationArgs, T = unknown> = {
   readonly [K in keyof Vargs]: BaseValidation<
   T extends Record<K, unknown> ? T[K] : unknown,
   Vargs[K] extends ValidationRuleCollection
@@ -137,12 +137,12 @@ export type Validation <Vargs extends ValidationArgs = ValidationArgs, T = unkno
   BaseValidation<T, Vargs extends ValidationRuleCollection ? Vargs : undefined> &
   ChildValidations;
 
-type ExtractStateLeaf <Vrules extends ValidationRuleCollection> =
+export type ExtractStateLeaf <Vrules extends ValidationRuleCollection> =
   Vrules extends ValidationRuleCollection<infer T>
     ? T
     : unknown;
 
-type ChildStateLeafs <Vargs extends ValidationArgs = ValidationArgs> = {
+export type ChildStateLeafs <Vargs extends ValidationArgs = ValidationArgs> = {
   [K in keyof Vargs]?: (
   Vargs[K] extends ValidationRuleCollection
     ? ExtractStateLeaf<Vargs[K]>
@@ -154,7 +154,7 @@ type ChildStateLeafs <Vargs extends ValidationArgs = ValidationArgs> = {
   )
 };
 
-type ExtractState <Vargs extends ValidationArgs> = Vargs extends ValidationRuleCollection
+export type ExtractState <Vargs extends ValidationArgs> = Vargs extends ValidationRuleCollection
   ? ExtractStateLeaf<Vargs> & ChildStateLeafs<Vargs>
   : ChildStateLeafs<Vargs>;
 
@@ -164,7 +164,7 @@ export interface ServerErrors {
   [key: string]: string | string[] | ServerErrors
 }
 
-interface GlobalConfig {
+export interface GlobalConfig {
   $registerAs?: string
   $scope?: string | number | symbol | boolean
   $stopPropagation?: boolean
