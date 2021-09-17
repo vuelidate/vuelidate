@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.0.0-alpha.22](https://github.com/vuelidate/vuelidate/compare/@vuelidate/validators@2.0.0-alpha.21...@vuelidate/validators@2.0.0-alpha.22) (2021-09-17)
+
+
+### Bug Fixes
+
+* **validators:** prevent forEach helper from throwing, when a state property has no validator ([#932](https://github.com/vuelidate/vuelidate/issues/932)), closes [#931](https://github.com/vuelidate/vuelidate/issues/931) ([2cd1fbb](https://github.com/vuelidate/vuelidate/commit/2cd1fbbfb8ee981886a4a540e4ddd13593ec2d05))
+* **validators:** update the url validator, to reduce potential ReDos attacks ([#933](https://github.com/vuelidate/vuelidate/issues/933)) ([1f0ca31](https://github.com/vuelidate/vuelidate/commit/1f0ca31c30e5032f00dbd14c4791b5ee7928f71d))
+
+
+
+
+
 # [2.0.0-alpha.21](https://github.com/vuelidate/vuelidate/compare/@vuelidate/validators@2.0.0-alpha.20...@vuelidate/validators@2.0.0-alpha.21) (2021-08-14)
 
 **Note:** Version bump only for package @vuelidate/validators
