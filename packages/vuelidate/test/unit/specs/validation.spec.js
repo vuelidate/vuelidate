@@ -416,7 +416,7 @@ describe('useVuelidate', () => {
       state.number.value = 3
       await vm.$nextTick()
       expect(vm.v.$errors).toHaveLength(1)
-      let childState = vm.v.$getResultsForChild(childValidationRegisterName)
+      const childState = vm.v.$getResultsForChild(childValidationRegisterName)
       expect(childState).toBeTruthy()
     })
 
@@ -429,7 +429,7 @@ describe('useVuelidate', () => {
       state.number.value = 3
       await vm.$nextTick()
       expect(vm.v.$errors).toHaveLength(1)
-      let childState = vm.v.$getResultsForChild(childValidationRegisterName)
+      const childState = vm.v.$getResultsForChild(childValidationRegisterName)
       expect(childState).toBeTruthy()
     })
 
@@ -475,7 +475,7 @@ describe('useVuelidate', () => {
 
     it('stops the propagation of errors up the component chain', async () => {
       const { state, validations } = simpleValidation()
-      let $registerAs = 'componentC'
+      const $registerAs = 'componentC'
       const componentC = createSimpleComponent(() => useVuelidate(validations, state, { $registerAs }))
       const componentB = {
         setup: () => ({ v: useVuelidate({ $stopPropagation: true, $lazy: false }) }),
@@ -495,7 +495,7 @@ describe('useVuelidate', () => {
       expect(wrapper.vm.v.$getResultsForChild($registerAs)).toBeFalsy()
 
       // find componentB
-      let componentCVueWrapper = wrapper.findComponent(componentB)
+      const componentCVueWrapper = wrapper.findComponent(componentB)
       // make sure it has errors
       expect(componentCVueWrapper.vm.v.$silentErrors).toHaveLength(1)
       // make sure that componentC is registered
@@ -587,12 +587,12 @@ describe('useVuelidate', () => {
       expect(childState).toHaveProperty('$validate', expect.any(Function))
       expect(childState).toHaveProperty('$errors')
       expect(childState.$errors).toContainEqual({
-        '$message': '',
-        '$params': {},
-        '$pending': false,
-        '$property': 'number',
-        '$propertyPath': 'number',
-        '$validator': 'isEven',
+        $message: '',
+        $params: {},
+        $pending: false,
+        $property: 'number',
+        $propertyPath: 'number',
+        $validator: 'isEven',
         $response: false,
         $uid: 'number-isEven'
       })
@@ -740,7 +740,7 @@ describe('useVuelidate', () => {
     })
 
     it('allows `$message` to be constructed from a function', async () => {
-      const message = `Field is not Even`
+      const message = 'Field is not Even'
       const isEvenMessage = withMessage(() => message, isEven)
       const value = ref(1)
       const { vm } = await createSimpleWrapper({ value: { isEvenMessage } }, { value })
@@ -1066,10 +1066,10 @@ describe('useVuelidate', () => {
     })
 
     it('passes the currentInstance to a validator', async () => {
-      const validator = jest.fn(async function (value, vm) {
-        // Await is needed, because `state` is not present on the initial pass. If we use `$lazy` this wont be necessary.
-        await nextTick()
-        return this.state.number === value && vm.state.number === value
+      const validator = jest.fn(function (value, vm) {
+        // we use `.value` because our state is a ref
+        return this.state.number.value === value &&
+          vm.state.number.value === value
       })
 
       const number = ref(2)
@@ -1086,7 +1086,7 @@ describe('useVuelidate', () => {
       expect(validator.mock.calls[0][1]).toHaveProperty('state')
       expect(validator.mock.calls[0][1].state).toHaveProperty('number', number)
       // assert the validator returned `true`
-      expect(validator.mock.results[0].value).toEqual(Promise.resolve(true))
+      expect(validator.mock.results[0].value).toEqual(true)
       number.value = 5
       await wrapper.vm.$nextTick()
       // make sure the validator is called with the updated value and VM
@@ -1442,8 +1442,8 @@ describe('useVuelidate', () => {
   })
 
   describe('$externalResults', () => {
-    let message = 'External Error'
-    let message2 = 'External Error 2'
+    const message = 'External Error'
+    const message2 = 'External Error 2'
 
     it('accepts a ref object, with a string as an error, using `$autoDirty` to track changes', async () => {
       const $externalResults = ref({})
@@ -1454,7 +1454,7 @@ describe('useVuelidate', () => {
       $externalResults.value = {
         number: message
       }
-      let externalErrorObject = {
+      const externalErrorObject = {
         $message: message,
         $params: {},
         $pending: false,
@@ -1495,7 +1495,7 @@ describe('useVuelidate', () => {
       $externalResults.value = {
         number: [message, message2]
       }
-      let externalErrorObjectOne = {
+      const externalErrorObjectOne = {
         $message: message,
         $property: 'number',
         $propertyPath: 'number',
@@ -1505,7 +1505,7 @@ describe('useVuelidate', () => {
         $response: null,
         $uid: 'number-externalResult-0'
       }
-      let externalErrorObjectTwo = {
+      const externalErrorObjectTwo = {
         $message: message2,
         $property: 'number',
         $propertyPath: 'number',
@@ -1546,7 +1546,7 @@ describe('useVuelidate', () => {
       vm.v.$touch()
       $externalResults.number = message
 
-      let externalErrorObject = {
+      const externalErrorObject = {
         $message: message,
         $property: 'number',
         $propertyPath: 'number',
@@ -1655,7 +1655,7 @@ describe('useVuelidate', () => {
       vm.v.$touch()
       $externalResults.number = message
 
-      let externalErrorObject = {
+      const externalErrorObject = {
         $message: message,
         $property: 'number',
         $propertyPath: 'number',
