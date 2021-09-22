@@ -40,22 +40,22 @@ export interface ValidatorResponse {
   [key: string]: any
 }
 
-export type ValidatorFn <T = unknown> = (value: T, vm: Vue) => boolean | ValidatorResponse | Promise<boolean | ValidatorResponse>;
+export type ValidatorFn <T = any, S = any> = (value: T, vm: Vue & S) => boolean | ValidatorResponse | Promise<boolean | ValidatorResponse>;
 
-export interface ValidationRuleWithoutParams <T = unknown> {
+export interface ValidationRuleWithoutParams <T = any> {
   $validator: ValidatorFn<T>
   $message?: string | Ref<string> | (() => string)
 }
 
-export interface ValidationRuleWithParams<P extends object = object, T = unknown> {
+export interface ValidationRuleWithParams<P extends object = object, T = any> {
   $validator: ValidatorFn<T>
   $message: (input: { $params: P }) => string
   $params: P
 }
 
-export type ValidationRule <T = unknown> = ValidationRuleWithParams<any, T> | ValidationRuleWithoutParams<T> | ValidatorFn<T>;
+export type ValidationRule <T = any> = ValidationRuleWithParams<any, T> | ValidationRuleWithoutParams<T> | ValidatorFn<T>;
 
-export type ValidationRuleCollection <T = unknown> = Record<string, ValidationRule<T>>;
+export type ValidationRuleCollection <T = any> = Record<string, ValidationRule<T>>;
 
 export interface ValidationArgs {
   [K: string]: ValidationRule | ValidationArgs
