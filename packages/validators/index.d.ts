@@ -3,14 +3,14 @@ import {
   ValidationRuleWithParams,
   ValidationRule,
   ValidationArgs
-} from '@vuelidate/core'
+} from '@vuelidate/core';
 import { Ref } from 'vue-demi';
 
 // Rules
 export const alpha: ValidationRuleWithoutParams;
 export const alphaNum: ValidationRuleWithoutParams;
-export const and: (
-  ...validators: ValidationRule[]
+export const and: <T = unknown>(
+  ...validators: ValidationRule<T>[]
 ) => ValidationRuleWithoutParams;
 export const between: (
   min: number | Ref<number>,
@@ -32,15 +32,15 @@ export const minLength: (
 ) => ValidationRuleWithParams<{ length: number }>;
 export const minValue: (
   min: number | Ref<number> | string | Ref<string>
-) => ValidationRuleWithParams<{ min: number }>
-export const not: (validator: ValidationRule) => ValidationRuleWithoutParams
-export const numeric: ValidationRuleWithoutParams
-export const or: (
-  ...validators: ValidationRule[]
-) => ValidationRuleWithoutParams
-export const required: ValidationRuleWithoutParams
-export const requiredIf: (prop: boolean | string | (() => boolean | Promise<boolean>)) => ValidationRuleWithoutParams
-export const requiredUnless: (prop: boolean | string | (() => boolean | Promise<boolean>)) => ValidationRuleWithoutParams
+) => ValidationRuleWithParams<{ min: number }>;
+export const not: <T = unknown>(validator: ValidationRule<T>) => ValidationRuleWithoutParams;
+export const numeric: ValidationRuleWithoutParams;
+export const or: <T = unknown>(
+  ...validators: ValidationRule<T>[]
+) => ValidationRuleWithoutParams;
+export const required: ValidationRuleWithoutParams;
+export const requiredIf: (prop: boolean | string | (() => boolean | Promise<boolean>)) => ValidationRuleWithoutParams;
+export const requiredUnless: (prop: boolean | string | (() => boolean | Promise<boolean>)) => ValidationRuleWithoutParams;
 export const sameAs: <E = unknown>(
   equalTo: E,
   otherName?: string
