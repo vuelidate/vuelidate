@@ -3,6 +3,113 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.0.0-alpha.22](https://github.com/vuelidate/vuelidate/compare/@vuelidate/validators@2.0.0-alpha.21...@vuelidate/validators@2.0.0-alpha.22) (2021-09-17)
+
+
+### Bug Fixes
+
+* **validators:** prevent forEach helper from throwing, when a state property has no validator ([#932](https://github.com/vuelidate/vuelidate/issues/932)), closes [#931](https://github.com/vuelidate/vuelidate/issues/931) ([2cd1fbb](https://github.com/vuelidate/vuelidate/commit/2cd1fbbfb8ee981886a4a540e4ddd13593ec2d05))
+* **validators:** update the url validator, to reduce potential ReDos attacks ([#933](https://github.com/vuelidate/vuelidate/issues/933)) ([1f0ca31](https://github.com/vuelidate/vuelidate/commit/1f0ca31c30e5032f00dbd14c4791b5ee7928f71d))
+
+
+
+
+
+# [2.0.0-alpha.21](https://github.com/vuelidate/vuelidate/compare/@vuelidate/validators@2.0.0-alpha.20...@vuelidate/validators@2.0.0-alpha.21) (2021-08-14)
+
+**Note:** Version bump only for package @vuelidate/validators
+
+
+
+
+
+# [2.0.0-alpha.20](https://github.com/vuelidate/vuelidate/compare/@vuelidate/validators@2.0.0-alpha.19...@vuelidate/validators@2.0.0-alpha.20) (2021-08-08)
+
+**Note:** Version bump only for package @vuelidate/validators
+
+
+
+
+
+# [2.0.0-alpha.19](https://github.com/vuelidate/vuelidate/compare/@vuelidate/validators@2.0.0-alpha.18...@vuelidate/validators@2.0.0-alpha.19) (2021-07-28)
+
+
+### Bug Fixes
+
+* email validation with uppercase domain ([#888](https://github.com/vuelidate/vuelidate/issues/888)) ([d028e16](https://github.com/vuelidate/vuelidate/commit/d028e164e0781ed2e716dbac77228a1443222366))
+
+
+### Features
+
+* **validators:** add i18n message helper ([#894](https://github.com/vuelidate/vuelidate/issues/894)) ([d5f6d32](https://github.com/vuelidate/vuelidate/commit/d5f6d322a50dfcf218e98a21c12e962e3f25b202))
+
+
+
+
+
+# [2.0.0-alpha.18](https://github.com/vuelidate/vuelidate/compare/@vuelidate/validators@2.0.0-alpha.17...@vuelidate/validators@2.0.0-alpha.18) (2021-07-01)
+
+
+### Features
+
+* **validators:** add a new forEach helper, and @vuelidate/components package ([#880](https://github.com/vuelidate/vuelidate/issues/880)) ([102c6cd](https://github.com/vuelidate/vuelidate/commit/102c6cde3deb5ead7da157d00ac7a964ae596a96))
+
+
+
+
+
+# [2.0.0-alpha.17](https://github.com/vuelidate/vuelidate/compare/@vuelidate/validators@2.0.0-alpha.16...@vuelidate/validators@2.0.0-alpha.17) (2021-06-07)
+
+
+### Bug Fixes
+
+* **validators:** async handling of `and`, `or`. Change `requiredIf` and `requiredUnless` to sync only  ([#864](https://github.com/vuelidate/vuelidate/issues/864)) ([6e7eedb](https://github.com/vuelidate/vuelidate/commit/6e7eedbcbec968d74050f98c325ef589bdeb7a37))
+
+
+### BREAKING CHANGES
+
+* **validators:** 1. Async validators passed to `and` and `or` must be wrapped in `withAsync`.
+2. `requiredIf` and `requiredUnless` no longer work with functions, returning a Promise.
+
+
+
+
+
+# [2.0.0-alpha.16](https://github.com/vuelidate/vuelidate/compare/@vuelidate/validators@2.0.0-alpha.15...@vuelidate/validators@2.0.0-alpha.16) (2021-06-04)
+
+**Note:** Version bump only for package @vuelidate/validators
+
+
+
+
+
+# [2.0.0-alpha.15](https://github.com/vuelidate/vuelidate/compare/@vuelidate/validators@2.0.0-alpha.14...@vuelidate/validators@2.0.0-alpha.15) (2021-05-23)
+
+
+### Code Refactoring
+
+* **core:** revert back to assuming sync validators via computed and using withAsync for async validators ([#860](https://github.com/vuelidate/vuelidate/issues/860)) ([d45ea36](https://github.com/vuelidate/vuelidate/commit/d45ea3636c3fb5fc4c3133ce1717fd66c89ca121))
+
+
+### BREAKING CHANGES
+
+* **core:** Async validators must be wrapped in `withAsync`
+
+
+
+
+
+# [2.0.0-alpha.14](https://github.com/vuelidate/vuelidate/compare/@vuelidate/validators@2.0.0-alpha.13...@vuelidate/validators@2.0.0-alpha.14) (2021-05-18)
+
+
+### Bug Fixes
+
+* **validators:** properly pass the this context to validators ([#845](https://github.com/vuelidate/vuelidate/issues/845)) ([93f57a6](https://github.com/vuelidate/vuelidate/commit/93f57a6f7eabe1cf25b3d587c9286cfa215bac9b))
+
+
+
+
+
 # [2.0.0-alpha.13](https://github.com/vuelidate/vuelidate/compare/@vuelidate/validators@2.0.0-alpha.12...@vuelidate/validators@2.0.0-alpha.13) (2021-04-07)
 
 

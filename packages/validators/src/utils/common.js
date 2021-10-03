@@ -18,7 +18,7 @@ export function isObject (o) {
  */
 export function normalizeValidatorObject (validator) {
   return isFunction(validator.$validator)
-    ? validator
+    ? { ...validator }
     : {
       $validator: validator
     }
@@ -49,7 +49,7 @@ export function unwrapValidatorResponse (result) {
 }
 
 /**
- * Unwraps a `NormalizedValidator` object, returning it's validator function.
+ * Unwraps a `NormalizedValidator` object, returning its validator function.
  * @param {NormalizedValidator | Function} validator
  * @return {function}
  */

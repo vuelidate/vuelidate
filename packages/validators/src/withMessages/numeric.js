@@ -6,5 +6,8 @@ import numeric from '../raw/numeric'
  */
 export default {
   $validator: numeric,
-  $message: 'Value must be numeric'
+  $message: 'Value must be numeric',
+  $params: {
+    type: 'numeric'
+  }
 }

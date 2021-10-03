@@ -59,11 +59,11 @@ function nestedValidations ({ $scope }) {
 
   // inject the `injectChildResultsIntoParent` method, into the current scope
   const sendValidationResultsToParent = inject(VuelidateInjectChildResults, () => {})
-  // provide to all of it's children the send results to parent function
+  // provide to all of its children the send results to parent function
   provide(VuelidateInjectChildResults, injectChildResultsIntoParent)
 
   const removeValidationResultsFromParent = inject(VuelidateRemoveChildResults, () => {})
-  // provide to all of it's children the remove results  function
+  // provide to all of its children the remove results  function
   provide(VuelidateRemoveChildResults, removeChildResultsFromParent)
 
   return { childResults, sendValidationResultsToParent, removeValidationResultsFromParent }
@@ -73,7 +73,10 @@ function nestedValidations ({ $scope }) {
  * @typedef GlobalConfig
  * @property {String} [$registerAs] - Config Object
  * @property {String | Number | Symbol} [$scope] - A scope to limit child component registration
- * @property {Boolean} [$stopPropagation] - Tells a Vue component to stop sending it's results up to the parent
+ * @property {Boolean} [$stopPropagation] - Tells a Vue component to stop sending its results up to the parent
+ * @property {Ref<Object>} [$externalResults] - External error messages, like from server validation.
+ * @property {Boolean} [$autoDirty] - Should the form watch for state changed, and automatically set `$dirty` to true.
+ * @property {Boolean} [$lazy] - Should the validations be lazy, and run only after they are dirty
  */
 
 /**
@@ -92,9 +95,9 @@ export function useVuelidate (validations, state, globalConfig = {}) {
     validations = undefined
     state = undefined
   }
-  let { $registerAs, $scope = CollectFlag.COLLECT_ALL, $stopPropagation } = globalConfig
+  let { $registerAs, $scope = CollectFlag.COLLECT_ALL, $stopPropagation, $externalResults } = globalConfig
 
-  let instance = getCurrentInstance()
+  const instance = getCurrentInstance()
 
   const componentOptions = instance
     ? (isVue3 ? instance.type : instance.proxy.$options)
@@ -148,12 +151,13 @@ export function useVuelidate (validations, state, globalConfig = {}) {
             childResults,
             resultsCache,
             globalConfig,
-            instance: instance.proxy
+            instance: instance.proxy,
+            externalResults: $externalResults || instance.proxy.vuelidateExternalResults
           })
         }, { immediate: true })
     })
 
-    globalConfig = componentOptions.validationsConfig || {}
+    globalConfig = componentOptions.validationsConfig || globalConfig
   } else {
     const validationsWatchTarget = isRef(validations) || isProxy(validations)
       ? validations
@@ -167,7 +171,8 @@ export function useVuelidate (validations, state, globalConfig = {}) {
         childResults,
         resultsCache,
         globalConfig,
-        instance: instance ? instance.proxy : {}
+        instance: instance ? instance.proxy : {},
+        externalResults: $externalResults
       })
     }, {
       immediate: true

@@ -1,0 +1,19 @@
+{
+  "name": "@vuelidate/components",
+  "version": "1.1.6",
+  "description": "Components for Vuelidate",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/vuelidate/vuelidate",
+    "directory": "packages/components"
+  },
+  "module": "dist/index.esm.js",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "bili"
+  },
+  "dependencies": {
+    "@vuelidate/core": "^2.0.0-alpha.26"
+  }
+}

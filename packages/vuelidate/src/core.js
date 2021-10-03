@@ -1,10 +1,16 @@
 import { isFunction, unwrap, unwrapObj } from './utils'
 import { computed, isRef, nextTick, reactive, ref, watch } from 'vue-demi'
 
-let ROOT_PATH = '__root'
+const ROOT_PATH = '__root'
 
 /**
  * @typedef {import('vue-demi').ComponentPublicInstance} VueInstance
+ */
+/**
+ * @typedef {import('vue-demi').ComputedRef} ComputedRef
+ */
+/**
+ * @typedef {import('vue-demi').WatchStopHandle} WatchStopHandle
  */
 
 /**
@@ -13,6 +19,7 @@ let ROOT_PATH = '__root'
  * @property {String | Ref<String> | function(*): string} [$message]
  * @property {Object | Ref<Object>} [$params]
  * @property {Object | Ref<Object>} [$async]
+ * @property {Ref<*>[]} [$watchTargets]
  */
 
 /**
@@ -30,7 +37,7 @@ let ROOT_PATH = '__root'
 /**
  * Sorts the validators for a state tree branch
  * @param {Object<NormalizedValidator|Function>} validationsRaw
- * @return {{ rules: Object<NormalizedValidator>, nestedValidators: Object, config: Object }}
+ * @return {{ rules: Object<NormalizedValidator>, nestedValidators: Object, config: GlobalConfig }}
  */
 function sortValidations (validationsRaw = {}) {
   const validations = unwrap(validationsRaw)
@@ -68,7 +75,7 @@ function sortValidations (validationsRaw = {}) {
 }
 
 /**
- * Calls a validation rule by unwrapping it's value first from a ref.
+ * Calls a validation rule by unwrapping its value first from a ref.
  * @param {Validator} rule
  * @param {Ref} value
  * @param {VueInstance} instance
@@ -83,7 +90,7 @@ function callRule (rule, value, instance, siblingState) {
  * Normalizes the validator result
  * Allows passing a boolean of an object like `{ $valid: Boolean }`
  * @param {ValidatorResponse} result - Validator result
- * @return {Boolean}
+ * @return {boolean}
  */
 function normalizeValidatorResponse (result) {
   return result.$valid !== undefined
@@ -93,25 +100,27 @@ function normalizeValidatorResponse (result) {
 
 /**
  * Returns the result of an async validator.
- * @param {Function} rule
+ * @param {Validator} rule
  * @param {Ref<*>} model
  * @param {Ref<Boolean>} $pending
  * @param {Ref<Boolean>} $dirty
- * @param {Object} config
+ * @param {GlobalConfig} config
+ * @param {boolean} config.$lazy
  * @param {Ref<*>} $response
  * @param {VueInstance} instance
+ * @param {Ref<*>[]} watchTargets
  * @param {Object} siblingState
- * @return {Ref<Boolean>}
+ * @return {{ $invalid: Ref<Boolean>, $unwatch: WatchStopHandle }}
  */
-function createAsyncResult (rule, model, $pending, $dirty, { $lazy }, $response, instance, siblingState) {
+function createAsyncResult (rule, model, $pending, $dirty, { $lazy }, $response, instance, watchTargets = [], siblingState) {
   const $invalid = ref(!!$dirty.value)
   const $pendingCounter = ref(0)
 
   $pending.value = false
 
   const $unwatch = watch(
-    [model, $dirty],
-    ([modelValue, dirty]) => {
+    [model, $dirty].concat(watchTargets),
+    () => {
       if ($lazy && !$dirty.value) return false
       let ruleResult
       // make sure we dont break if a validator throws
@@ -124,7 +133,8 @@ function createAsyncResult (rule, model, $pending, $dirty, { $lazy }, $response,
 
       $pendingCounter.value++
       $pending.value = !!$pendingCounter.value
-      $invalid.value = true
+      // ensure $invalid is false, while validator is resolving
+      $invalid.value = false
 
       Promise.resolve(ruleResult)
         .then(data => {
@@ -146,30 +156,76 @@ function createAsyncResult (rule, model, $pending, $dirty, { $lazy }, $response,
 }
 
 /**
+ * Returns the result of a sync validator
+ * @param {Validator} rule
+ * @param {Ref<*>} model
+ * @param {Ref<Boolean>} $dirty
+ * @param {GlobalConfig} config
+ * @param {Boolean} config.$lazy
+ * @param {Ref<*>} $response
+ * @param {VueInstance} instance
+ * @return {{$unwatch: (function(): {}), $invalid: ComputedRef<boolean>}}
+ */
+function createSyncResult (rule, model, $dirty, { $lazy }, $response, instance) {
+  const $unwatch = () => ({})
+  const $invalid = computed(() => {
+    if ($lazy && !$dirty.value) return false
+    try {
+      const result = callRule(rule, model, instance)
+      $response.value = result
+      return normalizeValidatorResponse(result)
+    } catch (err) {
+      $response.value = err
+    }
+    return true
+  })
+  return { $unwatch, $invalid }
+}
+
+/**
  * Returns the validation result.
  * Detects async and sync validators.
  * @param {NormalizedValidator} rule
  * @param {Ref<*>} model
  * @param {Ref<boolean>} $dirty
- * @param {Object} config
- * @param {VueInstance} instance
+ * @param {GlobalConfig} config - Vuelidate config
+ * @param {VueInstance} instance - component instance
+ * @param {string} validatorName - name of the current validator
+ * @param {string} propertyKey - the current property we are validating
+ * @param {string} propertyPath - the deep path to the validated property
  * @param {Object} siblingState
- * @return {{$params: *, $message: Ref<String>, $pending: Ref<Boolean>, $invalid: Ref<Boolean>, $response: Ref<*>}}
+ * @return {{ $params: *, $message: Ref<String>, $pending: Ref<Boolean>, $invalid: Ref<Boolean>, $response: Ref<*>, $unwatch: WatchStopHandle }}
  */
-function createValidatorResult (rule, model, $dirty, config, instance, siblingState) {
+function createValidatorResult (rule, model, $dirty, config, instance, validatorName, propertyKey, propertyPath, siblingState) {
   const $pending = ref(false)
   const $params = rule.$params || {}
   const $response = ref(null)
-  const { $invalid, $unwatch } = createAsyncResult(
-    rule.$validator,
-    model,
-    $pending,
-    $dirty,
-    config,
-    $response,
-    instance,
-    siblingState
-  )
+  let $invalid
+  let $unwatch
+
+  if (rule.$async) {
+    ({ $invalid, $unwatch } = createAsyncResult(
+      rule.$validator,
+      model,
+      $pending,
+      $dirty,
+      config,
+      $response,
+      instance,
+      rule.$watchTargets,
+      siblingState
+    ))
+  } else {
+    ({ $invalid, $unwatch } = createSyncResult(
+      rule.$validator,
+      model,
+      $dirty,
+      config,
+      $response,
+      instance,
+      siblingState
+    ))
+  }
 
   const message = rule.$message
   const $message = isFunction(message)
@@ -180,7 +236,10 @@ function createValidatorResult (rule, model, $dirty, config, instance, siblingSt
           $invalid,
           $params: unwrapObj($params), // $params can hold refs, so we unwrap them for easy access
           $model: model,
-          $response
+          $response,
+          $validator: validatorName,
+          $propertyPath: propertyPath,
+          $property: propertyKey
         })
       ))
     : message || ''
@@ -227,17 +286,18 @@ function createValidatorResult (rule, model, $dirty, config, instance, siblingSt
  * @param {String} key - Key for the current state tree
  * @param {ResultsStorage} [resultsCache] - A cache map of all the validators
  * @param {String} [path] - the current property path
- * @param {Object} [config] - the config object
+ * @param {GlobalConfig} [config] - the config object
  * @param {VueInstance} instance
+ * @param {ComputedRef<Object>} externalResults
  * @param {Object} siblingState
  * @return {ValidationResult | {}}
  */
-function createValidationResults (rules, model, key, resultsCache, path, config, instance, siblingState) {
+function createValidationResults (rules, model, key, resultsCache, path, config, instance, externalResults, siblingState) {
   // collect the property keys
   const ruleKeys = Object.keys(rules)
 
   const cachedResult = resultsCache.get(path, rules)
-  let $dirty = ref(false)
+  const $dirty = ref(false)
 
   if (cachedResult) {
     // if the rules are the same as before, use the cached results
@@ -274,11 +334,29 @@ function createValidationResults (rules, model, key, resultsCache, path, config,
       result.$dirty,
       config,
       instance,
+      ruleKey,
+      key,
+      path,
       siblingState
     )
   })
 
+  result.$externalResults = computed(() => {
+    if (!externalResults.value) return []
+    return [].concat(externalResults.value).map((stringError, index) => ({
+      $propertyPath: path,
+      $property: key,
+      $validator: '$externalResults',
+      $uid: `${path}-externalResult-${index}`,
+      $message: stringError,
+      $params: {},
+      $response: null,
+      $pending: false
+    }))
+  })
+
   result.$invalid = computed(() =>
+    !!result.$externalResults.value.length ||
     ruleKeys.some(ruleKey => unwrap(result[ruleKey].$invalid))
   )
 
@@ -287,7 +365,7 @@ function createValidationResults (rules, model, key, resultsCache, path, config,
   )
 
   result.$error = computed(() =>
-    result.$invalid.value && result.$dirty.value
+    result.$dirty.value ? result.$pending.value || result.$invalid.value : false
   )
 
   result.$silentErrors = computed(() => ruleKeys
@@ -305,6 +383,7 @@ function createValidationResults (rules, model, key, resultsCache, path, config,
         $pending: res.$pending
       })
     })
+    .concat(result.$externalResults.value)
   )
 
   result.$errors = computed(() => result.$dirty.value
@@ -327,10 +406,12 @@ function createValidationResults (rules, model, key, resultsCache, path, config,
  * @param {Object} nestedState - Current state
  * @param {String} path - Path to current property
  * @param {ResultsStorage} resultsCache - Validations cache map
- * @param {Object} config - The config object
+ * @param {GlobalConfig} config - The config object
+ * @param {VueInstance} instance - The current Vue instance
+ * @param {ComputedRef<object>} nestedExternalResults - The external results for this nested collection
  * @return {{}}
  */
-function collectNestedValidationResults (validations, nestedState, path, resultsCache, config, instance) {
+function collectNestedValidationResults (validations, nestedState, path, resultsCache, config, instance, nestedExternalResults) {
   const nestedValidationKeys = Object.keys(validations)
 
   // if we have no state, return empty object
@@ -345,7 +426,8 @@ function collectNestedValidationResults (validations, nestedState, path, results
       parentKey: path,
       resultsCache,
       globalConfig: config,
-      instance
+      instance,
+      externalResults: nestedExternalResults
     })
     return results
   }, {})
@@ -354,8 +436,8 @@ function collectNestedValidationResults (validations, nestedState, path, results
 /**
  * Generates the Meta fields from the results
  * @param {ValidationResult|{}} results
- * @param {Object<ValidationResult>[]} nestedResults
- * @param {Object<ValidationResult>[]} childResults
+ * @param {Object.<string, ValidationResult>[]} nestedResults
+ * @param {Object.<string, ValidationResult>[]} childResults
  * @return {{$anyDirty: Ref<Boolean>, $error: Ref<Boolean>, $invalid: Ref<Boolean>, $errors: Ref<ErrorObject[]>, $dirty: Ref<Boolean>, $touch: Function, $reset: Function }}
  */
 function createMetaFields (results, nestedResults, childResults) {
@@ -431,7 +513,7 @@ function createMetaFields (results, nestedResults, childResults) {
     $dirty.value
   )
 
-  const $error = computed(() => ($invalid.value && $dirty.value) || false)
+  const $error = computed(() => $dirty.value ? $pending.value || $invalid.value : false)
 
   const $touch = () => {
     // call the root $touch
@@ -495,8 +577,10 @@ function createMetaFields (results, nestedResults, childResults) {
  * @param {String} [params.key] - Current state property key. Used when being called on nested items
  * @param {String} [params.parentKey] - Parent state property key. Used when being called recursively
  * @param {Object<ValidationResult>} [params.childResults] - Used to collect child results.
- * @param {ResultsStorage} resultsCache - The cached validation results
- * @param {VueInstance} instance - The current Vue instance
+ * @param {ResultsStorage} params.resultsCache - The cached validation results
+ * @param {VueInstance} params.instance - The current Vue instance
+ * @param {GlobalConfig} params.globalConfig - The validation config, passed to this setValidations instance.
+ * @param {Reactive<object> | Ref<Object>} params.externalResults - External validation results
  * @return {UnwrapNestedRefs<VuelidateState>}
  */
 export function setValidations ({
@@ -507,7 +591,8 @@ export function setValidations ({
   childResults,
   resultsCache,
   globalConfig = {},
-  instance
+  instance,
+  externalResults
 }) {
   const path = parentKey ? `${parentKey}.${key}` : key
 
@@ -527,11 +612,20 @@ export function setValidations ({
     })
     : state
 
+  // cache the external results, so we can revert back to them
+  const cachedExternalResults = { ...(unwrap(externalResults) || {}) }
+
+  const nestedExternalResults = computed(() => {
+    const results = unwrap(externalResults)
+    if (!key) return results
+    return results ? unwrap(results[key]) : undefined
+  })
+
   // Use rules for the current state fragment and validate it
-  const results = createValidationResults(rules, nestedState, key, resultsCache, path, mergedConfig, instance, state)
+  const results = createValidationResults(rules, nestedState, key, resultsCache, path, mergedConfig, instance, nestedExternalResults, state)
   // Use nested keys to repeat the process
   // *WARN*: This is recursive
-  const nestedResults = collectNestedValidationResults(nestedValidators, nestedState, path, resultsCache, mergedConfig, instance)
+  const nestedResults = collectNestedValidationResults(nestedValidators, nestedState, path, resultsCache, mergedConfig, instance, nestedExternalResults)
 
   // Collect and merge this level validation results
   // with all nested validation results
@@ -551,26 +645,32 @@ export function setValidations ({
    * If we have no `key`, this is the top level state
    * We dont need `$model` there.
    */
-  const $model = key ? computed({
-    get: () => unwrap(nestedState),
-    set: val => {
-      $dirty.value = true
-      const s = unwrap(state)
-      if (isRef(s[key])) {
-        s[key].value = val
-      } else {
-        s[key] = val
+  const $model = key
+    ? computed({
+      get: () => unwrap(nestedState),
+      set: val => {
+        $dirty.value = true
+        const s = unwrap(state)
+        const external = unwrap(externalResults)
+        if (external) {
+          external[key] = cachedExternalResults[key]
+        }
+        if (isRef(s[key])) {
+          s[key].value = val
+        } else {
+          s[key] = val
+        }
       }
-    }
-  }) : null
+    })
+    : null
 
   if (key && mergedConfig.$autoDirty) {
-    const $unwatch = watch(nestedState, () => {
-      const autoDirtyPath = `_${path}_$watcher_`
-      const cachedAutoDirty = resultsCache.get(autoDirtyPath, {})
+    watch(nestedState, () => {
       if (!$dirty.value) $touch()
-      if (cachedAutoDirty) cachedAutoDirty.$unwatch()
-      resultsCache.set(autoDirtyPath, {}, { $unwatch })
+      const external = unwrap(externalResults)
+      if (external) {
+        external[key] = cachedExternalResults[key]
+      }
     }, { flush: 'sync' })
   }
 
@@ -578,11 +678,11 @@ export function setValidations ({
    * Executes the validators and returns the result.
    * @return {Promise<boolean>}
    */
-  function $validate () {
-    return new Promise(async (resolve) => {
-      if (!$dirty.value) $touch()
-      // await the watchers
-      await nextTick()
+  async function $validate () {
+    if (!$dirty.value) $touch()
+    // await the watchers
+    await nextTick()
+    return new Promise((resolve) => {
       // return whether it is valid or not
       if (!$pending.value) return resolve(!$invalid.value)
       const unwatch = watch($pending, () => {
@@ -601,6 +701,22 @@ export function setValidations ({
     return (childResults.value || {})[key]
   }
 
+  function $clearExternalResults () {
+    if (isRef(externalResults)) {
+      externalResults.value = cachedExternalResults
+    } else {
+      // if the external results state was empty, we need to delete every property, one by one
+      if (Object.keys(cachedExternalResults).length === 0) {
+        Object.keys(externalResults).forEach((k) => {
+          delete externalResults[k]
+        })
+      } else {
+        // state was not empty, so we just assign it back into the current state
+        Object.assign(externalResults, cachedExternalResults)
+      }
+    }
+  }
+
   return reactive({
     ...results,
     // NOTE: The order here is very important, since we want to override
@@ -617,10 +733,11 @@ export function setValidations ({
     $reset,
     $path: path || ROOT_PATH,
     $silentErrors,
+    $validate,
     // if there are no child results, we are inside a nested property
     ...(childResults && {
       $getResultsForChild,
-      $validate
+      $clearExternalResults
     }),
     // add each nested property's state
     ...nestedResults

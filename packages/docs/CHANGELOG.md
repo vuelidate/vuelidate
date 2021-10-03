@@ -3,6 +3,78 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.0.0-alpha.25](https://github.com/vuelidate/vuelidate/compare/@vuelidate/docs@2.0.0-alpha.24...@vuelidate/docs@2.0.0-alpha.25) (2021-07-02)
+
+**Note:** Version bump only for package @vuelidate/docs
+
+
+
+
+
+# [2.0.0-alpha.24](https://github.com/vuelidate/vuelidate/compare/@vuelidate/docs@2.0.0-alpha.23...@vuelidate/docs@2.0.0-alpha.24) (2021-07-01)
+
+
+### Features
+
+* **core:** add external validations support via $externalResults ([#837](https://github.com/vuelidate/vuelidate/issues/837)), closes [#824](https://github.com/vuelidate/vuelidate/issues/824) ([b259587](https://github.com/vuelidate/vuelidate/commit/b25958725ea310018d571fdd718847db98277684))
+* **validators:** add a new forEach helper, and @vuelidate/components package ([#880](https://github.com/vuelidate/vuelidate/issues/880)) ([102c6cd](https://github.com/vuelidate/vuelidate/commit/102c6cde3deb5ead7da157d00ac7a964ae596a96))
+
+
+
+
+
+# [2.0.0-alpha.23](https://github.com/vuelidate/vuelidate/compare/@vuelidate/docs@2.0.0-alpha.22...@vuelidate/docs@2.0.0-alpha.23) (2021-06-07)
+
+
+### Bug Fixes
+
+* **validators:** async handling of `and`, `or`. Change `requiredIf` and `requiredUnless` to sync only  ([#864](https://github.com/vuelidate/vuelidate/issues/864)) ([6e7eedb](https://github.com/vuelidate/vuelidate/commit/6e7eedbcbec968d74050f98c325ef589bdeb7a37))
+
+
+### BREAKING CHANGES
+
+* **validators:** 1. Async validators passed to `and` and `or` must be wrapped in `withAsync`.
+2. `requiredIf` and `requiredUnless` no longer work with functions, returning a Promise.
+
+
+
+
+
+# [2.0.0-alpha.22](https://github.com/vuelidate/vuelidate/compare/@vuelidate/docs@2.0.0-alpha.21...@vuelidate/docs@2.0.0-alpha.22) (2021-06-04)
+
+
+### Features
+
+* enable algolia search ([d0b99de](https://github.com/vuelidate/vuelidate/commit/d0b99dec172d8f096a8d39a96a4a1d0bc0a9b9da))
+
+
+
+
+
+# [2.0.0-alpha.21](https://github.com/vuelidate/vuelidate/compare/@vuelidate/docs@2.0.0-alpha.20...@vuelidate/docs@2.0.0-alpha.21) (2021-05-23)
+
+
+### Code Refactoring
+
+* **core:** revert back to assuming sync validators via computed and using withAsync for async validators ([#860](https://github.com/vuelidate/vuelidate/issues/860)) ([d45ea36](https://github.com/vuelidate/vuelidate/commit/d45ea3636c3fb5fc4c3133ce1717fd66c89ca121))
+
+
+### BREAKING CHANGES
+
+* **core:** Async validators must be wrapped in `withAsync`
+
+
+
+
+
+# [2.0.0-alpha.20](https://github.com/vuelidate/vuelidate/compare/@vuelidate/docs@2.0.0-alpha.19...@vuelidate/docs@2.0.0-alpha.20) (2021-05-18)
+
+**Note:** Version bump only for package @vuelidate/docs
+
+
+
+
+
 # [2.0.0-alpha.19](https://github.com/vuelidate/vuelidate/compare/@vuelidate/docs@2.0.0-alpha.18...@vuelidate/docs@2.0.0-alpha.19) (2021-04-18)
 
 

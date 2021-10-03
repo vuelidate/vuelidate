@@ -1,15 +1,16 @@
 import {
   ValidationRuleWithoutParams,
   ValidationRuleWithParams,
-  ValidationRule
+  ValidationRule,
+  ValidationArgs
 } from '@vuelidate/core';
 import { Ref } from 'vue-demi';
 
 // Rules
 export const alpha: ValidationRuleWithoutParams;
 export const alphaNum: ValidationRuleWithoutParams;
-export const and: (
-  ...validators: ValidationRule[]
+export const and: <T = unknown>(
+  ...validators: ValidationRule<T>[]
 ) => ValidationRuleWithoutParams;
 export const between: (
   min: number | Ref<number>,
@@ -32,10 +33,10 @@ export const minLength: (
 export const minValue: (
   min: number | Ref<number> | string | Ref<string>
 ) => ValidationRuleWithParams<{ min: number }>;
-export const not: (validator: ValidationRule) => ValidationRuleWithoutParams;
+export const not: <T = unknown>(validator: ValidationRule<T>) => ValidationRuleWithoutParams;
 export const numeric: ValidationRuleWithoutParams;
-export const or: (
-  ...validators: ValidationRule[]
+export const or: <T = unknown>(
+  ...validators: ValidationRule<T>[]
 ) => ValidationRuleWithoutParams;
 export const required: ValidationRuleWithoutParams;
 export const requiredIf: (prop: boolean | string | (() => boolean | Promise<boolean>)) => ValidationRuleWithoutParams;
@@ -46,11 +47,54 @@ export const sameAs: <E = unknown>(
 ) => ValidationRuleWithParams<{ equalTo: E, otherName: string }>;
 export const url: ValidationRuleWithoutParams;
 export const helpers: {
-  withParams: (params: object, validator: ValidationRule) => ValidationRuleWithParams
-  withMessage: (message: string | Function, validator: ValidationRule) => ValidationRuleWithParams
+  withParams: <T = unknown>(params: object, validator: ValidationRule<T>) => ValidationRuleWithParams
+  withMessage: <T = unknown>(message: string | ((params: MessageProps) => string), validator: ValidationRule<T>) => ValidationRuleWithParams
   req: Function
   len: Function
   regex: Function
   unwrap: Function
-  withAsync: Function
+  withAsync: Function,
+  forEach: (validators: ValidationArgs) => { $validator: ValidationRule, $message: () => string }
 }
+
+export function TranslationFunction(path: string, params: { model: string, property: string, [key: string]: any }): string
+
+export function messagePathFactory(params: MessageProps): string;
+
+export function messageParamsFactory(params: {
+  model: unknown,
+  property: string,
+  invalid: boolean,
+  pending: boolean,
+  propertyPath: string,
+  response: unknown,
+  validator: string,
+  [key: string]: any
+}): string;
+
+export interface MessageProps {
+  $model: string;
+  $property: string;
+  $params: object;
+  $validator: string;
+  $pending: boolean,
+  $invalid: boolean,
+  $response: unknown,
+  $propertyPath: string,
+}
+
+export type ValidatorWrapper = (...args: unknown[]) => ValidationRuleWithParams
+
+export function createI18nMessage({ t, messagePath, messageParams }: {
+  t: typeof TranslationFunction;
+  messagePath?: typeof messagePathFactory;
+  messageParams?: typeof messageParamsFactory;
+}): (
+  validator: ValidationRule | ValidatorWrapper,
+  options?: {
+    withArguments?: boolean,
+    messagePath?: typeof messagePathFactory,
+    messageParams?: typeof messageParamsFactory,
+  }) =>
+  ValidationRuleWithParams |
+  ((...args: unknown[]) => ValidationRuleWithParams)

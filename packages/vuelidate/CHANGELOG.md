@@ -3,6 +3,120 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.0.0-alpha.26](https://github.com/vuelidate/vuelidate/compare/@vuelidate/core@2.0.0-alpha.25...@vuelidate/core@2.0.0-alpha.26) (2021-09-17)
+
+**Note:** Version bump only for package @vuelidate/core
+
+
+
+
+
+# [2.0.0-alpha.25](https://github.com/vuelidate/vuelidate/compare/@vuelidate/core@2.0.0-alpha.24...@vuelidate/core@2.0.0-alpha.25) (2021-09-02)
+
+
+### Features
+
+* **core:** add the $validate method to every validation leaf ([#926](https://github.com/vuelidate/vuelidate/issues/926)) ([0738621](https://github.com/vuelidate/vuelidate/commit/07386213e7389ea755c3d3b8395f925e432d10c6))
+* **core:** allow passing configs in OptionsApi directly to `useVuelidate`, closes [#922](https://github.com/vuelidate/vuelidate/issues/922) ([#927](https://github.com/vuelidate/vuelidate/issues/927)) ([e14fba9](https://github.com/vuelidate/vuelidate/commit/e14fba946fde7afd82fb97fe328f16e7073a44cc))
+
+
+
+
+
+# [2.0.0-alpha.24](https://github.com/vuelidate/vuelidate/compare/@vuelidate/core@2.0.0-alpha.23...@vuelidate/core@2.0.0-alpha.24) (2021-08-14)
+
+
+### Bug Fixes
+
+* **core:** reset the $externalResults key for a changed property, closes [#891](https://github.com/vuelidate/vuelidate/issues/891) ([#916](https://github.com/vuelidate/vuelidate/issues/916)) ([67d56d7](https://github.com/vuelidate/vuelidate/commit/67d56d78e0c792c0e0e0e6e8a8249a1f924f7096))
+
+
+
+
+
+# [2.0.0-alpha.23](https://github.com/vuelidate/vuelidate/compare/@vuelidate/core@2.0.0-alpha.22...@vuelidate/core@2.0.0-alpha.23) (2021-08-08)
+
+
+### Bug Fixes
+
+* **core:** change async validators to return `invalid: true`, only after they resolve ([#914](https://github.com/vuelidate/vuelidate/issues/914)) ([64892a5](https://github.com/vuelidate/vuelidate/commit/64892a5ebcdee1ad8c728766d9e693f605e36477))
+
+
+
+
+
+# [2.0.0-alpha.22](https://github.com/vuelidate/vuelidate/compare/@vuelidate/core@2.0.0-alpha.21...@vuelidate/core@2.0.0-alpha.22) (2021-07-28)
+
+
+### Bug Fixes
+
+* **types:** allow reactive ServerErrors in GlobalConfig ([#901](https://github.com/vuelidate/vuelidate/issues/901)) ([2515777](https://github.com/vuelidate/vuelidate/commit/25157771d38806826a81b8bdf5c162a6c9952077))
+* **types:** writable $model, closes vuelidate[#892](https://github.com/vuelidate/vuelidate/issues/892) ([#893](https://github.com/vuelidate/vuelidate/issues/893)) ([bb545d8](https://github.com/vuelidate/vuelidate/commit/bb545d8d9db9c270324a91e353fbdecf24a9dc13))
+
+
+
+
+
+# [2.0.0-alpha.21](https://github.com/vuelidate/vuelidate/compare/@vuelidate/core@2.0.0-alpha.20...@vuelidate/core@2.0.0-alpha.21) (2021-07-02)
+
+
+### Bug Fixes
+
+* **core:** fixed type issues regarding ([#886](https://github.com/vuelidate/vuelidate/issues/886)) ([a292833](https://github.com/vuelidate/vuelidate/commit/a29283359f8119eb6fd6649274c0d7322cc81865))
+
+
+
+
+
+# [2.0.0-alpha.20](https://github.com/vuelidate/vuelidate/compare/@vuelidate/core@2.0.0-alpha.19...@vuelidate/core@2.0.0-alpha.20) (2021-07-01)
+
+
+### Features
+
+* **core:** add external validations support via $externalResults ([#837](https://github.com/vuelidate/vuelidate/issues/837)), closes [#824](https://github.com/vuelidate/vuelidate/issues/824) ([b259587](https://github.com/vuelidate/vuelidate/commit/b25958725ea310018d571fdd718847db98277684))
+
+
+
+
+
+# [2.0.0-alpha.19](https://github.com/vuelidate/vuelidate/compare/@vuelidate/core@2.0.0-alpha.18...@vuelidate/core@2.0.0-alpha.19) (2021-06-04)
+
+
+### Bug Fixes
+
+* **types:** export ValidationArgs, closes [#869](https://github.com/vuelidate/vuelidate/issues/869) ([8e89256](https://github.com/vuelidate/vuelidate/commit/8e89256f464228aecd3b5aa3a9c2115ed2a37345))
+
+
+
+
+
+# [2.0.0-alpha.18](https://github.com/vuelidate/vuelidate/compare/@vuelidate/core@2.0.0-alpha.17...@vuelidate/core@2.0.0-alpha.18) (2021-05-23)
+
+
+### Code Refactoring
+
+* **core:** revert back to assuming sync validators via computed and using withAsync for async validators ([#860](https://github.com/vuelidate/vuelidate/issues/860)) ([d45ea36](https://github.com/vuelidate/vuelidate/commit/d45ea3636c3fb5fc4c3133ce1717fd66c89ca121))
+
+
+### BREAKING CHANGES
+
+* **core:** Async validators must be wrapped in `withAsync`
+
+
+
+
+
+# [2.0.0-alpha.17](https://github.com/vuelidate/vuelidate/compare/@vuelidate/core@2.0.0-alpha.16...@vuelidate/core@2.0.0-alpha.17) (2021-05-18)
+
+
+### Bug Fixes
+
+* **types:**  add async custom validator response type ([#855](https://github.com/vuelidate/vuelidate/issues/855)), closes [#854](https://github.com/vuelidate/vuelidate/issues/854) ([0b2c4b7](https://github.com/vuelidate/vuelidate/commit/0b2c4b7cc97c22698f706ebbdab6a8e05118e295))
+
+
+
+
+
 # [2.0.0-alpha.16](https://github.com/vuelidate/vuelidate/compare/@vuelidate/core@2.0.0-alpha.15...@vuelidate/core@2.0.0-alpha.16) (2021-04-18)
 
 

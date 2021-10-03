@@ -131,8 +131,172 @@ export default {
 ## Validating Collections
 
 ::: warning
-**BREAKING CHANGE:** The `$each` helper has been removed. Use the above solution (nested validations) instead.
+**BREAKING CHANGE:** The `$each` helper has been removed from Vuelidate 2, we recommend using [Nested validations](#nested-validations) instead. If
+you cannot migrate to it at this time, here are some workarounds:
 :::
+
+### Using the new forEach helper
+
+Using the `forEach` helper from `@vuelidate/validators`, you can easily validate all properties inside a collection, without any extra components.
+
+::: warning
+**Note:** This helper will re-run every validator, for every property, in every item in your collection, on every change in the collection. This may
+cause performance issues in more complex scenarios. Refer to [Nested Validators](#nested-validations) in those cases.
+:::
+
+```vue
+
+<template>
+  <div
+    v-for="(input, index) in state.collection"
+    :key="index"
+    :class="{
+        error: v$.collection.$each.$response.$errors[index].name.length,
+      }"
+  >
+    <input v-model="input.name" type="text" />
+    <div
+      v-for="error in v$.collection.$each.$response.$errors[index].name"
+      :key="error"
+    >
+      {{ error.$message }}
+    </div>
+  </div>
+</template>
+<script>
+// setup in a component
+import { helpers, required } from '@vuelidate/validators'
+import useVuelidate from '@vuelidate/core'
+import { reactive } from 'vue'
+
+export default {
+  setup () {
+    const rules = {
+      collection: {
+        $each: helpers.forEach({
+          name: {
+            required
+          }
+        })
+      }
+    }
+    const state = reactive({
+      collection: [
+        { name: '' }, { name: 'bar' }
+      ]
+    })
+    const v = useVuelidate(rules, state)
+    return { v, state }
+  }
+}
+
+</script>
+```
+
+The `$response` for the validator follows the schema below, so you can use it as you wish:
+
+```js
+const result = {
+  $data: [
+    {
+      propertyToValidate: {
+        validator: boolean,
+      }
+    },
+  ],
+  $errors: [
+    {
+      propertyToValidate: [
+        {
+          $message: string, // the validator error
+          $model: '', // the model that was validated
+          $params: {}, // params, if validator has any
+          $pending: false, // always false, no async support.
+          $property: string, // the property to validate
+          $response: boolean, // response
+          $validator: string // validator name
+        },
+      ]
+    },
+    {
+      name: []
+    }
+  ],
+  $valid: boolean
+}
+```
+
+The `$message` of the validator is just a two-dimensional array.
+
+```js
+const $message = [
+  ['Collection 1 - Error 1', 'Collection 1 - Error 2'],
+  ['Collection 2 - Error 1']
+]
+```
+
+### Using the ValidateEach component
+
+A simple validator provider like the `ValidateEach` component below comes in handy, when you just want to have a quick collection validation, without
+the need for dedicated form components. This would allow you to keep all the rules and state defined near your form data.
+
+```vue
+
+<template>
+  <ValidateEach
+    v-for="(item, index) in collection"
+    :key="index"
+    :state="item"
+    :rules="rules"
+  >
+    <template #default="{ v }">
+      <div>
+        <input
+          v-model="v.name.$model"
+          type="text"
+        >
+        <div
+          v-for="(error, errorIndex) in v.name.$errors"
+          :key="errorIndex"
+        >
+          {{ error.$message }}
+        </div>
+      </div>
+    </template>
+  </ValidateEach>
+</template>
+
+<script>
+import { reactive } from 'vue'
+import useVuelidate from '@vuelidate/core'
+import { ValidateEach } from '@vuelidate/components'
+import { minLength, required } from '@vuelidate/validators'
+
+export default {
+  components: { ValidateEach },
+  setup () {
+    const rules = {
+      name: {
+        required,
+        minLength: minLength(10)
+      }
+    }
+    const collection = reactive([
+      { name: 'foo' },
+      { name: 'bar' }
+    ])
+    const v = useVuelidate()
+
+    return { rules, collection, v }
+  }
+}
+</script>
+```
+
+The `ValidateEach` component is just a simple wrapper, without any template of its own. Its sole purpose is to create Vuelidate instances and pass
+them to its parent, and children as scoped slot parameters.
+
+You can find `ValidateEach` inside the `@vuelidate/components` package.
 
 ## Validation scopes
 
@@ -225,29 +389,52 @@ export default {
 ```
 
 :::tip
-You can pass validation configs as a single parameter to `useVuelidate` - [Passing a single parameter to useVuelidate](#passing-a-single-parameter-to-usevuelidate)
-:::
+**Note:** You can pass validation configs as a single parameter to `useVuelidate`
+
+- [Passing a single parameter to useVuelidate](#passing-a-single-parameter-to-usevuelidate)
+  :::
 
 ## Returning extra data from validators
 
-In more advanced use cases, it is necessary for a validator to return more than just a boolean, extra data to help the user. In those cases,
-validators can return an object, which must have a `$valid` key, and any other data, that the developer chooses.
+In more advanced use cases, a validator needs to return more than just a boolean, rather extra data to help the user understand the error. In those
+cases, validators can return an object, which must have a `$valid` key, and any other data, that the developer chooses.
 
 ```js
 function validator (value) {
-  if (value === 'something') return true
+  if (value === 'something') return { $valid: true }
   return {
     $valid: false,
-    data: { message: 'The value must be "something"', extraParams: {} }
+    message: 'The value must be "something"',
+    extraParams: {}
   }
 }
 ```
 
-The entire response can be accessed from `$response` property in the validation and error objects. We can use this to show a more custom error
-message.
+The entire response can be accessed from `$response` property in the validation and error objects.
+
+```json5
+{
+  "v$": {
+    "name": {
+      "validator": {
+        "$error": true,
+        "$invalid": true,
+        "$dirty": true,
+        "$response": {
+          "$valid": false,
+          "message": "The value must be 'something'",
+          "extraParams": {}
+        },
+        // other properties
+      }
+    }
+  }
+}
+```
+We can use this to show a more custom error message.
 
 ```js
-const validatorWithMessage = withMessage(({ $response }) => $response ? $response.data.message : 'Invalid Data', validator)
+const validatorWithMessage = withMessage(({ $response }) => $response?.message || 'Invalid Data', validator)
 ```
 
 If you need to access the data, you can just go into the `$response` property.
@@ -256,7 +443,7 @@ If you need to access the data, you can just go into the `$response` property.
 export default {
   computed: {
     someComputed () {
-      const params = this.v.someProperty.validatorName.$response
+      const params = this.v$.name.validatorName.$response
     }
   }
 }
@@ -264,15 +451,18 @@ export default {
 
 ## Providing global config to your Vuelidate instance
 
-You can provide global configs to your Vuelidate instance using the third parameter of `useVuelidate` or by using the `validationsConfig`. These
-config options are used to change some core Vuelidate functionality, like `autoDirty`, `lazy`, `scope` and more. Learn all about them
+You can provide configurations to your Vuelidate instance using the third parameter of `useVuelidate` or by using the `validationsConfig` for Options
+API. These config options can be used to change some core Vuelidate functionality, like `$autoDirty`, `$lazy`, `$scope` and more. Read about each one
 in [Validation Configuration](./api/configuration.md).
 
 ### Config with Options API
 
-If you prefer the Options API, you can specify a `validationConfig` object, that Vuelidate will read configs from.
+#### Using `validationConfig`
+
+If you are using the Options API, you can specify a `validationConfig` object, that Vuelidate will read configs from.
 
 ```vue
+
 <script>
 import { useVuelidate } from '@vuelidate/core'
 
@@ -291,9 +481,32 @@ export default {
 </script>
 ```
 
+#### Using the config object of useVuelidate
+
+An alternative is to use the first parameter of `useVuelidate` to pass a config object,
+see [Passing a single parameter to useVuelidate](#passing-a-single-parameter-to-usevuelidate) for more info.
+
+```vue
+
+<script>
+import { useVuelidate } from '@vuelidate/core'
+
+export default {
+  data () {
+    return { ...state }
+  },
+  validations () {
+    return { ...validations }
+  },
+  setup: () => ({ v$: useVuelidate({ $lazy: true, $autoDirty: true, $scope: 'foo' }) }),
+}
+</script>
+```
+
 ### Config with Composition API
 
-When using the Composition API, you can pass your configuration object as the third parameter to `useVuelidate`.
+When using the Composition API, you can pass your configuration object as the third parameter to `useVuelidate`, or as the first one, if the component
+is just a collector, see [Passing a single parameter to useVuelidate](#passing-a-single-parameter-to-usevuelidate).
 
 ```js
 import { reactive } from 'vue' // or '@vue/composition-api' in Vue 2.x
@@ -314,7 +527,7 @@ export default {
 #### Passing a single parameter to useVuelidate
 
 A common scenario is to call `useVuelidate()` without passing any state or validations, usually in validation collector components. In such cases you
-can pass global configs like `$scope` or `$stopPropagation` as a single parameter to `useVuelidate()`.
+can pass global configs like `$scope`, `$stopPropagation` as a single parameter to `useVuelidate()`.
 
 ```js
 import { useVuelidate } from '@vuelidate/core'
@@ -323,6 +536,225 @@ import FormB from '@/componnets/FormB'
 
 export default {
   components: { FormA, FormB },
-  setup: () => ({ v$: useVuelidate({ $stopPropagation: true }) })
+  setup: () => ({ v$: useVuelidate({ $stopPropagation: true, $scope: 'foo' }) })
 }
+```
+
+## Providing external validations, server side validation
+
+To provide validation messages from an external source, like from a server side validation response, you can use the `$externalResults` functionality.
+Each property in the validated state can have a corresponding string or array of strings as response message. This works with both Composition API and
+Options API.
+
+### External results with Composition API
+
+When using the Composition API, you can pass a `reactive` or `ref` object, to the `$externalResults` global config.
+
+```js
+// inside setup
+const state = reactive({ foo: '' });
+const $externalResults = ref({}) // works with reactive({}) too.
+
+const rules = { foo: { someValidation } }
+const v = useVuelidate(rules, state, { $externalResults })
+
+// validate method
+async function validate () {
+  // check if everything is valid
+  if (!await v.value.$validate()) return
+  await doAsyncStuff()
+  // do server validation, and assume we have these errors
+  const errors = {
+    // foo: 'error', is also supported
+    foo: ['Error one', 'Error Two']
+  }
+  // add the errors into the external results object
+  $externalResults.value = errors
+  // if using a `reactive` object instead,
+  // Object.assign($externalResults, errors)
+}
+
+return { v, validate }
+```
+
+### External results with Options API
+
+When using the Options API, you can either define a `vuelidateExternalResults` data property, and assign the errors to it. You can also pass
+an `$externalResults` property to the `useVuelidate` config object.
+
+It is a good practice to pre-define your external results keys, to match your form structure, otherwise Vue may have a hard time tracking changes.
+
+#### Using `vuelidateExternalResults` property
+
+```js
+export default {
+  data () {
+    return {
+      foo: '',
+      vuelidateExternalResults: {
+        foo: []
+      }
+    }
+  },
+  validations () {
+    return {
+      foo: { someValidation }
+    }
+  },
+  methods: {
+    validate () {
+      // perform validations
+      const errors = { foo: ['Error one', 'Error Two'] }
+      // merge the errors into the validation results
+      Object.assign(this.vuelidateExternalResults, errors)
+    }
+  }
+}
+```
+
+#### Using `$externalResults` config
+
+```js
+export default {
+  data: () => ({ foo: '' }),
+  validations () {
+    return {
+      foo: { someValidation }
+    }
+  },
+  setup: () => {
+    const externalResults = ref()
+    return {
+      externalResults,
+      v: useVuelidate({ $externalResults: externalResults })
+    }
+  },
+  methods: {
+    validate () {
+      // perform validations
+      const errors = { foo: ['Error one', 'Error Two'] }
+      // merge the errors into the validation results
+      Object.assign(this.externalResults, errors)
+    }
+  }
+}
+```
+
+### Clearing $externalResults
+
+If you are using `$model` to modify your form state, Vuelidate automatically will clear any corresponding external results.
+
+If you are using `$autoDirty: true`, then Vuelidate will track any changes to your form state and reset the external results as well, no need to
+use `$model`
+
+If you need to clear the entire object, use the handy `$clearExternalResults()` method, that Vuelidate provides. It will properly handle both `ref`
+and `reactive` objects.
+
+```js
+async function validate () {
+  // clear out old external results
+  v.value.$clearExternalResults()
+  // check if everything is valid
+  if (!await v.value.$validate()) return
+  //
+}
+```
+
+## i18n support
+
+Validator messages are very flexible. You can wrap each validator with a helper, that returns a translated error message, based on the validator name.
+Vuelidate already exports one for you, but you are free to create your own.
+
+```js
+// @/utils/i18n-validators.js
+import * as validators from '@vuelidate/validators'
+import { i18n } from "@/i18n"
+
+// or import { createI18nMessage } from '@vuelidate/validators'
+const { createI18nMessage } = validators
+
+// extract the `t` helper, should work for both Vue 2 and Vue 3 versions of vue-i18n
+const { t } = i18n.global || i18n
+
+// pass `t` and create your i18n message instance
+const withI18nMessage = createI18nMessage({ t })
+
+// wrap each validator.
+export const required = withI18nMessage(validators.required)
+// validators that expect a parameter should have `{ withArguments: true }` passed as a second parameter, to annotate they should be wrapped
+export const minLength = withI18nMessage(validators.minLength, { withArguments: true })
+// or you can provide the param at definition, statically
+export const maxLength = withI18nMessage(validators.maxLength(10))
+```
+
+We can now use the validators as we normally do:
+
+```vue
+
+<script>
+import { required, minLength } from '@/utils/i18n-validators'
+
+export default {
+  validations () {
+    return {
+      name: { required, minLength: minLength(10) }
+    }
+  }
+}
+</script>
+```
+
+The translations for the validation messages, with optional data inside each message can be defined like this:
+
+```en.json
+{
+  "validations": {
+    "required": "The field {property} is required.",
+    "minLength": "The {property} field has a value of '{model}', but it must have a min length of {min}."
+  }
+}
+```
+
+### Customising the i18n message
+
+The `t` function is responsible for doing the actual translation. It gets two parameters, a path and an object.
+
+1. The path is a `string`, representing the path for the validation message, it looks like `validations.${validator}`. This means that by default,
+   validation messages, are expected to live under the `validations` key in your translations.
+
+2. The second parameter is an object, with similar properties as the one passed to `withMessage` functions. Mind that properties do not have `$`
+   prefixed, this is intentional, as vue-i18n does not like those.
+
+```
+{
+    model: any,
+    property: string,
+    pending: boolean,
+    invalid: boolean,
+    response: any,
+    validator: string,
+    propertyPath: string,
+    ...props.$params
+}
+```
+
+If you wish to change the way `t` retrieves validation messages, you can pass a `messagePath` property to `createI18nMessage`. It will allow you to
+specify your own translation message paths. It gets access to the same params as the `withMessage` function, like the validator name, model etc.
+
+```js
+// change the path for fetching validator messages
+const messagePath = ({ $validator }) => `messages.${$validator}`
+
+const withI18nMessage = createI18nMessage({ t, messagePath })
+
+const required = withI18nMessage(validators.required)
+
+```
+
+:::tip
+**Note:** You can also pass a `messagePath` or `messageParams` function to `withI18nMessage` to override the global ones, on a per validator basis.
+:::
+
+```js
+const required = withI18nMessage(validators.required, { messagePath: () => 'overrides.required' })
 ```

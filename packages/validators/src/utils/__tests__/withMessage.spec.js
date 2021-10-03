@@ -1,4 +1,5 @@
 import withMessage from '../withMessage'
+import { NormalizedT } from '../../../tests/fixtures'
 
 describe('withMessage', () => {
   const fn = jest.fn()
@@ -41,6 +42,11 @@ describe('withMessage', () => {
       $message: 'msg',
       $validator: validator.$validator
     })
+  })
+
+  it('should not mutate validator', () => {
+    withMessage('Error message', NormalizedT)
+    expect(NormalizedT).not.toHaveProperty('$message')
   })
 
   it('should not call the message function or validator functions', () => {

@@ -284,16 +284,16 @@ export default {
 
 * **Usage:**
 
-  Checks for equality with a given property. Accepts a ref, a direct reference to a data property, or a raw value.
+  Checks for equality with a given property. Accepts a ref, a direct reference to a data property, or a raw value to compare to it directly.
 
 ```js
 export default {
   validations () {
     return {
       confirmPassword: {
-        sameAsPassword: sameAs(this.password),
-        sameAsRef: sameAs(ref),
-        sameAsRaw: sameAs('foo')
+        sameAsPassword: sameAs(this.password), // can be a reference to a field or computed property
+        sameAsRef: sameAs(ref), // can be passed a ref to compare
+        sameAsRawValue: sameAs('foo') // this will compare if `sameAsRawValue` equals to "foo"
       }
     }
   }
@@ -316,7 +316,8 @@ export default {
 
 * **Usage:**
 
-  Passes when at least one of provided validators returns `true`.
+  Passes when at least one of the provided validators returns `true` or `{ $valid: true }`. Validators can return more data, when using the object
+  response.
 
 ```js
 export default {
@@ -330,14 +331,30 @@ export default {
 }
 ```
 
+### Async or
+
+`or` can also accept a mix of sync and async validators. Async ones that return a promise, should be wrapped in `withAsync`.
+
+```js
+export default {
+  validations () {
+    return {
+      agree: {
+        shouldBeCheckedAsync: or(withAsync(asyncOne), withAsync(asyncTwo), validatorThree)
+      }
+    }
+  }
+}
+```
+
 ## and
 
 * **Arguments:**
-  * `{...(NormalizedValidator | Function | function(): Promise<boolean>)} validators`
+  * `{...(NormalizedValidator | Function)} validators`
 
 * **Usage:**
 
-  Passes when all of provided validators return `true`. A validator can return a Promise.
+  Passes when all of provided validators return `true` or `{ $valid: true }`.
 
 ```js
 export default {
@@ -351,6 +368,21 @@ export default {
 }
 ```
 
+### Async and
+
+`and` can also accept a mix of sync and async validators. Async ones that return a promise, should be wrapped in `withAsync`.
+
+```js
+export default {
+  validations () {
+    return {
+      agree: {
+        shouldBeChecked: and(withAsync(validatorOne), validatorTwo, withAsync(validatorThree))
+      }
+    }
+  }
+}
+```
 
 ## not
 

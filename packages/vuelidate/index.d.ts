@@ -1,4 +1,4 @@
-import { Ref, defineComponent, App, ComponentPublicInstance } from 'vue-demi';
+import { Ref, UnwrapRef, defineComponent, App, ComponentPublicInstance } from 'vue-demi';
 type Component = ReturnType<typeof defineComponent>;
 
 /*
@@ -40,24 +40,24 @@ export interface ValidatorResponse {
   [key: string]: any
 }
 
-export type ValidatorFn <T = unknown> = (value: T, siblingState: object, instance: ComponentPublicInstance) => boolean | ValidatorResponse | Promise<boolean | ValidatorResponse>;
+export type ValidatorFn <T = any, K = object, S = any> = (value: T, siblingState: K, vm: Vue & S) => boolean | ValidatorResponse | Promise<boolean | ValidatorResponse>;
 
-export interface ValidationRuleWithoutParams <T = unknown> {
+export interface ValidationRuleWithoutParams <T = any> {
   $validator: ValidatorFn<T>
   $message?: string | Ref<string> | (() => string)
 }
 
-export interface ValidationRuleWithParams<P extends object = object, T = unknown> {
+export interface ValidationRuleWithParams<P extends object = object, T = any> {
   $validator: ValidatorFn<T>
   $message: (input: { $params: P }) => string
   $params: P
 }
 
-export type ValidationRule <T = unknown> = ValidationRuleWithParams<any, T> | ValidationRuleWithoutParams<T> | ValidatorFn<T>;
+export type ValidationRule <T = any> = ValidationRuleWithParams<any, T> | ValidationRuleWithoutParams<T> | ValidatorFn<T>;
 
-type ValidationRuleCollection <T = unknown> = Record<string, ValidationRule<T>>;
+export type ValidationRuleCollection <T = any> = Record<string, ValidationRule<T>>;
 
-interface ValidationArgs {
+export interface ValidationArgs {
   [K: string]: ValidationRule | ValidationArgs
 }
 
@@ -98,12 +98,13 @@ type BaseValidation <
   Vrules extends ValidationRuleCollection<T>
     ? ExtractRulesResults<T, Vrules>
     : unknown) & {
-  readonly $model: T
+  $model: T
   // const validationGetters
   readonly $dirty: boolean
   readonly $error: boolean
   readonly $errors: ErrorObject[]
   readonly $silentErrors: ErrorObject[]
+  readonly $externalResults: ({ $validator: '$externalResults', $response: null, $pending: false, $params: {} } & ErrorObject)[]
   readonly $invalid: boolean
   readonly $anyDirty: boolean
   readonly $pending: boolean
@@ -111,9 +112,10 @@ type BaseValidation <
   // const validationMethods
   readonly $touch: () => void
   readonly $reset: () => void
+  readonly $validate: () => Promise<boolean>
 };
 
-type NestedValidations <Vargs extends ValidationArgs = ValidationArgs, T = unknown> = {
+export type NestedValidations <Vargs extends ValidationArgs = ValidationArgs, T = unknown> = {
   readonly [K in keyof Vargs]: BaseValidation<
   T extends Record<K, unknown> ? T[K] : unknown,
   Vargs[K] extends ValidationRuleCollection
@@ -126,8 +128,8 @@ type NestedValidations <Vargs extends ValidationArgs = ValidationArgs, T = unkno
 };
 
 interface ChildValidations {
-  readonly $validate: () => Promise<boolean>
   readonly $getResultsForChild: (key: string) => (BaseValidation & ChildValidations) | undefined
+  readonly $clearExternalResults: () => void
 }
 
 export type Validation <Vargs extends ValidationArgs = ValidationArgs, T = unknown> =
@@ -135,12 +137,12 @@ export type Validation <Vargs extends ValidationArgs = ValidationArgs, T = unkno
   BaseValidation<T, Vargs extends ValidationRuleCollection ? Vargs : undefined> &
   ChildValidations;
 
-type ExtractStateLeaf <Vrules extends ValidationRuleCollection> =
+export type ExtractStateLeaf <Vrules extends ValidationRuleCollection> =
   Vrules extends ValidationRuleCollection<infer T>
     ? T
     : unknown;
 
-type ChildStateLeafs <Vargs extends ValidationArgs = ValidationArgs> = {
+export type ChildStateLeafs <Vargs extends ValidationArgs = ValidationArgs> = {
   [K in keyof Vargs]?: (
   Vargs[K] extends ValidationRuleCollection
     ? ExtractStateLeaf<Vargs[K]>
@@ -152,18 +154,23 @@ type ChildStateLeafs <Vargs extends ValidationArgs = ValidationArgs> = {
   )
 };
 
-type ExtractState <Vargs extends ValidationArgs> = Vargs extends ValidationRuleCollection
+export type ExtractState <Vargs extends ValidationArgs> = Vargs extends ValidationRuleCollection
   ? ExtractStateLeaf<Vargs> & ChildStateLeafs<Vargs>
   : ChildStateLeafs<Vargs>;
 
 type ToRefs <T> = { [K in keyof T]: Ref<T[K]> };
 
-interface GlobalConfig {
+export interface ServerErrors {
+  [key: string]: string | string[] | ServerErrors
+}
+
+export interface GlobalConfig {
   $registerAs?: string
   $scope?: string | number | symbol | boolean
   $stopPropagation?: boolean
   $autoDirty?: boolean
-  $lazy?: boolean
+  $lazy?: boolean,
+  $externalResults?: ServerErrors | Ref<ServerErrors> | UnwrapRef<ServerErrors>
 }
 
 export function useVuelidate(globalConfig?: GlobalConfig): Ref<Validation>;
