@@ -49,6 +49,7 @@ function getGuideSidebar () {
 function getAPISidebar () {
   return [
     { text: 'Validation State', link: '/api/state' },
+    { text: 'Validation Rules', link: '/api/rules' },
     { text: 'Validation Methods', link: '/api/methods' },
     { text: 'Validation Error Object', link: '/api/error_object' },
     { text: 'Validation Configuration', link: '/api/configuration' }
