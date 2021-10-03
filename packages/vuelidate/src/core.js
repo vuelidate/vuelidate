@@ -82,7 +82,7 @@ function sortValidations (validationsRaw = {}) {
  * @param {Object} siblingState
  * @return {Promise<ValidatorResponse> | ValidatorResponse}
  */
-function callRule (rule, value, instance, siblingState) {
+function callRule (rule, value, siblingState, instance) {
   return rule.call(instance, unwrap(value), unwrap(siblingState), instance)
 }
 
@@ -125,7 +125,7 @@ function createAsyncResult (rule, model, $pending, $dirty, { $lazy }, $response,
       let ruleResult
       // make sure we dont break if a validator throws
       try {
-        ruleResult = callRule(rule, model, instance, siblingState)
+        ruleResult = callRule(rule, model, siblingState, instance)
       } catch (err) {
         // convert to a promise, so we can handle it async
         ruleResult = Promise.reject(err)
@@ -164,14 +164,15 @@ function createAsyncResult (rule, model, $pending, $dirty, { $lazy }, $response,
  * @param {Boolean} config.$lazy
  * @param {Ref<*>} $response
  * @param {VueInstance} instance
+ * @param {Object} siblingState
  * @return {{$unwatch: (function(): {}), $invalid: ComputedRef<boolean>}}
  */
-function createSyncResult (rule, model, $dirty, { $lazy }, $response, instance) {
+function createSyncResult (rule, model, $dirty, { $lazy }, $response, instance, siblingState) {
   const $unwatch = () => ({})
   const $invalid = computed(() => {
     if ($lazy && !$dirty.value) return false
     try {
-      const result = callRule(rule, model, instance)
+      const result = callRule(rule, model, siblingState, instance)
       $response.value = result
       return normalizeValidatorResponse(result)
     } catch (err) {

@@ -1066,7 +1066,7 @@ describe('useVuelidate', () => {
     })
 
     it('passes the currentInstance to a validator', async () => {
-      const validator = jest.fn(function (value, vm) {
+      const validator = jest.fn(function (value, siblingState, vm) {
         // we use `.value` because our state is a ref
         return this.state.number.value === value &&
           vm.state.number.value === value
@@ -1097,6 +1097,7 @@ describe('useVuelidate', () => {
       // assert that `this` is the same as the second parameter
       expect(validator.mock.calls[0][1]).toEqual(state)
       expect(nestedValidator.mock.calls[0][1]).toEqual(state.nested)
+      expect(nestedValidator.mock.calls[0][2]).toEqual(wrapper.vm)
       expect(validator.mock.instances[0]).toEqual(validator.mock.calls[0][2])
       // assert that the validator is called with the value and an object that is the VM
       expect(validator.mock.calls[0][0]).toBe(2)
