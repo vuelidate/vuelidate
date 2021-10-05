@@ -28,7 +28,7 @@ export const maxValue: (
   max: number | Ref<number> | string | Ref<string>
 ) => ValidationRuleWithParams<{ max: number }>;
 export const minLength: (
-  length: number | Ref<number>
+  min: number | Ref<number>
 ) => ValidationRuleWithParams<{ length: number }>;
 export const minValue: (
   min: number | Ref<number> | string | Ref<string>
