@@ -306,10 +306,10 @@ describe('OptionsAPI validations', () => {
       const { vm } = await createOldApiSimpleWrapper(validations, state)
 
       expect(vm.v.number).toHaveProperty('$invalid', true)
-      expect(validator).toHaveBeenLastCalledWith(1, expect.any(Object))
+      expect(validator).toHaveBeenLastCalledWith(1, expect.any(Object), expect.any(Object))
       vm.number = 2
       await flushPromises()
-      expect(validator).toHaveBeenLastCalledWith(2, expect.any(Object))
+      expect(validator).toHaveBeenLastCalledWith(2, expect.any(Object), expect.any(Object))
       expect(vm.v.number).toHaveProperty('$invalid', true)
       vm.enabled = true
       await flushPromises()
