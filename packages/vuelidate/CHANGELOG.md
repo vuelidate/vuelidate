@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.0.0-alpha.27](https://github.com/vuelidate/vuelidate/compare/@vuelidate/core@2.0.0-alpha.26...@vuelidate/core@2.0.0-alpha.27) (2021-10-06)
+
+
+### Bug Fixes
+
+* **types:** `ValidatorFn`, relax types, closes [#903](https://github.com/vuelidate/vuelidate/issues/903) ([#941](https://github.com/vuelidate/vuelidate/issues/941)) ([a81a4d8](https://github.com/vuelidate/vuelidate/commit/a81a4d889d81b20382ad89b8d5d5004315840788))
+
+
+
+
+
 # [2.0.0-alpha.26](https://github.com/vuelidate/vuelidate/compare/@vuelidate/core@2.0.0-alpha.25...@vuelidate/core@2.0.0-alpha.26) (2021-09-17)
 
 **Note:** Version bump only for package @vuelidate/core
