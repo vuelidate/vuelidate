@@ -235,6 +235,11 @@ const $message = [
 ]
 ```
 
+Each validator function is passed 3 parameters - `rule(value, object, vm)`
+1. The value of the property, for iterated object
+2. The current iterated object
+3. The component instance
+
 ### Using the ValidateEach component
 
 A simple validator provider like the `ValidateEach` component below comes in handy, when you just want to have a quick collection validation, without
