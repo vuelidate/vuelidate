@@ -381,3 +381,36 @@ export default {
 }
 </script>
 ```
+
+## `Reward early, punish late` mode
+
+The `$rewardEarly` mode of Vuelidate stops validators from running once a field becomes valid. You can re-run them using either `$validate`
+or `$commit`. This is often done on `blur` of the field.
+
+```vue
+
+<template>
+  <div>
+    <input v-model="v$.name.$model" @blur="v$.name.$commit" />
+    <p v-for="error of v.$errors" :key="error.$uid">
+      {{ error.$message }}
+    </p>
+  </div>
+</template>
+<script>
+import useVuelidate from '@vuelidate/core'
+import { required } from '@vuelidate/validators'
+
+export default {
+  setup () {
+    const rules = {
+      name: { required }
+    }
+    const name = ref(null)
+    return {
+      v$: useVuelidate(rules, { name }, { $rewardEarly: true }),
+    }
+  }
+}
+</script>
+```
