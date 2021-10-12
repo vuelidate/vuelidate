@@ -115,3 +115,9 @@ export const shouldBeErroredValidationObject = ({ v, property, propertyPath = pr
   expect(v).toHaveProperty('$touch', expect.any(Function))
   expect(v).toHaveProperty('$reset', expect.any(Function))
 }
+
+export function asyncTimeout (time) {
+  return new Promise((resolve) => {
+    setTimeout(resolve, time)
+  })
+}

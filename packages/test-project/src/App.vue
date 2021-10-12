@@ -3,6 +3,7 @@
     <div class="navigation">
       <ul>
         <li><router-link to="/">Simple Form</router-link></li>
+        <li><router-link to="/async-simple">Async Form</router-link></li>
         <li><router-link to="/i18n-simple">i18n Simple Form</router-link></li>
         <li><router-link to="/old-api">Old api</router-link></li>
         <li><router-link to="/nested-validations">Nested Validations</router-link></li>
