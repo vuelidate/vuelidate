@@ -40,7 +40,7 @@ export interface ValidatorResponse {
   [key: string]: any
 }
 
-export type ValidatorFn <T = any, S = any> = (value: T, vm: Vue & S) => boolean | ValidatorResponse | Promise<boolean | ValidatorResponse>;
+export type ValidatorFn <T = any, S = any> = (value: T, vm: S) => boolean | ValidatorResponse | Promise<boolean | ValidatorResponse>;
 
 export interface ValidationRuleWithoutParams <T = any> {
   $validator: ValidatorFn<T>
