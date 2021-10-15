@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.0.0-alpha.28](https://github.com/vuelidate/vuelidate/compare/@vuelidate/core@2.0.0-alpha.27...@vuelidate/core@2.0.0-alpha.28) (2021-10-15)
+
+
+### Bug Fixes
+
+* **types:** revert the Vue type on ValidatorFn, closes [#949](https://github.com/vuelidate/vuelidate/issues/949) ([44ea35c](https://github.com/vuelidate/vuelidate/commit/44ea35c98e5bec45787c6bc850fc06d7124962b5))
+
+
+
+
+
 # [2.0.0-alpha.27](https://github.com/vuelidate/vuelidate/compare/@vuelidate/core@2.0.0-alpha.26...@vuelidate/core@2.0.0-alpha.27) (2021-10-06)
 
 
