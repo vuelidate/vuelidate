@@ -120,7 +120,7 @@ export default {
 
     const v$ = useVuelidate(rules, state)
 
-    return { name, v$ }
+    return { state, v$ }
   }
 }
 ```
