@@ -322,7 +322,7 @@ function createValidationResults (rules, model, key, resultsCache, path, config,
   const $dirty = ref(false)
   // state for the $rewardEarly option
   /** The last invalid state of this property */
-  const $lastInvalidState = ref(true)
+  const $lastInvalidState = ref(false)
   /** The last time $commit was called. Used to re-trigger async calls */
   const $lastCommittedOn = ref(true)
 

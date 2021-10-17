@@ -2,8 +2,6 @@ import { computed, ref, h, nextTick, reactive } from 'vue-demi'
 import { mount, flushPromises, ifVue3 } from '../test-utils'
 import { isEven } from '../validators.fixture'
 
-jest.setTimeout(30000)
-
 import {
   asyncValidation,
   computedValidationsObjectWithReactive,
@@ -1691,9 +1689,27 @@ describe('useVuelidate', () => {
 
   describe('$rewardEarly', () => {
     describe('sync', () => {
+      it('does not validate, until commited once', async () => {
+        const { state, validations } = simpleValidation()
+        const { vm } = await createSimpleWrapper(validations, state, { $rewardEarly: true })
+        shouldBePristineValidationObj(vm.v.number)
+        expect(validations.number.isEven).toHaveBeenCalledTimes(0)
+        state.number.value = 3
+        await vm.$nextTick()
+        expect(validations.number.isEven).toHaveBeenCalledTimes(0)
+        shouldBePristineValidationObj(vm.v.number)
+        vm.v.number.$commit()
+        await vm.$nextTick()
+        expect(validations.number.isEven).toHaveBeenCalledTimes(1)
+      })
+
       it('sets state as normal, stops validating upon success', async () => {
         const { state, validations } = simpleValidation()
         const { vm } = await createSimpleWrapper(validations, state, { $rewardEarly: true })
+        expect(validations.number.isEven).toHaveBeenCalledTimes(0)
+        shouldBePristineValidationObj(vm.v.number)
+        vm.v.number.$commit()
+        await vm.$nextTick()
         expect(validations.number.isEven).toHaveBeenCalledTimes(1)
         shouldBeInvalidValidationObject({
           v: vm.v.number,
@@ -1716,6 +1732,8 @@ describe('useVuelidate', () => {
       it('calling $commit, re-triggers validators', async () => {
         const { state, validations } = simpleValidation()
         const { vm } = await createSimpleWrapper(validations, state, { $rewardEarly: true })
+        vm.v.number.$commit()
+        await vm.$nextTick()
         expect(validations.number.isEven).toHaveBeenCalledTimes(1)
         state.number.value = 2
         await vm.$nextTick()
@@ -1737,6 +1755,8 @@ describe('useVuelidate', () => {
       it('calling $validate, also calls $commit', async () => {
         const { state, validations } = simpleValidation()
         const { vm } = await createSimpleWrapper(validations, state, { $rewardEarly: true })
+        vm.v.number.$commit()
+        await vm.$nextTick()
         expect(validations.number.isEven).toHaveBeenCalledTimes(1)
         state.number.value = 2
         await vm.$nextTick()
@@ -1757,6 +1777,8 @@ describe('useVuelidate', () => {
       it('works with nested objects', async () => {
         const { state, validations } = nestedReactiveObjectValidation()
         const { vm } = await createSimpleWrapper(validations, state, { $rewardEarly: true })
+        vm.v.$commit()
+        await vm.$nextTick()
         expect(validations.level0.isEven).toHaveBeenCalledTimes(3) // same validator function is used on children
         expect(validations.level1.child.isEven).toHaveBeenCalledTimes(3)
         state.level0 = 1 // 0 is already even, so this wont trigger
@@ -1824,6 +1846,8 @@ describe('useVuelidate', () => {
         const { state, validations } = asyncValidation()
         const { vm } = await createSimpleWrapper(validations, state, { $rewardEarly: true })
         expect(isEven).toHaveBeenCalledTimes(0)
+        vm.v.number.$commit()
+        await vm.$nextTick()
         jest.advanceTimersToNextTimer()
         expect(isEven).toHaveBeenCalledTimes(1)
         await flushPromises()
@@ -1859,7 +1883,16 @@ describe('useVuelidate', () => {
       it('calling $validate, re-triggers validators', async () => {
         const { state, validations } = asyncValidation()
         const { vm } = await createSimpleWrapper(validations, state, { $rewardEarly: true })
+        // await initial async validators
         await asyncTimeout(6)
+        // assert nothing is invalid, until we call `$commit`
+        expect(isEven).toHaveBeenCalledTimes(0)
+        shouldBePristineValidationObj(vm.v.number)
+        // invoke a commit
+        vm.v.$commit()
+        // await the timers
+        await asyncTimeout(6)
+        // make sure validator is called and state is invalid
         expect(isEven).toHaveBeenCalledTimes(1)
         shouldBeInvalidValidationObject({
           v: vm.v.number,
