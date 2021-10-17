@@ -44,7 +44,9 @@ describe('forEach', () => {
         {
           name: {
             isFoo: false,
-            required: false
+            required: false,
+            $invalid: true,
+            $error: true
           },
           surname: {}
         }
@@ -101,13 +103,17 @@ describe('forEach', () => {
         {
           name: {
             isFoo: false,
-            required: false
+            required: false,
+            $error: true,
+            $invalid: true
           }
         },
         {
           name: {
             isFoo: true,
-            required: true
+            required: true,
+            $error: false,
+            $invalid: false
           }
         }
       ],
@@ -284,6 +290,8 @@ describe('forEach', () => {
       }
     }).$validator([{ name: 'Bar' }, { name: 'Foo' }]).$data).toEqual([{
       name: {
+        $error: false,
+        $invalid: false,
         isFoo: {
           $valid: true,
           $data: 'Foo'
@@ -291,7 +299,9 @@ describe('forEach', () => {
       }
     }, {
       name: {
-        isFoo: true
+        isFoo: true,
+        $error: false,
+        $invalid: false
       }
     }])
   })
