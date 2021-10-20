@@ -1884,14 +1884,14 @@ describe('useVuelidate', () => {
         const { state, validations } = asyncValidation()
         const { vm } = await createSimpleWrapper(validations, state, { $rewardEarly: true })
         // await initial async validators
-        await asyncTimeout(6)
+        await asyncTimeout(7)
         // assert nothing is invalid, until we call `$commit`
         expect(isEven).toHaveBeenCalledTimes(0)
         shouldBePristineValidationObj(vm.v.number)
         // invoke a commit
         vm.v.$commit()
         // await the timers
-        await asyncTimeout(6)
+        await asyncTimeout(7)
         // make sure validator is called and state is invalid
         expect(isEven).toHaveBeenCalledTimes(1)
         shouldBeInvalidValidationObject({
@@ -1901,14 +1901,14 @@ describe('useVuelidate', () => {
         })
         // change the value
         state.number.value = 2
-        await asyncTimeout(6)
+        await asyncTimeout(7)
         await flushPromises()
         // assert
         expect(isEven).toHaveBeenCalledTimes(2)
         shouldBeValidValidationObj(vm.v.number)
         // change the value
         state.number.value = 3
-        await asyncTimeout(6)
+        await asyncTimeout(7)
         await flushPromises()
         // assert
         expect(isEven).toHaveBeenCalledTimes(2)
