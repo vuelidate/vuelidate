@@ -125,19 +125,19 @@ export default {
 }
 ```
 
-Now that validations are set up, we can check inside our template for errors by looking at the `name` property inside of the `v$` Vuelidate object. It will hold all the information and state of our `name` state's validation.
+Now that validations are set up, we can check inside our template for errors by looking for example at the `firstName` property inside of the `v$` Vuelidate object. It will hold all the information and state of our `firstName` state's validation.
 
-If _any_ error is present, the `$errors` array property inside of `$v.name` will contain an object that describes each error for us to loop through.
+If _any_ error is present, the `$errors` array property inside of `$v.firstName` will contain an object that describes each error for us to loop through.
 
 Each object inside the `$errors` array will contain a few properties that allows us to dynamically build our error message.
 
-An example of our `name` property being in an error state due to it being `required` would be:
+An example of our `firstName` property being in an error state due to it being `required` would be:
 
 ```js
 {
-  "$property": "name",
+  "$property": "firstName",
   "$validator": "required",
-  "$message": "The value is required",
+  "$message": "Value is required",
   [...]
 }
 ```
@@ -145,9 +145,9 @@ An example of our `name` property being in an error state due to it being `requi
 Now that we understand the basic content of the error objects, we can build our error messages in the template. This approach will dynamically cover any number of validators that were applied to our input.
 
 ```html
-<div :class="{ error: v$.name.$errors.length }">
-  <input v-model="name">
-  <div class="input-errors" v-for="error of v$.name.$errors" :key="error.$uid">
+<div :class="{ error: v$.firstName.$errors.length }">
+  <input v-model="state.firstName">
+  <div class="input-errors" v-for="error of v$.firstName.$errors" :key="error.$uid">
     <div class="error-msg">{{ error.$message }}</div>
   </div>
 </div>

@@ -6,9 +6,9 @@ export default function forEach (validators) {
       // go over the collection. It can be a ref as well.
       return unwrap(collection).reduce((previous, collectionItem) => {
         // go over each property
-        const collectionEntryResult = Object.entries(collectionItem).reduce((all, [key, $model]) => {
+        const collectionEntryResult = Object.entries(collectionItem).reduce((all, [property, $model]) => {
           // get the validators for this property
-          const innerValidators = validators[key] || {}
+          const innerValidators = validators[property] || {}
           // go over each validator and run it
           const propertyResult = Object.entries(innerValidators).reduce((all, [validatorName, currentValidator]) => {
             // extract the validator. Supports simple and extended validators.
@@ -19,6 +19,8 @@ export default function forEach (validators) {
             const $valid = unwrapValidatorResponse($response)
             // store the entire response for later
             all.$data[validatorName] = $response
+            all.$data.$invalid = !$valid || !!all.$data.$invalid
+            all.$data.$error = all.$data.$invalid
             // if not valid, get the $message
             if (!$valid) {
               let $message = currentValidator.$message || ''
@@ -35,7 +37,7 @@ export default function forEach (validators) {
               }
               // save the error object
               all.$errors.push({
-                $property: key,
+                $property: property,
                 $message,
                 $params,
                 $response,
@@ -51,8 +53,8 @@ export default function forEach (validators) {
             }
           }, { $valid: true, $data: {}, $errors: [] })
 
-          all.$data[key] = propertyResult.$data
-          all.$errors[key] = propertyResult.$errors
+          all.$data[property] = propertyResult.$data
+          all.$errors[property] = propertyResult.$errors
 
           return {
             $valid: all.$valid && propertyResult.$valid,
