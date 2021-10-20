@@ -5,11 +5,16 @@ import ChainOfRefs from './components/ChainOfRefs.vue'
 import CollectionValidations from './components/CollectionValidations.vue'
 import I18nSimpleForm from './components/I18nSimpleForm.vue'
 import ExternalValidationsForm from './components/ExternalValidationsForm.vue'
+import AsyncValidators from './components/AsyncValidators.vue'
 
 export const routes = [
   {
     path: '/',
     component: SimpleForm
+  },
+  {
+    path: '/async-simple',
+    component: AsyncValidators
   },
   {
     path: '/i18n-simple',

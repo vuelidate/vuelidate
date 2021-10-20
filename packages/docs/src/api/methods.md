@@ -36,3 +36,9 @@
 * **Usage:**
 
   Clears the `$externalResults` state back to an empty object.
+
+## $commit
+
+* **Usage:**
+
+  Reruns all validators, when `$rewardEarly` mode is enabled - [read more](./configuration.md#rewardearly)

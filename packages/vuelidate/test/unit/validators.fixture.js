@@ -6,10 +6,8 @@ export function toAsync (validator, time = 0) {
   ))
 }
 
-export const isEven = (v) => {
-  return v % 2 === 0
-}
-export const isOdd = (v) => v % 2 === 1
+export const isEven = jest.fn((v) => v % 2 === 0)
+export const isOdd = jest.fn((v) => v % 2 === 1)
 
 export const asyncIsEven = toAsync(isEven, 5)
 export const asyncIsOdd = toAsync(isOdd, 5)
