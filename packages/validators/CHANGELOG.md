@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.0.0-alpha.24](https://github.com/vuelidate/vuelidate/compare/@vuelidate/validators@2.0.0-alpha.23...@vuelidate/validators@2.0.0-alpha.24) (2021-10-20)
+
+
+### Bug Fixes
+
+* **validators:** add $invalid and $error to forEach ([#955](https://github.com/vuelidate/vuelidate/issues/955)) ([7ca6e3a](https://github.com/vuelidate/vuelidate/commit/7ca6e3a99083404676b6f280dac6ecabdc8ebb81))
+
+
+
+
+
 # [2.0.0-alpha.23](https://github.com/vuelidate/vuelidate/compare/@vuelidate/validators@2.0.0-alpha.22...@vuelidate/validators@2.0.0-alpha.23) (2021-10-06)
 
 
