@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.0.0-alpha.30](https://github.com/vuelidate/vuelidate/compare/@vuelidate/core@2.0.0-alpha.29...@vuelidate/core@2.0.0-alpha.30) (2021-10-22)
+
+
+### Bug Fixes
+
+* **types:** make `$rewardEarly` optional in types. closes [#958](https://github.com/vuelidate/vuelidate/issues/958) ([61006de](https://github.com/vuelidate/vuelidate/commit/61006de5c047e62a883e41521c30736e342af3b9))
+
+
+
+
+
 # [2.0.0-alpha.29](https://github.com/vuelidate/vuelidate/compare/@vuelidate/core@2.0.0-alpha.28...@vuelidate/core@2.0.0-alpha.29) (2021-10-20)
 
 
