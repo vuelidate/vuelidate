@@ -172,7 +172,7 @@ export interface GlobalConfig {
   $autoDirty?: boolean
   $lazy?: boolean,
   $externalResults?: ServerErrors | Ref<ServerErrors> | UnwrapRef<ServerErrors>,
-  $rewardEarly: boolean
+  $rewardEarly?: boolean
 }
 
 export function useVuelidate(globalConfig?: GlobalConfig): Ref<Validation>;
