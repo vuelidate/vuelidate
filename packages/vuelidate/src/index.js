@@ -1,73 +1,9 @@
-import { watch, computed, getCurrentInstance, inject, onBeforeMount, onBeforeUnmount, provide, isRef, ref, reactive, isVue3 } from 'vue-demi'
+import { watch, computed, getCurrentInstance, onBeforeMount, onBeforeUnmount, provide, isRef, ref, reactive, isVue3 } from 'vue-demi'
 import { isFunction, unwrap, isProxy } from './utils'
 import { setValidations } from './core'
 import ResultsStorage from './storage'
-
-const VuelidateInjectChildResults = Symbol('vuelidate#injectChiildResults')
-const VuelidateRemoveChildResults = Symbol('vuelidate#removeChiildResults')
-
-export const CollectFlag = {
-  COLLECT_ALL: true,
-  COLLECT_NONE: false
-}
-
-/**
- * Create helpers to collect validation state from child components
- * @param {Object} params
- * @param {String | Number} params.$scope - Parent component scope
- * @return {{sendValidationResultsToParent: function, childResults: ComputedRef<Object>, removeValidationResultsFromParent: function}}
- */
-function nestedValidations ({ $scope }) {
-  const childResultsRaw = {}
-  const childResultsKeys = ref([])
-  const childResults = computed(() => childResultsKeys.value.reduce((results, key) => {
-    results[key] = unwrap(childResultsRaw[key])
-    return results
-  }, {}))
-
-  /**
-   * Allows children to send validation data up to their parent.
-   * @param {Object} results - the results
-   * @param {Object} args
-   * @param {String} args.$registerAs - the $registeredAs key
-   * @param {String | Number} args.$scope - the $scope key
-   */
-  function injectChildResultsIntoParent (results, { $registerAs: key, $scope: childScope, $stopPropagation }) {
-    if (
-      $stopPropagation ||
-      $scope === CollectFlag.COLLECT_NONE ||
-      childScope === CollectFlag.COLLECT_NONE ||
-      (
-        $scope !== CollectFlag.COLLECT_ALL &&
-        $scope !== childScope
-      )
-    ) return
-    childResultsRaw[key] = results
-    childResultsKeys.value.push(key)
-  }
-
-  /**
-   * Allows children to remove the validation data from their parent, before getting destroyed.
-   * @param {String} key - the registeredAs key
-   */
-  function removeChildResultsFromParent (key) {
-    // remove the key
-    childResultsKeys.value = childResultsKeys.value.filter(childKey => childKey !== key)
-    // remove the stored data for the key
-    delete childResultsRaw[key]
-  }
-
-  // inject the `injectChildResultsIntoParent` method, into the current scope
-  const sendValidationResultsToParent = inject(VuelidateInjectChildResults, () => {})
-  // provide to all of its children the send results to parent function
-  provide(VuelidateInjectChildResults, injectChildResultsIntoParent)
-
-  const removeValidationResultsFromParent = inject(VuelidateRemoveChildResults, () => {})
-  // provide to all of its children the remove results  function
-  provide(VuelidateRemoveChildResults, removeChildResultsFromParent)
-
-  return { childResults, sendValidationResultsToParent, removeValidationResultsFromParent }
-}
+import { CollectFlag, nestedValidations } from './utils/injectNestedComponentValidations'
+import { ComputedProxyFactory } from './utils/ComputedProxyFactory'
 
 /**
  * @typedef GlobalConfig
@@ -86,7 +22,7 @@ function nestedValidations ({ $scope }) {
  * @param {Object | GlobalConfig} [validations] - Validations Object or the globalConfig.
  * @param {Object} [state] - State object - required if `validations` is a validation object.
  * @param {GlobalConfig} [globalConfig] - Config Object
- * @return {UnwrapRef<*>}
+ * @return {ComputedRef<*>}
  */
 export function useVuelidate (validations, state, globalConfig = {}) {
   // if we pass only one argument, its most probably the globalConfig.
@@ -132,18 +68,6 @@ export function useVuelidate (validations, state, globalConfig = {}) {
       // has been attached to the component instance. From that point on it will be reactive.
       state.value = instance.proxy
 
-      // helper proxy for instance property access. It makes every reference
-      // reactive for the validation function
-      function ComputedProxyFactory (target) {
-        return new Proxy(target, {
-          get (target, prop, receiver) {
-            return (typeof target[prop] === 'object')
-              ? ComputedProxyFactory(target[prop])
-              : computed(() => target[prop])
-          }
-        })
-      }
-
       watch(() => isFunction(rules) ? rules.call(state.value, new ComputedProxyFactory(state.value)) : rules,
         (validations) => {
           validationResults.value = setValidations({
@@ -175,9 +99,7 @@ export function useVuelidate (validations, state, globalConfig = {}) {
         instance: instance ? instance.proxy : {},
         externalResults: $externalResults
       })
-    }, {
-      immediate: true
-    })
+    }, { immediate: true })
   }
 
   if (instance) {
@@ -187,7 +109,6 @@ export function useVuelidate (validations, state, globalConfig = {}) {
     onBeforeUnmount(() => removeValidationResultsFromParent($registerAs))
   }
 
-  // TODO: Change into reactive + watch
   return computed(() => {
     return {
       ...unwrap(validationResults.value),
@@ -196,4 +117,5 @@ export function useVuelidate (validations, state, globalConfig = {}) {
   })
 }
 
+export { CollectFlag }
 export default useVuelidate
