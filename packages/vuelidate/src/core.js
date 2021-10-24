@@ -110,18 +110,42 @@ function normalizeValidatorResponse (result) {
  * @param {VueInstance} instance
  * @param {Ref<*>[]} watchTargets
  * @param {Object} siblingState
+ * @param {Ref<Boolean>} $lastInvalidState
+ * @param {Ref<Number>} $lastCommittedOn
  * @return {{ $invalid: Ref<Boolean>, $unwatch: WatchStopHandle }}
  */
-function createAsyncResult (rule, model, $pending, $dirty, { $lazy }, $response, instance, watchTargets = [], siblingState) {
+function createAsyncResult (
+  rule,
+  model,
+  $pending,
+  $dirty,
+  {
+    $lazy,
+    $rewardEarly
+  },
+  $response,
+  instance,
+  watchTargets = [],
+  siblingState,
+  $lastInvalidState,
+  $lastCommittedOn
+) {
   const $invalid = ref(!!$dirty.value)
   const $pendingCounter = ref(0)
 
   $pending.value = false
 
   const $unwatch = watch(
-    [model, $dirty].concat(watchTargets),
+    [model, $dirty].concat(watchTargets, $lastCommittedOn),
     () => {
-      if ($lazy && !$dirty.value) return false
+      if (
+        // if $lazy and not dirty, return
+        ($lazy && !$dirty.value) ||
+        // if in $rewardEarly mode and no previous errors, nothing pending, return
+        ($rewardEarly && !$lastInvalidState.value && !$pending.value)
+      ) {
+        return
+      }
       let ruleResult
       // make sure we dont break if a validator throws
       try {
@@ -165,20 +189,38 @@ function createAsyncResult (rule, model, $pending, $dirty, { $lazy }, $response,
  * @param {Ref<*>} $response
  * @param {VueInstance} instance
  * @param {Object} siblingState
+ * @param {Ref<Boolean>} $lastInvalidState
  * @return {{$unwatch: (function(): {}), $invalid: ComputedRef<boolean>}}
  */
-function createSyncResult (rule, model, $dirty, { $lazy }, $response, instance, siblingState) {
+function createSyncResult (
+  rule,
+  model,
+  $dirty,
+  { $lazy, $rewardEarly },
+  $response,
+  instance,
+  siblingState,
+  $lastInvalidState
+) {
   const $unwatch = () => ({})
   const $invalid = computed(() => {
-    if ($lazy && !$dirty.value) return false
+    if (
+      // return early if $lazy mode and not touched
+      ($lazy && !$dirty.value) ||
+      // If $rewardEarly mode is ON and last invalid was false (no error), return it.
+      // If we want to invalidate, we just flip the last state to true, causing the computed to run again
+      ($rewardEarly && !$lastInvalidState.value)) {
+      return false
+    }
+    let returnValue = true
     try {
       const result = callRule(rule, model, siblingState, instance)
       $response.value = result
-      return normalizeValidatorResponse(result)
+      returnValue = normalizeValidatorResponse(result)
     } catch (err) {
       $response.value = err
     }
-    return true
+    return returnValue
   })
   return { $unwatch, $invalid }
 }
@@ -195,9 +237,23 @@ function createSyncResult (rule, model, $dirty, { $lazy }, $response, instance, 
  * @param {string} propertyKey - the current property we are validating
  * @param {string} propertyPath - the deep path to the validated property
  * @param {Object} siblingState
+ * @param {Ref<Boolean>} $lastInvalidState - the last invalid state
+ * @param {Ref<Number>} $lastCommittedOn - the last time $commit was called
  * @return {{ $params: *, $message: Ref<String>, $pending: Ref<Boolean>, $invalid: Ref<Boolean>, $response: Ref<*>, $unwatch: WatchStopHandle }}
  */
-function createValidatorResult (rule, model, $dirty, config, instance, validatorName, propertyKey, propertyPath, siblingState) {
+function createValidatorResult (
+  rule,
+  model,
+  $dirty,
+  config,
+  instance,
+  validatorName,
+  propertyKey,
+  propertyPath,
+  siblingState,
+  $lastInvalidState,
+  $lastCommittedOn
+) {
   const $pending = ref(false)
   const $params = rule.$params || {}
   const $response = ref(null)
@@ -214,7 +270,9 @@ function createValidatorResult (rule, model, $dirty, config, instance, validator
       $response,
       instance,
       rule.$watchTargets,
-      siblingState
+      siblingState,
+      $lastInvalidState,
+      $lastCommittedOn
     ))
   } else {
     ({ $invalid, $unwatch } = createSyncResult(
@@ -224,7 +282,8 @@ function createValidatorResult (rule, model, $dirty, config, instance, validator
       config,
       $response,
       instance,
-      siblingState
+      siblingState,
+      $lastInvalidState
     ))
   }
 
@@ -277,6 +336,7 @@ function createValidatorResult (rule, model, $dirty, config, instance, validator
  * @property {Function} $reset
  * @property {ComputedRef<ErrorObject[]>} $errors
  * @property {ComputedRef<ErrorObject[]>} $silentErrors
+ * @property {Function} $commit
  */
 
 /**
@@ -299,6 +359,11 @@ function createValidationResults (rules, model, key, resultsCache, path, config,
 
   const cachedResult = resultsCache.get(path, rules)
   const $dirty = ref(false)
+  // state for the $rewardEarly option
+  /** The last invalid state of this property */
+  const $lastInvalidState = ref(false)
+  /** The last time $commit was called. Used to re-trigger async calls */
+  const $lastCommittedOn = ref(true)
 
   if (cachedResult) {
     // if the rules are the same as before, use the cached results
@@ -314,7 +379,8 @@ function createValidationResults (rules, model, key, resultsCache, path, config,
     $dirty,
     $path: path,
     $touch: () => { if (!$dirty.value) $dirty.value = true },
-    $reset: () => { if ($dirty.value) $dirty.value = false }
+    $reset: () => { if ($dirty.value) $dirty.value = false },
+    $commit: () => {}
   }
 
   /**
@@ -338,7 +404,9 @@ function createValidationResults (rules, model, key, resultsCache, path, config,
       ruleKey,
       key,
       path,
-      siblingState
+      siblingState,
+      $lastInvalidState,
+      $lastCommittedOn
     )
   })
 
@@ -356,10 +424,12 @@ function createValidationResults (rules, model, key, resultsCache, path, config,
     }))
   })
 
-  result.$invalid = computed(() =>
-    !!result.$externalResults.value.length ||
-    ruleKeys.some(ruleKey => unwrap(result[ruleKey].$invalid))
-  )
+  result.$invalid = computed(() => {
+    const r = ruleKeys.some(ruleKey => unwrap(result[ruleKey].$invalid))
+    // cache the last invalid state
+    $lastInvalidState.value = r
+    return !!result.$externalResults.value.length || r
+  })
 
   result.$pending = computed(() =>
     ruleKeys.some(ruleKey => unwrap(result[ruleKey].$pending))
@@ -395,6 +465,11 @@ function createValidationResults (rules, model, key, resultsCache, path, config,
   result.$unwatch = () => ruleKeys.forEach(ruleKey => {
     result[ruleKey].$unwatch()
   })
+
+  result.$commit = () => {
+    $lastInvalidState.value = true
+    $lastCommittedOn.value = Date.now()
+  }
 
   resultsCache.set(path, rules, result)
 
@@ -525,6 +600,15 @@ function createMetaFields (results, nestedResults, childResults) {
     })
   }
 
+  const $commit = () => {
+    // call the root $touch
+    results.$commit()
+    // call all nested level $touch
+    allResults.value.forEach((result) => {
+      result.$commit()
+    })
+  }
+
   const $reset = () => {
     // reset the root $dirty state
     results.$reset()
@@ -546,7 +630,8 @@ function createMetaFields (results, nestedResults, childResults) {
     $pending,
     $touch,
     $reset,
-    $silentErrors
+    $silentErrors,
+    $commit
   }
 }
 
@@ -639,7 +724,8 @@ export function setValidations ({
     $pending,
     $touch,
     $reset,
-    $silentErrors
+    $silentErrors,
+    $commit
   } = createMetaFields(results, nestedResults, childResults)
 
   /**
@@ -681,6 +767,11 @@ export function setValidations ({
    */
   async function $validate () {
     if (!$dirty.value) $touch()
+    if (mergedConfig.$rewardEarly) {
+      $commit()
+      // await the watchers
+      await nextTick()
+    }
     // await the watchers
     await nextTick()
     return new Promise((resolve) => {
@@ -735,6 +826,7 @@ export function setValidations ({
     $path: path || ROOT_PATH,
     $silentErrors,
     $validate,
+    $commit,
     // if there are no child results, we are inside a nested property
     ...(childResults && {
       $getResultsForChild,

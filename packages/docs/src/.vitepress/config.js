@@ -39,7 +39,7 @@ function getGuideSidebar () {
     { text: 'Getting started', link: '/' },
     { text: 'Guide', link: '/guide' },
     { text: 'Advanced Usage', link: '/advanced_usage' },
-    { text: 'Examples (outdated)', link: '/examples' },
+    { text: 'Examples', link: '/examples' },
     { text: 'Built-in Validators', link: '/validators' },
     { text: 'Custom Validators', link: '/custom_validators' },
     { text: 'Migration Guide', link: '/migration_guide' }

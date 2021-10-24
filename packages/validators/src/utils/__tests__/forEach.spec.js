@@ -29,10 +29,10 @@ describe('forEach', () => {
     forEach(rules).$validator(state)
     expect(isFoo).toHaveBeenCalledTimes(2)
     expect(required).toHaveBeenCalledTimes(2)
-    expect(isFoo).toHaveBeenCalledWith('')
-    expect(isFoo).toHaveBeenCalledWith('Foo')
-    expect(required).toHaveBeenCalledWith('Foo')
-    expect(required).toHaveBeenCalledWith('Foo')
+    expect(isFoo).toHaveBeenCalledWith('', state[0])
+    expect(isFoo).toHaveBeenCalledWith('Foo', state[1])
+    expect(required).toHaveBeenCalledWith('', state[0])
+    expect(required).toHaveBeenCalledWith('Foo', state[1])
   })
 
   it('does not throw, if a property does not have a validator', () => {
@@ -44,7 +44,9 @@ describe('forEach', () => {
         {
           name: {
             isFoo: false,
-            required: false
+            required: false,
+            $invalid: true,
+            $error: true
           },
           surname: {}
         }
@@ -91,8 +93,8 @@ describe('forEach', () => {
 
   it('passes all extra params to the validators', () => {
     forEach(rules).$validator(state, 'foo', 'bar', 'baz')
-    expect(isFoo).toHaveBeenCalledWith(state[0].name, 'foo', 'bar', 'baz')
-    expect(isFoo).toHaveBeenCalledWith(state[1].name, 'foo', 'bar', 'baz')
+    expect(isFoo).toHaveBeenCalledWith(state[0].name, state[0], 'foo', 'bar', 'baz')
+    expect(isFoo).toHaveBeenCalledWith(state[1].name, state[1], 'foo', 'bar', 'baz')
   })
 
   it('returns the a validation result object, with $data, $errors and $valid', () => {
@@ -101,13 +103,17 @@ describe('forEach', () => {
         {
           name: {
             isFoo: false,
-            required: false
+            required: false,
+            $error: true,
+            $invalid: true
           }
         },
         {
           name: {
             isFoo: true,
-            required: true
+            required: true,
+            $error: false,
+            $invalid: false
           }
         }
       ],
@@ -284,6 +290,8 @@ describe('forEach', () => {
       }
     }).$validator([{ name: 'Bar' }, { name: 'Foo' }]).$data).toEqual([{
       name: {
+        $error: false,
+        $invalid: false,
         isFoo: {
           $valid: true,
           $data: 'Foo'
@@ -291,7 +299,9 @@ describe('forEach', () => {
       }
     }, {
       name: {
-        isFoo: true
+        isFoo: true,
+        $error: false,
+        $invalid: false
       }
     }])
   })

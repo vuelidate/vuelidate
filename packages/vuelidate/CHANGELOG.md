@@ -3,6 +3,50 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.0.0-alpha.30](https://github.com/vuelidate/vuelidate/compare/@vuelidate/core@2.0.0-alpha.29...@vuelidate/core@2.0.0-alpha.30) (2021-10-22)
+
+
+### Bug Fixes
+
+* **types:** make `$rewardEarly` optional in types. closes [#958](https://github.com/vuelidate/vuelidate/issues/958) ([61006de](https://github.com/vuelidate/vuelidate/commit/61006de5c047e62a883e41521c30736e342af3b9))
+
+
+
+
+
+# [2.0.0-alpha.29](https://github.com/vuelidate/vuelidate/compare/@vuelidate/core@2.0.0-alpha.28...@vuelidate/core@2.0.0-alpha.29) (2021-10-20)
+
+
+### Features
+
+* **core:** add reward early mode, closes  [#897](https://github.com/vuelidate/vuelidate/issues/897) ([#951](https://github.com/vuelidate/vuelidate/issues/951)) ([62ee67d](https://github.com/vuelidate/vuelidate/commit/62ee67db241a8a98dea77511599a8fd661f7116a))
+
+
+
+
+
+# [2.0.0-alpha.28](https://github.com/vuelidate/vuelidate/compare/@vuelidate/core@2.0.0-alpha.27...@vuelidate/core@2.0.0-alpha.28) (2021-10-15)
+
+
+### Bug Fixes
+
+* **types:** revert the Vue type on ValidatorFn, closes [#949](https://github.com/vuelidate/vuelidate/issues/949) ([44ea35c](https://github.com/vuelidate/vuelidate/commit/44ea35c98e5bec45787c6bc850fc06d7124962b5))
+
+
+
+
+
+# [2.0.0-alpha.27](https://github.com/vuelidate/vuelidate/compare/@vuelidate/core@2.0.0-alpha.26...@vuelidate/core@2.0.0-alpha.27) (2021-10-06)
+
+
+### Bug Fixes
+
+* **types:** `ValidatorFn`, relax types, closes [#903](https://github.com/vuelidate/vuelidate/issues/903) ([#941](https://github.com/vuelidate/vuelidate/issues/941)) ([a81a4d8](https://github.com/vuelidate/vuelidate/commit/a81a4d889d81b20382ad89b8d5d5004315840788))
+
+
+
+
+
 # [2.0.0-alpha.26](https://github.com/vuelidate/vuelidate/compare/@vuelidate/core@2.0.0-alpha.25...@vuelidate/core@2.0.0-alpha.26) (2021-09-17)
 
 **Note:** Version bump only for package @vuelidate/core

@@ -3,6 +3,34 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.0.0-alpha.24](https://github.com/vuelidate/vuelidate/compare/@vuelidate/validators@2.0.0-alpha.23...@vuelidate/validators@2.0.0-alpha.24) (2021-10-20)
+
+
+### Bug Fixes
+
+* **validators:** add $invalid and $error to forEach ([#955](https://github.com/vuelidate/vuelidate/issues/955)) ([7ca6e3a](https://github.com/vuelidate/vuelidate/commit/7ca6e3a99083404676b6f280dac6ecabdc8ebb81))
+
+
+
+
+
+# [2.0.0-alpha.23](https://github.com/vuelidate/vuelidate/compare/@vuelidate/validators@2.0.0-alpha.22...@vuelidate/validators@2.0.0-alpha.23) (2021-10-06)
+
+
+### Bug Fixes
+
+* **types:** `ValidatorFn`, relax types, closes [#903](https://github.com/vuelidate/vuelidate/issues/903) ([#941](https://github.com/vuelidate/vuelidate/issues/941)) ([a81a4d8](https://github.com/vuelidate/vuelidate/commit/a81a4d889d81b20382ad89b8d5d5004315840788))
+* **types:** fix minLength param name ([#946](https://github.com/vuelidate/vuelidate/issues/946)) ([2652418](https://github.com/vuelidate/vuelidate/commit/26524181c80bf7b540fc72a52852d8af09129e99))
+
+
+### Features
+
+* **validators:** provide colletion item to forEach helper ([#944](https://github.com/vuelidate/vuelidate/issues/944)) ([9661d4d](https://github.com/vuelidate/vuelidate/commit/9661d4d594eea636f44c8be2bcf20b1452dd3593))
+
+
+
+
+
 # [2.0.0-alpha.22](https://github.com/vuelidate/vuelidate/compare/@vuelidate/validators@2.0.0-alpha.21...@vuelidate/validators@2.0.0-alpha.22) (2021-09-17)
 
 

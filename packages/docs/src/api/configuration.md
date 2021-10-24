@@ -71,3 +71,12 @@ $externalResults.number = ['One error', 'Two Errors']
 // setting a value in `$externalResults` for the `number` property would cause that property to become invalid.
 expect(v$.value.number.$invalid).toBe(true)
 ```
+
+## $rewardEarly
+
+* **Type:** `Boolean`
+
+* **Usage:**
+
+  Turn on the `reward-early-punish-late` mode of Vuelidate. This mode will not set fields as `invalid` once they are `valid`, unless manually
+  triggered, by `$commit` or `$validate` methods. See https://github.com/vuelidate/vuelidate/issues/897

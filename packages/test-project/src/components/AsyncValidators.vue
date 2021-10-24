@@ -3,7 +3,16 @@
     <label>name</label>
     <input
       v-model="name"
-      :class="{ error: v$.name.$error }"
+      type="text"
+    >
+    <label>twitter</label>
+    <input
+      v-model="social.twitter"
+      type="text"
+    >
+    <label>github</label>
+    <input
+      v-model="social.github"
       type="text"
     >
     <button @click="validate">
@@ -14,9 +23,6 @@
     </button>
     <button @click="v$.$reset">
       $reset
-    </button>
-    <button @click="v$.name.$commit">
-      $commit
     </button>
     <div style="background: rgba(219, 53, 53, 0.62); color: #ff9090; padding: 10px 15px">
       <p
@@ -32,30 +38,48 @@
 </template>
 
 <script>
-import { ref } from 'vue'
+import { ref, reactive } from 'vue'
 import useVuelidate from '@vuelidate/core'
 import { required, helpers, minLength } from '@vuelidate/validators'
 
+const { withAsync } = helpers
+
+const asyncValidator = (time = 2000, is = 'aaa') => withAsync({
+  $message: ({ $property }) => `${$property} Should be ${is}`,
+  $validator: (v) => {
+    return new Promise(resolve => {
+      setTimeout(() => {
+        resolve(v === is)
+      }, time)
+    })
+  }
+})
+
 export default {
-  name: 'SimpleForm',
+  name: 'AsyncValidators',
   setup () {
-    const name = ref('')
+    const name = ref('given name')
+    const social = reactive({
+      github: 'hi',
+      twitter: 'hey'
+    })
 
     const v$ = useVuelidate(
       {
         name: {
           required: helpers.withMessage('This field is required', required),
-          minLength: minLength(4),
-          is12345: {
-            $validator: v => v === '12345',
-            $message: 'Is not 12345'
-          }
+          isName: asyncValidator(2000, 'name'),
+          minLength: minLength(3)
+        },
+        social: {
+          github: { isGithub: asyncValidator(1500, 'github') },
+          twitter: { isTwitter: asyncValidator(1000, 'twitter') }
         }
       },
-      { name },
+      { name, social },
       { $autoDirty: true }
     )
-    return { name, v$ }
+    return { name, v$, social }
   },
   methods: {
     validate () {
@@ -66,12 +90,3 @@ export default {
   }
 }
 </script>
-<style>
-input[type=text] {
-  border: none;
-}
-
-.error {
-  background: #dbb9b9;
-}
-</style>

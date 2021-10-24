@@ -4,25 +4,27 @@ export default function forEach (validators) {
   return {
     $validator (collection, ...others) {
       // go over the collection. It can be a ref as well.
-      return unwrap(collection).reduce((previous, object) => {
+      return unwrap(collection).reduce((previous, collectionItem) => {
         // go over each property
-        const collectionEntryResult = Object.entries(object).reduce((all, [key, $model]) => {
+        const collectionEntryResult = Object.entries(collectionItem).reduce((all, [property, $model]) => {
           // get the validators for this property
-          const innerValidators = validators[key] || {}
+          const innerValidators = validators[property] || {}
           // go over each validator and run it
           const propertyResult = Object.entries(innerValidators).reduce((all, [validatorName, currentValidator]) => {
             // extract the validator. Supports simple and extended validators.
             const validatorFunction = unwrapNormalizedValidator(currentValidator)
-            // Call the validator with correct parameters
-            const $response = validatorFunction.call(this, $model, ...others)
+            // Call the validator, passing the VM as this, the value, current iterated object and the rest.
+            const $response = validatorFunction.call(this, $model, collectionItem, ...others)
             // extract the valid from the result
             const $valid = unwrapValidatorResponse($response)
             // store the entire response for later
             all.$data[validatorName] = $response
+            all.$data.$invalid = !$valid || !!all.$data.$invalid
+            all.$data.$error = all.$data.$invalid
             // if not valid, get the $message
             if (!$valid) {
               let $message = currentValidator.$message || ''
-              let $params = currentValidator.$params || {}
+              const $params = currentValidator.$params || {}
               // If $message is a function, we call it with the appropriate parameters
               if (typeof $message === 'function') {
                 $message = $message({
@@ -35,7 +37,7 @@ export default function forEach (validators) {
               }
               // save the error object
               all.$errors.push({
-                $property: key,
+                $property: property,
                 $message,
                 $params,
                 $response,
@@ -51,8 +53,8 @@ export default function forEach (validators) {
             }
           }, { $valid: true, $data: {}, $errors: [] })
 
-          all.$data[key] = propertyResult.$data
-          all.$errors[key] = propertyResult.$errors
+          all.$data[property] = propertyResult.$data
+          all.$errors[property] = propertyResult.$errors
 
           return {
             $valid: all.$valid && propertyResult.$valid,
@@ -69,8 +71,10 @@ export default function forEach (validators) {
       }, { $valid: true, $data: [], $errors: [] })
     },
     // collect all the validation errors into a 2 dimensional array, for each entry in the collection, you have an array of error messages.
-    $message: ({ $response }) => ($response ? $response.$errors.map((context) => {
-      return Object.values(context).map(errors => errors.map(error => error.$message)).reduce((a, b) => a.concat(b), [])
-    }) : [])
+    $message: ({ $response }) => ($response
+      ? $response.$errors.map((context) => {
+        return Object.values(context).map(errors => errors.map(error => error.$message)).reduce((a, b) => a.concat(b), [])
+      })
+      : [])
   }
 }
