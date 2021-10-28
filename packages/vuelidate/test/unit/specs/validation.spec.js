@@ -507,6 +507,85 @@ describe('useVuelidate', () => {
       // make sure that componentC has errors
       expect(wrapper.findComponent(componentC).vm.v.$silentErrors).toHaveLength(1)
     })
+
+    it('collects child validators, in multiple instances', async () => {
+      const { state, validations } = simpleValidation()
+      const child = createSimpleComponent(() => useVuelidate(validations, state, { $registerAs: 'child' }))
+      const Component = {
+        name: 'Component',
+        setup () {
+          const renderChild = ref(true)
+          const state1 = simpleValidation()
+          const state2 = simpleValidation()
+          const v1 = useVuelidate(state1.validations, state1.state)
+          const v2 = useVuelidate(state2.validations, state2.state)
+          return { v1, v2, renderChild }
+        },
+        render () {
+          return h('div', {}, [this.renderChild && h(child)])
+        }
+      }
+      const wrapper = mount(Component)
+      await wrapper.vm.$nextTick()
+      expect(wrapper.vm.v1.child).toBeTruthy()
+      expect(wrapper.vm.v2.child).toBeTruthy()
+      await wrapper.vm.v1.$validate()
+      await wrapper.vm.v2.$validate()
+      const obj = {
+        $property: 'number',
+        $validator: 'isEven',
+        $uid: 'number-isEven'
+      }
+      expect(wrapper.vm.v1.$errors).toContainEqual(expect.objectContaining(obj))
+      expect(wrapper.vm.v2.$errors).toContainEqual(expect.objectContaining(obj))
+      // hide the child component
+      wrapper.vm.renderChild = false
+      await wrapper.vm.$nextTick()
+      // assert the child results ar removed
+      expect(wrapper.vm.v1.child).toBeFalsy()
+      expect(wrapper.vm.v2.child).toBeFalsy()
+    })
+
+    it('sends validations, to multiple parent instances with scoping', async () => {
+      const { state, validations } = simpleValidation()
+      const $scope = 'foo'
+      const child = createSimpleComponent(() => useVuelidate(validations, state, { $registerAs: 'child', $scope }))
+      const Component = {
+        name: 'Component',
+        setup () {
+          const renderChild = ref(true)
+          const state1 = simpleValidation()
+          const state2 = simpleValidation()
+          const v1 = useVuelidate(state1.validations, state1.state, { $scope })
+          const v2 = useVuelidate(state2.validations, state2.state, { $scope: 'bar' })
+          return { v1, v2, renderChild }
+        },
+        render () {
+          return h('div', {}, [this.renderChild && h(child)])
+        }
+      }
+      const wrapper = mount(Component)
+      await wrapper.vm.$nextTick()
+      expect(wrapper.vm.v1.child).toBeTruthy()
+      expect(wrapper.vm.v2.child).toBeFalsy()
+      wrapper.vm.v2.number.$model = 4
+      await wrapper.vm.v1.$validate()
+      await wrapper.vm.v2.$validate()
+      const obj = {
+        $property: 'number',
+        $validator: 'isEven',
+        $uid: 'number-isEven'
+      }
+      expect(wrapper.vm.v1.$errors).toHaveLength(2)
+      expect(wrapper.vm.v1.$errors).toContainEqual(expect.objectContaining(obj))
+      expect(wrapper.vm.v2.$errors).toEqual([])
+      // hide the child component
+      wrapper.vm.renderChild = false
+      await wrapper.vm.$nextTick()
+      // assert the child results ar removed
+      expect(wrapper.vm.v1.child).toBeFalsy()
+      expect(wrapper.vm.v2.child).toBeFalsy()
+    })
   })
 
   describe('$error', () => {
