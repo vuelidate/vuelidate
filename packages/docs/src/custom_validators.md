@@ -167,13 +167,13 @@ own validators. The best way to do this is via the `withMessage` helper.
 message.
 
 ```js
-import { required, helpers, minLength } from '@vuelidate/validators'
+import { required, helpers } from '@vuelidate/validators'
 
 const validations = {
   name: {
-    required: helpers.withMessage('This field cannot be empty', required),
+    required: helpers.withMessage('This field cannot be empty', required)
   }
-};
+}
 ```
 
 `$message` can also take a function that is reactive to changes in the validator state and model. The `$messages` function receives an object with the
@@ -198,10 +198,10 @@ const validations = {
         $params,
         $model
       }) => `This field has a value of '${$model}' but must have a min length of ${$params.min} so it is ${$invalid ? 'invalid' : 'valid'}`,
-      minLength(4),
-    ),
+      minLength(4)
+    )
   }
-};
+}
 ```
 
 ## Async validators
