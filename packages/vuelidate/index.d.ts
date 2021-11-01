@@ -1,4 +1,4 @@
-import { Ref, UnwrapRef, defineComponent, App, ComponentPublicInstance } from 'vue-demi';
+import { Ref, UnwrapRef, defineComponent } from 'vue-demi';
 type Component = ReturnType<typeof defineComponent>;
 
 /*
