@@ -3,6 +3,27 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.0.0-alpha.32](https://github.com/vuelidate/vuelidate/compare/@vuelidate/core@2.0.0-alpha.31...@vuelidate/core@2.0.0-alpha.32) (2021-11-01)
+
+
+### Bug Fixes
+
+* **core:** allow providing child results into multiple Vuelidate instances ([#961](https://github.com/vuelidate/vuelidate/issues/961)) ([8e173a6](https://github.com/vuelidate/vuelidate/commit/8e173a69e5cb5c0043ea8b9a92a74dd2d983c04b))
+
+
+### Features
+
+* **core:** pass parent object state to validator second parameter ([#818](https://github.com/vuelidate/vuelidate/issues/818)) ([d1ecb20](https://github.com/vuelidate/vuelidate/commit/d1ecb20915fbc46b20c0a12f82a804f396014ada))
+
+
+### BREAKING CHANGES
+
+* **core:** Second parameter in validators changed from `vm` to `parent object` of the current property.
+
+
+
+
+
 # [2.0.0-alpha.31](https://github.com/vuelidate/vuelidate/compare/@vuelidate/core@2.0.0-alpha.30...@vuelidate/core@2.0.0-alpha.31) (2021-11-01)
 
 
