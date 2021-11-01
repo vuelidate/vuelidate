@@ -1,7 +1,7 @@
 {
   "name": "@vuelidate/core",
   "description": "Simple, lightweight model-based validation for Vue.js",
-  "version": "2.0.0-alpha.30",
+  "version": "2.0.0-alpha.31",
   "main": "dist/index.js",
   "types": "index.d.ts",
   "module": "dist/index.esm.js",
@@ -22,7 +22,7 @@
     "dev": "yarn build --watch"
   },
   "dependencies": {
-    "vue-demi": "^0.11.3"
+    "vue-demi": "^0.12.0"
   },
   "devDependencies": {
     "@babel/core": "^7.15.0",

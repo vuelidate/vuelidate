@@ -55,7 +55,7 @@ export function useVuelidate (validations, state, globalConfig = {}) {
     sendValidationResultsToParent,
     removeValidationResultsFromParent
   } = instance
-    ? nestedValidations({ $scope })
+    ? nestedValidations({ $scope, instance })
     : { childResults: ref({}) }
 
   // Options API
@@ -104,9 +104,9 @@ export function useVuelidate (validations, state, globalConfig = {}) {
 
   if (instance) {
     // send all the data to the parent when the function is invoked inside setup.
-    sendValidationResultsToParent(validationResults, { $registerAs, $scope, $stopPropagation })
+    sendValidationResultsToParent.forEach((f) => f(validationResults, { $registerAs, $scope, $stopPropagation }))
     // before this component is destroyed, remove all the data from the parent.
-    onBeforeUnmount(() => removeValidationResultsFromParent($registerAs))
+    onBeforeUnmount(() => removeValidationResultsFromParent.forEach((f) => f($registerAs)))
   }
 
   return computed(() => {

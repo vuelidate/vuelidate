@@ -6,6 +6,7 @@ import CollectionValidations from './components/CollectionValidations.vue'
 import I18nSimpleForm from './components/I18nSimpleForm.vue'
 import ExternalValidationsForm from './components/ExternalValidationsForm.vue'
 import AsyncValidators from './components/AsyncValidators.vue'
+import NestedValidationsWithScopes from './components/NestedValidationsWithScopes/ParentValidator.vue'
 
 export const routes = [
   {
@@ -39,5 +40,9 @@ export const routes = [
   {
     path: '/external-validations',
     component: ExternalValidationsForm
+  },
+  {
+    path: '/nested-validations-with-scopes',
+    component: NestedValidationsWithScopes
   }
 ]
