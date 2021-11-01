@@ -10,6 +10,11 @@ describe('url validator', () => {
     'HTTP://FOO.COM/BLAH_BLAH',
     'HTTP://FOO.COM/blah_blah',
     'http://foo.com/blah_blah/',
+    /** domains ending with a dot at the end are valid, {@see http://www.dns-sd.org/trailingdotsindomainnames.html} */
+    'http://www.foo.bar./',
+    'http://www.foo.bar.',
+    'http://foo.bar.',
+    'http://foo.bar./',
     'http://foo.com/blah_blah_(wikipedia)',
     'http://foo.com/blah_blah_(wikipedia)_(again)',
     'http://www.example.com/wpstyle/?p=364',
@@ -80,7 +85,6 @@ describe('url validator', () => {
     'http://123.123.123',
     'http://3628126748',
     'http://.www.foo.bar/',
-    'http://www.foo.bar./',
     'http://.www.foo.bar./',
     'http://10.1.1.1',
     'http://10.1.1.254'
