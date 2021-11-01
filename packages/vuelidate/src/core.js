@@ -1,17 +1,16 @@
-import { isFunction, unwrap, unwrapObj } from './utils'
-import { computed, isRef, reactive, ref, watch, nextTick } from 'vue-demi'
+import { unwrap } from './utils'
+import { computed, isRef, nextTick, reactive, ref, watch } from 'vue-demi'
+import { createValidatorResult } from './utils/createResults'
+import { sortValidations } from './utils/sortValidations'
 
 const ROOT_PATH = '__root'
 
-/**
- * @typedef {import('vue-demi').ComponentPublicInstance} VueInstance
- */
-/**
- * @typedef {import('vue-demi').ComputedRef} ComputedRef
- */
-/**
- * @typedef {import('vue-demi').WatchStopHandle} WatchStopHandle
- */
+/** @typedef {import('vue-demi').ComponentPublicInstance} VueInstance */
+/** @typedef {import('vue-demi').ComputedRef} ComputedRef */
+/** @typedef {import('vue-demi').UnwrapRef} UnwrapRef */
+/** @typedef {import('vue-demi').WatchStopHandle} WatchStopHandle */
+/** @typedef {import('vue-demi').WritableComputedRef} WritableComputedRef */
+/** @typedef {import('vue-demi').UnwrapNestedRefs} UnwrapNestedRefs */
 
 /**
  * @typedef NormalizedValidator
@@ -23,258 +22,10 @@ const ROOT_PATH = '__root'
  */
 
 /**
- * Response form a raw Validator function.
- * Should return a Boolean or an object with $invalid property.
- * @typedef {Boolean | { $valid: Boolean }} ValidatorResponse
- */
-
-/**
  * Raw validator function, before being normalized
  * Can return a Promise or a {@see ValidatorResponse}
  * @typedef {function(*): ((Promise<ValidatorResponse> | ValidatorResponse))} Validator
  */
-
-/**
- * Sorts the validators for a state tree branch
- * @param {Object<NormalizedValidator|Function>} validationsRaw
- * @return {{ rules: Object<NormalizedValidator>, nestedValidators: Object, config: GlobalConfig }}
- */
-function sortValidations (validationsRaw = {}) {
-  const validations = unwrap(validationsRaw)
-  const validationKeys = Object.keys(validations)
-
-  const rules = {}
-  const nestedValidators = {}
-  const config = {}
-
-  validationKeys.forEach(key => {
-    const v = validations[key]
-
-    switch (true) {
-      // If it is already normalized, use it
-      case isFunction(v.$validator):
-        rules[key] = v
-        break
-      // If it is just a function, normalize it first
-      // into { $validator: <Fun> }
-      case isFunction(v):
-        rules[key] = { $validator: v }
-        break
-      // Catch $-prefixed properties as config
-      case key.startsWith('$'):
-        config[key] = v
-        break
-      // If it doesn’t match any of the above,
-      // treat as nestedValidators state property
-      default:
-        nestedValidators[key] = v
-    }
-  })
-
-  return { rules, nestedValidators, config }
-}
-
-/**
- * Calls a validation rule by unwrapping its value first from a ref.
- * @param {Validator} rule
- * @param {Ref} value
- * @param {VueInstance} instance
- * @return {Promise<ValidatorResponse> | ValidatorResponse}
- */
-function callRule (rule, value, instance) {
-  const v = unwrap(value)
-  return rule.call(instance, v, instance)
-}
-
-/**
- * Normalizes the validator result
- * Allows passing a boolean of an object like `{ $valid: Boolean }`
- * @param {ValidatorResponse} result - Validator result
- * @return {boolean}
- */
-function normalizeValidatorResponse (result) {
-  return result.$valid !== undefined
-    ? !result.$valid
-    : !result
-}
-
-/**
- * Returns the result of an async validator.
- * @param {Validator} rule
- * @param {Ref<*>} model
- * @param {Ref<Boolean>} $pending
- * @param {Ref<Boolean>} $dirty
- * @param {GlobalConfig} config
- * @param {boolean} config.$lazy
- * @param {Ref<*>} $response
- * @param {VueInstance} instance
- * @param {Ref<*>[]} watchTargets
- * @param {Ref<Boolean>} $lastInvalidState
- * @param {Ref<Number>} $lastCommittedOn
- * @return {{ $invalid: Ref<Boolean>, $unwatch: WatchStopHandle }}
- */
-function createAsyncResult (rule, model, $pending, $dirty, {
-  $lazy,
-  $rewardEarly
-}, $response, instance, watchTargets = [], $lastInvalidState, $lastCommittedOn) {
-  const $invalid = ref(!!$dirty.value)
-  const $pendingCounter = ref(0)
-
-  $pending.value = false
-
-  const $unwatch = watch(
-    [model, $dirty].concat(watchTargets, $lastCommittedOn),
-    () => {
-      if (
-        // if $lazy and not dirty, return
-        ($lazy && !$dirty.value) ||
-        // if in $rewardEarly mode and no previous errors, nothing pending, return
-        ($rewardEarly && !$lastInvalidState.value && !$pending.value)
-      ) {
-        return
-      }
-      let ruleResult
-      // make sure we dont break if a validator throws
-      try {
-        ruleResult = callRule(rule, model, instance)
-      } catch (err) {
-        // convert to a promise, so we can handle it async
-        ruleResult = Promise.reject(err)
-      }
-
-      $pendingCounter.value++
-      $pending.value = !!$pendingCounter.value
-      // ensure $invalid is false, while validator is resolving
-      $invalid.value = false
-
-      Promise.resolve(ruleResult)
-        .then(data => {
-          $pendingCounter.value--
-          $pending.value = !!$pendingCounter.value
-          $response.value = data
-          $invalid.value = normalizeValidatorResponse(data)
-        })
-        .catch((error) => {
-          $pendingCounter.value--
-          $pending.value = !!$pendingCounter.value
-          $response.value = error
-          $invalid.value = true
-        })
-    }, { immediate: true, deep: typeof model === 'object' }
-  )
-
-  return { $invalid, $unwatch }
-}
-
-/**
- * Returns the result of a sync validator
- * @param {Validator} rule
- * @param {Ref<*>} model
- * @param {Ref<Boolean>} $dirty
- * @param {GlobalConfig} config
- * @param {Boolean} config.$lazy
- * @param {Ref<*>} $response
- * @param {VueInstance} instance
- * @param {Ref<Boolean>} $lastInvalidState
- * @return {{$unwatch: (function(): {}), $invalid: ComputedRef<boolean>}}
- */
-function createSyncResult (rule, model, $dirty, { $lazy, $rewardEarly }, $response, instance, $lastInvalidState) {
-  const $unwatch = () => ({})
-  const $invalid = computed(() => {
-    if (
-      // return early if $lazy mode and not touched
-      ($lazy && !$dirty.value) ||
-      // If $rewardEarly mode is ON and last invalid was false (no error), return it.
-      // If we want to invalidate, we just flip the last state to true, causing the computed to run again
-      ($rewardEarly && !$lastInvalidState.value)) {
-      return false
-    }
-    let returnValue = true
-    try {
-      const result = callRule(rule, model, instance)
-      $response.value = result
-      returnValue = normalizeValidatorResponse(result)
-    } catch (err) {
-      $response.value = err
-    }
-    return returnValue
-  })
-  return { $unwatch, $invalid }
-}
-
-/**
- * Returns the validation result.
- * Detects async and sync validators.
- * @param {NormalizedValidator} rule
- * @param {Ref<*>} model
- * @param {Ref<boolean>} $dirty
- * @param {GlobalConfig} config - Vuelidate config
- * @param {VueInstance} instance - component instance
- * @param {string} validatorName - name of the current validator
- * @param {string} propertyKey - the current property we are validating
- * @param {string} propertyPath - the deep path to the validated property
- * @param {Ref<Boolean>} $lastInvalidState - the last invalid state
- * @param {Ref<Number>} $lastCommittedOn - the last time $commit was called
- * @return {{ $params: *, $message: Ref<String>, $pending: Ref<Boolean>, $invalid: Ref<Boolean>, $response: Ref<*>, $unwatch: WatchStopHandle }}
- */
-function createValidatorResult (rule, model, $dirty, config, instance, validatorName, propertyKey, propertyPath, $lastInvalidState, $lastCommittedOn) {
-  const $pending = ref(false)
-  const $params = rule.$params || {}
-  const $response = ref(null)
-  let $invalid
-  let $unwatch
-
-  if (rule.$async) {
-    ({ $invalid, $unwatch } = createAsyncResult(
-      rule.$validator,
-      model,
-      $pending,
-      $dirty,
-      config,
-      $response,
-      instance,
-      rule.$watchTargets,
-      $lastInvalidState,
-      $lastCommittedOn
-    ))
-  } else {
-    ({ $invalid, $unwatch } = createSyncResult(
-      rule.$validator,
-      model,
-      $dirty,
-      config,
-      $response,
-      instance,
-      $lastInvalidState
-    ))
-  }
-
-  const message = rule.$message
-  const $message = isFunction(message)
-    ? computed(() =>
-      message(
-        unwrapObj({
-          $pending,
-          $invalid,
-          $params: unwrapObj($params), // $params can hold refs, so we unwrap them for easy access
-          $model: model,
-          $response,
-          $validator: validatorName,
-          $propertyPath: propertyPath,
-          $property: propertyKey
-        })
-      ))
-    : message || ''
-
-  return {
-    $message,
-    $params,
-    $pending,
-    $invalid,
-    $response,
-    $unwatch
-  }
-}
 
 /**
  * @typedef ErrorObject
@@ -312,9 +63,10 @@ function createValidatorResult (rule, model, $dirty, config, instance, validator
  * @param {GlobalConfig} [config] - the config object
  * @param {VueInstance} instance
  * @param {ComputedRef<Object>} externalResults
+ * @param {Object} siblingState
  * @return {ValidationResult | {}}
  */
-function createValidationResults (rules, model, key, resultsCache, path, config, instance, externalResults) {
+function createValidationResults (rules, model, key, resultsCache, path, config, instance, externalResults, siblingState) {
   // collect the property keys
   const ruleKeys = Object.keys(rules)
 
@@ -324,7 +76,7 @@ function createValidationResults (rules, model, key, resultsCache, path, config,
   /** The last invalid state of this property */
   const $lastInvalidState = ref(false)
   /** The last time $commit was called. Used to re-trigger async calls */
-  const $lastCommittedOn = ref(true)
+  const $lastCommittedOn = ref(0)
 
   if (cachedResult) {
     // if the rules are the same as before, use the cached results
@@ -365,6 +117,7 @@ function createValidationResults (rules, model, key, resultsCache, path, config,
       ruleKey,
       key,
       path,
+      siblingState,
       $lastInvalidState,
       $lastCommittedOn
     )
@@ -445,7 +198,7 @@ function createValidationResults (rules, model, key, resultsCache, path, config,
  * @param {GlobalConfig} config - The config object
  * @param {VueInstance} instance - The current Vue instance
  * @param {ComputedRef<object>} nestedExternalResults - The external results for this nested collection
- * @return {{}}
+ * @return {Object<string, VuelidateState>}
  */
 function collectNestedValidationResults (validations, nestedState, path, resultsCache, config, instance, nestedExternalResults) {
   const nestedValidationKeys = Object.keys(validations)
@@ -472,8 +225,8 @@ function collectNestedValidationResults (validations, nestedState, path, results
 /**
  * Generates the Meta fields from the results
  * @param {ValidationResult|{}} results
- * @param {Object.<string, ValidationResult>[]} nestedResults
- * @param {Object.<string, ValidationResult>[]} childResults
+ * @param {Object.<string, VuelidateState>} nestedResults
+ * @param {Object.<string, ValidationResult>} childResults
  * @return {{$anyDirty: Ref<Boolean>, $error: Ref<Boolean>, $invalid: Ref<Boolean>, $errors: Ref<ErrorObject[]>, $dirty: Ref<Boolean>, $touch: Function, $reset: Function }}
  */
 function createMetaFields (results, nestedResults, childResults) {
@@ -622,11 +375,11 @@ function createMetaFields (results, nestedResults, childResults) {
  * @param {Object} params.state
  * @param {String} [params.key] - Current state property key. Used when being called on nested items
  * @param {String} [params.parentKey] - Parent state property key. Used when being called recursively
- * @param {Object<ValidationResult>} [params.childResults] - Used to collect child results.
+ * @param {Object<string, ValidationResult>} [params.childResults] - Used to collect child results.
  * @param {ResultsStorage} params.resultsCache - The cached validation results
  * @param {VueInstance} params.instance - The current Vue instance
  * @param {GlobalConfig} params.globalConfig - The validation config, passed to this setValidations instance.
- * @param {Reactive<object> | Ref<Object>} params.externalResults - External validation results
+ * @param {UnwrapNestedRefs<object> | Ref<Object>} params.externalResults - External validation results
  * @return {UnwrapNestedRefs<VuelidateState>}
  */
 export function setValidations ({
@@ -668,7 +421,7 @@ export function setValidations ({
   })
 
   // Use rules for the current state fragment and validate it
-  const results = createValidationResults(rules, nestedState, key, resultsCache, path, mergedConfig, instance, nestedExternalResults)
+  const results = createValidationResults(rules, nestedState, key, resultsCache, path, mergedConfig, instance, nestedExternalResults, state)
   // Use nested keys to repeat the process
   // *WARN*: This is recursive
   const nestedResults = collectNestedValidationResults(nestedValidators, nestedState, path, resultsCache, mergedConfig, instance, nestedExternalResults)

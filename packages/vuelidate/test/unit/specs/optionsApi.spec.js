@@ -268,19 +268,26 @@ describe('OptionsAPI validations', () => {
       const validation = {
         number: { validator }
       }
-      const wrapper = await createOldApiSimpleWrapper(validation, { number: 2 })
+
+      const state = { number: 2 }
+      const wrapper = await createOldApiSimpleWrapper(validation, state)
 
       expect(wrapper.vm.v).toHaveProperty('number', expect.any(Object))
+      expect(validator.mock.calls[0][2]).toMatchObject(state)
       // assert that `this` is the same as the second parameter
-      expect(validator.mock.instances[0]).toEqual(validator.mock.calls[0][1])
+      expect(validator.mock.instances[0]).toEqual(validator.mock.calls[0][2])
       // assert that the validator is called with the value and an object that is the VM
-      expect(validator).toHaveBeenLastCalledWith(2, expect.objectContaining({ number: 2 }))
+      expect(validator.mock.calls[0][0]).toEqual(2)
+      expect(validator.mock.calls[0][1]).toMatchObject(state)
+      expect(validator.mock.calls[0][2]).toMatchObject(state)
       // assert the validator returned `true`
       expect(validator).toHaveLastReturnedWith(true)
       wrapper.vm.number = 5
       await wrapper.vm.$nextTick()
       // make sure the validator is called with the updated value and VM
-      expect(validator).toHaveBeenLastCalledWith(5, expect.objectContaining({ number: 5 }))
+      expect(validator.mock.calls[1][0]).toEqual(5)
+      expect(validator.mock.calls[1][1]).toMatchObject(state)
+      expect(validator.mock.calls[1][2]).toMatchObject(state)
     })
 
     it('allows passing a watchTarget for async validators', async () => {
@@ -299,10 +306,10 @@ describe('OptionsAPI validations', () => {
       const { vm } = await createOldApiSimpleWrapper(validations, state)
 
       expect(vm.v.number).toHaveProperty('$invalid', true)
-      expect(validator).toHaveBeenLastCalledWith(1, expect.any(Object))
+      expect(validator).toHaveBeenLastCalledWith(1, expect.any(Object), expect.any(Object))
       vm.number = 2
       await flushPromises()
-      expect(validator).toHaveBeenLastCalledWith(2, expect.any(Object))
+      expect(validator).toHaveBeenLastCalledWith(2, expect.any(Object), expect.any(Object))
       expect(vm.v.number).toHaveProperty('$invalid', true)
       vm.enabled = true
       await flushPromises()
