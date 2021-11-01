@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.0.0-alpha.31](https://github.com/vuelidate/vuelidate/compare/@vuelidate/core@2.0.0-alpha.30...@vuelidate/core@2.0.0-alpha.31) (2021-11-01)
+
+
+### Bug Fixes
+
+* update vue-demi and composition-api to latest versions, closes [#963](https://github.com/vuelidate/vuelidate/issues/963) ([#967](https://github.com/vuelidate/vuelidate/issues/967)) ([cb12037](https://github.com/vuelidate/vuelidate/commit/cb12037ef8b45ff53988b777c731aeb67ba59905))
+
+
+
+
+
 # [2.0.0-alpha.30](https://github.com/vuelidate/vuelidate/compare/@vuelidate/core@2.0.0-alpha.29...@vuelidate/core@2.0.0-alpha.30) (2021-10-22)
 
 
