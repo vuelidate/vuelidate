@@ -4,7 +4,7 @@
     "*.sass",
     "*.scss"
   ],
-  "version": "0.7.6",
+  "version": "0.7.7",
   "description": "Simple, lightweight model-based validation for Vue.js",
   "author": "Paweł Grabarz <pawel.grabarz@monterail.com>",
   "license": "MIT",
