@@ -125,15 +125,35 @@ export default {
 }
 ```
 
+## Accessing property parent object
+
+If you need to create a validator, that directly needs access to a sibling property, you can use the second parameter of validators. The second
+parameter represents the object, surrounding the current property. It works for nested object properties, as well as top level properties, in which
+case it will just return the entire validated state.
+
+```js
+function otherFieldContainsMe (value, siblings) {
+  return siblings.other.contains(value)
+}
+
+const v$ = useVuelidate({
+  foo: { otherFieldContainsMe }
+}, {
+  foo: 'foo',
+  other: 'bar',
+})
+```
+
 ## Accessing component instance from validator
 
-In more complex cases when access to the whole model is necessary, you can make use of the function context (`this`), or the second parameter - `vm`
-to access any value on your component, this includes computed properties and data properties.
+In more complex cases when access to the whole model is necessary, you can make use of the function context (`this`), or the third parameter, to
+access any value on your component, this includes computed properties and data properties.
 
 ```js
 // both equivalent
-const otherFieldContainsMe = (value, vm) =>
-  vm.other.nested.field.contains(value)
+const otherFieldContainsMe = (value, siblings, vm) => {
+  return vm.other.nested.field.contains(value)
+}
 
 function otherFieldContainsMe (value) {
   return this.other.nested.field.contains(value)

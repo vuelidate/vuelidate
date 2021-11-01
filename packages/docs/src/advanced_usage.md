@@ -237,7 +237,7 @@ const $message = [
 
 Each validator function is passed 3 parameters - `rule(value, object, vm)`
 1. The value of the property, for iterated object
-2. The current iterated object
+2. The current iterated object, aka siblings to property
 3. The component instance
 
 ### Using the ValidateEach component
