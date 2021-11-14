@@ -54,8 +54,7 @@ export default {
 
 ## Extra parameters
 
-If your validator needs to provide parameters, you can simply create a higher order function that returns the actual validator, like in `between`
-builtin validator.
+If your validator needs to provide parameters, you can simply create a higher order function that returns the actual validator. This works great for simple validation cases:
 
 ```js
 import { helpers } from '@vuelidate/validators'
@@ -75,13 +74,17 @@ export default {
 }
 ```
 
+::: warning
+If you need to pass reactive properties, you must use `withParams` helper, listed in [Passing extra reactive properties](#passing-extra-reactive-properties)
+:::
+
 ## Passing extra properties to validators
 
 If you need to attach extra properties to your validation result, to display in error messages for example, you can use the `withParams` helper. It
-will attach a `$props` attribute on your validation result. Let's add a `type` property, so that we can later retrieve it.
+will attach a `$params` attribute on your validation result. Let's add a `type` property, so that we can later retrieve it.
 
 :::tip
-`$props` is reactive, which means you could add `computed` properties, `ref` or other, and they will update accordingly.
+`$params` is reactive, which means you could add `computed` properties, `this` properties, `ref` or other, and they will update accordingly.
 :::
 
 ```js
@@ -97,6 +100,8 @@ const mustBeCool = helpers.withParams(
 console.log(this.$v.myField.mustBeCool.$params)
 // -> { type: 'mustBeCool' }
 ```
+
+### Passing extra reactive properties
 
 The same behaviour extends to higher order validators, ones with extra parameters. You just must be careful to wrap the **inner** function
 with `withParams` call, as follows.
