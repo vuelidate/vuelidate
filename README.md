@@ -189,7 +189,7 @@ The easiest way to display errors is to use the form's top level `$errors` prope
 ```vue
 
 <p
-  v-for="(error, index) of $v.$errors"
+  v-for="(error, index) of v$.$errors"
   :key="index"
 >
 <strong>{{ error.$validator }}</strong>
@@ -204,7 +204,7 @@ You can also check for errors on each form property:
 
 ```vue
 <p
-  v-for="(error, index) of $v.name.$errors"
+  v-for="(error, index) of v$.name.$errors"
   :key="index"
 >
 <!-- Same as above -->
