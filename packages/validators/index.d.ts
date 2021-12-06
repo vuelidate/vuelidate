@@ -89,12 +89,10 @@ export function createI18nMessage({ t, messagePath, messageParams }: {
   t: typeof TranslationFunction;
   messagePath?: typeof messagePathFactory;
   messageParams?: typeof messageParamsFactory;
-}): (
-  validator: ValidationRule | ValidatorWrapper,
+}): <T extends (ValidationRule | ValidatorWrapper)>(
+  validator: T,
   options?: {
     withArguments?: boolean,
     messagePath?: typeof messagePathFactory,
     messageParams?: typeof messageParamsFactory,
-  }) =>
-  ValidationRuleWithParams |
-  ((...args: unknown[]) => ValidationRuleWithParams)
+  }) => T
