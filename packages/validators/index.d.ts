@@ -83,7 +83,20 @@ export interface MessageProps {
   $propertyPath: string,
 }
 
-export type ValidatorWrapper = (...args: unknown[]) => ValidationRuleWithParams
+export type ValidatorWrapper = 
+  typeof and | 
+  typeof between | 
+  typeof macAddress | 
+  typeof maxLength | 
+  typeof maxValue | 
+  typeof minValue | 
+  typeof minLength | 
+  typeof not | 
+  typeof not | 
+  typeof or | 
+  typeof requiredIf | 
+  typeof requiredUnless | 
+  typeof sameAs;
 
 export function createI18nMessage({ t, messagePath, messageParams }: {
   t: typeof TranslationFunction;
