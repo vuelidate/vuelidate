@@ -15,7 +15,8 @@ const config = {
     repo: 'vuelidate/vuelidate',
     docsDir: 'docs',
     algolia: {
-      apiKey: 'f3200469da216e2a8bfd46e2eab6552f',
+      appId: 'YRYKWG3HX9',
+      apiKey: '95a4cf7417167f0da82ce98bcd88d169',
       indexName: 'vuelidate-next'
     },
     nav: [
