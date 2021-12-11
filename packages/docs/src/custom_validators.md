@@ -112,7 +112,7 @@ import { helpers } from '@vuelidate/validators'
 const contains = (param) =>
   helpers.withParams(
     { type: 'contains', value: param },
-    (value) => !helpers.req(value) || value.includes('cool')
+    (value) => !helpers.req(value) || value.includes(param)
   )
 
 export default {
@@ -275,7 +275,7 @@ You can pass multiple extra dependencies to track, by passing an array of refs t
 
 ```js
 const foo = ref('')
-const bar = reaf(false)
+const bar = ref(false)
 const validator = () => true
 
 const asyncValidator = withAsync(validator, [foo, bar]) // here we pass in the `foo` and `bar` refs, as extra watch targets.
