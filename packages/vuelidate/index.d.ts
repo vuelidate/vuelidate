@@ -108,6 +108,7 @@ type BaseValidation <
   readonly $invalid: boolean
   readonly $anyDirty: boolean
   readonly $pending: boolean
+  readonly $path: string
 
   // const validationMethods
   readonly $touch: () => void
