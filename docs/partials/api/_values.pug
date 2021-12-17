@@ -19,7 +19,7 @@
           td.table__td: strong boolean
           td.table__td
             | Indicates the state of validation for given model. becomes <kbd>true</kbd>
-            | when any of it's child validators specified in options returns a <strong>falsy</strong> value.
+            | when any of its child validators specified in options returns a <strong>falsy</strong> value.
             | In case of validation groups, all grouped validators are considered.
         tr.table__tr
           td.table__td: kbd $dirty
@@ -30,14 +30,14 @@
             | You can manage this flag manually by using <kbd>$touch</kbd> and <kbd>$reset</kbd> methods.
             | It is set automatically when writing to <kbd>$model</kbd> value.
             | The <kbd>$dirty</kbd> flag is considered <kbd>true</kbd> if given model was
-            | <kbd>$touch</kbd>ed or <strong><u>all</u> of it's children</strong> are <kbd>$dirty</kbd>.
+            | <kbd>$touch</kbd>ed or <strong><u>all</u> of its children</strong> are <kbd>$dirty</kbd>.
         tr.table__tr
           td.table__td: kbd $anyDirty
           td.table__td: strong boolean
           td.table__td
             | A flag very similar to <kbd>$dirty</kbd>, with one exception.
             | The <kbd>$anyDirty</kbd> flag is considered <kbd>true</kbd> if given model was
-            | <kbd>$touch</kbd>ed or <strong><u>any</u> of it's children</strong> are <kbd>$anyDirty</kbd>.
+            | <kbd>$touch</kbd>ed or <strong><u>any</u> of its children</strong> are <kbd>$anyDirty</kbd>.
         tr.table__tr
           td.table__td: kbd $model
           td.table__td: strong any
