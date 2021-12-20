@@ -32,9 +32,9 @@ export function useVuelidate (validations, state, globalConfig = {}) {
     validations = undefined
     state = undefined
   }
-  let { $registerAs, $scope = CollectFlag.COLLECT_ALL, $stopPropagation, $externalResults } = globalConfig
+  let { $registerAs, $scope = CollectFlag.COLLECT_ALL, $stopPropagation, $externalResults, currentVueInstance } = globalConfig
 
-  const instance = getCurrentInstance()
+  const instance = currentVueInstance || getCurrentInstance()
 
   const componentOptions = instance
     ? (isVue3 ? instance.type : instance.proxy.$options)
