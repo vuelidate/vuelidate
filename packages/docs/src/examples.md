@@ -52,7 +52,7 @@ export default {
   },
   methods: {
     async submit () {
-      const result = await this.v$.validate()
+      const result = await this.v$.$validate()
       if (!result) {
         // notify user form is invalid
         return
