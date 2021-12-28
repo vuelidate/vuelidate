@@ -83,18 +83,19 @@ export interface MessageProps {
   $propertyPath: string,
 }
 
-export type ValidatorWrapper = (...args: unknown[]) => ValidationRuleWithParams
+export type ValidatorWrapper = (...args: any[]) => ValidationRule ;
+
+declare function withI18nMessage <T extends (ValidationRule | ValidatorWrapper)>(
+  validator: T,
+  options?: {
+    withArguments?: boolean,
+    messagePath?: typeof messagePathFactory,
+    messageParams?: typeof messageParamsFactory,
+  }): T
 
 export function createI18nMessage({ t, messagePath, messageParams }: {
   t: typeof TranslationFunction;
   messagePath?: typeof messagePathFactory;
   messageParams?: typeof messageParamsFactory;
-}): (
-  validator: ValidationRule | ValidatorWrapper,
-  options?: {
-    withArguments?: boolean,
-    messagePath?: typeof messagePathFactory,
-    messageParams?: typeof messageParamsFactory,
-  }) =>
-  ValidationRuleWithParams |
-  ((...args: unknown[]) => ValidationRuleWithParams)
+}): typeof withI18nMessage
+
