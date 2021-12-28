@@ -14,6 +14,7 @@ method.
 </template>
 <script>
 import useVuelidate from '@vuelidate/core'
+import { required } from '@vuelidate/validators'
 
 export default {
   setup: () => ({ v$: useVuelidate() }),
