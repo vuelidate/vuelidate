@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.0.0-alpha.26](https://github.com/vuelidate/vuelidate/compare/@vuelidate/validators@2.0.0-alpha.25...@vuelidate/validators@2.0.0-alpha.26) (2021-12-28)
+
+
+### Bug Fixes
+
+* **types:** createI18nMessage (fix [#972](https://github.com/vuelidate/vuelidate/issues/972)) ([#981](https://github.com/vuelidate/vuelidate/issues/981)) ([2d55072](https://github.com/vuelidate/vuelidate/commit/2d55072d35715c013eb065a1e3cbe2755d421e82))
+
+
+
+
+
 # [2.0.0-alpha.25](https://github.com/vuelidate/vuelidate/compare/@vuelidate/validators@2.0.0-alpha.24...@vuelidate/validators@2.0.0-alpha.25) (2021-11-01)
 
 
