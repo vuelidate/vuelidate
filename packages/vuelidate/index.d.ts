@@ -1,5 +1,4 @@
-import { ComponentInternalInstance } from '@vue/runtime-core'
-import { Ref, UnwrapRef, defineComponent, getCurrentInstance } from 'vue-demi';
+import { Ref, UnwrapRef, defineComponent, ComponentInternalInstance } from 'vue-demi';
 type Component = ReturnType<typeof defineComponent>;
 
 /*
