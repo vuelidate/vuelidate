@@ -1,4 +1,5 @@
-import { Ref, UnwrapRef, defineComponent } from 'vue-demi';
+import { ComponentInternalInstance } from '@vue/runtime-core'
+import { Ref, UnwrapRef, defineComponent, getCurrentInstance } from 'vue-demi';
 type Component = ReturnType<typeof defineComponent>;
 
 /*
@@ -173,7 +174,8 @@ export interface GlobalConfig {
   $autoDirty?: boolean
   $lazy?: boolean,
   $externalResults?: ServerErrors | Ref<ServerErrors> | UnwrapRef<ServerErrors>,
-  $rewardEarly?: boolean
+  $rewardEarly?: boolean,
+  currentVueInstance?: ComponentInternalInstance | null
 }
 
 export function useVuelidate(globalConfig?: GlobalConfig): Ref<Validation>;

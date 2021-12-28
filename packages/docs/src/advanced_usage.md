@@ -763,3 +763,21 @@ const required = withI18nMessage(validators.required)
 ```js
 const required = withI18nMessage(validators.required, { messagePath: () => 'overrides.required' })
 ```
+
+
+## Calling useVuelidate from async setup function
+
+In situations where you need to call useVuelidate from outside your setup function, or in an async setup function, you should use the `currentVueInstance` config to pass
+the component's vue instance.
+
+```js
+export default {
+  render: () => {},
+  async setup() {
+    const currentVueInstance = getCurrentInstance()
+    const result = await doAsyncStuff()
+    const vuelidate = useVuelidate(rules, result.state, { currentVueInstance })
+    return { vuelidate }
+  }
+}
+```
