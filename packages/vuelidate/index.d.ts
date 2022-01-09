@@ -136,7 +136,7 @@ interface ChildValidations {
 
 export type Validation <Vargs extends ValidationArgs = ValidationArgs, T = unknown> =
   NestedValidations<Vargs, T> &
-  BaseValidation<T, Vargs extends ValidationRuleCollection ? Vargs : undefined> &
+  BaseValidation<T, Vargs extends ValidationRuleCollection ? Vargs : any> &
   ChildValidations;
 
 export type ExtractStateLeaf <Vrules extends ValidationRuleCollection> =
