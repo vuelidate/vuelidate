@@ -512,7 +512,7 @@ describe('useVuelidate', () => {
       const { state, validations } = simpleValidation()
       const child = createSimpleComponent(() => useVuelidate(validations, state, { $registerAs: 'child' }))
       const Component = {
-        name: 'Component',
+        name: 'ComponentA',
         setup () {
           const renderChild = ref(true)
           const state1 = simpleValidation()
@@ -551,7 +551,7 @@ describe('useVuelidate', () => {
       const $scope = 'foo'
       const child = createSimpleComponent(() => useVuelidate(validations, state, { $registerAs: 'child', $scope }))
       const Component = {
-        name: 'Component',
+        name: 'ComponentA',
         setup () {
           const renderChild = ref(true)
           const state1 = simpleValidation()
