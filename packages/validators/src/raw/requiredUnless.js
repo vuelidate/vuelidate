@@ -1,7 +1,7 @@
 import { req } from './core'
 import { unwrap } from '../common'
 
-const validate = (prop, val) => !prop ? req(val) : true
+const validate = (prop, val) => !prop ? req(typeof val === 'string' ? val.trim() : val) : true
 /**
  * Returns required if the passed property is falsy.
  * @param {Boolean | String | function(any): Boolean | Ref<string | boolean>} propOrFunction
