@@ -19,6 +19,10 @@ describe('requiredIf validator', () => {
     expect(requiredIf('')('')).toBe(true)
   })
 
+  it('should validate string only with spaces', () => {
+    expect(requiredIf(T)('  ')).toBe(false)
+  })
+
   it('should pass the value to the validation function', () => {
     const validator = jest.fn()
     requiredIf(validator)('foo', 'bar')

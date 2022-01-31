@@ -13,6 +13,10 @@ describe('requiredUnless validator', () => {
     expect(requiredUnless(T)('truthy value')).toBe(true)
   })
 
+  it('should validate string only with spaces', () => {
+    expect(requiredUnless(F)('  ')).toBe(false)
+  })
+
   it('should pass the value to the validation function', () => {
     const validator = jest.fn()
     requiredUnless(validator)('foo', 'bar')
