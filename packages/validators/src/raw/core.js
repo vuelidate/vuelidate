@@ -42,7 +42,7 @@ export const len = (value) => {
 
 /**
  * Regex based validator template
- * @param {RegExp} expr
+ * @param {Array} expr
  * @return {function(*=): boolean}
  */
 export function regex (expr) {
