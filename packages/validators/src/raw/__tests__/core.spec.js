@@ -40,10 +40,13 @@ describe('core', () => {
     it('does not validate falsy values', () => {
       expect(regex(/ad/)('')).toBe(true)
       expect(regex(/ad/)(null)).toBe(true)
+      expect(regex(/ad/)([])).toBe(true)
     })
     it('validates truthy values against regex', () => {
       expect(regex(/ad/)('aaa')).toBe(false)
       expect(regex(/ad/)('ad')).toBe(true)
+      expect(regex([/^a.*d$/, /\d{3}/])('ads')).toBe(false)
+      expect(regex([/^a.*d$/, /\d{3}/])('a123d')).toBe(true)
     })
   })
 })

@@ -46,8 +46,9 @@ export const len = (value) => {
  * @return {function(*=): boolean}
  */
 export function regex (expr) {
-  return value => {
+  expr = Array.isArray(expr) ? expr : [expr]
+  return (value) => {
     value = unwrap(value)
-    return !req(value) || expr.test(value)
+    return !req(value) || expr.every((reg) => reg.test(value))
   }
 }
