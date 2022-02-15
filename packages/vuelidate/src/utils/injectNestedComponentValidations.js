@@ -6,8 +6,8 @@ export const CollectFlag = {
   COLLECT_NONE: false
 }
 
-const VuelidateInjectChildResults = Symbol('vuelidate#injectChiildResults')
-const VuelidateRemoveChildResults = Symbol('vuelidate#removeChiildResults')
+const VuelidateInjectChildResults = Symbol('vuelidate#injectChildResults')
+const VuelidateRemoveChildResults = Symbol('vuelidate#removeChildResults')
 
 /**
  * Create helpers to collect validation state from child components
