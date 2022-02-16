@@ -42,11 +42,10 @@ export const len = (value) => {
 
 /**
  * Regex based validator template
- * @param {Array|RegExp} expr
+ * @param {RegExp} expr
  * @return {function(*=): boolean}
  */
-export function regex (expr) {
-  expr = Array.isArray(expr) ? expr : [expr]
+export function regex (...expr) {
   return (value) => {
     value = unwrap(value)
     return !req(value) || expr.every((reg) => reg.test(value))
