@@ -179,8 +179,9 @@ export interface GlobalConfig {
 
 export function useVuelidate(globalConfig?: GlobalConfig): Ref<Validation>;
 export function useVuelidate<
-  Vargs extends ValidationArgs,
-  T extends ExtractState<Vargs>
+  T extends Object,
+  Vargs extends ValidationArgs<T> = ValidationArgs<T>,
+  EState extends ExtractState<Vargs> = ExtractState<Vargs>
 >(
   validationsArgs: Ref<Vargs> | Vargs,
   state: T | Ref<T> | ToRefs<T>,
