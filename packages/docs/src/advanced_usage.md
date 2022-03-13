@@ -436,6 +436,7 @@ The entire response can be accessed from `$response` property in the validation 
   }
 }
 ```
+
 We can use this to show a more custom error message.
 
 ```js
@@ -763,16 +764,15 @@ const required = withI18nMessage(validators.required)
 const required = withI18nMessage(validators.required, { messagePath: () => 'overrides.required' })
 ```
 
-
 ## Calling useVuelidate from async setup function
 
-In situations where you need to call useVuelidate from outside your setup function, or in an async setup function, you should use the `currentVueInstance` config to pass
-the component's vue instance.
+In situations where you need to call useVuelidate from outside your setup function, or in an async setup function, you should use
+the `currentVueInstance` config to pass the component's vue instance.
 
 ```js
 export default {
   render: () => {},
-  async setup() {
+  async setup () {
     const currentVueInstance = getCurrentInstance()
     const result = await doAsyncStuff()
     const vuelidate = useVuelidate(rules, result.state, { currentVueInstance })
