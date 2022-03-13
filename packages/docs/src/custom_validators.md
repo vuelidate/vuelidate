@@ -181,6 +181,9 @@ includes handling optional fields and `$params`.
 import { helpers } from 'vuelidate/lib/validators'
 
 const alpha = helpers.regex(/^[a-zA-Z]*$/)
+
+// Also, you can pass multiple regex to validate a value.
+const alpha2 = helpers.regex(/^[a-zA-Z]{3}/, /\d/)
 ```
 
 ## Custom error messages
