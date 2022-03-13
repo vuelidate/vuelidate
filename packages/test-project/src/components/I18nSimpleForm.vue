@@ -73,7 +73,7 @@ const asyncValidator = withAsync((v) => {
 
 const withI18nMessage = createI18nMessage({ t, messagePath: ({ $validator }) => `messages.${$validator}` })
 
-const minLen = withI18nMessage(minLength, true)
+const minLen = withI18nMessage(minLength, { withArguments: true })
 const req = withI18nMessage(required)
 
 export default {
