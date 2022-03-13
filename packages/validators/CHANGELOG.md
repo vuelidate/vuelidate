@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.0.0-alpha.27](https://github.com/vuelidate/vuelidate/compare/@vuelidate/validators@2.0.0-alpha.26...@vuelidate/validators@2.0.0-alpha.27) (2022-03-13)
+
+
+### Bug Fixes
+
+* requiredIf and requiredUnless pre-trim value before validation to match required ([#997](https://github.com/vuelidate/vuelidate/issues/997)) ([72bad52](https://github.com/vuelidate/vuelidate/commit/72bad5275520a3e7545ccbcfc24c2a007e0f677d))
+
+
+### Features
+
+* **core:** add array of 'regex', closes [#400](https://github.com/vuelidate/vuelidate/issues/400) ([#1003](https://github.com/vuelidate/vuelidate/issues/1003)) ([62ba19d](https://github.com/vuelidate/vuelidate/commit/62ba19d0c988abd54cef5880cbb22a8e8f9122de))
+
+
+
+
+
 # [2.0.0-alpha.26](https://github.com/vuelidate/vuelidate/compare/@vuelidate/validators@2.0.0-alpha.25...@vuelidate/validators@2.0.0-alpha.26) (2021-12-28)
 
 

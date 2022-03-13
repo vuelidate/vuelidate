@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.0.0-alpha.35](https://github.com/vuelidate/vuelidate/compare/@vuelidate/core@2.0.0-alpha.34...@vuelidate/core@2.0.0-alpha.35) (2022-03-13)
+
+
+### Bug Fixes
+
+* **types:** useVuelidate return value ([#1010](https://github.com/vuelidate/vuelidate/issues/1010)) ([89a7fae](https://github.com/vuelidate/vuelidate/commit/89a7faee0940ba339385ddd0c01da97ae704f940))
+
+
+
+
+
 # [2.0.0-alpha.34](https://github.com/vuelidate/vuelidate/compare/@vuelidate/core@2.0.0-alpha.33...@vuelidate/core@2.0.0-alpha.34) (2022-01-16)
 
 
