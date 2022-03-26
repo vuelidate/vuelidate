@@ -1,9 +1,9 @@
 /** @type {import('bili').Config} */
 module.exports = {
-  input: 'src/index.js',
+  input: ['src', 'src/raw'],
   output: {
     format: ['esm', 'cjs', 'iife-min'],
-    moduleName: 'Vuelidate'
+    moduleName: 'VuelidateValidators'
   },
   globals: {
     'vue-demi': 'VueDemi'
