@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.0.0-alpha.36](https://github.com/vuelidate/vuelidate/compare/@vuelidate/core@2.0.0-alpha.35...@vuelidate/core@2.0.0-alpha.36) (2022-03-26)
+
+
+### Bug Fixes
+
+* add iife exports to all packages, closes [#1001](https://github.com/vuelidate/vuelidate/issues/1001) ([#1020](https://github.com/vuelidate/vuelidate/issues/1020)) ([2d1a203](https://github.com/vuelidate/vuelidate/commit/2d1a2034cddc0c473b7bfa1e44ac5601ee2dbce3))
+
+
+
+
+
 # [2.0.0-alpha.35](https://github.com/vuelidate/vuelidate/compare/@vuelidate/core@2.0.0-alpha.34...@vuelidate/core@2.0.0-alpha.35) (2022-03-13)
 
 
