@@ -5,6 +5,8 @@
   "main": "dist/index.js",
   "types": "index.d.ts",
   "module": "dist/index.esm.js",
+  "unpkg": "dist/index.iife.min.js",
+  "jsdelivr": "dist/index.iife.min.js",
   "repository": {
     "url": "https://github.com/vuelidate/vuelidate",
     "type": "git",

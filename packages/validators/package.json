@@ -5,6 +5,8 @@
   "main": "dist/index.js",
   "types": "index.d.ts",
   "module": "dist/index.esm.js",
+  "unpkg": "dist/index.iife.min.js",
+  "jsdelivr": "dist/index.iife.min.js",
   "repository": {
     "url": "https://github.com/vuelidate/vuelidate",
     "type": "git",
@@ -12,7 +14,7 @@
   },
   "license": "MIT",
   "scripts": {
-    "build": "bili src src/raw --format esm --format cjs",
+    "build": "bili",
     "dev": "yarn build --watch",
     "test:unit": "jest",
     "lint": "eslint src"
