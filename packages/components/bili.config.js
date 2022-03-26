@@ -2,7 +2,7 @@
 module.exports = {
   input: './index.js',
   output: {
-    format: ['es', 'cjs', 'iife'],
+    format: ['es', 'cjs', 'iife-min'],
     moduleName: 'VuelidateComponents'
   },
   externals: [/packages\/(vuelidate|validators)/],
