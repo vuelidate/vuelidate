@@ -22,6 +22,26 @@ npm install @vuelidate/core @vuelidate/validators
 yarn add @vuelidate/core @vuelidate/validators
 ```
 
+## Using CDN
+
+Vuelidate also exposes a browser ready version, that you can use directly without a bundler.
+Add these imports to your browser:
+
+```html
+<!-- Vue-->
+<!--  For Vue 2 -->
+<!--  <script src="https://cdn.jsdelivr.net/npm/vue@2"></script>-->
+<!--  <script src="https://cdn.jsdelivr.net/npm/@vue/composition-api"></script>-->
+<!--  For Vue 3 -->
+<script src="https://cdn.jsdelivr.net/npm/vue@3"></script>
+<!--  Vuelidate -->
+<script src="https://cdn.jsdelivr.net/npm/vue-demi"></script>
+<script src="https://cdn.jsdelivr.net/npm/@vuelidate/core"></script>
+<script src="https://cdn.jsdelivr.net/npm/@vuelidate/validators"></script>
+```
+
+Now you can access use `VueDemi`, `Vuelidate` and `VuelidateValidators` to build validations.
+
 ## Getting Started
 
 ::: tip
