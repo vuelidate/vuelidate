@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+  <!--  START -->
+  <!--  For Vue 2 -->
+  <!--  <script src="https://cdn.jsdelivr.net/npm/vue@2"></script>-->
+  <!--  <script src="https://cdn.jsdelivr.net/npm/@vue/composition-api"></script>-->
+  <!--  For Vue 3 -->
+  <script src="https://cdn.jsdelivr.net/npm/vue@3"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vue-demi"></script>
+  <!--  END -->
+  <script src="../vuelidate/dist/index.iife.min.js"></script>
+  <script src="../validators/dist/index.iife.min.js"></script>
+</head>
+<body>
+<div id="app">
+  <div class="SimpleForm">
+    <label>name</label>
+    <input
+      v-model="name"
+      :class="{ error: v$.name.$error }"
+      type="text"
+    >
+    <button @click="validate">
+      Validate
+    </button>
+    <button @click="v$.$touch">
+      $touch
+    </button>
+    <button @click="v$.$reset">
+      $reset
+    </button>
+    <button @click="v$.name.$commit">
+      $commit
+    </button>
+    <div
+      v-if="v$.$errors.length"
+      style="background: rgba(234,163,163,0.62); color: #861e1e; padding: 10px 15px"
+    >
+      <p
+        v-for="(error, index) of v$.$errors"
+        :key="index"
+        style="padding: 0; margin: 5px 0"
+      >
+        {{ error.$message }}
+      </p>
+    </div>
+    <pre>{{ v$ }}</pre>
+  </div>
+</div>
+
+<script>
+const { required, minLength, helpers } = VuelidateValidators
+VueDemi.createApp({
+  setup () {
+    const name = VueDemi.ref('')
+
+    const v$ = Vuelidate.useVuelidate(
+      {
+        name: {
+          required: helpers.withMessage('This field is required', required),
+          minLength: minLength(4),
+          is12345: {
+            $validator: v => v === '12345',
+            $message: 'Is not 12345'
+          }
+        }
+      },
+      { name },
+      { $autoDirty: true }
+    )
+    return { name, v$ }
+  },
+  methods: {
+    validate () {
+      this.v$.$validate({ silent: true }).then((result) => {
+        console.log('Result is', result)
+      })
+    }
+  }
+}).mount('#app')
+</script>
+</body>
+</html>
