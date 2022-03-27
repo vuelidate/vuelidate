@@ -58,7 +58,7 @@ export type ValidationRule <T = any> = ValidationRuleWithParams<any, T> | Valida
 export type ValidationRuleCollection <T = any> = Record<string, ValidationRule<T>>;
 
 export type ValidationArgs<T = unknown> = {
-  [key in keyof T]: T[key] extends Record<string, unknown> ? ValidationArgs<T[key]> : ValidationRule<T[key]>
+  [key in keyof T]?: ValidationArgs<T[key]> | ValidationRuleCollection<typeof T[key]> | ValidationRule<typeof T[key]>
 }
 
 export interface RuleResultWithoutParams {
