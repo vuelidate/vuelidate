@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.0.0-alpha.38](https://github.com/vuelidate/vuelidate/compare/@vuelidate/core@2.0.0-alpha.37...@vuelidate/core@2.0.0-alpha.38) (2022-03-27)
+
+
+### Bug Fixes
+
+* **core:** make sure $validate, triggers newly added children ([#1023](https://github.com/vuelidate/vuelidate/issues/1023)) ([800d240](https://github.com/vuelidate/vuelidate/commit/800d240194dff94bcc486f0d992b1548dec61575))
+
+
+
+
+
 # [2.0.0-alpha.37](https://github.com/vuelidate/vuelidate/compare/@vuelidate/core@2.0.0-alpha.36...@vuelidate/core@2.0.0-alpha.37) (2022-03-27)
 
 
