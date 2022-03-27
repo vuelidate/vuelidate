@@ -91,7 +91,7 @@ export interface ErrorObject {
   readonly $uid: string,
 }
 
-type BaseValidation <
+export type BaseValidation <
   T = unknown,
   Vrules extends ValidationRuleCollection<T> | undefined = undefined,
 > = (
