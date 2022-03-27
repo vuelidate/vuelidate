@@ -3,6 +3,19 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.0.0-alpha.37](https://github.com/vuelidate/vuelidate/compare/@vuelidate/core@2.0.0-alpha.36...@vuelidate/core@2.0.0-alpha.37) (2022-03-27)
+
+
+### Bug Fixes
+
+* **core:** fix typo in symbol description ([#1004](https://github.com/vuelidate/vuelidate/issues/1004)) ([a2de77f](https://github.com/vuelidate/vuelidate/commit/a2de77fa5a2d6a90183af9ac57b2d032b0721a53))
+* **types:** export BaseValidation for typing props ([#994](https://github.com/vuelidate/vuelidate/issues/994)) ([d61410f](https://github.com/vuelidate/vuelidate/commit/d61410ff90fad4347f128fd56844e1b9af66074c))
+* **types:** make the validation arguments optional. it's not always needed to validate everything ([#1022](https://github.com/vuelidate/vuelidate/issues/1022)) ([073f3d8](https://github.com/vuelidate/vuelidate/commit/073f3d822f50bd4d62a86d15c4b42f992dee6dbb))
+
+
+
+
+
 # [2.0.0-alpha.36](https://github.com/vuelidate/vuelidate/compare/@vuelidate/core@2.0.0-alpha.35...@vuelidate/core@2.0.0-alpha.36) (2022-03-26)
 
 
