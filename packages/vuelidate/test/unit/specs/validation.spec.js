@@ -391,6 +391,39 @@ describe('useVuelidate', () => {
       expect(wrapper.vm.v.$errors).toHaveLength(0)
     })
 
+    it('should trigger validations when $validate() called, if nested component is created after initial call', async () => {
+      // prepare
+      const { state, parent, ChildComponent, childValidationRegisterName } = nestedComponentValidation()
+      const wrapper = mount(parent)
+      await nextTick()
+      // assert the component is visible
+      expect(wrapper.findComponent(ChildComponent).exists()).toBe(true)
+      // stop rendering the child
+      wrapper.vm.shouldRenderChild = false
+      await nextTick()
+      // assert child is not visible
+      expect(wrapper.findComponent(ChildComponent).exists()).toBe(false)
+      // validate parent
+      await wrapper.vm.v.$validate()
+      // assert its all good
+      shouldBeValidValidationObj(wrapper.vm.v)
+      // show the child
+      wrapper.vm.shouldRenderChild = true
+      await nextTick()
+      // assert its invalid
+      shouldBeInvalidValidationObject({ v: wrapper.vm.v[childValidationRegisterName], property: 'number', validatorName: 'isEven' })
+      // validate again
+      await wrapper.vm.v.$validate()
+      shouldBeErroredValidationObject({ v: wrapper.vm.v, property: 'number', validatorName: 'isEven' })
+      // make the validation fail
+      state.number.value = 3
+      expect(await wrapper.vm.v.$validate()).toBe(false)
+      // make the validation pass
+      state.number.value = 4
+      expect(await wrapper.vm.v.$validate()).toBe(true)
+      expect(wrapper.vm.v.$errors).toHaveLength(0)
+    })
+
     it('removes the child results if the child gets destroyed', async () => {
       const { childValidationRegisterName, parent, state } = nestedComponentValidation()
       const { vm } = mount(parent)

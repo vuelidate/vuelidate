@@ -479,7 +479,7 @@ export function setValidations ({
    * @return {Promise<boolean>}
    */
   async function $validate () {
-    if (!$dirty.value) $touch()
+    $touch()
     if (mergedConfig.$rewardEarly) {
       $commit()
       // await the watchers

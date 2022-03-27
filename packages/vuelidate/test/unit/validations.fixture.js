@@ -111,6 +111,7 @@ export function nestedComponentValidation ({ state: origState, validations: orig
     state,
     validations,
     parent,
+    ChildComponent,
     childValidationRegisterName
   }
 }
