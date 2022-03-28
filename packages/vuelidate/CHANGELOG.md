@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.0.0-alpha.39](https://github.com/vuelidate/vuelidate/compare/@vuelidate/core@2.0.0-alpha.38...@vuelidate/core@2.0.0-alpha.39) (2022-03-28)
+
+
+### Bug Fixes
+
+* **types:** build issue with typescript undefined error ([#1024](https://github.com/vuelidate/vuelidate/issues/1024)) ([2c1f83e](https://github.com/vuelidate/vuelidate/commit/2c1f83e96d072c8a4223a98f8ce93db31d392ec2))
+
+
+
+
+
 # [2.0.0-alpha.38](https://github.com/vuelidate/vuelidate/compare/@vuelidate/core@2.0.0-alpha.37...@vuelidate/core@2.0.0-alpha.38) (2022-03-27)
 
 
