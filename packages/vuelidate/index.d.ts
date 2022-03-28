@@ -58,7 +58,7 @@ export type ValidationRule <T = any> = ValidationRuleWithParams<any, T> | Valida
 export type ValidationRuleCollection <T = any> = Record<string, ValidationRule<T>>;
 
 export type ValidationArgs<T = unknown> = {
-  [key in keyof T]?: ValidationArgs<T[key]> | ValidationRuleCollection<typeof T[key]> | ValidationRule<typeof T[key]>
+  [key in keyof T]: ValidationArgs<T[key]> | ValidationRuleCollection<typeof T[key]> | ValidationRule<typeof T[key]>
 }
 
 export interface RuleResultWithoutParams {
@@ -179,8 +179,8 @@ export interface GlobalConfig {
 
 export function useVuelidate(globalConfig?: GlobalConfig): Ref<Validation>;
 export function useVuelidate<
-  T extends Object,
-  Vargs extends ValidationArgs<T> = ValidationArgs<T>,
+  T extends {[key in keyof Vargs]: any},
+  Vargs extends ValidationArgs = ValidationArgs,
   EState extends ExtractState<Vargs> = ExtractState<Vargs>
 >(
   validationsArgs: Ref<Vargs> | Vargs,
