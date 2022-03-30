@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.0.0-alpha.40](https://github.com/vuelidate/vuelidate/compare/@vuelidate/core@2.0.0-alpha.39...@vuelidate/core@2.0.0-alpha.40) (2022-03-30)
+
+
+### Bug Fixes
+
+* **core:** correct type definition of ValidationArgs ([#1026](https://github.com/vuelidate/vuelidate/issues/1026)) ([e7622d8](https://github.com/vuelidate/vuelidate/commit/e7622d8ac2af318a5a4920c2060871e265d8ec14))
+
+
+
+
+
 # [2.0.0-alpha.39](https://github.com/vuelidate/vuelidate/compare/@vuelidate/core@2.0.0-alpha.38...@vuelidate/core@2.0.0-alpha.39) (2022-03-28)
 
 
