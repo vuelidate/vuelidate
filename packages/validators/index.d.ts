@@ -77,15 +77,15 @@ export interface MessageProps {
   $property: string;
   $params: object;
   $validator: string;
-  $pending: boolean,
-  $invalid: boolean,
-  $response: unknown,
-  $propertyPath: string,
+  $pending: boolean;
+  $invalid: boolean;
+  $response: unknown;
+  $propertyPath: string;
 }
 
 export type ValidatorWrapper = (...args: any[]) => ValidationRule ;
 
-declare function withI18nMessage <T extends (ValidationRule | ValidatorWrapper)>(
+declare function withI18nMessage <T extends (ValidationRule | ValidatorWrapper)>(
   validator: T,
   options?: {
     withArguments?: boolean,
