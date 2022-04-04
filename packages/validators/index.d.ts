@@ -75,17 +75,17 @@ export function messageParamsFactory(params: {
 export interface MessageProps {
   $model: string;
   $property: string;
-  $params: object;
+  $params: { [attr: string] : any };
   $validator: string;
-  $pending: boolean,
-  $invalid: boolean,
-  $response: unknown,
-  $propertyPath: string,
+  $pending: boolean;
+  $invalid: boolean;
+  $response: unknown;
+  $propertyPath: string;
 }
 
 export type ValidatorWrapper = (...args: any[]) => ValidationRule ;
 
-declare function withI18nMessage <T extends (ValidationRule | ValidatorWrapper)>(
+declare function withI18nMessage <T extends (ValidationRule | ValidatorWrapper)>(
   validator: T,
   options?: {
     withArguments?: boolean,
