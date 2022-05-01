@@ -1,4 +1,4 @@
-import { watch, computed, getCurrentInstance, onBeforeMount, onBeforeUnmount, isRef, ref, reactive, isVue3 } from 'vue-demi'
+import { watch, computed, getCurrentInstance, onBeforeMount, onBeforeUnmount, isRef, ref, reactive } from 'vue-demi'
 import { isFunction, unwrap, isProxy } from './utils'
 import { setValidations } from './core'
 import ResultsStorage from './storage'
@@ -37,7 +37,7 @@ export function useVuelidate (validations, state, globalConfig = {}) {
   const instance = currentVueInstance || getCurrentInstance()
 
   const componentOptions = instance
-    ? (isVue3 ? instance.type : instance.proxy.$options)
+    ? instance.proxy.$options
     : {}
   // if there is no registration name, add one.
   if (!$registerAs && instance) {

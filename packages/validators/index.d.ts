@@ -29,7 +29,7 @@ export const maxValue: (
 ) => ValidationRuleWithParams<{ max: number }>;
 export const minLength: (
   min: number | Ref<number>
-) => ValidationRuleWithParams<{ length: number }>;
+) => ValidationRuleWithParams<{ min: number }>;
 export const minValue: (
   min: number | Ref<number> | string | Ref<string>
 ) => ValidationRuleWithParams<{ min: number }>;
@@ -75,17 +75,17 @@ export function messageParamsFactory(params: {
 export interface MessageProps {
   $model: string;
   $property: string;
-  $params: object;
+  $params: { [attr: string] : any };
   $validator: string;
-  $pending: boolean,
-  $invalid: boolean,
-  $response: unknown,
-  $propertyPath: string,
+  $pending: boolean;
+  $invalid: boolean;
+  $response: unknown;
+  $propertyPath: string;
 }
 
 export type ValidatorWrapper = (...args: any[]) => ValidationRule ;
 
-declare function withI18nMessage <T extends (ValidationRule | ValidatorWrapper)>(
+declare function withI18nMessage <T extends (ValidationRule | ValidatorWrapper)>(
   validator: T,
   options?: {
     withArguments?: boolean,
