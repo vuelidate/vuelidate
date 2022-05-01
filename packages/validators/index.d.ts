@@ -29,7 +29,7 @@ export const maxValue: (
 ) => ValidationRuleWithParams<{ max: number }>;
 export const minLength: (
   min: number | Ref<number>
-) => ValidationRuleWithParams<{ length: number }>;
+) => ValidationRuleWithParams<{ min: number }>;
 export const minValue: (
   min: number | Ref<number> | string | Ref<string>
 ) => ValidationRuleWithParams<{ min: number }>;
