@@ -47,8 +47,7 @@ describe('forEach', () => {
             required: false,
             $invalid: true,
             $error: true
-          },
-          surname: {}
+          }
         }
       ],
       $errors: [
@@ -72,8 +71,7 @@ describe('forEach', () => {
               $response: false,
               $validator: 'required'
             }
-          ],
-          surname: []
+          ]
         }
       ],
       $valid: false
