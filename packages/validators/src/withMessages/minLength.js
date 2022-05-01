@@ -8,7 +8,7 @@ import minLength from '../raw/minLength'
 export default function (min) {
   return {
     $validator: minLength(min),
-    $message: ({ $params }) => `This field should be at least ${$params.min} long`,
+    $message: ({ $params }) => `This field should be at least ${$params.min} characters long`,
     $params: { min, type: 'minLength' }
   }
 }

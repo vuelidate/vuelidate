@@ -7,6 +7,6 @@ import maxValue from '../raw/maxValue'
  */
 export default max => ({
   $validator: maxValue(max),
-  $message: ({ $params }) => `The maximum value is ${$params.max}`,
+  $message: ({ $params }) => `The maximum value allowed is ${$params.max}`,
   $params: { max, type: 'maxValue' }
 })
