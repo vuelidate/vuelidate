@@ -62,6 +62,12 @@ export default {
 }
 ```
 
+::: warning
+`useVuelidate` returns a `computed`, so you need to use `.value` when accessing any of it's properties, like `$error`, `$validate` inside the `setup` function.
+
+In the template it is unwrapped for you.
+:::
+
 ### Using `reactive` state
 
 ```js
