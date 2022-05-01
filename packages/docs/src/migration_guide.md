@@ -1,7 +1,7 @@
 # Migration Guide from v0.x
 
 ::: danger BREAKING CHANGES
-Vuelidate v2.0 is still in early alpha/beta stage. This means the changes listed below might not be final.
+Vuelidate v2.0 is still in development. This means the changes listed below might not be final.
 :::
 
 ## Package name and imports
@@ -35,7 +35,24 @@ In Vuelidate 0.x you were able to install Vuelidate globally. This is no longer 
 #### Migration Strategy
 
 1. Remove `Vue.use(Vuelidate)`.
-2. Use `useVuelidate()` inside `setup` where needed.
+2. Use `useVuelidate()` inside `setup`.
+
+## v$ instead of $v
+
+Vue3 does not allow you to return variables, starting with `$`. Because you are now in control of how your validation variable is called, you can call
+it whatever you like. In the Vuelidate docs we reference the Vuelidate instance as `v$`, notice the `$` after the `v`.
+
+```js
+export default {
+  setup () {
+    return {
+      v$: useVuelidate()
+    }
+  }
+}
+```
+
+Then in your templates you use `v$` instead.
 
 ## Removal of `validationMixin`
 
