@@ -8,7 +8,7 @@
     "url": "https://github.com/vuelidate/vuelidate",
     "directory": "packages/components"
   },
-  "module": "dist/index.esm.js",
+  "module": "dist/index.es.js",
   "main": "dist/index.js",
   "unpkg": "dist/index.iife.min.js",
   "jsdelivr": "dist/index.iife.min.js",
