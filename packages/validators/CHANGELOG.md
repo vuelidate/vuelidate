@@ -3,6 +3,19 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.0.0-alpha.29](https://github.com/vuelidate/vuelidate/compare/@vuelidate/validators@2.0.0-alpha.28...@vuelidate/validators@2.0.0-alpha.29) (2022-05-01)
+
+
+### Bug Fixes
+
+* **types:** add MessageProps $params types to attributes ([#1033](https://github.com/vuelidate/vuelidate/issues/1033)) ([8502d1a](https://github.com/vuelidate/vuelidate/commit/8502d1af2fdbc41404aa11b11e0ff1c556882e01))
+* **types:** minLength param type ([0d10b26](https://github.com/vuelidate/vuelidate/commit/0d10b2610cc2698e806f8fea38a0932ae5822de2))
+* **validators:** improves the minLength and maxValue validator messages, closes [#1040](https://github.com/vuelidate/vuelidate/issues/1040) ([4c8c218](https://github.com/vuelidate/vuelidate/commit/4c8c218d6ee9952451fd5f070e25e9227658952b))
+
+
+
+
+
 # [2.0.0-alpha.28](https://github.com/vuelidate/vuelidate/compare/@vuelidate/validators@2.0.0-alpha.27...@vuelidate/validators@2.0.0-alpha.28) (2022-03-26)
 
 

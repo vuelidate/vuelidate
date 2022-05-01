@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.1.21](https://github.com/vuelidate/vuelidate/compare/@vuelidate/components@1.1.20...@vuelidate/components@1.1.21) (2022-05-01)
+
+
+### Bug Fixes
+
+* **components:** fix bad reference to module package in package.json, closes [#1047](https://github.com/vuelidate/vuelidate/issues/1047) ([79d3ccd](https://github.com/vuelidate/vuelidate/commit/79d3ccd5cfc5dee136801fb139983e48a16011a6))
+
+
+
+
+
 ## [1.1.20](https://github.com/vuelidate/vuelidate/compare/@vuelidate/components@1.1.19...@vuelidate/components@1.1.20) (2022-03-30)
 
 **Note:** Version bump only for package @vuelidate/components

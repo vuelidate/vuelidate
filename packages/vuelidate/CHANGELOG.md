@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.0.0-alpha.41](https://github.com/vuelidate/vuelidate/compare/@vuelidate/core@2.0.0-alpha.40...@vuelidate/core@2.0.0-alpha.41) (2022-05-01)
+
+
+### Bug Fixes
+
+* support optionMergeStrategies, closes [#789](https://github.com/vuelidate/vuelidate/issues/789) ([#1049](https://github.com/vuelidate/vuelidate/issues/1049)) ([dc307c9](https://github.com/vuelidate/vuelidate/commit/dc307c9b63975175219a3f8f5079f72d360efe4d))
+
+
+
+
+
 # [2.0.0-alpha.40](https://github.com/vuelidate/vuelidate/compare/@vuelidate/core@2.0.0-alpha.39...@vuelidate/core@2.0.0-alpha.40) (2022-03-30)
 
 
