@@ -39,10 +39,10 @@ export const or: <T = unknown>(
   ...validators: ValidationRule<T>[]
 ) => ValidationRuleWithoutParams;
 export const required: ValidationRuleWithoutParams;
-export const requiredIf: (prop: boolean | string | (() => boolean | Promise<boolean>)) => ValidationRuleWithoutParams;
-export const requiredUnless: (prop: boolean | string | (() => boolean | Promise<boolean>)) => ValidationRuleWithoutParams;
+export const requiredIf: (prop: boolean | Ref<boolean> | string | (() => boolean | Promise<boolean>)) => ValidationRuleWithoutParams;
+export const requiredUnless: (prop: boolean | Ref<boolean> | string | (() => boolean | Promise<boolean>)) => ValidationRuleWithoutParams;
 export const sameAs: <E = unknown>(
-  equalTo: E,
+  equalTo: E | Ref<E>,
   otherName?: string
 ) => ValidationRuleWithParams<{ equalTo: E, otherName: string }>;
 export const url: ValidationRuleWithoutParams;
