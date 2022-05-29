@@ -193,3 +193,18 @@ export default {
   }
 }
 ```
+
+## Removal of validation groups
+
+Validation groups have been removed, as those would not work with the new composition ways.
+
+### Migration strategy
+
+You can create a computed property that recomputes for the properties you are interested in
+
+```js
+const v$ = useVuelidate(rules, state)
+const groupInvalid = computed(() => {
+  return v$.value.firstProperty.$invalid || v$.value.secondProperty.$invalid
+})
+```
