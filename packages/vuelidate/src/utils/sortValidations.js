@@ -12,6 +12,7 @@ export function sortValidations (validationsRaw = {}) {
   const rules = {}
   const nestedValidators = {}
   const config = {}
+  let validationGroups = null
 
   validationKeys.forEach(key => {
     const v = validations[key]
@@ -26,6 +27,9 @@ export function sortValidations (validationsRaw = {}) {
       case isFunction(v):
         rules[key] = { $validator: v }
         break
+      case key === '$validationGroups':
+        validationGroups = v
+        break
       // Catch $-prefixed properties as config
       case key.startsWith('$'):
         config[key] = v
@@ -37,5 +41,5 @@ export function sortValidations (validationsRaw = {}) {
     }
   })
 
-  return { rules, nestedValidators, config }
+  return { rules, nestedValidators, config, validationGroups }
 }

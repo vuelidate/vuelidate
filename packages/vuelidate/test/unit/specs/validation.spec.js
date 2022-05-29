@@ -18,7 +18,7 @@ import {
   shouldBeInvalidValidationObject,
   shouldBeErroredValidationObject,
   createSimpleComponent,
-  shouldBeValidValidationObj, asyncTimeout
+  shouldBeValidValidationObj, asyncTimeout, buildErrorObject
 } from '../utils'
 import { withMessage, withParams } from '@vuelidate/validators/src/common'
 import useVuelidate, { CollectFlag } from '../../../src'
@@ -2054,6 +2054,68 @@ describe('useVuelidate', () => {
           property: 'number',
           validatorName: 'asyncIsEven'
         })
+      })
+    })
+  })
+
+  describe('$validationGroups', () => {
+    it('should build validations from a group of items', async () => {
+      const number = ref(2)
+      const word = ref('abc')
+      const { vm } = await createSimpleWrapper({
+        number: { isEven },
+        nested: {
+          word: { required: v => !!v }
+        },
+        $validationGroups: {
+          firstName: ['number', 'nested.word']
+        }
+      }, { number, nested: { word } })
+
+      const numberError = buildErrorObject('number', 'number', 'isEven')
+      const wordError = buildErrorObject('word', 'nested.word', 'required')
+
+      expect(vm.v).toHaveProperty('number', expect.any(Object))
+      shouldBePristineValidationObj(vm.v.number)
+      shouldBePristineValidationObj(vm.v)
+      expect(vm.v).toHaveProperty('$validationGroups', {
+        firstName: expect.any(Object)
+      })
+      expect(vm.v.$validationGroups).toHaveProperty('firstName', {
+        $invalid: false,
+        $error: false,
+        $pending: false,
+        $errors: [],
+        $silentErrors: []
+      })
+      // make the word invalid
+      word.value = ''
+      // assert the validation group has re-calculated
+      expect(vm.v.$validationGroups.firstName).toEqual({
+        $invalid: true,
+        $error: false,
+        $pending: false,
+        $errors: [],
+        $silentErrors: [buildErrorObject('word', 'nested.word', 'required')]
+      })
+      // make the `number` dirty and invalid
+      vm.v.number.$model = 3
+      expect(vm.v.$validationGroups.firstName).toEqual({
+        $invalid: true,
+        $error: true,
+        $pending: false,
+        $errors: [numberError],
+        $silentErrors: [numberError, wordError]
+      })
+      // make both valid
+      vm.v.number.$model = 4
+      vm.v.nested.word.$model = 'foo'
+      expect(vm.v.$validationGroups.firstName).toEqual({
+        $invalid: false,
+        $error: false,
+        $pending: false,
+        $errors: [],
+        $silentErrors: []
       })
     })
   })

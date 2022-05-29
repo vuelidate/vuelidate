@@ -1,4 +1,4 @@
-import { unwrap } from './utils'
+import { unwrap, gatherBooleanGroupProperties, gatherArrayGroupProperties } from './utils'
 import { computed, isRef, nextTick, reactive, ref, watch } from 'vue-demi'
 import { createValidatorResult } from './utils/createResults'
 import { sortValidations } from './utils/sortValidations'
@@ -399,7 +399,7 @@ export function setValidations ({
   // – rules = validators for current state tree fragment
   // — nestedValidators = nested state fragments keys that might contain more validators
   // – config = configuration properties that affect this state fragment
-  const { rules, nestedValidators, config } = sortValidations(validations)
+  const { rules, nestedValidators, config, validationGroups } = sortValidations(validations)
   const mergedConfig = { ...globalConfig, ...config }
 
   // create protected state for cases when the state branch does not exist yet.
@@ -425,6 +425,19 @@ export function setValidations ({
   // Use nested keys to repeat the process
   // *WARN*: This is recursive
   const nestedResults = collectNestedValidationResults(nestedValidators, nestedState, path, resultsCache, mergedConfig, instance, nestedExternalResults)
+
+  const $validationGroups = {}
+  if (validationGroups) {
+    Object.entries(validationGroups).forEach(([key, group]) => {
+      $validationGroups[key] = {
+        $invalid: gatherBooleanGroupProperties(group, nestedResults, '$invalid'),
+        $error: gatherBooleanGroupProperties(group, nestedResults, '$error'),
+        $pending: gatherBooleanGroupProperties(group, nestedResults, '$pending'),
+        $errors: gatherArrayGroupProperties(group, nestedResults, '$errors'),
+        $silentErrors: gatherArrayGroupProperties(group, nestedResults, '$silentErrors')
+      }
+    })
+  }
 
   // Collect and merge this level validation results
   // with all nested validation results
@@ -543,7 +556,8 @@ export function setValidations ({
     // if there are no child results, we are inside a nested property
     ...(childResults && {
       $getResultsForChild,
-      $clearExternalResults
+      $clearExternalResults,
+      $validationGroups
     }),
     // add each nested property's state
     ...nestedResults
