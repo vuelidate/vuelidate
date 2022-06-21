@@ -89,9 +89,9 @@ mixin validatorRow(validator, params)
             +validatorRow('ipAddress')
               | Accepts valid IPv4 addresses in dotted decimal notation like <em>127.0.0.1</em>.
             +validatorRow('macAddress', [ 'separator\=\':\'' ])
-              | Accepts valid MAC addresses like <em>00:ff:11:22:33:44:55</em>. Don't forget to call it <kbd>macAddress()</kbd>, as it has optional parameter.
+              | Accepts valid MAC addresses like <em>00:ff:11:22:33:44</em>. Don't forget to call it <kbd>macAddress()</kbd>, as it has optional parameter.
               | You can specify your own separator instead of <kbd>':'</kbd>.
-              | Provide empty separator <kbd>macAddress('')</kbd> to validate MAC addresses like <em>00ff1122334455</em>.
+              | Provide empty separator <kbd>macAddress('')</kbd> to validate MAC addresses like <em>00ff11223344</em>.
             +validatorRow('sameAs', ['locator *'])
               | Checks for equality with a given property.
             +validatorRow('url')
