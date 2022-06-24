@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.0.0-alpha.30](https://github.com/vuelidate/vuelidate/compare/@vuelidate/validators@2.0.0-alpha.29...@vuelidate/validators@2.0.0-alpha.30) (2022-06-24)
+
+
+### Bug Fixes
+
+* **types:** add Ref type to parameters in validators, fixes [#1054](https://github.com/vuelidate/vuelidate/issues/1054) ([0962038](https://github.com/vuelidate/vuelidate/commit/0962038fcbc7ef0c38e9282a6b48a65313906c40))
+
+
+
+
+
 # [2.0.0-alpha.29](https://github.com/vuelidate/vuelidate/compare/@vuelidate/validators@2.0.0-alpha.28...@vuelidate/validators@2.0.0-alpha.29) (2022-05-01)
 
 
