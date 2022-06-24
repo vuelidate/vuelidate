@@ -17,6 +17,13 @@
     "dist",
     "index.d.ts"
   ],
+  "exports": {
+    ".": {
+      "import": "./dist/index.esm.js",
+      "require": "./dist/index.js"
+    },
+    "./*": "./*"
+  },
   "scripts": {
     "build": "bili",
     "test:unit": "jest",
