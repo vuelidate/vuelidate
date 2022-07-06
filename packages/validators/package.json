@@ -8,7 +8,7 @@
   "unpkg": "dist/index.iife.min.js",
   "jsdelivr": "dist/index.iife.min.js",
   "repository": {
-    "url": "https://github.com/yk1711/vuelidate",
+    "url": "https://github.com/vuelidate/vuelidate",
     "type": "git",
     "directory": "packages/validators"
   },
