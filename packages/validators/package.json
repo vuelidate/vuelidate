@@ -8,7 +8,7 @@
   "unpkg": "dist/index.iife.min.js",
   "jsdelivr": "dist/index.iife.min.js",
   "repository": {
-    "url": "https://github.com/vuelidate/vuelidate",
+    "url": "https://github.com/yk1711/vuelidate",
     "type": "git",
     "directory": "packages/validators"
   },
@@ -20,7 +20,7 @@
     "lint": "eslint src"
   },
   "dependencies": {
-    "vue-demi": "^0.12.0"
+    "vue-demi": "^0.13.1"
   },
   "devDependencies": {
     "bili": "^5.0.5",

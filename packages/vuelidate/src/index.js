@@ -43,8 +43,9 @@ export function useVuelidate (validations, state, globalConfig = {}) {
   if (!$registerAs && instance) {
     // NOTE:
     // ._uid // Vue 2.x Composition-API plugin
+    // .proxy._uid // Vue 2.7
     // .uid // Vue 3.0
-    const uid = instance.uid || instance._uid
+    const uid = instance.uid || instance._uid || instance.proxy._uid
     $registerAs = `_vuelidate_${uid}`
   }
   const validationResults = ref({})
