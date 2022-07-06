@@ -2952,10 +2952,10 @@
     "@vue/compiler-core" "3.2.26"
     "@vue/shared" "3.2.26"
 
-"@vue/compiler-sfc@2.7.1":
-  version "2.7.1"
-  resolved "https://registry.yarnpkg.com/@vue/compiler-sfc/-/compiler-sfc-2.7.1.tgz#8f6574f1ed454f7db17053c8ed1688b3eaf1e9cd"
-  integrity sha512-YQRE2uYhlvyFgHmKAqySCdLm7O37XZc+yG9dujwD3h8em+rD1qGOthxc0H3XcijOy50gj/pYHgBO6C3MjV+oug==
+"@vue/compiler-sfc@2.7.2":
+  version "2.7.2"
+  resolved "https://registry.yarnpkg.com/@vue/compiler-sfc/-/compiler-sfc-2.7.2.tgz#15ec0a39c81dad831add7da45d28de37e75fa577"
+  integrity sha512-khG5m63A4DSeHEOe5yyjHQY2TAE0pUXqKqxgauNUcFaa8M4+J55OWhagy8Bk8O6cO4GhKbQf2NDYzceijmOy8A==
   dependencies:
     "@babel/parser" "^7.18.4"
     postcss "^8.4.14"
@@ -11118,20 +11118,20 @@ vue-router@^4.0.11:
   dependencies:
     "@vue/devtools-api" "^6.0.0-beta.18"
 
-vue-template-compiler@^2.7.1:
-  version "2.7.1"
-  resolved "https://registry.yarnpkg.com/vue-template-compiler/-/vue-template-compiler-2.7.1.tgz#ebbefd9cc9a7b9ee9ee6862fa1ec3a9bf3959963"
-  integrity sha512-ku/H1k1yHAgY0BEdoXVj7xZIjuFSwB2IV3nQWnmUMJ6U1jzK56LPHLWzEe5bTzt0WR0b/rJRkuiig44SUoaBoQ==
+vue-template-compiler@^2.7.2:
+  version "2.7.3"
+  resolved "https://registry.yarnpkg.com/vue-template-compiler/-/vue-template-compiler-2.7.3.tgz#3ca434a5898ef4eed6122101066e416dae1aefd8"
+  integrity sha512-QKcV4vj9akZ2zSD1+F7tci3aXpRe5DXU3TZ/ZWJPE9gInXD5UoV+Q2PrCaplj4IGIK8JXRHYaSvOXkOn7tg9Og==
   dependencies:
     de-indent "^1.0.2"
     he "^1.2.0"
 
-"vue2@npm:vue@2.7.1":
-  version "2.7.1"
-  resolved "https://registry.yarnpkg.com/vue/-/vue-2.7.1.tgz#e2fc6761f81b72d6273a6e96bc7c0ea1821c9042"
-  integrity sha512-X1YkFddhbTAU2FPK0gBZ/vDOcOMA8ZT4uHoFVor1bUb7BpVGdEswS286YGtODsf/Ghfr1LM1sBMFAY8XT+dVhA==
+"vue2@npm:vue@2.7.2":
+  version "2.7.2"
+  resolved "https://registry.yarnpkg.com/vue/-/vue-2.7.2.tgz#d42aba8d03c4e82d4b127f7b764a822cf19f9cdc"
+  integrity sha512-fQPKEfdiUP4bDlrGEjI5MOTkC5s/XIbnfKAx0B3MxJHI4qwh8FPLSo8/9tFkgFiRH3HwvcHjZQ1tCTifOUH0tg==
   dependencies:
-    "@vue/compiler-sfc" "2.7.1"
+    "@vue/compiler-sfc" "2.7.2"
     csstype "^3.1.0"
 
 vue@^3.2.2, vue@^3.2.26:
