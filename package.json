@@ -41,8 +41,8 @@
     "lerna": "^4.0.0",
     "standard-version": "^9.3.1",
     "vue": "^3.2.2",
-    "vue-template-compiler": "^2.7.2",
-    "vue2": "npm:vue@2.7.2"
+    "vue-template-compiler": "^2.7.4",
+    "vue2": "npm:vue@2.7.4"
   },
   "scripts": {
     "lerna:publish": "lerna publish --conventional-commits",
