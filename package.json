@@ -46,6 +46,7 @@
     "standard-version": "^9.3.1",
     "vue": "^3.2.2",
     "vue-template-compiler": "^2.6.14",
+    "vue-template-compiler2.7": "npm:vue-template-compiler@2.7.5",
     "vue2": "npm:vue@2.6.14",
     "vue2.7": "npm:vue@2.7.5"
   },
