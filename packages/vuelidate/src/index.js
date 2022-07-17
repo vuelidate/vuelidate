@@ -55,7 +55,7 @@ export function useVuelidate (validations, state, globalConfig = {}) {
     sendValidationResultsToParent,
     removeValidationResultsFromParent
   } = instance
-    ? nestedValidations({ $scope, instance })
+    ? nestedValidations({ $scope, instance: instance.proxy })
     : { childResults: ref({}) }
 
   // Options API
