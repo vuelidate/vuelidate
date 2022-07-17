@@ -62,7 +62,6 @@ function resetPackageNames () {
 }
 
 function useTemplateCompilerVersion (version) {
-  console.log('existing!! ? ', !fs.existsSync(vueTemplateCompiler))
   if (!fs.existsSync(vueTemplateCompiler)) {
     console.log('There is no default vue-template-compiler version, finding it')
     if (version === 2.7 && fs.existsSync(vueTemplateCompiler2_7)) {
