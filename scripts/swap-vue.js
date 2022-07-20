@@ -83,11 +83,10 @@ function useTemplateCompilerVersion (version) {
 
 function rename (fromPath, toPath) {
   if (!fs.existsSync(fromPath)) return
-  fs.rename(fromPath, toPath, function (err) {
-    if (err) {
-      console.log(err)
-    } else {
-      console.log(`Successfully renamed ${fromPath} to ${toPath} .`)
-    }
-  })
+  try {
+    fs.renameSync(fromPath, toPath)
+    console.log(`Successfully renamed ${fromPath} to ${toPath} .`)
+  } catch (err) {
+    console.log(err)
+  }
 }
