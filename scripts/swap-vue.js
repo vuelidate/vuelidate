@@ -1,15 +1,13 @@
+/* eslint-disable camelcase */
 const fs = require('fs')
 const path = require('path')
 
 const Vue2 = path.join(__dirname, '../node_modules/vue2')
-// eslint-disable-next-line camelcase
 const Vue2_7 = path.join(__dirname, '../node_modules/vue2.7')
 const DefaultVue = path.join(__dirname, '../node_modules/vue')
 const Vue3 = path.join(__dirname, '../node_modules/vue3')
 const vueTemplateCompiler = path.join(__dirname, '../node_modules/vue-template-compiler')
-// eslint-disable-next-line camelcase
 const vueTemplateCompiler2_6 = path.join(__dirname, '../node_modules/vue-template-compiler2.6')
-// eslint-disable-next-line camelcase
 const vueTemplateCompiler2_7 = path.join(__dirname, '../node_modules/vue-template-compiler2.7')
 
 const version = Number(process.argv[2]) || 3
