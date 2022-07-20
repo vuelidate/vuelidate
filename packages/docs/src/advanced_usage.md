@@ -71,7 +71,7 @@ In the template it is unwrapped for you.
 ### Using `reactive` state
 
 ```js
-import { ref, computed } from 'vue'
+import { ref, computed, reactive } from 'vue'
 import { useVuelidate } from '@vuelidate/core'
 import { minLength, required } from '@vuelidate/validators'
 
