@@ -34,10 +34,10 @@ export function useVuelidate (validations, state, globalConfig = {}) {
   }
   let { $registerAs, $scope = CollectFlag.COLLECT_ALL, $stopPropagation, $externalResults, currentVueInstance } = globalConfig
 
-  const instance = currentVueInstance || getCurrentInstance()
+  const instance = currentVueInstance || getCurrentInstance()?.proxy
 
   const componentOptions = instance
-    ? instance.proxy.$options
+    ? instance.$options
     : {}
   // if there is no registration name, add one.
   if (!$registerAs && instance) {
@@ -55,7 +55,7 @@ export function useVuelidate (validations, state, globalConfig = {}) {
     sendValidationResultsToParent,
     removeValidationResultsFromParent
   } = instance
-    ? nestedValidations({ $scope, instance: instance.proxy })
+    ? nestedValidations({ $scope, instance })
     : { childResults: ref({}) }
 
   // Options API
@@ -66,7 +66,7 @@ export function useVuelidate (validations, state, globalConfig = {}) {
     onBeforeMount(() => {
       // Delay binding state to validations defined with the Options API until mounting, when the data
       // has been attached to the component instance. From that point on it will be reactive.
-      state.value = instance.proxy
+      state.value = instance
 
       watch(() => isFunction(rules) ? rules.call(state.value, new ComputedProxyFactory(state.value)) : rules,
         (validations) => {
@@ -76,8 +76,8 @@ export function useVuelidate (validations, state, globalConfig = {}) {
             childResults,
             resultsCache,
             globalConfig,
-            instance: instance.proxy,
-            externalResults: $externalResults || instance.proxy.vuelidateExternalResults
+            instance,
+            externalResults: $externalResults || instance.vuelidateExternalResults
           })
         }, { immediate: true })
     })
@@ -96,7 +96,7 @@ export function useVuelidate (validations, state, globalConfig = {}) {
         childResults,
         resultsCache,
         globalConfig,
-        instance: instance ? instance.proxy : {},
+        instance: instance ?? {},
         externalResults: $externalResults
       })
     }, { immediate: true })
