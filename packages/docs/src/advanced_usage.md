@@ -786,3 +786,39 @@ export default {
   }
 }
 ```
+
+## Validation Groups
+
+You may want to group a few validation rules under one roof, in which case a validation group is a perfect choice.
+
+To create a validation group, you must specify a config property at the top level of your rules, called `$validationGroups`.
+
+This is an object that holds the name of your groups and an array of property paths, which will be the group itself.
+
+```js
+const rules = {
+  number: { isEven },
+  nested: {
+    word: { required: v => !!v }
+  },
+  $validationGroups: {
+    firstGroup: ['number', 'nested.word']
+  }
+}
+```
+
+In the above example, it will create a group called `firstGroup` that will reflect the state of `number` and `nested.word`.
+
+You can see all your defined groups in the `v$.$validationGroups` property of your vue instance.
+
+The group has the typical properties of other validations:
+
+```ts
+interface ValidationGroupItem {
+  $invalid: boolean,
+  $error: boolean,
+  $pending: boolean,
+  $errors: ErrorObject[],
+  $silentErrors: ErrorObject[]
+}
+```

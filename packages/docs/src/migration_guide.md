@@ -193,3 +193,29 @@ export default {
   }
 }
 ```
+
+## Validation groups change
+
+Validation groups have been moved to the `$validationGroups` config.
+
+### Migration strategy
+
+To create a validation group, you must specify a config property at the top level of your rules, called `$validationGroups`
+
+This is an object that holds validation groups, scoped under a name of your choice:
+
+```js
+const rules = {
+  number: { isEven },
+  nested: {
+    word: { required: v => !!v }
+  },
+  $validationGroups: {
+    firstName: ['number', 'nested.word']
+  }
+}
+```
+
+In the above example, it will create a group called `firstName` that will reflect the state of `number` and `nested.word`.
+
+You can see all your defined groups in the `v$.$validationGroups` property of your vue instance.

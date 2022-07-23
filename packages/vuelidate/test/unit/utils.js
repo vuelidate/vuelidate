@@ -65,10 +65,8 @@ export const shouldBeValidValidationObj = (v) => {
   expect(v).toHaveProperty('$pending', false)
 }
 
-export const shouldBeInvalidValidationObject = ({ v, property, propertyPath = property, validatorName }) => {
-  expect(v).toHaveProperty('$error', false)
-  expect(v).toHaveProperty('$errors', [])
-  expect(v).toHaveProperty('$silentErrors', [{
+export function buildErrorObject (property, propertyPath, validatorName) {
+  return {
     $message: '',
     $params: {},
     $pending: false,
@@ -77,7 +75,13 @@ export const shouldBeInvalidValidationObject = ({ v, property, propertyPath = pr
     $validator: validatorName,
     $response: false,
     $uid: `${propertyPath}-${validatorName}`
-  }])
+  }
+}
+
+export const shouldBeInvalidValidationObject = ({ v, property, propertyPath = property, validatorName }) => {
+  expect(v).toHaveProperty('$error', false)
+  expect(v).toHaveProperty('$errors', [])
+  expect(v).toHaveProperty('$silentErrors', [buildErrorObject(property, propertyPath, validatorName)])
   expect(v).toHaveProperty('$invalid', true)
   expect(v).toHaveProperty('$pending', false)
   expect(v).toHaveProperty('$dirty', false)
@@ -88,26 +92,8 @@ export const shouldBeInvalidValidationObject = ({ v, property, propertyPath = pr
 
 export const shouldBeErroredValidationObject = ({ v, property, propertyPath = property, validatorName }) => {
   expect(v).toHaveProperty('$error', true)
-  expect(v).toHaveProperty('$errors', [{
-    $message: '',
-    $params: {},
-    $pending: false,
-    $property: property,
-    $propertyPath: propertyPath,
-    $validator: validatorName,
-    $response: false,
-    $uid: `${propertyPath}-${validatorName}`
-  }])
-  expect(v).toHaveProperty('$silentErrors', [{
-    $message: '',
-    $params: {},
-    $pending: false,
-    $property: property,
-    $propertyPath: propertyPath,
-    $validator: validatorName,
-    $response: false,
-    $uid: `${propertyPath}-${validatorName}`
-  }])
+  expect(v).toHaveProperty('$errors', [buildErrorObject(property, propertyPath, validatorName)])
+  expect(v).toHaveProperty('$silentErrors', [buildErrorObject(property, propertyPath, validatorName)])
   expect(v).toHaveProperty('$invalid', true)
   expect(v).toHaveProperty('$pending', false)
   expect(v).toHaveProperty('$dirty', true)

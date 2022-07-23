@@ -35,3 +35,36 @@ export function paramToRef (param) {
 export function isProxy (value) {
   return isReactive(value) || isReadonly(value)
 }
+
+export function get (obj, stringPath, def) {
+  // Cache the current object
+  let current = obj
+  const path = stringPath.split('.')
+  // For each item in the path, dig into the object
+  for (let i = 0; i < path.length; i++) {
+    // If the item isn't found, return the default (or null)
+    if (!current[path[i]]) return def
+
+    // Otherwise, update the current  value
+    current = current[path[i]]
+  }
+
+  return current
+}
+
+export function gatherBooleanGroupProperties (group, nestedResults, property) {
+  return computed(() => {
+    return group.some((path) => {
+      return get(nestedResults, path, { [property]: false })[property]
+    })
+  })
+}
+
+export function gatherArrayGroupProperties (group, nestedResults, property) {
+  return computed(() => {
+    return group.reduce((all, path) => {
+      const fetchedProperty = get(nestedResults, path, { [property]: false })[property] || []
+      return all.concat(fetchedProperty)
+    }, [])
+  })
+}
