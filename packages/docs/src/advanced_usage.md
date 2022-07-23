@@ -71,7 +71,7 @@ In the template it is unwrapped for you.
 ### Using `reactive` state
 
 ```js
-import { ref, computed } from 'vue'
+import { ref, computed, reactive } from 'vue'
 import { useVuelidate } from '@vuelidate/core'
 import { minLength, required } from '@vuelidate/validators'
 
@@ -779,7 +779,7 @@ the `currentVueInstance` config to pass the component's vue instance.
 export default {
   render: () => {},
   async setup () {
-    const currentVueInstance = getCurrentInstance()
+    const currentVueInstance = getCurrentInstance()?.proxy
     const result = await doAsyncStuff()
     const vuelidate = useVuelidate(rules, result.state, { currentVueInstance })
     return { vuelidate }

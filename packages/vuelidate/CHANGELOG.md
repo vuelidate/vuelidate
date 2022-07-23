@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.0.0-alpha.42](https://github.com/vuelidate/vuelidate/compare/@vuelidate/core@2.0.0-alpha.41...@vuelidate/core@2.0.0-alpha.42) (2022-06-24)
+
+
+### Bug Fixes
+
+* Add esm loader support ([#1076](https://github.com/vuelidate/vuelidate/issues/1076)) ([a61fe60](https://github.com/vuelidate/vuelidate/commit/a61fe6014afbe5a85620d06a57e454bf690961e1))
+
+
+
+
+
 # [2.0.0-alpha.41](https://github.com/vuelidate/vuelidate/compare/@vuelidate/core@2.0.0-alpha.40...@vuelidate/core@2.0.0-alpha.41) (2022-05-01)
 
 
