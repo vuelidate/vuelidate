@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.2.0](https://github.com/vuelidate/vuelidate/compare/@vuelidate/components@1.1.22...@vuelidate/components@1.2.0) (2022-07-23)
+
+
+### Features
+
+* add index to forEach and ValidateEach helpers ([#1065](https://github.com/vuelidate/vuelidate/issues/1065)) ([b9dd30c](https://github.com/vuelidate/vuelidate/commit/b9dd30c70debcdf66202707710bebb99fd86f103))
+
+
+
+
+
 ## [1.1.22](https://github.com/vuelidate/vuelidate/compare/@vuelidate/components@1.1.21...@vuelidate/components@1.1.22) (2022-06-24)
 
 **Note:** Version bump only for package @vuelidate/components

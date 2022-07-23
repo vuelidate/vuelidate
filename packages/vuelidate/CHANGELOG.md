@@ -3,6 +3,23 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.0.0-alpha.43](https://github.com/vuelidate/vuelidate/compare/@vuelidate/core@2.0.0-alpha.42...@vuelidate/core@2.0.0-alpha.43) (2022-07-23)
+
+
+### Bug Fixes
+
+* Add support for Vue 2.7 ([#1082](https://github.com/vuelidate/vuelidate/issues/1082)), closes [#1079](https://github.com/vuelidate/vuelidate/issues/1079) ([f3663e1](https://github.com/vuelidate/vuelidate/commit/f3663e1aa424c46991805deac55e12578482bcff))
+* **types:** extend BaseValidation type to allow accessing form properties directly on v$ ([#1088](https://github.com/vuelidate/vuelidate/issues/1088)) ([9545160](https://github.com/vuelidate/vuelidate/commit/9545160289017c60a62d6b3017f9f0500040a4a0))
+
+
+### Features
+
+* add validation groups ([#1066](https://github.com/vuelidate/vuelidate/issues/1066)) ([ad5091b](https://github.com/vuelidate/vuelidate/commit/ad5091beee59495ed7b9bcafec735aec830e4f11))
+
+
+
+
+
 # [2.0.0-alpha.42](https://github.com/vuelidate/vuelidate/compare/@vuelidate/core@2.0.0-alpha.41...@vuelidate/core@2.0.0-alpha.42) (2022-06-24)
 
 

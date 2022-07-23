@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.0.0-alpha.31](https://github.com/vuelidate/vuelidate/compare/@vuelidate/validators@2.0.0-alpha.30...@vuelidate/validators@2.0.0-alpha.31) (2022-07-23)
+
+
+### Bug Fixes
+
+* Add support for Vue 2.7 ([#1082](https://github.com/vuelidate/vuelidate/issues/1082)), closes [#1079](https://github.com/vuelidate/vuelidate/issues/1079) ([f3663e1](https://github.com/vuelidate/vuelidate/commit/f3663e1aa424c46991805deac55e12578482bcff))
+
+
+### Features
+
+* add index to forEach and ValidateEach helpers ([#1065](https://github.com/vuelidate/vuelidate/issues/1065)) ([b9dd30c](https://github.com/vuelidate/vuelidate/commit/b9dd30c70debcdf66202707710bebb99fd86f103))
+
+
+
+
+
 # [2.0.0-alpha.30](https://github.com/vuelidate/vuelidate/compare/@vuelidate/validators@2.0.0-alpha.29...@vuelidate/validators@2.0.0-alpha.30) (2022-06-24)
 
 
