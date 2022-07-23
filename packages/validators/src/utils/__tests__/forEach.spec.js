@@ -26,13 +26,15 @@ describe('forEach', () => {
   })
 
   it('runs the validator against each property', () => {
-    forEach(rules).$validator(state)
+    const siblingState = { siblings: {} }
+    const vm = { foo: 'bar' }
+    forEach(rules).$validator(state, siblingState, vm)
     expect(isFoo).toHaveBeenCalledTimes(2)
     expect(required).toHaveBeenCalledTimes(2)
-    expect(isFoo).toHaveBeenCalledWith('', state[0])
-    expect(isFoo).toHaveBeenCalledWith('Foo', state[1])
-    expect(required).toHaveBeenCalledWith('', state[0])
-    expect(required).toHaveBeenCalledWith('Foo', state[1])
+    expect(isFoo).toHaveBeenCalledWith('', state[0], 0, siblingState, vm)
+    expect(isFoo).toHaveBeenCalledWith('Foo', state[1], 1, siblingState, vm)
+    expect(required).toHaveBeenCalledWith('', state[0], 0, siblingState, vm)
+    expect(required).toHaveBeenCalledWith('Foo', state[1], 1, siblingState, vm)
   })
 
   it('does not throw, if a property does not have a validator', () => {
@@ -93,8 +95,8 @@ describe('forEach', () => {
 
   it('passes all extra params to the validators', () => {
     forEach(rules).$validator(state, 'foo', 'bar', 'baz')
-    expect(isFoo).toHaveBeenCalledWith(state[0].name, state[0], 'foo', 'bar', 'baz')
-    expect(isFoo).toHaveBeenCalledWith(state[1].name, state[1], 'foo', 'bar', 'baz')
+    expect(isFoo).toHaveBeenCalledWith(state[0].name, state[0], 0, 'foo', 'bar', 'baz')
+    expect(isFoo).toHaveBeenCalledWith(state[1].name, state[1], 1, 'foo', 'bar', 'baz')
   })
 
   it('returns the a validation result object, with $data, $errors and $valid', () => {

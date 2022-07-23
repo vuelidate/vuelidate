@@ -14,6 +14,10 @@ export default {
     options: {
       type: Object,
       default: () => ({})
+    },
+    index: {
+      type: Number,
+      default: 0
     }
   },
   setup (props, { slots }) {
