@@ -779,7 +779,7 @@ the `currentVueInstance` config to pass the component's vue instance.
 export default {
   render: () => {},
   async setup () {
-    const currentVueInstance = getCurrentInstance()
+    const currentVueInstance = getCurrentInstance()?.proxy
     const result = await doAsyncStuff()
     const vuelidate = useVuelidate(rules, result.state, { currentVueInstance })
     return { vuelidate }
