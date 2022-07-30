@@ -621,6 +621,33 @@ describe('useVuelidate', () => {
     })
   })
 
+  it('collects multiple child validation giving them unique id if registerAs is omitted', async () => {
+    const { state, validations } = simpleValidation()
+    const child1 = createSimpleComponent(() => useVuelidate(validations, state))
+    const child2 = createSimpleComponent(() => useVuelidate(validations, state))
+
+    const Component = {
+      setup () {
+        const state = simpleValidation()
+        const v = useVuelidate(state.validations, state.state)
+        return { v }
+      },
+      render () {
+        return h('div', [h(child1), h(child2)])
+      }
+    }
+    const wrapper = mount(Component)
+    const uidRegex = /_vuelidate_.*/
+    const childValidation = []
+    for (const key in wrapper.vm.v) {
+      if (key.match(uidRegex)) {
+        childValidation.push(key)
+      }
+    }
+    expect(childValidation).toHaveLength(2)
+    expect(childValidation[0]).not.toEqual(childValidation[1])
+  })
+
   describe('$error', () => {
     it('returns `true` if both `$invalid` and $dirty` are true, but initially false', async () => {
       const number = ref(2)
