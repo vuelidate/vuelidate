@@ -194,6 +194,23 @@ export default {
 }
 ```
 
+## Change of regex helper method signature
+
+The first string parameter of the regex helper method signature has been removed.
+It used to be required for registering the name of the validator for the withParams function, which is no longer a necessity.
+
+### Migration strategy
+
+Simply remove the first parameter and keep only the regex:
+
+```js
+// v0.x
+const regexSlug = helpers.regex('slug', /^[-A-Za-z0-9]+$/)
+
+// v2.x
+const regexSlug = helpers.regex(/^[-A-Za-z0-9]+$/)
+```
+
 ## Validation groups change
 
 Validation groups have been moved to the `$validationGroups` config.
