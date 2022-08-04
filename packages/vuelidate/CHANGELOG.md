@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.0.0-alpha.44](https://github.com/vuelidate/vuelidate/compare/@vuelidate/core@2.0.0-alpha.43...@vuelidate/core@2.0.0-alpha.44) (2022-08-04)
+
+
+### Bug Fixes
+
+* **core:** UID doesn't exist on the component public instance in Vue 3 [#1090](https://github.com/vuelidate/vuelidate/issues/1090)  ([#1091](https://github.com/vuelidate/vuelidate/issues/1091)) ([8bdf2ac](https://github.com/vuelidate/vuelidate/commit/8bdf2accfe3ab4da1f0c87b1d1e10ee2617ea8ea))
+
+
+
+
+
 # [2.0.0-alpha.43](https://github.com/vuelidate/vuelidate/compare/@vuelidate/core@2.0.0-alpha.42...@vuelidate/core@2.0.0-alpha.43) (2022-07-23)
 
 
