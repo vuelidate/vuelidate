@@ -31,7 +31,7 @@
 
 <script>
 import { ref } from 'vue'
-import useVuelidate from '@vuelidate/core'
+import { useVuelidate } from '@vuelidate/core'
 import NestedB from './NestedB.vue'
 
 export default {

@@ -50,7 +50,7 @@
 
 <script>
 import { reactive, ref } from 'vue'
-import useVuelidate from '@vuelidate/core'
+import { useVuelidate } from '@vuelidate/core'
 import { required } from '@vuelidate/validators'
 import ChildComponent from './ChildWithScope.vue'
 

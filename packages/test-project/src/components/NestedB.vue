@@ -13,7 +13,7 @@
 
 <script>
 import { ref, toRefs } from 'vue'
-import useVuelidate from '@vuelidate/core'
+import { useVuelidate } from '@vuelidate/core'
 import { required, maxValue, minValue } from '@vuelidate/validators'
 
 export default {

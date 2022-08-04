@@ -45,7 +45,7 @@
 
 <script>
 import { ref, computed } from 'vue'
-import useVuelidate from '@vuelidate/core'
+import { useVuelidate } from '@vuelidate/core'
 import { required, minValue, maxValue } from '@vuelidate/validators'
 import NestedA from './NestedA.vue'
 

@@ -13,7 +13,7 @@ method.
   <input type="text" :value="name" @input="setName">
 </template>
 <script>
-import useVuelidate from '@vuelidate/core'
+import { useVuelidate } from '@vuelidate/core'
 import { required } from '@vuelidate/validators'
 
 export default {
@@ -72,7 +72,7 @@ You can link fields together, by passing a field's value to another field's vali
 ```vue
 
 <script>
-import useVuelidate from '@vuelidate/core'
+import { useVuelidate } from '@vuelidate/core'
 import { sameAs } from '@vuelidate/validators'
 
 export default {
@@ -97,7 +97,7 @@ state. This might be very useful for overall form validation.
 ```vue
 
 <script>
-import useVuelidate from '@vuelidate/core'
+import { useVuelidate } from '@vuelidate/core'
 import { sameAs } from '@vuelidate/validators'
 
 export default {
@@ -220,7 +220,7 @@ You can access information about your validations through `$params`.
 </template>
 <script>
 import { minLength } from '@vuelidate/validators'
-import useVuelidate from '@vuelidate/core'
+import { useVuelidate } from '@vuelidate/core'
 
 export default {
   data: () => ({ name: '' }),
@@ -246,7 +246,7 @@ automatically. Validation's `$dirty` state is preserved even if the property tre
 ```vue
 
 <script>
-import useVuelidate from '@vuelidate/core'
+import { useVuelidate } from '@vuelidate/core'
 import { required } from '@vuelidate/validators'
 
 export default {
@@ -278,7 +278,7 @@ export default {
 
 <script>
 import { reactive, computed } from 'vue'
-import useVuelidate from '@vuelidate/core'
+import { useVuelidate } from '@vuelidate/core'
 import { required } from '@vuelidate/validators'
 
 export default {
@@ -356,7 +356,7 @@ Let's implement a `$warn` concept, where a validator returns a warning, if the d
   </div>
 </template>
 <script>
-import useVuelidate from '@vuelidate/core'
+import { useVuelidate } from '@vuelidate/core'
 
 export default {
   setup () {
@@ -399,7 +399,7 @@ or `$commit`. This is often done on `blur` of the field.
   </div>
 </template>
 <script>
-import useVuelidate from '@vuelidate/core'
+import { useVuelidate } from '@vuelidate/core'
 import { required } from '@vuelidate/validators'
 
 export default {
