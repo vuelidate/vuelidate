@@ -24,6 +24,9 @@ import { ComputedProxyFactory } from './utils/ComputedProxyFactory'
  * @param {GlobalConfig} [globalConfig] - Config Object
  * @return {ComputedRef<*>}
  */
+
+let uid = 0
+
 export function useVuelidate (validations, state, globalConfig = {}) {
   // if we pass only one argument, its most probably the globalConfig.
   // This use case is so parents can just collect results of child forms.
@@ -40,11 +43,8 @@ export function useVuelidate (validations, state, globalConfig = {}) {
     ? instance.$options
     : {}
   // if there is no registration name, add one.
-  if (!$registerAs && instance) {
-    // NOTE:
-    // ._uid // Vue 2.x Composition-API plugin
-    // .uid // Vue 3.0
-    const uid = instance.uid || instance._uid
+  if (!$registerAs) {
+    uid += 1
     $registerAs = `_vuelidate_${uid}`
   }
   const validationResults = ref({})
