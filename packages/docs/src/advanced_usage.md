@@ -95,6 +95,40 @@ export default {
 }
 ```
 
+### Using mixed (e.g. `reactive` and `computed`) state
+
+```js
+import { computed, reactive } from 'vue'
+import { useVuelidate } from '@vuelidate/core'
+import { minValue, required } from '@vuelidate/validators'
+
+export default {
+  setup () {
+    // reactive state, e.g. form data
+    const data = reactive({
+      type: '',
+      name: '',
+      targetMonth: new Date().getMonth(),
+      targetYear: new Date().getFullYear()
+    })
+    // computed state which needs validation
+    const targetDate = computed(() => new Date(data.targetYear, data.targetMonth + 1, 0)) // last day in the month
+
+    const rules = {
+      data: {
+        type: { required },
+        name: { required }
+      },
+      targetDate: { minValue: minValue(new Date()) },
+    }
+
+    const v$ = useVuelidate(rules, { data, targetDate })
+
+    return { data, v$ }
+  }
+}
+```
+
 ## Nested validations
 
 When using `useVuelidate`, Vuelidate will collect all validation `$errors` and `$silentErrors` from all nested components. No need to pass any props
