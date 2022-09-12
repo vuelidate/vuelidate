@@ -17,7 +17,7 @@ Each validation rule must have a corresponding property inside the `data` object
 ```html
 
 <script>
-import useVuelidate from '@vuelidate/core'
+import { useVuelidate } from '@vuelidate/core'
 import { required } from '@vuelidate/validators'
 
 export default {
@@ -152,7 +152,7 @@ proceeds to update the original value.
 </template>
 
 <script>
-import useVuelidate from '@vuelidate/core'
+import { useVuelidate } from '@vuelidate/core'
 import { required } from '@vuelidate/validators'
 
 export default {
@@ -180,7 +180,7 @@ It is quite common to forget to use `$model` or `$touch`. If you want to ensure 
 param, when defining your validation rules.
 
 ```js
-import useVuelidate from '@vuelidate/core'
+import { useVuelidate } from '@vuelidate/core'
 import { required } from '@vuelidate/validators'
 
 export default {
@@ -217,7 +217,7 @@ field is `$dirty`, so after `touch()` is called, by using that property’s `$mo
 This saves extra invocations for async validators as well as makes the initial validation setup a bit more performant.
 
 ```js
-import useVuelidate from '@vuelidate/core'
+import { useVuelidate } from '@vuelidate/core'
 import { required } from '@vuelidate/validators'
 
 export default {

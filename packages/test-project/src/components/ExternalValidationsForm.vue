@@ -39,7 +39,7 @@
 
 <script>
 import { ref, reactive } from 'vue'
-import useVuelidate from '@vuelidate/core'
+import { useVuelidate } from '@vuelidate/core'
 import { required, helpers, minLength } from '@vuelidate/validators'
 
 export default {

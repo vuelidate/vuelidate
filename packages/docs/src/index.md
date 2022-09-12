@@ -51,7 +51,7 @@ Once this is done, you can proceed with the below.
 
 
 ```js
-import useVuelidate from '@vuelidate/core'
+import { useVuelidate } from '@vuelidate/core'
 import { required, email } from '@vuelidate/validators'
 
 export default {
@@ -84,7 +84,7 @@ Lets explain what happens here. We declare our local state with `data`, then we 
 Notice how the the objects returned from `data` and `validations` have a matching structure.
 
 ```js{9-15,18-24}
-import useVuelidate from '@vuelidate/core'
+import { useVuelidate } from '@vuelidate/core'
 import { required, email } from '@vuelidate/validators'
 
 export default {
@@ -118,7 +118,7 @@ Vuelidate v2.x also comes with support for Composition API. The above example ca
 
 ```js
 import { reactive } from 'vue' // "from '@vue/composition-api'" if you are using Vue 2.x
-import useVuelidate from '@vuelidate/core'
+import { useVuelidate } from '@vuelidate/core'
 import { required, email } from '@vuelidate/validators'
 
 export default {

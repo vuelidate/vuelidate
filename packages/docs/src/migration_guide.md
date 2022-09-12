@@ -16,7 +16,7 @@ import Vuelidate from 'vuelidate'
 ```
 with
 ```js
-import useVuelidate from '@vuelidate/core'
+import { useVuelidate } from '@vuelidate/core'
 ```
 
 2. Change import location for validators
@@ -116,7 +116,7 @@ Here’s the wrapper component.
 </template>
 
 <script>
-import useVuelidate from '@vuelidate/core'
+import { useVuelidate } from '@vuelidate/core'
 import PersonInput from '@/components/PersonInput'
 
 export default {
@@ -150,7 +150,7 @@ And here we have the single person component that has its own validation rules.
 </template>
 
 <script>
-import useVuelidate from '@vuelidate/core'
+import { useVuelidate } from '@vuelidate/core'
 
 export default {
   props: {

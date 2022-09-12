@@ -71,7 +71,7 @@
 
 <script>
 import { reactive } from 'vue'
-import useVuelidate from '@vuelidate/core'
+import { useVuelidate } from '@vuelidate/core'
 import { required, minLength, helpers } from '@vuelidate/validators'
 import { ValidateEach } from '@vuelidate/components'
 

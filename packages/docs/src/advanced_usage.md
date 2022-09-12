@@ -10,7 +10,7 @@ You can still define your validation rules as part of the Options API.
 ```vue
 
 <script>
-import useVuelidate from '@vuelidate/core'
+import { useVuelidate } from '@vuelidate/core'
 import { minLength, required } from '@vuelidate/validators'
 
 export default {
@@ -172,7 +172,7 @@ cause performance issues in more complex scenarios. Refer to [Nested Validators]
 <script>
 // setup in a component
 import { helpers, required } from '@vuelidate/validators'
-import useVuelidate from '@vuelidate/core'
+import { useVuelidate } from '@vuelidate/core'
 import { reactive } from 'vue'
 
 export default {
@@ -279,7 +279,7 @@ the need for dedicated form components. This would allow you to keep all the rul
 
 <script>
 import { reactive } from 'vue'
-import useVuelidate from '@vuelidate/core'
+import { useVuelidate } from '@vuelidate/core'
 import { ValidateEach } from '@vuelidate/components'
 import { minLength, required } from '@vuelidate/validators'
 

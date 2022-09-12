@@ -12,7 +12,7 @@
 
 <script>
 import { reactive } from 'vue'
-import useVuelidate from '@vuelidate/core'
+import { useVuelidate } from '@vuelidate/core'
 import { required, minValue } from '@vuelidate/validators'
 
 export default {

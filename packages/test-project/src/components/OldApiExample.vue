@@ -73,7 +73,7 @@
 
 <script>
 import { ref, computed } from 'vue'
-import useVuelidate from '@vuelidate/core'
+import { useVuelidate } from '@vuelidate/core'
 import { minValue } from '@vuelidate/validators'
 
 export default {

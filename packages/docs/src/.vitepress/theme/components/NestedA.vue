@@ -11,7 +11,7 @@
 
 <script>
 import { ref, reactive } from 'vue'
-import useVuelidate from '@vuelidate/core'
+import { useVuelidate } from '@vuelidate/core'
 import { required, maxValue } from '@vuelidate/validators'
 import NestedB from './NestedB.vue'
 

@@ -56,7 +56,7 @@
 
 <script>
 import { ref, reactive, computed } from 'vue'
-import useVuelidate from '@vuelidate/core'
+import { useVuelidate } from '@vuelidate/core'
 import { required, helpers, minLength, createI18nMessage } from '@vuelidate/validators'
 import { i18n } from '../i18n'
 
