@@ -13,7 +13,7 @@
     "url": "https://github.com/vuelidate/vuelidate.git"
   },
   "dependencies": {
-    "vue-demi": "^0.13.4"
+    "vue-demi": "^0.13.11"
   },
   "optionalDependencies": {
     "@vue/composition-api": "^1.3.1"

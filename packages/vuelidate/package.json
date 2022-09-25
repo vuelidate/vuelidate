@@ -31,7 +31,16 @@
     "dev": "yarn build --watch"
   },
   "dependencies": {
-    "vue-demi": "^0.13.4"
+    "vue-demi": "^0.13.11"
+  },
+  "peerDependencies": {
+    "@vue/composition-api": "^1.0.0-rc.1",
+    "vue": "^2.0.0 || >=3.0.0"
+  },
+  "peerDependenciesMeta": {
+    "@vue/composition-api": {
+      "optional": true
+    }
   },
   "devDependencies": {
     "@babel/core": "^7.15.0",
