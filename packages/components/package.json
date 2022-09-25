@@ -1,6 +1,6 @@
 {
   "name": "@vuelidate/components",
-  "version": "1.2.1",
+  "version": "1.2.2",
   "description": "Components for Vuelidate",
   "license": "MIT",
   "repository": {
@@ -19,6 +19,6 @@
     "build": "bili"
   },
   "dependencies": {
-    "@vuelidate/core": "^2.0.0-alpha.44"
+    "@vuelidate/core": "^2.0.0-alpha.45"
   }
 }

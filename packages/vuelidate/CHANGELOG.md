@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.0.0-alpha.45](https://github.com/vuelidate/vuelidate/compare/@vuelidate/core@2.0.0-alpha.44...@vuelidate/core@2.0.0-alpha.45) (2022-09-25)
+
+**Note:** Version bump only for package @vuelidate/core
+
+
+
+
+
 # [2.0.0-alpha.44](https://github.com/vuelidate/vuelidate/compare/@vuelidate/core@2.0.0-alpha.43...@vuelidate/core@2.0.0-alpha.44) (2022-08-04)
 
 
