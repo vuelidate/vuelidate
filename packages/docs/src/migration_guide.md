@@ -236,3 +236,19 @@ const rules = {
 In the above example, it will create a group called `firstName` that will reflect the state of `number` and `nested.word`.
 
 You can see all your defined groups in the `v$.$validationGroups` property of your vue instance.
+
+## $anyError removal
+
+The `$anyError` helper is removed.
+
+### Migration strategy
+
+Simplest would be to check for `$errors.length` to see if children have an error.
+
+Alternatively you can call `$validate()` and check the resolved value.
+
+```js
+if (await this.v$.$validate()) {
+    // all good, submit to server
+}
+```
