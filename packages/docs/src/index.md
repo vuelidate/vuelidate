@@ -179,15 +179,11 @@ Head over to the [Guide](./guide.md) page now for a more detailed guide on how t
 
 ## Sponsors
 
-### Gold
-
 <p align="center">
-  <a href="https://vuejs.amsterdam/?utm_source=newsletter&utm_medium=logo&utm_campaign=vuejs-newsletter" target="_blank">
-    <img src="https://camo.githubusercontent.com/d70ce43e50f085dcaaba44706e75107b0f86ad6ab45d7cd75ec2d877db543d86/68747470733a2f2f63646e2e646973636f72646170702e636f6d2f6174746163686d656e74732f3739333538333739373435343530333937362f3739333538333833313336393634363132302f7675656a73616d7374657264616d2e706e67" alt="Vue.js Amsterdam" width="360px">
+  <a href="https://getform.io" target="_blank">
+    <img src="https://cdn.discordapp.com/attachments/1002927810710605875/1034915542596845728/getform.png" alt="Get Form" width="240px">
   </a>
 </p>
-
-### Silver
 
 <p align="center">
   <a href="https://www.storyblok.com/developers?utm_source=newsletter&utm_medium=logo&utm_campaign=vuejs-newsletter" target="_blank">
@@ -195,10 +191,8 @@ Head over to the [Guide](./guide.md) page now for a more detailed guide on how t
   </a>
 </p>
 
-### Bronze
-
 <p align="center">
   <a href="https://www.vuemastery.com/" target="_blank">
-    <img src="https://cdn.discordapp.com/attachments/258614093362102272/557267759130607630/Vue-Mastery-Big.png" alt="Vue Mastery logo" width="180px">
+    <img src="https://cdn.discordapp.com/attachments/258614093362102272/557267759130607630/Vue-Mastery-Big.png" alt="Vue Mastery logo" width="240px">
   </a>
 </p>
