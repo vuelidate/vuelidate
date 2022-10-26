@@ -6,7 +6,11 @@ Visit [Vuelidate Docs](https://vuelidate-next.netlify.app) for detailed instruct
 
 ## Sponsors
 
-### Silver
+<p align="center">
+  <a href="https://getform.io/" target="_blank">
+    <img src="https://cdn.discordapp.com/attachments/1002927810710605875/1034915542596845728/getform.png" alt="Get Form" width="240px">
+  </a>
+</p>
 
 <p align="center">
   <a href="https://www.storyblok.com/developers?utm_source=newsletter&utm_medium=logo&utm_campaign=vuejs-newsletter" target="_blank">
@@ -14,7 +18,6 @@ Visit [Vuelidate Docs](https://vuelidate-next.netlify.app) for detailed instruct
   </a>
 </p>
 
-### Bronze
 
 <p align="center">
   <a href="https://www.vuemastery.com/" target="_blank">
