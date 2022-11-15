@@ -1,5 +1,6 @@
 {
   "name": "@vuelidate/core",
+  "type": "module",
   "description": "Simple, lightweight model-based validation for Vue.js",
   "version": "2.0.0",
   "main": "dist/index.js",
