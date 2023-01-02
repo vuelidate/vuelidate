@@ -40,7 +40,7 @@ Vuelidate is primarily built on top of the Composition API, so its best suited t
 ### Using an object of `refs`
 
 ```js
-import { ref, computed } from 'vue' // or '@vue/composition-api' in Vue 2.x
+import { ref, computed } from 'vue' // or '@vue/composition-api' in Vue <2.7
 import { useVuelidate } from '@vuelidate/core'
 import { minLength, required } from '@vuelidate/validators'
 
@@ -555,7 +555,7 @@ When using the Composition API, you can pass your configuration object as the th
 is just a collector, see [Passing a single parameter to useVuelidate](#passing-a-single-parameter-to-usevuelidate).
 
 ```js
-import { reactive } from 'vue' // or '@vue/composition-api' in Vue 2.x
+import { reactive } from 'vue' // or '@vue/composition-api' in Vue <2.7
 import { useVuelidate } from '@vuelidate/core'
 import { email, required } from '@vuelidate/validators'
 
