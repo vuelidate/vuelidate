@@ -114,7 +114,7 @@ export default {
 
 ### Alternative syntax (Composition API)
 
-Vuelidate v2.x also comes with support for Composition API. The above example can be translated into the composition API syntax.
+Vuelidate v2 also comes with support for Composition API. The above example can be translated into the composition API syntax.
 
 ```js
 import { reactive } from 'vue' // "from '@vue/composition-api'" if you are using Vue <2.7
