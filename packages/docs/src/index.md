@@ -147,7 +147,7 @@ export default {
 
 Now that validations are set up, we can check inside our template for errors by looking for example at the `firstName` property inside of the `v$` Vuelidate object. It will hold all the information and state of our `firstName` state's validation.
 
-If _any_ error is present, the `$errors` array property inside of `$v.firstName` will contain an object that describes each error for us to loop through.
+If _any_ error is present, the `$errors` array property inside of `v$.firstName` will contain an object that describes each error for us to loop through.
 
 Each object inside the `$errors` array will contain a few properties that allows us to dynamically build our error message.
 
