@@ -48,6 +48,9 @@ export const len = (value) => {
 export function regex (...expr) {
   return (value) => {
     value = unwrap(value)
-    return !req(value) || expr.every((reg) => reg.test(value))
+    return !req(value) || expr.every((reg) => {
+      reg.lastIndex = 0
+      return reg.test(value)
+    })
   }
 }
