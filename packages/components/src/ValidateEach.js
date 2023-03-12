@@ -1,3 +1,4 @@
+import { toRef } from 'vue'
 import { useVuelidate } from '@vuelidate/core'
 
 export default {
@@ -21,7 +22,7 @@ export default {
     }
   },
   setup (props, { slots }) {
-    const v = useVuelidate(props.rules, props.state, props.options)
+    const v = useVuelidate(props.rules, toRef(props, "state"), props.options)
     return () => slots.default({ v: v.value })
   }
 }
