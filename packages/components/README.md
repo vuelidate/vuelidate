@@ -43,7 +43,7 @@ export default {
 }
 ```
 
-For more info, visit the [Vuelidate Docs](https://vuelidate-next.netlify.org).
+For more info, visit the [Vuelidate Docs](https://vuelidate-next.netlify.app).
 
 ## Development
 
