@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.0.1](https://github.com/vuelidate/vuelidate/compare/@vuelidate/core@2.0.0...@vuelidate/core@2.0.1) (2023-03-26)
+
+
+### Bug Fixes
+
+* declare vuelidate as module. ([20c58d5](https://github.com/vuelidate/vuelidate/commit/20c58d566da811e8391467d53af79859165edf16)), closes [#1111](https://github.com/vuelidate/vuelidate/issues/1111)
+
+
+
+
+
 # [2.0.0](https://github.com/vuelidate/vuelidate/compare/@vuelidate/core@2.0.0-alpha.45...@vuelidate/core@2.0.0) (2022-09-25)
 
 **Note:** Version bump only for package @vuelidate/core

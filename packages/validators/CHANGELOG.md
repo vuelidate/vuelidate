@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.0.1](https://github.com/vuelidate/vuelidate/compare/@vuelidate/validators@2.0.0...@vuelidate/validators@2.0.1) (2023-03-26)
+
+
+### Bug Fixes
+
+* **validators:** regex validator ([#1154](https://github.com/vuelidate/vuelidate/issues/1154)) ([ed89533](https://github.com/vuelidate/vuelidate/commit/ed8953389c3c7b190944f97846ae9ad75199854d)), closes [#699](https://github.com/vuelidate/vuelidate/issues/699)
+
+
+
+
+
 # [2.0.0](https://github.com/vuelidate/vuelidate/compare/@vuelidate/validators@2.0.0-alpha.32...@vuelidate/validators@2.0.0) (2022-09-25)
 
 **Note:** Version bump only for package @vuelidate/validators
