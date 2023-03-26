@@ -45,7 +45,7 @@ Now you can access use `VueDemi`, `Vuelidate` and `VuelidateValidators` to build
 ## Getting Started
 
 ::: tip
-When used with Vue 2.x, you need to install the `@vue/composition-api` plugin. You can learn how to do that [here](https://github.com/vuejs/composition-api).
+When used with Vue <2.7, you need to install the `@vue/composition-api` plugin. You can learn how to do that [here](https://github.com/vuejs/composition-api).
 Once this is done, you can proceed with the below.
 :::
 
@@ -114,10 +114,10 @@ export default {
 
 ### Alternative syntax (Composition API)
 
-Vuelidate v2.x also comes with support for Composition API. The above example can be translated into the composition API syntax.
+Vuelidate v2 also comes with support for Composition API. The above example can be translated into the composition API syntax.
 
 ```js
-import { reactive } from 'vue' // "from '@vue/composition-api'" if you are using Vue 2.x
+import { reactive } from 'vue' // "from '@vue/composition-api'" if you are using Vue <2.7
 import { useVuelidate } from '@vuelidate/core'
 import { required, email } from '@vuelidate/validators'
 
@@ -147,7 +147,7 @@ export default {
 
 Now that validations are set up, we can check inside our template for errors by looking for example at the `firstName` property inside of the `v$` Vuelidate object. It will hold all the information and state of our `firstName` state's validation.
 
-If _any_ error is present, the `$errors` array property inside of `$v.firstName` will contain an object that describes each error for us to loop through.
+If _any_ error is present, the `$errors` array property inside of `v$.firstName` will contain an object that describes each error for us to loop through.
 
 Each object inside the `$errors` array will contain a few properties that allows us to dynamically build our error message.
 

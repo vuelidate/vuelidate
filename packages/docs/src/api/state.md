@@ -34,7 +34,7 @@ The presence of those special reserved keywords means that you cannot specify yo
 * **Type:** `any`
 * **Details:**
 
-  A reference to the original validated model. Reading this value will always give you exactly the same value as if you referenced the model directly. That means `this.$v.value.$model` is equivalent to `this.value` when read. Writing to that value will update the model and invoke `$touch` method automatically. This is very useful to use as `v-model` payload, providing a way of automatically marking given field as `$dirty` on first touch. Pairs well with `.lazy` modifier.
+  A reference to the original validated model. Reading this value will always give you exactly the same value as if you referenced the model directly. That means `this.v$.value.$model` is equivalent to `this.value` when read. Writing to that value will update the model and invoke `$touch` method automatically. This is very useful to use as `v-model` payload, providing a way of automatically marking given field as `$dirty` on first touch. Pairs well with `.lazy` modifier.
 
 ## $error
 

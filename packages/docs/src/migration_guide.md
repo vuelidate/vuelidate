@@ -207,7 +207,7 @@ Simply remove the first parameter and keep only the regex:
 // v0.x
 const regexSlug = helpers.regex('slug', /^[-A-Za-z0-9]+$/)
 
-// v2.x
+// v2
 const regexSlug = helpers.regex(/^[-A-Za-z0-9]+$/)
 ```
 
