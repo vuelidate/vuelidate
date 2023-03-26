@@ -8,17 +8,27 @@
     "url": "https://github.com/vuelidate/vuelidate",
     "directory": "packages/components"
   },
-  "module": "dist/index.es.js",
-  "main": "dist/index.js",
+  "module": "dist/index.mjs",
+  "main": "dist/index.cjs",
   "unpkg": "dist/index.iife.min.js",
   "jsdelivr": "dist/index.iife.min.js",
   "files": [
     "dist"
   ],
   "scripts": {
-    "build": "bili"
+    "build": "rollup -c rollup.config.mjs"
   },
   "dependencies": {
-    "@vuelidate/core": "^2.0.0"
+    "@vuelidate/core": "^2.0.0",
+    "vue-demi": "^0.13.11"
+  },
+  "peerDependencies": {
+    "@vue/composition-api": "^1.0.0-rc.1",
+    "vue": "^2.0.0 || >=3.0.0"
+  },
+  "peerDependenciesMeta": {
+    "@vue/composition-api": {
+      "optional": true
+    }
   }
 }

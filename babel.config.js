@@ -1,19 +1,19 @@
 module.exports = {
-  'presets': [
+  presets: [
     ['@babel/preset-env', {
       modules: false
     }]
   ],
-  'plugins': [
+  plugins: [
     '@babel/plugin-proposal-object-rest-spread'
   ],
-  'comments': false,
+  comments: false,
   env: {
     test: {
-      'presets': [
+      presets: [
         ['@babel/preset-env']
       ],
-      'plugins': ['@babel/plugin-transform-runtime']
+      plugins: ['@babel/plugin-transform-runtime']
     }
   }
 }
