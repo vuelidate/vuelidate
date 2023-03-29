@@ -223,6 +223,36 @@ function collectNestedValidationResults (validations, nestedState, path, results
 }
 
 /**
+ *  Returns a deep object containing the values of the provided model and its child and nested results.
+ * @param {Object} iModel - The model to retrieve the values from.
+ * @param {Object} iChildResults - The child results of the model.
+ * @param {Object} iNestedResults - The nested results of the model.
+ * @returns {Object} - A deep object containing the values of the model and its child and nested results.
+ */
+function getValuesDeep(model, childResults, nestedResults) {
+  const unwrappedModel = unwrap(model)
+
+  const treatedModel =
+    ['object', 'array'].includes(typeof unwrappedModel) && !!unwrappedModel
+      ? { value: unwrappedModel }
+      : unwrappedModel
+
+  const result = {}
+
+  for (const [key, value] of Object.entries(childResults ?? {})) {
+    result[key] = value?.$values?.()
+  }
+
+  for (const [key, value] of Object.entries(nestedResults ?? {})) {
+    result[key] = value?.$values?.()
+  }
+
+  return Object.keys(result).length > 0
+    ? { ...treatedModel, ...result }
+    : treatedModel
+}
+
+/**
  * Generates the Meta fields from the results
  * @param {ValidationResult|{}} results
  * @param {Object.<string, VuelidateState>} nestedResults
@@ -511,6 +541,14 @@ export function setValidations ({
   }
 
   /**
+   * Retrieves the values of the model and its child and nested results.
+   * @returns {Object} - An object containing the values of the model and its child and nested results.
+   */
+  function $values() {
+    return getValuesDeep($model, childResults?.value, nestedResults)
+  }
+
+  /**
    * Returns a child component's results, based on registration name
    * @param {string} key
    * @return {VuelidateState}
@@ -552,6 +590,7 @@ export function setValidations ({
     $path: path || ROOT_PATH,
     $silentErrors,
     $validate,
+    $values,
     $commit,
     // if there are no child results, we are inside a nested property
     ...(childResults && {
