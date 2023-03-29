@@ -1,6 +1,6 @@
 {
   "name": "@vuelidate/components",
-  "version": "1.2.4",
+  "version": "1.2.5",
   "description": "Components for Vuelidate",
   "license": "MIT",
   "repository": {
@@ -19,7 +19,7 @@
     "build": "rollup -c rollup.config.mjs"
   },
   "dependencies": {
-    "@vuelidate/core": "^2.0.1",
+    "@vuelidate/core": "^2.0.2",
     "vue-demi": "^0.13.11"
   },
   "peerDependencies": {
