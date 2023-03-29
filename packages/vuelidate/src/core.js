@@ -224,9 +224,9 @@ function collectNestedValidationResults (validations, nestedState, path, results
 
 /**
  *  Returns a deep object containing the values of the provided model and its child and nested results.
- * @param {Object} iModel - The model to retrieve the values from.
- * @param {Object} iChildResults - The child results of the model.
- * @param {Object} iNestedResults - The nested results of the model.
+ * @param {Object} iModel - Internal $model to retrieve the $model for each layer interaction.
+ * @param {Object} iChildResults - Internal ChildResults from current layer interaction.
+ * @param {Object} iNestedResults - Internal NestedResults from current layer interaction.
  * @returns {Object} - A deep object containing the values of the model and its child and nested results.
  */
 function getValuesDeep(model, childResults, nestedResults) {
