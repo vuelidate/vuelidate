@@ -1,16 +1,25 @@
 # vuelidate
+[![codecov](https://codecov.io/gh/vuelidate/vuelidate/branch/master/graph/badge.svg)](https://codecov.io/gh/vuelidate/vuelidate)
+![gzip size](http://img.badgesize.io/vuelidate/vuelidate/master/dist/vuelidate.min.js.svg?compression=gzip)
 
-> Simple, lightweight model-based validation for Vue.js 2.x & 3.0
-
-Visit [Vuelidate Docs](https://vuelidate-next.netlify.app) for detailed instructions.
+> Simple, lightweight model-based validation for Vue.js
 
 ## Sponsors
 
+### Gold
+
 <p align="center">
-  <a href="https://getform.io/" target="_blank">
-    <img src="https://cdn.discordapp.com/attachments/1002927810710605875/1034915542596845728/getform.png" alt="Get Form" width="240px">
+  <a href="https://vuejs.amsterdam/?utm_source=newsletter&utm_medium=logo&utm_campaign=vuejs-newsletter" target="_blank">
+    <img src="https://cdn.discordapp.com/attachments/793583797454503976/793583831369646120/vuejsamsterdam.png" alt="Vuejs Amsterdam" width="380px">
   </a>
 </p>
+<p align="center">
+  <a href="https://theroadtoenterprise.com/?utm_source=newsletter&utm_medium=logo&utm_campaign=vuejs-newsletter" target="_blank">
+    <img src="https://cdn.discordapp.com/attachments/793583797454503976/809062891420123166/logo.png" alt="Vue - The Road To Enterprise" width="380px">
+  </a>
+</p>
+
+### Silver
 
 <p align="center">
   <a href="https://www.storyblok.com/developers?utm_source=newsletter&utm_medium=logo&utm_campaign=vuejs-newsletter" target="_blank">
@@ -18,231 +27,183 @@ Visit [Vuelidate Docs](https://vuelidate-next.netlify.app) for detailed instruct
   </a>
 </p>
 
+### Bronze
 
 <p align="center">
   <a href="https://www.vuemastery.com/" target="_blank">
     <img src="https://cdn.discordapp.com/attachments/258614093362102272/557267759130607630/Vue-Mastery-Big.png" alt="Vue Mastery logo" width="180px">
   </a>
+  <a href="https://vuejobs.com/" target="_blank">
+    <img src="https://cdn.discordapp.com/attachments/560524372897562636/636900598700179456/vuejobs-logo.png" alt="Vue Mastery logo" width="140px">
+  </a>
 </p>
+
+### Features & characteristics:
+* Model based
+* Decoupled from templates
+* Dependency free, minimalistic library
+* Support for collection validations
+* Support for nested models
+* Contextified validators
+* Easy to use with custom validators (e.g. Moment.js)
+* Support for function composition
+* Validates different data sources: Vuex getters, computed values, etc.
+
+## Demo & docs
+
+[https://vuelidate.js.org/](https://vuelidate.js.org/)
+
+## Vue 3 support
+
+Vue 3 support is almost here with the Vuelidate 2 rewrite. Check out the [next](https://github.com/vuelidate/vuelidate/tree/next) branch to see the latest progress.
 
 ## Installation
 
-You can use Vuelidate just by itself, but we suggest you use it along `@vuelidate/validators`, as it gives a nice collection of commonly used
-validators.
-
-**Vuelidate supports both Vue 3.0 and Vue 2.x**
-
 ```bash
-npm install @vuelidate/core @vuelidate/validators
-# or
-yarn add @vuelidate/core @vuelidate/validators
+npm install vuelidate --save
 ```
 
-## Usage with Options API
+You can import the library and use as a Vue plugin to enable the functionality globally on all components containing validation configuration.
 
-To use Vuelidate with the Options API, you just need to return an empty Vuelidate instance from `setup`.
-
-Your validation state lives in the `data` and the rules are in `validations` function.
-
-```js
-import { email, required } from '@vuelidate/validators'
-import { useVuelidate } from '@vuelidate/core'
-
-export default {
-  name: 'UsersPage',
-  data: () => ({
-    form: {
-      name: '',
-      email: ''
-    }
-  }),
-  setup: () => ({ v$: useVuelidate() }),
-  validations () {
-    return {
-      form: {
-        name: { required },
-        email: { required, email }
-      }
-    }
-  }
-}
+```javascript
+import Vue from 'vue'
+import Vuelidate from 'vuelidate'
+Vue.use(Vuelidate)
 ```
 
-## Usage with Composition API
+Alternatively it is possible to import a mixin directly to components in which it will be used.
 
-To use Vuelidate with the Composition API, you need to provide it a state and set of validation rules, for that state.
+```javascript
+import { validationMixin } from 'vuelidate'
 
-The state can be a `reactive` object or a collection of `refs`.
-
-```js
-import { reactive } from 'vue' // or '@vue/composition-api' in Vue 2.x
-import { useVuelidate } from '@vuelidate/core'
-import { email, required } from '@vuelidate/validators'
-
-export default {
-  setup () {
-    const state = reactive({
-      name: '',
-      emailAddress: ''
-    })
-    const rules = {
-      name: { required },
-      emailAddress: { required, email }
-    }
-
-    const v$ = useVuelidate(rules, state)
-
-    return { state, v$ }
-  }
-}
+var Component = Vue.extend({
+  mixins: [validationMixin],
+  validations: { ... }
+})
 ```
 
-## Providing global config to your Vuelidate instance
+The browser-ready bundle is also provided in the package.
 
-You can provide global configs to your Vuelidate instance using the third parameter of `useVuelidate` or by using the `validationsConfig`. These
-config options are used to change some core Vuelidate functionality, like `$autoDirty`, `$lazy`, `$scope` and more. Learn all about them
-in [Validation Configuration](https://vuelidate-next.netlify.app/api.html#validation-configuration).
+```html
+<script src="vuelidate/dist/vuelidate.min.js"></script>
+<!-- The builtin validators is added by adding the following line. -->
+<script src="vuelidate/dist/validators.min.js"></script>
+```
 
-### Config with Options API
+```javascript
+Vue.use(window.vuelidate.default)
+```
 
-```vue
-<script>
-import { useVuelidate } from '@vuelidate/core'
+## Basic usage
+
+For each value you want to validate, you have to create a key inside validations options. You can specify when input becomes dirty by using appropriate event on your input box.
+
+```javascript
+import { required, minLength, between } from 'vuelidate/lib/validators'
 
 export default {
   data () {
-    return { ...state }
+    return {
+      name: '',
+      age: 0
+    }
   },
-  validations () {
-    return { ...validations }
-  },
-  setup: () => ({ v$: useVuelidate() }),
-  validationConfig: {
-    $lazy: true,
-  }
-}
-</script>
-```
-
-### Config with Composition API
-
-```js
-import { reactive } from 'vue' // or '@vue/composition-api' in Vue 2.x
-import { useVuelidate } from '@vuelidate/core'
-import { email, required } from '@vuelidate/validators'
-
-export default {
-  setup () {
-    const state = reactive({})
-    const rules = {}
-    const v$ = useVuelidate(rules, state, { $lazy: true })
-
-    return { state, v$ }
+  validations: {
+    name: {
+      required,
+      minLength: minLength(4)
+    },
+    age: {
+      between: between(20, 30)
+    }
   }
 }
 ```
 
-## The validation object, aka `v$` object
+This will result in a validation object:
 
-```ts
-interface ValidationState {
-  $dirty: false, // validations will only run when $dirty is true
-  $touch: Function, // call to turn the $dirty state to true
-  $reset: Function, // call to turn the $dirty state to false
-  $errors: [], // contains all the current errors { $message, $params, $pending, $invalid }
-  $error: false, // true if validations have not passed
-  $invalid: false, // as above for compatibility reasons
-  // there are some other properties here, read the docs for more info
+```javascript
+$v: {
+  name: {
+    "required": false,
+    "minLength": false,
+    "$invalid": true,
+    "$dirty": false,
+    "$error": false,
+    "$pending": false
+  },
+  age: {
+    "between": false
+    "$invalid": true,
+    "$dirty": false,
+    "$error": false,
+    "$pending": false
+  }
 }
 ```
 
-## Validations rules are on by default
+Checkout the docs for more examples: [https://vuelidate.js.org/](https://vuelidate.js.org/)
 
-Validation in Vuelidate 2 is by default on, meaning validators are called on initialisation, but an error is considered active, only after a field is dirty, so after `$touch()` is called or by using `$model`.
-
-If you wish to make a validation lazy, meaning it only runs validations once it a field is dirty, you can pass a `{ $lazy: true }` property to
-Vuelidate. This saves extra invocations for async validators as well as makes the initial validation setup a bit more performant.
-
-```js
-const v = useVuelidate(rules, state, { $lazy: true })
-```
-
-### Resetting dirty state
-
-If you wish to reset a form's `$dirty` state, you can do so by using the appropriately named `$reset` method. For example when closing a create/edit
-modal, you dont want the validation state to persist.
-
-```vue
-
-<app-modal @closed="v$.$reset()">
-<!-- some inputs  -->
-</app-modal>
-```
-
-## Displaying error messages
-
-The validation state holds useful data, like the invalid state of each property validator, along with extra properties, like an error message or extra
-parameters.
-
-Error messages come out of the box with the bundled validators in `@vuelidate/validators` package. You can check how change those them over at
-the [Custom Validators page](https://vuelidate-next.netlify.app/custom_validators.html)
-
-The easiest way to display errors is to use the form's top level `$errors` property. It is an array of validation objects, that you can iterate over.
-
-```vue
-
-<p
-  v-for="(error, index) of v$.$errors"
-  :key="index"
->
-<strong>{{ error.$validator }}</strong>
-<small> on property</small>
-<strong>{{ error.$property }}</strong>
-<small> says:</small>
-<strong>{{ error.$message }}</strong>
-</p>
-```
-
-You can also check for errors on each form property:
-
-```vue
-<p
-  v-for="(error, index) of v$.name.$errors"
-  :key="index"
->
-<!-- Same as above -->
-</p>
-```
-
-For more info, visit the [Vuelidate Docs](https://vuelidate-next.netlify.app).
-
-## Development
-
-To test the package run
+## Contributing
 
 ``` bash
 # install dependencies
-yarn install
+npm install
 
-# create bundles.
-yarn build
+# serve with hot reload at localhost:8080
+npm run dev
 
-# Create docs inside /docs package
-yarn dev
+# create UMD bundle.
+npm run build
 
-# run unit tests for entire monorepo
-yarn test:unit
+# Create docs inside /gh-pages ready to be published
+npm run docs
 
-# You can also run for same command per package
+# run unit tests
+npm run unit
+
+# run all tests
+npm test
 ```
+
+For detailed explanation on how things work, checkout the [guide](http://vuejs-templates.github.io/webpack/) and [docs for vue-loader](http://vuejs.github.io/vue-loader).
 
 ## Contributors
 
 ### Current
 
-- [Damian Dulisz](https://github.com/shentao)
-- [Natalia Tepluhina](https://github.com/NataliaTepluhina)
-- [Dobromir Hristov](https://github.com/dobromir-hristov)
+<table>
+  <tr>
+    <td align="center">
+      <a href="https://github.com/shentao">
+        <img src="https://avatars3.githubusercontent.com/u/3737591?s=460&u=6ef86c71bbbb74efae3c6224390ce9a8cba82272&v=4" width="120px;" alt="Damian Dulisz"/>
+        <br />
+        <sub><b>Damian Dulisz</b></sub>
+      </a>
+    </td>
+    <td align="center">
+      <a href="https://github.com/NataliaTepluhina">
+        <img src="https://avatars0.githubusercontent.com/u/18719025?s=460&u=2375ee8b609cb39d681cb318ed138b2f7ffe020e&v=4" width="120px;" alt="Natalia Tepluhina"/>
+        <br />
+        <sub><b>Natalia Tepluhina</b></sub>
+      </a>
+    </td>
+    <td align="center">
+      <a href="https://github.com/dobromir-hristov">
+        <img src="https://avatars3.githubusercontent.com/u/9863944?s=460&u=55b074c1589d69d17bb78322dd6900d63b186a34&v=4" width="120px;" alt="Natalia Tepluhina"/>
+        <br />
+        <sub><b>Dobromir Hristov</b></sub>
+      </a>
+    </td>
+    <td align="center">
+      <a href="https://github.com/marina-mosti">
+        <img src="https://avatars2.githubusercontent.com/u/14843771?s=460&u=1d11d62c22d38c01d73e6c92587bd567f4e51d27&v=4" width="120px;" alt="Marina Mosti"/>
+        <br />
+        <sub><b>Marina Mosti</b></sub>
+      </a>
+    </td>
+  </tr>
+</table>
 
 ### Emeriti
 

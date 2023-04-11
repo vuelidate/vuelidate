@@ -188,8 +188,8 @@ mixin validatorRow(validator, params)
     p.typo__p
       | Pattern presented above is often good enough, but this validator will always return <kbd>false</kbd> for empty input.
       | This is not correct when your input is considered optional. For this reason, there exist a <kbd>req</kbd> helper,
-      | which is kinda strippe-down version of required validator. You can use it to make your validator
-      | behave well in presense of optional fields, that is the ones without <kbd>required</kbd> validator.
+      | which is kinda stripped-down version of required validator. You can use it to make your validator
+      | behave well in presence of optional fields, that is the ones without <kbd>required</kbd> validator.
     pre(v-pre).language-javascript
       code.
         import { helpers } from 'vuelidate/lib/validators'
@@ -326,7 +326,7 @@ mixin validatorRow(validator, params)
           tr.table__tr
             td.table__td: kbd ref
             td.table__td
-              | A locator helper. This allows for convinient referencing of other fields in the model.
+              | A locator helper. This allows for convenient referencing of other fields in the model.
           tr.table__tr
             td.table__td: kbd len
             td.table__td

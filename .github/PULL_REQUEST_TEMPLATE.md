@@ -1,10 +1,10 @@
-## Summary
+<!--
+Please make sure to read the Pull Request Guidelines:
+https://github.com/vuelidate/vuelidate/blob/master/.github/CONTRIBUTING.md#pull-request-guidelines
+-->
 
-_Describe what your PR does in a few short words_
-
-fixes #(issue number)
-
-## Metadata
+<!-- PULL REQUEST TEMPLATE -->
+<!-- (Update "[ ]" to "[x]" to check a box) -->
 
 **What kind of change does this PR introduce?** (check at least one)
 
@@ -24,8 +24,7 @@ If yes, please describe the impact and migration path for existing applications:
 
 **The PR fulfills these requirements:**
 
-- [ ] I have read the [Contribution Guides](https://github.com/vuelidate/vuelidate/blob/master/.github/CONTRIBUTING.md#pull-request-guidelines)
-- [ ] It's submitted to the `next` branch
+- [ ] It's submitted to the `dev` branch for v1.x (or to a previous version branch), _not_ the `master` branch
 - [ ] When resolving a specific issue, it's referenced in the PR's title (e.g. `fix #xxx[,#xxx]`, where "xxx" is the issue number)
 - [ ] All tests are passing: https://github.com/vuelidate/vuelidate/blob/master/.github/CONTRIBUTING.md#development-setup
 - [ ] New/updated tests are included
