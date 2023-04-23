@@ -43,6 +43,9 @@ output.
 ```vue
 
 <script>
+import { useVuelidate } from '@vuelidate/core'
+import { required } from '@vuelidate/validators'
+
 export default {
   setup: () => ({ v$: useVuelidate() }),
   data: () => ({ name: '' }),
@@ -73,7 +76,7 @@ You can link fields together, by passing a field's value to another field's vali
 
 <script>
 import { useVuelidate } from '@vuelidate/core'
-import { sameAs } from '@vuelidate/validators'
+import { required, sameAs } from '@vuelidate/validators'
 
 export default {
   setup: () => ({ v$: useVuelidate() }),
@@ -98,7 +101,7 @@ state. This might be very useful for overall form validation.
 
 <script>
 import { useVuelidate } from '@vuelidate/core'
-import { sameAs } from '@vuelidate/validators'
+import { required } from '@vuelidate/validators'
 
 export default {
   setup: () => ({ v$: useVuelidate() }),
