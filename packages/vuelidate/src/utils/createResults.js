@@ -64,7 +64,6 @@ function createAsyncResult (
   $lastCommittedOn
 ) {
   const $invalid = ref(!!$dirty.value)
-  const $pendingCounter = ref(0)
 
   $pending.value = false
 
@@ -87,22 +86,19 @@ function createAsyncResult (
         // convert to a promise, so we can handle it async
         ruleResult = Promise.reject(err)
       }
-
-      $pendingCounter.value++
-      $pending.value = !!$pendingCounter.value
+      
+      $pending.value = true
       // ensure $invalid is false, while validator is resolving
       $invalid.value = false
 
       Promise.resolve(ruleResult)
         .then(data => {
-          $pendingCounter.value--
-          $pending.value = !!$pendingCounter.value
+          $pending.value = false
           $response.value = data
           $invalid.value = normalizeValidatorResponse(data)
         })
         .catch((error) => {
-          $pendingCounter.value--
-          $pending.value = !!$pendingCounter.value
+          $pending.value = false
           $response.value = error
           $invalid.value = true
         })
