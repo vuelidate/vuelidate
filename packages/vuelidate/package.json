@@ -3,7 +3,7 @@
   "description": "Simple, lightweight model-based validation for Vue.js",
   "version": "2.0.2",
   "main": "dist/index.cjs",
-  "types": "index.d.ts",
+  "types": "dist/index.d.cts",
   "module": "dist/index.mjs",
   "unpkg": "dist/index.iife.min.js",
   "jsdelivr": "dist/index.iife.min.js",
@@ -14,12 +14,10 @@
   },
   "license": "MIT",
   "files": [
-    "dist",
-    "index.d.ts"
+    "dist"
   ],
   "exports": {
     ".": {
-      "types": "./index.d.ts",
       "import": "./dist/index.mjs",
       "require": "./dist/index.cjs"
     },

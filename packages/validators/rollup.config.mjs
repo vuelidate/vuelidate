@@ -3,7 +3,8 @@ import { generateConfigFactory, generateOutputConfig } from '../../rollup.base.m
 export default [
   generateConfigFactory({
     libraryName: 'VuelidateValidators',
-    outputConfigs: generateOutputConfig('index')
+    outputConfigs: generateOutputConfig('index'),
+    copyTypes: true
   }),
   generateConfigFactory({
     libraryName: 'VuelidateValidators',

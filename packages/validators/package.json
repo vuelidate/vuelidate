@@ -3,7 +3,7 @@
   "version": "2.0.2",
   "description": "Validators for Vuelidate",
   "main": "dist/index.cjs",
-  "types": "index.d.ts",
+  "types": "dist/index.d.cts",
   "module": "dist/index.mjs",
   "unpkg": "dist/index.iife.min.js",
   "jsdelivr": "dist/index.iife.min.js",
@@ -41,7 +41,6 @@
     "access": "public"
   },
   "files": [
-    "dist",
-    "index.d.ts"
+    "dist"
   ]
 }
