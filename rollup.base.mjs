@@ -2,6 +2,7 @@ import terser from '@rollup/plugin-terser'
 import resolve from '@rollup/plugin-node-resolve'
 import commonjs from '@rollup/plugin-commonjs'
 import { babel } from '@rollup/plugin-babel'
+import copy from 'rollup-plugin-copy'
 
 export function generateOutputConfig (fileName = 'index', opts) {
   return {
@@ -23,7 +24,12 @@ export function generateOutputConfig (fileName = 'index', opts) {
   }
 }
 
-function generateConfigFactory ({ libraryName, input = 'src/index.js', outputConfigs }) {
+function generateConfigFactory({
+  libraryName,
+  input = 'src/index.js',
+  outputConfigs,
+  copyTypes = false
+}) {
   /**
    * @type {import('rollup').RollupOptions}
    */
@@ -56,6 +62,26 @@ function generateConfigFactory ({ libraryName, input = 'src/index.js', outputCon
     if (isMinified) {
       opts.plugins.push(
         terser()
+      )
+    }
+    if (copyTypes) {
+      opts.plugins.push(
+        copy({
+          hook: 'writeBundle',
+          flatten: true,
+          targets: [
+            {
+              src: 'index.d.ts',
+              dest: 'dist',
+              rename: 'index.d.cts'
+            },
+            {
+              src: 'index.d.ts',
+              dest: 'dist',
+              rename: 'index.d.mts'
+            }
+          ]
+        })
       )
     }
     return opts
