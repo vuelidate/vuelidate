@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.2.6](https://github.com/vuelidate/vuelidate/compare/@vuelidate/components@1.2.5...@vuelidate/components@1.2.6) (2023-06-29)
+
+**Note:** Version bump only for package @vuelidate/components
+
+
+
+
+
 ## [1.2.5](https://github.com/vuelidate/vuelidate/compare/@vuelidate/components@1.2.4...@vuelidate/components@1.2.5) (2023-03-29)
 
 **Note:** Version bump only for package @vuelidate/components

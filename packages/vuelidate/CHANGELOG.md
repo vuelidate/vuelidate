@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.0.3](https://github.com/vuelidate/vuelidate/compare/@vuelidate/core@2.0.2...@vuelidate/core@2.0.3) (2023-06-29)
+
+
+### Bug Fixes
+
+* **types:** Improve type declarations in exports ([#1184](https://github.com/vuelidate/vuelidate/issues/1184)) ([535b161](https://github.com/vuelidate/vuelidate/commit/535b161f52cf0a0adaaef102c4d80bd7fec4f4c1))
+
+
+
+
+
 ## [2.0.2](https://github.com/vuelidate/vuelidate/compare/@vuelidate/core@2.0.1...@vuelidate/core@2.0.2) (2023-03-29)
 
 **Note:** Version bump only for package @vuelidate/core
