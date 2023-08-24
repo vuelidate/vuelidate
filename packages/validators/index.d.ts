@@ -61,16 +61,18 @@ export function TranslationFunction(path: string, params: { model: string, prope
 
 export function messagePathFactory(params: MessageProps): string;
 
-export function messageParamsFactory(params: {
-  model: unknown,
-  property: string,
-  invalid: boolean,
-  pending: boolean,
-  propertyPath: string,
-  response: unknown,
-  validator: string,
-  [key: string]: any
-}): string;
+export interface MessageParams {
+  model: unknown;
+  property: string;
+  invalid: boolean;
+  pending: boolean;
+  propertyPath: string;
+  response: unknown;
+  validator: string;
+  [key: string]: any;
+}
+
+export function messageParamsFactory(params: MessageParams): MessageParams;
 
 export interface MessageProps {
   $model: string;
