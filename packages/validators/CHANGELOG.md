@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.0.4](https://github.com/vuelidate/vuelidate/compare/@vuelidate/validators@2.0.3...@vuelidate/validators@2.0.4) (2023-08-25)
+
+
+### Bug Fixes
+
+* **types:** expose messageParamsFactory typing ([#1175](https://github.com/vuelidate/vuelidate/issues/1175)) ([ec27c51](https://github.com/vuelidate/vuelidate/commit/ec27c51cc045ef5f856cebd44cba932f7bb48797))
+
+
+
+
+
 ## [2.0.3](https://github.com/vuelidate/vuelidate/compare/@vuelidate/validators@2.0.2...@vuelidate/validators@2.0.3) (2023-06-29)
 
 
