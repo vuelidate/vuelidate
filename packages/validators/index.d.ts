@@ -2,7 +2,8 @@ import {
   ValidationRuleWithoutParams,
   ValidationRuleWithParams,
   ValidationRule,
-  ValidationArgs
+  ValidationArgs,
+  ValidatorFn,
 } from '@vuelidate/core';
 import { Ref } from 'vue-demi';
 
@@ -47,11 +48,11 @@ export const sameAs: <E = unknown>(
 ) => ValidationRuleWithParams<{ equalTo: E, otherName: string }>;
 export const url: ValidationRuleWithoutParams;
 export const helpers: {
-  withParams: <T = unknown>(params: object, validator: ValidationRule<T>) => ValidationRuleWithParams
+  withParams: <T = unknown, P extends object = object>(params: P, validator: ValidationRule<T>) => ValidationRuleWithParams<P, T>
   withMessage: <T = unknown>(message: string | ((params: MessageProps) => string), validator: ValidationRule<T>) => ValidationRuleWithParams
   req: Function
   len: Function
-  regex: Function
+  regex: <T = any, K = any, S = any>(regex: RegExp) => ValidatorFn<T, K, S>
   unwrap: Function
   withAsync: Function,
   forEach: (validators: ValidationArgs) => { $validator: ValidationRule, $message: () => string }

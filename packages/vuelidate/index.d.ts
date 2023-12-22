@@ -53,7 +53,7 @@ export interface ValidationRuleWithParams<P extends object = object, T = any> {
   $params: P
 }
 
-export type ValidationRule <T = any> = ValidationRuleWithParams<any, T> | ValidationRuleWithoutParams<T> | ValidatorFn<T>;
+export type ValidationRule <T = any, P extends object = object> = ValidationRuleWithParams<P, T> | ValidationRuleWithoutParams<T> | ValidatorFn<T>;
 
 export type ValidationRuleCollection <T = any> = Record<string, ValidationRule<T>>;
 
