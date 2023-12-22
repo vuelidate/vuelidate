@@ -25,13 +25,13 @@ export const maxLength: (
   max: number | Ref<number>
 ) => ValidationRuleWithParams<{ max: number }>;
 export const maxValue: (
-  max: number | Ref<number> | string | Ref<string>
+  max: number | Ref<number> | string | Ref<string> | Date | Ref<Date>
 ) => ValidationRuleWithParams<{ max: number }>;
 export const minLength: (
   min: number | Ref<number>
 ) => ValidationRuleWithParams<{ min: number }>;
 export const minValue: (
-  min: number | Ref<number> | string | Ref<string>
+  min: number | Ref<number> | string | Ref<string> | Date | Ref<Date>
 ) => ValidationRuleWithParams<{ min: number }>;
 export const not: <T = unknown>(validator: ValidationRule<T>) => ValidationRuleWithoutParams;
 export const numeric: ValidationRuleWithoutParams;
