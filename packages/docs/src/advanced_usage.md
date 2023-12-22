@@ -363,7 +363,7 @@ The `$scope` property has three main use cases:
 **Example using $scope**
 
 ```js
-// component that should not collect/emit eny resulsts.
+// component that should not collect/emit any result.
 const IsolatedComponent = {
   setup () {
     const validations = {}
