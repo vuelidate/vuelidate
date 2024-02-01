@@ -115,9 +115,6 @@ export type BaseValidation <
   readonly $reset: () => void
   readonly $commit: () => void
   readonly $validate: () => Promise<boolean>
-
-  // For accessing individual form properties on v$
-  readonly [key: string]: any
 };
 
 export type NestedValidations <Vargs extends ValidationArgs = ValidationArgs, T = unknown> = {
