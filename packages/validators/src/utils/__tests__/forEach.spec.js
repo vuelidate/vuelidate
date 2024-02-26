@@ -49,8 +49,7 @@ describe('forEach', () => {
             required: false,
             $invalid: true,
             $error: true
-          },
-          surname: {}
+          }
         }
       ],
       $errors: [
@@ -74,8 +73,7 @@ describe('forEach', () => {
               $response: false,
               $validator: 'required'
             }
-          ],
-          surname: []
+          ]
         }
       ],
       $valid: false
@@ -313,5 +311,11 @@ describe('forEach', () => {
     expect(forEach(rules).$validator([
       { name: 'Foo' }, { name: 'Foo' }
     ]).$valid).toBe(true)
+  })
+
+  it('returns invalid when required property is missing', () => {
+    const validate = forEach({ something: { required } }).$validator
+    expect(validate([{}]).$valid).toBe(false)
+    expect(validate([{ something: 'a' }]).$valid).toBe(true)
   })
 })
