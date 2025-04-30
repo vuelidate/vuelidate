@@ -41,8 +41,6 @@
   },
   "scripts": {
     "lerna:build": "lerna run build --parallel",
-    "lerna:build-all": "yarn lerna:build && yarn build-docs",
-    "build-docs": "cd packages/docs && yarn build:docs",
     "test": "jest",
     "prepare": "rm -rf packages/vuelidate/dist packages/validators/dist && npm run lerna:build"
   }
