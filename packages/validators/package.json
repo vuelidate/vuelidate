@@ -30,7 +30,7 @@
   },
   "scripts": {
     "build": "rollup -c rollup.config.mjs",
-    "dev": "yarn build --watch",
+    "dev": "npm run -- build --watch",
     "test:unit": "jest"
   },
   "peerDependencies": {

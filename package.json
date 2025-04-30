@@ -30,8 +30,8 @@
     "vue-template-compiler": "^2.7.16"
   },
   "scripts": {
-    "build": "yarn workspace @vuelidate/core build && yarn workspace @vuelidate/validators build && yarn workspace @vuelidate/components build",
+    "build": "npm -w @vuelidate/core run build && npm -w @vuelidate/validators run build && npm -w @vuelidate/components run build",
     "test": "jest",
-    "prepare": "rm -rf packages/vuelidate/dist packages/validators/dist && yarn build"
+    "prepare": "rm -rf packages/vuelidate/dist packages/validators/dist && npm run build"
   }
 }

@@ -9,6 +9,7 @@ config
 docs
 .*
 yarn.lock
+package-lock.json
 circle.yml
 *.html
 *.tgz

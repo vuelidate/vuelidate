@@ -31,7 +31,7 @@
   "scripts": {
     "build": "rollup -c rollup.config.mjs",
     "test:unit": "jest",
-    "dev": "yarn build --watch"
+    "dev": "npm run -- build --watch"
   },
   "peerDependencies": {
     "vue": ">=3.0.0"
