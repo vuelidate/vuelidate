@@ -37,11 +37,11 @@
     "vue": ">=3.0.0"
   },
   "devDependencies": {
-    "@vue/compiler-sfc": "^3.2.2",
+    "@vue/compiler-sfc": "^3.5.13",
     "core-js": "^3.42.0",
     "flush-promises": "^1.0.2",
     "jest": "^27.0.6",
-    "vue": "^3.4.21"
+    "vue": "^3.5.13"
   },
   "publishConfig": {
     "access": "public"
