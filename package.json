@@ -30,7 +30,6 @@
     "@vue/composition-api": "^1.3.1",
     "@vue/test-utils": "^2.0.0-rc.12",
     "core-js": "^3.16.1",
-    "cz-conventional-changelog": "^3.3.0",
     "flush-promises": "^1.0.2",
     "jest": "^27.0.6",
     "jest-serializer-vue": "^2.0.2",
@@ -51,10 +50,5 @@
     "build-docs": "cd packages/docs && yarn build:docs",
     "test": "jest",
     "prepare": "rm -rf packages/vuelidate/dist packages/validators/dist && npm run lerna:build"
-  },
-  "config": {
-    "commitizen": {
-      "path": "./node_modules/cz-conventional-changelog"
-    }
   }
 }
