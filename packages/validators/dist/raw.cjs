@@ -193,6 +193,7 @@ function forEach (validators) {
 
 // "required" core, used in almost every validator to allow empty values
 
+
 const req = (value) => {
   value = vue.unref(value);
   if (Array.isArray(value)) return !!value.length
