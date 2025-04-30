@@ -1,7 +1,6 @@
 import terser from '@rollup/plugin-terser'
 import resolve from '@rollup/plugin-node-resolve'
 import commonjs from '@rollup/plugin-commonjs'
-import { babel } from '@rollup/plugin-babel'
 import copy from 'rollup-plugin-copy'
 
 export function generateOutputConfig (fileName = 'index', opts) {
@@ -36,7 +35,7 @@ function generateConfigFactory({
   const config = {
     input,
     external: ['vue-demi'],
-    plugins: [resolve(), commonjs(), babel({ babelHelpers: 'bundled' })],
+    plugins: [resolve(), commonjs()],
     output: []
   }
 
