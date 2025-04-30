@@ -1,6 +1,6 @@
 import requiredUnless from '../requiredUnless'
 import { T, F } from '../../../tests/fixtures'
-import { ref } from 'vue-demi'
+import { ref } from 'vue'
 
 describe('requiredUnless validator', () => {
   it('should not validate if prop is falsy', () => {

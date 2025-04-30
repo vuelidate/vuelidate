@@ -4,7 +4,7 @@ import {
   ValidationRule,
   ValidationArgs
 } from '@vuelidate/core';
-import { Ref } from 'vue-demi';
+import { Ref } from 'vue';
 
 // Rules
 export const alpha: ValidationRuleWithoutParams;

@@ -1,6 +1,6 @@
 import requiredIf from '../requiredIf'
 import { T, F } from '../../../tests/fixtures'
-import { ref } from 'vue-demi'
+import { ref } from 'vue'
 
 describe('requiredIf validator', () => {
   it('should not validate empty string when functional condition is met', () => {

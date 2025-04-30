@@ -1,4 +1,4 @@
-import { computed, ref, watch } from 'vue-demi'
+import { computed, ref, watch } from 'vue'
 import { isFunction, unwrap, unwrapObj } from '../utils'
 
 /**

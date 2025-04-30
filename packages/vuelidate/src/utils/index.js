@@ -1,4 +1,4 @@
-import { isRef, computed, ref, isReactive, isReadonly, unref as unwrap } from 'vue-demi'
+import { isRef, computed, ref, isReactive, isReadonly, unref as unwrap } from 'vue'
 
 export { unwrap }
 

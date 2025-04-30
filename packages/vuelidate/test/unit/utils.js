@@ -1,4 +1,4 @@
-import { h, nextTick } from 'vue-demi'
+import { h, nextTick } from 'vue'
 import { useVuelidate } from '../../src'
 import { mount } from './test-utils'
 
