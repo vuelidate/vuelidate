@@ -31,15 +31,14 @@
     "flush-promises": "^1.0.2",
     "jest": "^27.0.6",
     "jest-serializer-vue": "^2.0.2",
-    "lerna": "^4.0.0",
     "rollup": "^3.19.1",
     "rollup-plugin-copy": "^3.4.0",
     "vue": "^3.4.21",
     "vue-template-compiler": "^2.6.14"
   },
   "scripts": {
-    "lerna:build": "lerna run build --parallel",
+    "build": "yarn workspace @vuelidate/core build && yarn workspace @vuelidate/validators build && yarn workspace @vuelidate/components build",
     "test": "jest",
-    "prepare": "rm -rf packages/vuelidate/dist packages/validators/dist && npm run lerna:build"
+    "prepare": "rm -rf packages/vuelidate/dist packages/validators/dist && yarn build"
   }
 }
