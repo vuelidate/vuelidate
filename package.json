@@ -13,8 +13,8 @@
     "url": "https://github.com/vuelidate/vuelidate.git"
   },
   "devDependencies": {
-    "@babel/core": "^7.26.10",
-    "@babel/preset-env": "^7.26.9",
+    "@babel/core": "^7.27.1",
+    "@babel/preset-env": "^7.27.1",
     "@rollup/plugin-commonjs": "^28.0.3",
     "@rollup/plugin-node-resolve": "^16.0.1",
     "@vue/compiler-sfc": "^3.5.13",
