@@ -36,7 +36,6 @@
     "lerna": "^4.0.0",
     "rollup": "^3.19.1",
     "rollup-plugin-copy": "^3.4.0",
-    "standard-version": "^9.3.1",
     "vue": "^3.4.21",
     "vue-template-compiler": "^2.6.14"
   },
