@@ -20,7 +20,7 @@
     "@vue/compiler-sfc": "^3.2.2",
     "@vue/test-utils": "^2.0.0-rc.12",
     "babel-jest": "^29.7.0",
-    "core-js": "^3.16.1",
+    "core-js": "^3.42.0",
     "flush-promises": "^1.0.2",
     "jest": "^27.0.6",
     "jest-serializer-vue": "^2.0.2",

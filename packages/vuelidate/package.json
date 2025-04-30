@@ -38,7 +38,7 @@
   },
   "devDependencies": {
     "@vue/compiler-sfc": "^3.2.2",
-    "core-js": "^3.16.1",
+    "core-js": "^3.42.0",
     "flush-promises": "^1.0.2",
     "jest": "^27.0.6",
     "vue": "^3.4.21"
