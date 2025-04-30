@@ -1,4 +1,4 @@
-import { ref, nextTick, h } from 'vue'
+import { ref, nextTick, h, reactive } from 'vue'
 import { isEven, isOdd } from '../validators.fixture'
 import {
   createOldApiSimpleWrapper,
@@ -337,7 +337,7 @@ describe('OptionsAPI validations', () => {
       const validation = {
         number: { isEven }
       }
-      const vuelidateExternalResults = { number: '' }
+      const vuelidateExternalResults = reactive({ number: '' })
 
       const { vm } = await createOldApiSimpleWrapper(validation, { number: 1, vuelidateExternalResults })
 
@@ -349,6 +349,7 @@ describe('OptionsAPI validations', () => {
       // set an external validation result
       vm.vuelidateExternalResults.number = ['foo']
       // assert
+      await nextTick()
       expect(vm.v.number.$externalResults).toEqual([externalErrorObject])
       expect(vm.v.number.$error).toBe(true)
       expect(vm.v.number.$silentErrors).toHaveLength(2)
@@ -374,7 +375,7 @@ describe('OptionsAPI validations', () => {
       const validation = {
         number: { isEven }
       }
-      const vuelidateExternalResults = { number: '' }
+      const vuelidateExternalResults = reactive({ number: '' })
       const { vm } = await createOldApiSimpleWrapper(validation, { number: 1, vuelidateExternalResults }, { $autoDirty: true })
 
       vm.v.$touch()
@@ -385,6 +386,7 @@ describe('OptionsAPI validations', () => {
       // set an external validation result
       Object.assign(vm.vuelidateExternalResults, { number: ['foo'] })
       // assert
+      await nextTick()
       expect(vm.v.number.$externalResults).toEqual([externalErrorObject])
       expect(vm.v.number.$error).toBe(true)
       expect(vm.v.number.$silentErrors).toHaveLength(2)
