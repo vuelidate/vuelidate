@@ -1,4 +1,4 @@
-import { computed, ref, h, nextTick, reactive } from 'vue-demi'
+import { computed, ref, h, nextTick, reactive } from 'vue'
 import { mount, flushPromises, ifVue3 } from '../test-utils'
 import { isEven } from '../validators.fixture'
 

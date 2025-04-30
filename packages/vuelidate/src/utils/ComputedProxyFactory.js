@@ -1,4 +1,4 @@
-import { computed } from 'vue-demi'
+import { computed } from 'vue'
 
 /**
  * Helper proxy for instance property access. It makes every reference

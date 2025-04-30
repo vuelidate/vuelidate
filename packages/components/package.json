@@ -17,8 +17,7 @@
     "build": "rollup -c rollup.config.mjs"
   },
   "dependencies": {
-    "@vuelidate/core": "^2.0.3",
-    "vue-demi": "^0.13.11"
+    "@vuelidate/core": "^2.0.3"
   },
   "peerDependencies": {
     "@vue/composition-api": "^1.0.0-rc.1",

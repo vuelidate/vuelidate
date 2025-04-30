@@ -1,4 +1,4 @@
-import { ref, nextTick, h } from 'vue-demi'
+import { ref, nextTick, h } from 'vue'
 import { isEven, isOdd } from '../validators.fixture'
 import {
   createOldApiSimpleWrapper,

@@ -1,16 +1,16 @@
 import { unwrap, gatherBooleanGroupProperties, gatherArrayGroupProperties } from './utils'
-import { computed, isRef, nextTick, reactive, ref, watch } from 'vue-demi'
+import { computed, isRef, nextTick, reactive, ref, watch } from 'vue'
 import { createValidatorResult } from './utils/createResults'
 import { sortValidations } from './utils/sortValidations'
 
 const ROOT_PATH = '__root'
 
-/** @typedef {import('vue-demi').ComponentPublicInstance} VueInstance */
-/** @typedef {import('vue-demi').ComputedRef} ComputedRef */
-/** @typedef {import('vue-demi').UnwrapRef} UnwrapRef */
-/** @typedef {import('vue-demi').WatchStopHandle} WatchStopHandle */
-/** @typedef {import('vue-demi').WritableComputedRef} WritableComputedRef */
-/** @typedef {import('vue-demi').UnwrapNestedRefs} UnwrapNestedRefs */
+/** @typedef {import('vue').ComponentPublicInstance} VueInstance */
+/** @typedef {import('vue').ComputedRef} ComputedRef */
+/** @typedef {import('vue').UnwrapRef} UnwrapRef */
+/** @typedef {import('vue').WatchStopHandle} WatchStopHandle */
+/** @typedef {import('vue').WritableComputedRef} WritableComputedRef */
+/** @typedef {import('vue').UnwrapNestedRefs} UnwrapNestedRefs */
 
 /**
  * @typedef NormalizedValidator

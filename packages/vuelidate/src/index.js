@@ -1,4 +1,4 @@
-import { watch, computed, getCurrentInstance, onBeforeMount, onBeforeUnmount, isRef, ref, reactive } from 'vue-demi'
+import { watch, computed, getCurrentInstance, onBeforeMount, onBeforeUnmount, isRef, ref, reactive } from 'vue'
 import { isFunction, unwrap, isProxy } from './utils'
 import { setValidations } from './core'
 import ResultsStorage from './storage'

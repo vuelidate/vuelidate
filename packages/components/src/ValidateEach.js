@@ -1,4 +1,4 @@
-import { toRef } from 'vue-demi'
+import { toRef } from 'vue'
 import { useVuelidate } from '@vuelidate/core'
 
 export default {

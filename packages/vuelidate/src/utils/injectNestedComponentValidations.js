@@ -1,4 +1,4 @@
-import { computed, inject, provide, ref } from 'vue-demi'
+import { computed, inject, provide, ref } from 'vue'
 import { unwrap } from './index'
 
 export const CollectFlag = {

@@ -33,9 +33,6 @@
     "dev": "yarn build --watch",
     "test:unit": "jest"
   },
-  "dependencies": {
-    "vue-demi": "^0.13.11"
-  },
   "peerDependencies": {
     "@vue/composition-api": "^1.0.0-rc.1",
     "vue": "^2.0.0 || >=3.0.0"
