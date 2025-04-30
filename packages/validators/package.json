@@ -33,8 +33,7 @@
   "scripts": {
     "build": "rollup -c rollup.config.mjs",
     "dev": "yarn build --watch",
-    "test:unit": "jest",
-    "lint": "eslint src"
+    "test:unit": "jest"
   },
   "dependencies": {
     "vue-demi": "^0.13.11"

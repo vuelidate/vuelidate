@@ -33,7 +33,6 @@
   "scripts": {
     "build": "rollup -c rollup.config.mjs",
     "test:unit": "jest",
-    "lint": "eslint src test",
     "dev": "yarn build --watch"
   },
   "dependencies": {
@@ -54,8 +53,6 @@
     "@babel/preset-env": "^7.15.0",
     "@vue/compiler-sfc": "^3.2.2",
     "core-js": "^3.16.1",
-    "eslint-plugin-import": "^2.24.0",
-    "eslint-plugin-promise": "^5.1.0",
     "flush-promises": "^1.0.2",
     "jest": "^27.0.6",
     "vue": "^3.4.21"
