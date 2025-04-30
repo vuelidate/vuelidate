@@ -34,7 +34,6 @@
     "core-js": "^3.16.1",
     "cz-conventional-changelog": "^3.3.0",
     "flush-promises": "^1.0.2",
-    "husky": "^7.0.1",
     "jest": "^27.0.6",
     "jest-serializer-vue": "^2.0.2",
     "lerna": "^4.0.0",
@@ -64,10 +63,5 @@
     "extends": [
       "@commitlint/config-conventional"
     ]
-  },
-  "husky": {
-    "hooks": {
-      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
-    }
   }
 }
