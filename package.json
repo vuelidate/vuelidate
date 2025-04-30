@@ -26,8 +26,7 @@
     "jest-serializer-vue": "^3.1.0",
     "rollup": "^4.40.1",
     "rollup-plugin-copy": "^3.5.0",
-    "vue": "^3.5.13",
-    "vue-template-compiler": "^2.7.16"
+    "vue": "^3.5.13"
   },
   "scripts": {
     "build": "npm -w @vuelidate/core run build && npm -w @vuelidate/validators run build && npm -w @vuelidate/components run build",
