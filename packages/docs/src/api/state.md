@@ -41,7 +41,7 @@ The presence of those special reserved keywords means that you cannot specify yo
 * **Type:** `Boolean`
 * **Details:**
 
-  Convenience flag to easily decide if a message should be displayed. Equivalent to `this.$dirty && !this.$pending && this.$invalid`.
+  Convenience flag to easily decide if a message should be displayed. Equivalent to `this.$dirty && (this.$pending || this.$invalid)`.
 
 ## $errors
 
