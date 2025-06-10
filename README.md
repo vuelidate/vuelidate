@@ -44,7 +44,7 @@ Vuelidate is currently in LTS mode, so you may want to look at similar form libr
 
 ### Model-based validation
 
-- **Regle**: ✅ Headless form validation library for Vue.js [[Github](https://github.com/victorgarciaesgi/regle), [Docs](https://reglejs.dev/)]
+- **Regle**: ✅ Headless form validation library for Vue.js [[Github](https://github.com/victorgarciaesgi/regle), [Docs](https://reglejs.dev/), [Migration guide](https://reglejs.dev/introduction/migrate-from-vuelidate)]
   - A validation library that use a similar API as Vuelidate's, with improved Typescript support, Nuxt integration and schema libraries (Zod, Valibot, Arktype)
 
 ### Composable approach
