@@ -83,6 +83,7 @@ function createValidationResults (rules, model, key, resultsCache, path, config,
     if (!cachedResult.$partial) return cachedResult
     // remove old watchers
     cachedResult.$unwatch()
+    cachedResult.__unwatchInvalidResult?.()
     // use the `$dirty.value`, so we dont save references by accident
     $dirty.value = cachedResult.$dirty.value
   }
@@ -139,10 +140,40 @@ function createValidationResults (rules, model, key, resultsCache, path, config,
 
   result.$invalid = computed(() => {
     const r = ruleKeys.some(ruleKey => unwrap(result[ruleKey].$invalid))
-    // cache the last invalid state
-    $lastInvalidState.value = r
     return !!result.$externalResults.value.length || r
   })
+
+  // https://github.com/vuelidate/vuelidate/issues/1237
+  // 1. Moved $lastInvalid assignment from the results.$invalid computed
+  //   because computed props should be side-effect free.
+  // 2. Added $lastCommittedOn as a watch source because 3.4.x vue will cache
+  //   computed more aggressively and $lastInvalidState would be out of sync
+  //   in the "commit() when valid" scenario:
+  //   - commit() sets $lastInvalidState to true
+  //   - validators run and return invalid as false
+  //   - result.$invalid is already false, so it will not recompute (cached)
+  //   - the watcher will not be triggered because $result.$invalid dep did
+  //     not change.
+  //   - last $invalidState is not sync to false (to match result.$invalid), and
+  //     thus $model change triggers validators to run immediately.
+  //   I don't know if it's out-of-scope of this PR to update vue, but 3.4.x
+  //   brought many changes to computed optimization which vuelidate relies on
+  //   heavily and it's the future.
+  // 3. flush "post" is required for async validators to work in this mode, otherwise
+  //   last invalid state will be flipped to false since sync validators run first
+  //   and turn invalid to false "before" pending is set to true and it will prevent
+  //   them from running (Guessing). At least is required for 3.4.x and that's
+  //   the version the majority should be using.
+  if (config.$rewardEarly) {
+    result.__unwatchInvalidResult = watch(
+      [result.$invalid, $lastCommittedOn],
+      ([invalidState]) => { $lastInvalidState.value = invalidState },
+      {
+        deep: true,
+        flush: 'post' // [3]
+      }
+    )
+  }
 
   result.$pending = computed(() =>
     ruleKeys.some(ruleKey => unwrap(result[ruleKey].$pending))

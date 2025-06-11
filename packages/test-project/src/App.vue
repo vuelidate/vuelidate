@@ -2,15 +2,56 @@
   <div id="app">
     <div class="navigation">
       <ul>
-        <li><router-link to="/">Simple Form</router-link></li>
-        <li><router-link to="/async-simple">Async Form</router-link></li>
-        <li><router-link to="/i18n-simple">i18n Simple Form</router-link></li>
-        <li><router-link to="/old-api">Old api</router-link></li>
-        <li><router-link to="/nested-validations">Nested Validations</router-link></li>
-        <li><router-link to="/nested-ref">Nested Ref</router-link></li>
-        <li><router-link to="/collection-validations">Collection Validations</router-link></li>
-        <li><router-link to="/external-validations">External Validations</router-link></li>
-        <li><router-link to="/nested-validations-with-scopes">Nested Validations with Scopes</router-link></li>
+        <li>
+          <router-link to="/">
+            Simple Form
+          </router-link>
+        </li>
+        <li>
+          <router-link to="/async-simple">
+            Async Form
+          </router-link>
+        </li>
+        <li>
+          <router-link to="/i18n-simple">
+            i18n Simple Form
+          </router-link>
+        </li>
+        <li>
+          <router-link to="/old-api">
+            Old api
+          </router-link>
+        </li>
+        <li>
+          <router-link to="/nested-validations">
+            Nested Validations
+          </router-link>
+        </li>
+        <li>
+          <router-link to="/nested-ref">
+            Nested Ref
+          </router-link>
+        </li>
+        <li>
+          <router-link to="/collection-validations">
+            Collection Validations
+          </router-link>
+        </li>
+        <li>
+          <router-link to="/external-validations">
+            External Validations
+          </router-link>
+        </li>
+        <li>
+          <router-link to="/nested-validations-with-scopes">
+            Nested Validations with Scopes
+          </router-link>
+        </li>
+        <li>
+          <router-link to="/reward-early">
+            $rewardEarly
+          </router-link>
+        </li>
       </ul>
     </div>
     <router-view />

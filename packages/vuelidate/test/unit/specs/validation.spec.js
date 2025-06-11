@@ -1999,6 +1999,107 @@ describe('useVuelidate', () => {
           validatorName: 'isEven'
         })
       })
+
+      describe('with DOM context', () => {
+        // https://github.com/vuelidate/vuelidate/issues/1237
+        // I could not assert this using pure javascript manipulation on the validation
+        // state object. The issue only occurs because the side-effect that was present
+        // inside the result.$invalid computed property gets out-of-sync with the actual
+        // $model value as vue does not update DOM bindings synchronously. I understand
+        // that in theory vuelidate is not dependent on whatever we wire in the DOM as it's
+        // pure model based, but some edge cases like this could appear.
+        it('it works correctly when $model is patched via DOM updates', async () => {
+          const fooIsRequired = {
+            $validator: jest.fn((v) => !!v),
+            $message: 'Foo is required'
+          }
+          const barIsRequired = {
+            $validator: jest.fn((v) => !!v),
+            $message: 'Bar is required'
+          }
+
+          const component = {
+            setup () {
+              const state = reactive({
+                foo: '',
+                bar: ''
+              })
+
+              const rules = {
+                foo: { fooIsRequired },
+                bar: { barIsRequired }
+              }
+
+              const v$ = useVuelidate(rules, state, { $rewardEarly: true })
+              return { v$ }
+            },
+            template: `
+            <div>
+              <div class="field">
+                <input
+                  name="foo"
+                  v-model="v$.foo.$model"
+                  @blur="v$.foo.$commit"
+                >
+                <p
+                  data-test-id="foo-errors"
+                  v-for="error of v$.foo.$errors"
+                  :key="error.$uid"
+                >
+                  {{ error.$message }}
+                </p>
+              </div>
+              <div class="field">
+                <input
+                  name="bar"
+                  v-model="v$.bar.$model"
+                  @blur="v$.bar.$commit"
+                >
+                <p
+                  data-test-id="bar-errors"
+                  v-for="error of v$.bar.$errors"
+                  :key="error.$uid"
+                >
+                  {{ error.$message }}
+                </p>
+              </div>
+            </div>
+          `
+          }
+          const wrapper = mount(component)
+          const fooInput = wrapper.find('input[name="foo"]')
+          const barInput = wrapper.find('input[name="bar"]')
+          const findFooInputErrors = () => wrapper.find('[data-test-id="foo-errors"]')
+          const findBarInputErrors = () => wrapper.find('[data-test-id="bar-errors"]')
+
+          await fooInput.setValue('foo')
+          await fooInput.trigger('blur')
+          expect(findFooInputErrors().exists()).toBe(false)
+
+          await fooInput.setValue('')
+          await fooInput.trigger('blur')
+          expect(findFooInputErrors().exists()).toBe(true)
+          expect(findFooInputErrors().text()).toContain(fooIsRequired.$message)
+
+          await barInput.setValue('bar')
+          await barInput.trigger('blur')
+          expect(findBarInputErrors().exists()).toBe(false)
+
+          // THE ISSUE. the errors should not appear until we blur the input because
+          // the in the previous commit the input was valid. So the error should only appear
+          // when we commit again with an invalid input.
+          // before fix this spec would fail and error were immediately display on $model change.
+          // The only part I can't explain is why this only happens if there is previous invalid field.
+          // If you use a single input this will never happen. It might be related with array os reactive
+          // validation objects re-triggering computations which will not happen in a single input scenario.
+          await barInput.setValue('')
+          expect(findBarInputErrors().exists()).toBe(false)
+
+          await barInput.trigger('blur')
+          expect(findBarInputErrors().exists()).toBe(true)
+          expect(findBarInputErrors().text()).toBe(barIsRequired.$message)
+        })
+      })
     })
 
     describe('async', () => {
