@@ -466,7 +466,8 @@ export function setValidations ({
         const s = unwrap(state)
         const external = unwrap(externalResults)
         if (external) {
-          external[key] = cachedExternalResults[key]
+          // delete external[key] breaks vue:2 specs
+          external[key] = undefined
         }
         if (isRef(s[key])) {
           s[key].value = val

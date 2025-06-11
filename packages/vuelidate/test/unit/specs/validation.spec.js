@@ -1846,6 +1846,60 @@ describe('useVuelidate', () => {
       expect(vm.v.number.$error).toBe(false)
       expect(vm.v.number.$silentErrors).toEqual([])
     })
+
+    // https://github.com/vuelidate/vuelidate/issues/1232
+    it('when dynamic rules is used, it still automatically clears $externalResults on $model change', async () => {
+      const state = reactive({
+        field: 0,
+        validateWithIsEven: true
+      })
+      const dynamicRules = computed(() => {
+        return state.validateWithIsEven
+          ? { field: { isEven } }
+          : { field: { placebo: () => true } }
+      })
+      const $externalResults = ref({})
+      const { vm } = await createSimpleWrapper(dynamicRules, state, { $externalResults })
+
+      const externalErrorObject = {
+        $message: message,
+        $params: {},
+        $pending: false,
+        $property: 'field',
+        $propertyPath: 'field',
+        $response: null,
+        $uid: 'field-externalResult-0',
+        $validator: '$externalResults'
+      }
+      // assert the initial state
+      state.validateWithIsEven = true
+      vm.v.field.$model = 5
+      expect(vm.v.field.$invalid).toBe(true)
+
+      // recompute rules, assert validations updated
+      state.validateWithIsEven = false
+      await vm.$nextTick()
+      expect(vm.v.field.$invalid).toBe(false)
+
+      // NOW TO THE ISSUE
+
+      vm.v.field.$model = 2
+      $externalResults.value = { field: message }
+      expect(vm.v.field.$error).toBe(true)
+      expect(vm.v.field.$errors).toEqual([externalErrorObject])
+
+      // trigger recomputation of rules while $externalResults are applied,
+      // this is the key, because when $model setter is called cachedExternalResults
+      // now exists and has previous entry for the field path setting external
+      // instead of removing it
+      state.validateWithIsEven = true
+      await vm.$nextTick()
+
+      // change $model, ensure $externalResults are cleared
+      // before the fix, this spec would fail
+      vm.v.field.$model = 4
+      expect(vm.v.field.$errors).toEqual([])
+    })
   })
 
   describe('$rewardEarly', () => {
