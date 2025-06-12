@@ -135,35 +135,134 @@ When using `useVuelidate`, Vuelidate will collect all validation `$errors` and `
 or listen to any events. Additionally, calling `$touch` in the root component will automatically call `$touch` in the nested components, making
 building complex forms a breeze.
 
-This is the recommended approach when handling collections. Create a new, nested component with its own validation rules.
-
 ```vue
-
 <template>
   <div>
-    <CompA />
-    <CompB />
+    <Company 
+      :companyName="formState.companyName"
+      @updateCompany="formState.companyName = $event" />
 
-    <!-- this will contain all $errors and $silentErrors from both <CompA> and <CompB>-->
-    <p v-for="error of v.$errors" :key="error.$uid">
+    <Employee 
+      v-for="(employee, index) of formState.employees"
+      :employee="employee"
+      :key="index"
+      @updateEmail="employee.email = $event"/>
+
+    <!-- this will contain all $errors and $silentErrors from both <Company> and <Employee>-->
+    <div v-for="error of v$.$errors" :key="error.$uid">
       {{ error.$message }}
-    </p>
+    </div>
   </div>
 </template>
 
-<script>
-import { useVuelidate } from '@vuelidate/core'
-import CompA from '@/components/CompA'
-import CompB from '@/components/CompB'
+<script setup>
+import { reactive } from 'vue'
+import useVuelidate from '@vuelidate/core'
+import Company from '@/components/Company'
+import Employee from '@/components/Employee'
 
-export default {
-  components: { CompA, CompB },
-  setup () {
-    // this will collect all nested component’s validation results
-    const v = useVuelidate()
+const formState = reactive({
+  companyName: '',
+  employees: [
+      { id: 1, name: 'Bob', email: 'bob@example.com' },
+      { id: 2, name: 'Sue', email: 'sue@example.com' },
+  ]
+})
 
-    return { v }
+const formRules = {
+  companyName: { },
+  employees: {
+      // TODO
   }
+}
+
+// this will collect all nested component’s validation results
+const v$ = useVuelidate(formRules, formState)
+
+</script>
+```
+In above case, if you want to apply the validations for each 'employee' of 'employees' array, you can add it in nested component.
+This is the recommended approach when handling collections. Create a new, nested component with its own validation rules.
+
+```vue
+<!-- Company.vue -->
+<template>
+  <div>
+    <input type="text" :value="companyName" @input="updateCompany" />
+  </div>
+</template>
+
+<script setup>
+import { useVuelidate } from '@vuelidate/core'
+import { required } from '@vuelidate/validators'
+import { computed } from 'vue'
+
+const props = defineProps( { 
+  employee: {
+    type: Object,
+    required: true
+  }
+} )
+
+// rules for validation
+let validations = {
+  companyName: {
+    required
+  }
+}
+
+const myCompanyName = computed( () => props.companyName )
+
+// own validation of nested component
+const v$ = useVuelidate( validations.companyName, myCompanyName )
+
+const emit = defineEmits( [ 'updateCompany' ] )
+
+function updateCompany( event ) {
+  emit( 'updateCompany', event.target.value )
+}
+</script>
+```
+And here we have the single Employee component that has its own validation rules.
+
+```vue
+<!-- Employee.vue -->
+<template>
+  <div>
+    <input type="text" :value="employee.email" @input="updateEmail" />
+  </div>
+</template>
+
+<script setup>
+import { useVuelidate } from '@vuelidate/core'
+import { email } from '@vuelidate/validators'
+import { computed } from 'vue'
+
+const props = defineProps( { 
+  employee: {
+    type: Object,
+    required: true
+  }
+} )
+
+// rules for validation
+let validations = {
+  employee: {
+    email: {
+      email
+    }
+  }
+}
+
+const myEmployeeEmail = computed( () => props.employee )
+
+// own validation of nested component
+const v$ = useVuelidate( validations.employee, myEmployeeEmail )
+
+const emit = defineEmits( [ 'updateEmail' ] )
+
+function updateEmail( event ) {
+  emit( 'updateEmail', event.target.value )
 }
 </script>
 ```
