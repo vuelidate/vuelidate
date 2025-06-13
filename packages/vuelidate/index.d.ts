@@ -187,7 +187,7 @@ export function useVuelidate<
   EState extends ExtractState<Vargs> = ExtractState<Vargs>
 >(
   validationsArgs: Ref<Vargs> | Vargs,
-  state: T | Ref<T> | ToRefs<T>,
+  state: Omit<T,'$validationGroups'> | Ref<Omit<T,'$validationGroups'>> | ToRefs<Omit<T,'$validationGroups'>>,
   globalConfig?: GlobalConfig
 ): Ref<Validation<Vargs, T>>;
 
