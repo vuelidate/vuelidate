@@ -1,10 +1,11 @@
 import { unwrapNormalizedValidator, unwrapValidatorResponse, unwrap } from './common'
 
-export default function forEach (validators) {
+export default function forEach (defaultValidators, getValidatorForItemFn = null) {
   return {
     $validator (collection, ...others) {
       // go over the collection. It can be a ref as well.
       return unwrap(collection).reduce((previous, collectionItem, index) => {
+        const validators = getValidatorForItemFn ? getValidatorForItemFn(collectionItem, index) : defaultValidators;
         // go over each property
         const collectionEntryResult = Object.entries(collectionItem).reduce((all, [property, $model]) => {
           // get the validators for this property
