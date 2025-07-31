@@ -119,7 +119,7 @@ There are multiple ways to update the `$dirty` state.
 ### Using `$touch`
 
 You can programmatically update the `$dirty` state by calling the `$touch` method on a validation field. For example, for the `name` field you can
-call `v$.name.$touch()` to change it’s `$dirty` state.
+call `v$.name.$touch()` to change its `$dirty` state.
 
 Here’s an example of adding it to the above form, where we attach it to the `@blur` event so that our error only shows up after the user entered and
 left the input.
@@ -338,7 +338,7 @@ export default {
   methods: {
     async submitForm () {
       const isFormCorrect = await this.v$.$validate()
-      // you can show some extra alert to the user or just leave the each field to show it's `$errors`.
+      // you can show some extra alert to the user or just leave the each field to show its `$errors`.
       if (!isFormCorrect) return
       // actually submit form
     }
