@@ -7,3 +7,4 @@ gh-pages
 *.tgz
 packages/docs/src/.vuepress/dist
 /packages/*/dist/
+.idea

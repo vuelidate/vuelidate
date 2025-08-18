@@ -94,10 +94,7 @@ export interface ErrorObject {
 export type BaseValidation <
   T = unknown,
   Vrules extends ValidationRuleCollection<T> | undefined = undefined,
-> = (
-  Vrules extends ValidationRuleCollection<T>
-    ? ExtractRulesResults<T, Vrules>
-    : unknown) & {
+> = ExtractRulesResults<T, Vrules> & {
   $model: T
   // const validationGetters
   readonly $dirty: boolean
