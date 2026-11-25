@@ -5,5 +5,8 @@ module.exports = {
   name: 'Vuelidate',
   collectCoverage: true,
   collectCoverageFrom: ['<rootDir>/src/**/*.js'],
-  displayName: 'Vuelidate'
+  displayName: 'Vuelidate',
+  moduleNameMapper: {
+    '^@vuelidate/core$': '<rootDir>/src/index.js'
+  }
 }
